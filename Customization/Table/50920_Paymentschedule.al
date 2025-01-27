@@ -127,13 +127,13 @@ table 50920 "Payment Schedule"
 
     begin
         PaymentSchedule2.SetRange("Contract ID", Rec."Contract ID");
-        //PaymentSchedule2.SetRange("Tenant ID", Rec."Tenant ID");
+        PaymentSchedule2.SetRange("Tenant ID", Rec."Tenant ID");
         // PaymentSchedule2.SetRange("Proposal ID", Rec."Proposal ID");
         if PaymentSchedule2.FindSet() then begin
             PaymentSchedule2.DeleteAll();
         end;
         PaymentSchedule2.SetRange("Contract ID", Rec."Contract ID");
-        //PaymentSchedule2.SetRange("Tenant ID", Rec."Tenant ID");
+        PaymentSchedule2.SetRange("Tenant ID", Rec."Tenant ID");
         // RevenueSubpage.SetRange(ProposalID, Rec."Proposal ID");
         RevenueSubpage.SetRange("Payment Type", 1);
         if RevenueSubpage.FindSet() then
@@ -143,9 +143,9 @@ table 50920 "Payment Schedule"
 
                 PaymentSchedule2.Init();
                 // PaymentSchedule2."PS ID" := Rec."PS Id";
-                PaymentSchedule2."Contract ID" := Rec."Contract ID";
+                PaymentSchedule2."Contract ID" := RevenueSubpage."ContractID";
                 // PaymentSchedule2."Proposal ID" := rec."Proposal ID";
-                PaymentSchedule2."Tenant ID" := rec."Tenant Id";
+                PaymentSchedule2."Tenant ID" := RevenueSubpage."TenantId";
                 PaymentSchedule2."Secondary Item Type" := RevenueSubpage."Secondary Item Type";
                 PaymentSchedule2.Amount := RevenueSubpage.Amount;
                 PaymentSchedule2."VAT Amount" := RevenueSubpage."VAT Amount";
@@ -168,15 +168,15 @@ table 50920 "Payment Schedule"
     begin
 
         RevenueStructureSubpage.SetRange("Contract ID", Rec."Contract ID");
-        // RevenueStructureSubpage.SetRange("Tenant ID", Rec."Tenant ID");
+        RevenueStructureSubpage.SetRange("Tenant ID", Rec."Tenant ID");
 
         if RevenueStructureSubpage.FindSet() then
             repeat
                 PaymentSchedule3.Init();
                 // PaymentSchedule3."PS ID" := Rec."PS Id";
-                PaymentSchedule3."Contract ID" := rec."Contract ID";
+                PaymentSchedule3."Contract ID" := RevenueStructureSubpage."Contract ID";
                 // PaymentSchedule3."Proposal ID" := Rec."Proposal ID";
-                PaymentSchedule3."Tenant ID" := rec."Tenant Id";
+                PaymentSchedule3."Tenant ID" := RevenueStructureSubpage."Tenant Id";
                 PaymentSchedule3."Secondary Item Type" := RevenueStructureSubpage."Secondary Item Type";
                 PaymentSchedule3.Amount := RevenueStructureSubpage.Amount;
                 PaymentSchedule3."VAT Amount" := RevenueStructureSubpage."VAT Amount";

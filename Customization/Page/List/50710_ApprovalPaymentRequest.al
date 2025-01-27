@@ -356,7 +356,6 @@ page 50710 "Approval Payment Request"
 
 
 
-
                 Clear(PaymentModeTable);
 
                 if PaymentChangeReqTable."Payment Series".Contains(',') then begin
@@ -369,29 +368,57 @@ page 50710 "Approval Payment Request"
                     Message('2');
                 end;
 
+
                 for increment := 1 to paymentSeriesNos.Count() do begin
+                    PaymentModeTable.Reset();
                     PaymentModeTable.SetRange("Payment Series", paymentSeriesNos.Get(increment));
                     PaymentModeTable.SetRange("Contract ID", Rec."Contract ID");
                     PaymentModeTable.SetRange("Tenant ID", Rec."Tenant ID");
-                    //PaymentChangeReqTable.SetRange("ID", Rec."ID");
-                    //PaymentChangeReqTable.SetRange(Status, 'Approve');
-                    //PaymentChangeReqTable.SetRange("Request Type", 'Combine');
                     PaymentModeTable.SetRange("Payment Series", Rec."Payment Series");
-                    Message('3');
+
+                    Message('Checking Payment Series: %1, Contract ID: %2, Tenant ID: %3',
+                        paymentSeriesNos.Get(increment), Rec."Contract ID", Rec."Tenant ID");
+
                     if PaymentModeTable.FindSet() then begin
-                        Message('4');
+                        Message('Records found for Payment Series: %1', PaymentModeTable."Payment Series");
                         repeat
-                            PaymentModeTable."Payment Status" := PaymentModeTable."Payment Status"::Cancelled; // Update the Payment Status
+                            // Use Validate to ensure any related logic for Payment Status is triggered
+                            PaymentModeTable.Validate("Payment Status", PaymentModeTable."Payment Status"::Cancelled);
                             PaymentModeTable.Modify();
                             Message('Payment Status updated for Payment Series: %1', PaymentModeTable."Payment Series");
                         until PaymentModeTable.Next() = 0;
-                        // PaymentModeTable.ModifyAll("Payment Status", PaymentModeTable."Payment Status");
-                        Message('5');
-
+                    end else begin
+                        Message('No records found for Payment Series: %1, Contract ID: %2, Tenant ID: %3',
+                            paymentSeriesNos.Get(increment), Rec."Contract ID", Rec."Tenant ID");
                     end;
-                    Message('6');
 
+                    Message('Finished processing Payment Series: %1', paymentSeriesNos.Get(increment));
                 end;
+
+
+                // for increment := 1 to paymentSeriesNos.Count() do begin
+                //     PaymentModeTable.SetRange("Payment Series", paymentSeriesNos.Get(increment));
+                //     PaymentModeTable.SetRange("Contract ID", Rec."Contract ID");
+                //     PaymentModeTable.SetRange("Tenant ID", Rec."Tenant ID");
+                //     //PaymentChangeReqTable.SetRange("ID", Rec."ID");
+                //     //PaymentChangeReqTable.SetRange(Status, 'Approve');
+                //     //PaymentChangeReqTable.SetRange("Request Type", 'Combine');
+                //     PaymentModeTable.SetRange("Payment Series", Rec."Payment Series");
+                //     Message('3');
+                //     if PaymentModeTable.FindSet() then begin
+                //         Message('4');
+                //         repeat
+                //             PaymentModeTable."Payment Status" := PaymentModeTable."Payment Status"::Cancelled; // Update the Payment Status
+                //             PaymentModeTable.Modify();
+                //             Message('Payment Status updated for Payment Series: %1', PaymentModeTable."Payment Series");
+                //         until PaymentModeTable.Next() = 0;
+                //         // PaymentModeTable.ModifyAll("Payment Status", PaymentModeTable."Payment Status");
+                //         Message('5');
+
+                //     end;
+                //     Message('6');
+
+                // end;
 
                 // Fetch the next sequence number and generate the new payment code
                 SequenceNo := GetNextSequenceNo();

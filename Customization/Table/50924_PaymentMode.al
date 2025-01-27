@@ -318,16 +318,16 @@ table 50924 "Payment Mode"
                 MergedRecord."Amount Including VAT" := GrandTotal;
                 MergedRecord."Due Date" := MinDueDate;
 
-                Message('Inserting record with Payment Series: %1', NewPaymentCode);
+                //Message('Inserting record with Payment Series: %1', NewPaymentCode);
 
                 MergedRecord.Insert();
                 Clear(MergedRecord);
-            end else
-                Message('Record for Due Date %1 already exists. Skipping.', MinDueDate);
+            end //else
+                // Message('Record for Due Date %1 already exists. Skipping.', MinDueDate);
 
         end;
 
-        Message('Process completed successfully.');
+        // Message('Process completed successfully.');
     end;
 
 
