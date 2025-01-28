@@ -36,6 +36,11 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
         {
             Caption = 'Contract Tenure';
         }
+        field(50105; "Approval Status"; Option)
+        {
+            OptionMembers = " ",Approved,Rejected;
+            Caption = 'Approval Status';
+        }
 
     }
 

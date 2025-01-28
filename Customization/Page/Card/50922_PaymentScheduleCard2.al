@@ -65,7 +65,7 @@ page 50922 "Payment Schedule Card2"
                 {
                     ApplicationArea = All;
                     Editable = false; // The ID is not editable since it's auto-incrementing
-                    Visible = false;
+                    Visible = true;
                 }
 
 
