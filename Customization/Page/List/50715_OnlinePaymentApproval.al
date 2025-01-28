@@ -20,6 +20,11 @@ page 50715 "Online Payment Request"
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field(Status; Rec.Status)
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
 
                 field("Tenant ID"; Rec."Tenant ID")
                 {
@@ -70,15 +75,15 @@ page 50715 "Online Payment Request"
     {
         area(processing)
         {
-            action(Receive)
+            action(Received)
             {
-                Caption = 'Receive';
+                Caption = 'Received';
                 ApplicationArea = All;
-                Image = Receive;
+                Image = Received;
 
                 trigger OnAction()
                 var
-                    SelectedRecs: Record "Approval Payment Request";
+                    SelectedRecs: Record "OnlinePaymentApproval";
                     ApproveCount: Integer;
                     ErrorCount: Integer;
                 begin
@@ -95,7 +100,7 @@ page 50715 "Online Payment Request"
                     if SelectedRecs.FindSet() then
                         repeat
                             if SelectedRecs.Status = 'Pending' then begin
-                                SelectedRecs.Status := 'Receive';
+                                SelectedRecs.Status := 'Received';
                                 SelectedRecs.Modify();
                                 ApproveCount += 1;
                             end else
@@ -112,15 +117,15 @@ page 50715 "Online Payment Request"
 
                 end;
             }
-            action(NotReceive)
+            action(NotReceived)
             {
-                Caption = 'NotReceive';
+                Caption = 'Not Received';
                 ApplicationArea = All;
-                Image = NotReceive;
+                Image = "Not Received";
 
                 trigger OnAction()
                 var
-                    SelectedRecs: Record "Approval Payment Request";
+                    SelectedRecs: Record "OnlinePaymentApproval";
                     RejectCount: Integer;
                     ErrorCount: Integer;
                 begin
@@ -138,7 +143,7 @@ page 50715 "Online Payment Request"
                     if SelectedRecs.FindSet() then
                         repeat
                             if SelectedRecs.Status = 'Pending' then begin
-                                SelectedRecs.Status := 'NotReceive'; // Set status to "Declined"
+                                SelectedRecs.Status := 'Not Received'; // Set status to "Declined"
                                 SelectedRecs.Modify();
                                 RejectCount += 1;
                             end else
