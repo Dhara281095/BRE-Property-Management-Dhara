@@ -12,6 +12,11 @@ table 50703 "OnlinePaymentApproval"
             Editable = false;
             AutoIncrement = true;
         }
+        field(50108; "Status"; Text[50])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Status';
+        }
         field(50107; "Tenant ID"; Text[50])
         {
             DataClassification = ToBeClassified;

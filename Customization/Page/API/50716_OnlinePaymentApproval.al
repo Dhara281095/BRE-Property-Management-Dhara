@@ -75,6 +75,10 @@ page 50716 OnlinePaymentApproval
                 {
                     Caption = 'Amount with vat';
                 }
+                field(Status; Rec.Status)
+                {
+                    Caption = 'Status';
+                }
             }
         }
     }
