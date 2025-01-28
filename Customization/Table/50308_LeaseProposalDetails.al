@@ -563,6 +563,7 @@ table 50308 "Lease Proposal Details"
                         "Rent Amount" := MergedUnitRec."Amount";
                         "Market Rate per Sq. Ft." := MergedUnitRec."Market Rate per Square";
                         "Single Unit Name" := MergedUnitRec."Single Unit Name";
+                        "Unit Number" := MergedUnitRec."Unit Number";
 
                         // Update the Merge Unit Status to 'Selected' in the Merged Units table
                         if MergedUnitRec."Status" = MergedUnitRec."Status"::Free then begin

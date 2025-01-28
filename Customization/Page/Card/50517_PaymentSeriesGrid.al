@@ -55,15 +55,41 @@ page 50517 "Payment Series Grid"
                 field(View; Rec.View)
                 {
                     ApplicationArea = All;
+                    Editable = false;
+                    DrillDown = true;
+
+                    trigger OnValidate()
+                    begin
+                        if Rec."Payment Mode" <> 'Cheque' then
+                            Error('Cheque number can only be entered when Payment Mode is set to Cheque.');
+                    end;
+
+                    trigger OnDrillDown()
+                    var
+                        FileURL: Text;
+                    begin
+                        // Get the URL of the uploaded document
+                        FileURL := Rec."View Document URL";
+
+                        // Check if the file URL is not empty
+                        if FileURL = '' then
+                            Error('No document is available to view.');
+
+                        // Open the file URL in the browser (new tab)
+                        OpenFileInBrowser(FileURL);
+                    end;
                 }
+
+                field("View Document URL"; Rec."View Document URL")
+                {
+                    ApplicationArea = All;
+                }
+
                 field("Approval Status"; Rec."Approval Status")
                 {
                     ApplicationArea = All;
                 }
-                field("Payment Transaction Id"; Rec."Payment Transaction Id")
-                {
-                    ApplicationArea = All;
-                }
+
             }
         }
     }
@@ -82,6 +108,14 @@ page 50517 "Payment Series Grid"
             }
         }
     }
+    procedure OpenFileInBrowser(URL: Text)
+    begin
+        // Use the Hyperlink method to open the file in the browser
+        if URL <> '' then
+            Hyperlink(URL)
+        else
+            Error('The file URL is invalid.');
+    end;
 
     var
         myInt: Integer;

@@ -121,6 +121,12 @@ table 50310 "Merged Units"
             DataClassification = ToBeClassified;
             Caption = 'Single Unit Names';
         }
+
+        field(50115; "Unit Number"; Text[500])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Single Unit Names';
+        }
     }
 
     keys
