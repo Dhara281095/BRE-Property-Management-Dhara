@@ -104,17 +104,17 @@ table 50925 "Payment Mode2"
             Caption = 'Deposit Status';
         }
 
-        field(50112; "Payment Status"; Option)
+        field(50112; "Payment Status"; Enum "Payment Status")
         {
-            OptionMembers = "Scheduled","Due","Received","Overdue","Cancelled";
+            //OptionMembers = "Scheduled","Due","Received","Overdue","Cancelled";
             Caption = 'Payment Status';
         }
 
-        field(50113; "Cheque Status"; Option)
+        field(50113; "Cheque Status"; Enum "PDC Status Type Enum")
         {
-            OptionMembers = "-","Cheque Received","Cleared","Deposited","Due & cheque not deposited","Retrieved","Returned","Replaced & Received","Deferred";
+            // OptionMembers = "-","Cheque Received","Cleared","Deposited","Due & cheque not deposited","Retrieved","Returned","Replaced & Received","Deferred";
             Caption = 'Cheque Status';
-            Editable = false;
+
 
             trigger OnValidate()
             begin

@@ -199,21 +199,16 @@ page 50928 "Payment Mode Card2"
 
                 field("View"; Rec."View")
                 {
-
-
                     ApplicationArea = All;
                     Editable = false;
                     DrillDown = true;
                   
-                    
-
                     trigger OnValidate()
                     begin
                         if Rec."Payment Mode" <> 'Cheque' then
                             Error('Cheque number can only be entered when Payment Mode is set to Cheque.');
                     end;
 
-                    
                     trigger OnDrillDown()
                     var
                         FileURL: Text;
@@ -335,44 +330,97 @@ actions
                 PaymentModeRec: Record "Payment Mode2";
                 PrePDCTransRec: Record "PDC Transaction";
                 PDCTransRec: Record "PDC Transaction";
+                paymentTransRec : Record "Payment Transaction";
+                PrePaymentTransRec : Record "Payment Transaction";
+                paymentGridRec : Record "Payment Series Details";
+                PrePaymentGridRec : Record "Payment Series Details";
+                IsPaymentTransactionCreated: Boolean;
             begin
-                
-                //Filter to select only Payment mode with 'cheque'. 
-                PaymentModeRec.SetRange("Payment Mode", 'Cheque');
-                PaymentModeRec.SetRange("Tenant Id", Rec."Tenant Id");
-                PaymentModeRec.SetRange("Contract ID",Rec."Contract ID");
+                        // Filter Payment Mode records by Contract ID and Tenant ID
+                    PaymentModeRec.SetRange("Contract ID", Rec."Contract ID");
+                    PaymentModeRec.SetRange("Tenant Id", Rec."Tenant Id");
 
-                if PaymentModeRec.FindSet() then begin
+                    if PaymentModeRec.FindSet() then begin
+                        IsPaymentTransactionCreated := false;
+
                         repeat
-                        // Clear any existing filters on PDCTransRec
-            // PDCTransRec.Reset();
-                            // Apply filters to check for an existing record with the same Cheque Number, Tenant Id, and Contract ID.
-            PrePDCTransRec.SetRange("Cheque Number", PaymentModeRec."Cheque Number");
-            PrePDCTransRec.SetRange("Tenant Id", PaymentModeRec."Tenant Id");
-            PrePDCTransRec.SetRange("Contract ID", PaymentModeRec."Contract ID");
-            PrePDCTransRec.SetRange("payment Series",PaymentModeRec."Payment Series");
-
-                            if not PrePDCTransRec.FindSet() then begin
-                                PDCTransRec.Init();
-                                PDCTransRec."Cheque Number" := PaymentModeRec."Cheque Number";
-                                PDCTransRec."Bank Name" := PaymentModeRec."Deposit Bank";
-                                PDCTransRec."Cheque Date" := PaymentModeRec."Due Date";
-                                PDCTransRec.Amount := PaymentModeRec."Amount Including VAT";
-                                PDCTransRec."Tenant Id" := PaymentModeRec."Tenant Id";
-                                PDCTransRec."Contract ID" := PaymentModeRec."Contract ID";
-                                PDCTransRec."Cheque Status" := PDCTransRec."Cheque Status"::"Cheque Received";
-                                PDCTransRec."Approval Status":= PDCTransRec."Approval Status"::Pending;
-                                PDCTransRec.View:= PaymentModeRec."View Document URL";
-                                PDCTransRec."payment Series" := PaymentModeRec."Payment Series";
-                                PDCTransRec.Insert(true);
-                                Clear(PDCTransRec);
+                            paymentTransRec.SetRange("Contract Id", PaymentModeRec."Contract ID");
+                            paymentTransRec.SetRange("Tenant Id", PaymentModeRec."Tenant Id");
+                            if not paymentTransRec.FindSet() then begin
+                                    // Create a Payment Transaction if not already created
+                                if not IsPaymentTransactionCreated then begin
+                                    PaymentTransRec.Init();
+                                    PaymentTransRec."Tenant Id" := Rec."Tenant Id";
+                                    PaymentTransRec."Contract Id" := Rec."Contract ID";
+                                    PaymentTransRec.Insert(true);
+                                    IsPaymentTransactionCreated := true;
+                                end;
                             end;
+                            
+
+                            // Check for duplicate Payment Series Details record
+                            PaymentGridRec.SetRange("Payment Transaction Id", PaymentTransRec."PT Id");
+                            PaymentGridRec.SetRange("payment Series", PaymentModeRec."Payment Series");
+
+                            if not PaymentGridRec.FindSet() then begin
+                                // Insert records into Payment Series Grid under Payment Transaction
+                                PaymentGridRec.Init();
+                                PaymentGridRec."payment Series" := PaymentModeRec."Payment Series";
+                                PaymentGridRec.Amount := PaymentModeRec."Amount Including VAT";
+                                PaymentGridRec."Due Date" := PaymentModeRec."Due Date";
+                                PaymentGridRec."Payment Mode" := PaymentModeRec."Payment Mode";
+                                PaymentGridRec."Cheque Number" := PaymentModeRec."Cheque Number";
+                                PaymentGridRec."Deposite Bank" := PaymentModeRec."Deposit Bank";
+                                PaymentGridRec."Deposite Status" := PaymentModeRec."Deposit Status";
+                                PaymentGridRec."Payment Status" := PaymentModeRec."Payment Status";
+                                PaymentGridRec."Cheque Status" := PaymentModeRec."Cheque Status";
+                                PaymentGridRec."Old Cheque" := PaymentModeRec."Old Cheque #";
+                                PaymentGridRec."View Document URL" := PaymentModeRec."View Document URL";
+                                PaymentGridRec."Approval Status" := PaymentGridRec."Approval Status"::Pending;
+                                PaymentGridRec."Contract Id" := PaymentModeRec."Contract ID";
+                                paymentGridRec."Tenant Id" := PaymentModeRec."Tenant Id";
+                                PaymentGridRec."Payment Transaction Id" := PaymentTransRec."PT Id";
+                                PaymentGridRec.Insert(true);
+                                Clear(paymentGridRec);
+                            end;
+                                
                         until PaymentModeRec.Next() = 0;
 
-                        Message('Data successfully inserted into PDC Transaction.');
+                        // Process records with Payment Mode as "Cheque" for PDC Transaction
+                        PaymentModeRec.SetRange("Payment Mode", 'Cheque');
+                        if PaymentModeRec.FindSet() then begin
+                            repeat
+                                // Check for duplicate PDC Transaction record
+                                PrePDCTransRec.SetRange("Cheque Number", PaymentModeRec."Cheque Number");
+                                PrePDCTransRec.SetRange("Tenant Id", PaymentModeRec."Tenant Id");
+                                PrePDCTransRec.SetRange("Contract ID", PaymentModeRec."Contract ID");
+                                PrePDCTransRec.SetRange("payment Series", PaymentModeRec."Payment Series");
+
+                                if not PrePDCTransRec.FindSet() then begin
+                                    // Insert record into PDC Transaction
+                                    PDCTransRec.Init();
+                                    PDCTransRec."Cheque Number" := PaymentModeRec."Cheque Number";
+                                    PDCTransRec."Bank Name" := PaymentModeRec."Deposit Bank";
+                                    PDCTransRec."Cheque Date" := PaymentModeRec."Due Date";
+                                    PDCTransRec.Amount := PaymentModeRec."Amount Including VAT";
+                                    PDCTransRec."Tenant Id" := PaymentModeRec."Tenant Id";
+                                    PDCTransRec."Contract ID" := PaymentModeRec."Contract ID";
+                                    PDCTransRec."Cheque Status" := PDCTransRec."Cheque Status"::"Cheque Received";
+                                    PDCTransRec."Approval Status" := PDCTransRec."Approval Status"::Pending;
+                                    PDCTransRec.View := PaymentModeRec."View Document URL";
+                                    PDCTransRec."payment Series" := PaymentModeRec."Payment Series";
+                                    PDCTransRec.Insert(true);
+                                    Clear(PDCTransRec);
+                                end;
+
+                            until PaymentModeRec.Next() = 0;
+
+                            Message('Data successfully inserted into PDC Transaction and Payment Transaction.');
+                        end;
+                        //     Message('No payment modes with cheque details found.');
                     end else
-                     Message('No payment modes with cheque details found.');
-            end;
+                        Message('No payment modes found for the given Contract ID and Tenant ID.');
+                end;
         }
     }
 }

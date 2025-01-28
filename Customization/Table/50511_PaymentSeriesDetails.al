@@ -4,9 +4,10 @@ table 50511 "Payment Series Details"
 
     fields
     {
-        field(50501; "Id"; code[20])
+        field(50501; "Entry No."; Integer)
         {
             DataClassification = ToBeClassified;
+            AutoIncrement = true;
         }
         field(50502; "payment Series"; Text[20])
         {
@@ -93,7 +94,7 @@ table 50511 "Payment Series Details"
 
     keys
     {
-        key(Key1; Id)
+        key(Key1; "Entry No.")
         {
             Clustered = true;
         }

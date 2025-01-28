@@ -103,7 +103,7 @@ page 50509 "PDC Transaction"
                             PaymentSeriesRec.SetRange("Payment Series", Rec."payment Series");
                             PaymentSeriesRec.SetRange("Contract ID", Rec."Contract ID");
                             if PaymentSeriesRec.FindSet() then begin
-                                PaymentSeriesRec."Cheque Status" := PaymentSeriesRec."Cheque Status"::"Due & cheque not deposited";
+                                PaymentSeriesRec."Cheque Status" := PaymentSeriesRec."Cheque Status"::"Due cheque not deposited";
                                 PaymentSeriesRec."Payment Status" := PaymentSeriesRec."Payment Status"::Scheduled;
                                 PaymentSeriesRec."Deposit Status" := PaymentSeriesRec."Deposit Status"::"-";
                                 PaymentSeriesRec.Modify();

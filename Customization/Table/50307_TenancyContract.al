@@ -119,6 +119,7 @@ table 50307 "Tenancy Contract"
                     "Market Rate per Sq. Ft." := LeaseProposalRec."Market Rate per Sq. Ft.";
                     "Facilities/Amenities" := LeaseProposalRec."Facilities/Amenities";
                     "Balance Amount" := LeaseProposalRec."Security Deposit Amount";
+                    "Unit Number" := LeaseProposalRec."Unit Number";
 
 
 

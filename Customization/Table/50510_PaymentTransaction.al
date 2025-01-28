@@ -10,7 +10,7 @@ table 50510 "Payment Transaction"
 
         }
 
-        field(50502; "Tenant Id"; Text[100])
+        field(50502; "Tenant Id"; code[20])
         {
             DataClassification = ToBeClassified;
             TableRelation = Customer."No.";

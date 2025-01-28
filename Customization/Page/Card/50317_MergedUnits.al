@@ -97,6 +97,7 @@ page 50317 "Merged Units Card"
                         TotalAmount: Decimal;
                         UnitNames: Text[1024]; // To store concatenated Unit Names
                         confirmDialog: Boolean;
+                        UnitNumber: Code[1024]; // To store concatenated Unit Numbers
                     begin
                         if Rec."Property ID" = '' then begin
                             Message('Please select a Property ID first.');
@@ -145,6 +146,7 @@ page 50317 "Merged Units Card"
                                         TotalMarketRate += UnitRec."Market Rate per Sq. Ft."; // Sum the market rate per square values
                                         TotalAmount += UnitRec."Unit Size" * UnitRec."Market Rate per Sq. Ft."; // Calculate total amount based on market rate per square
                                         UnitNames += UnitRec."Unit Name" + ', '; // Concatenate unit names (using "Unit Name" field)
+                                        UnitNumber += UnitRec."Unit Number" + ', '; // Concatenate unit numbers (using "No." field)
 
                                         // Insert into Sub Merged Units table
                                         SubMergedUnitRec.Init();
@@ -155,6 +157,7 @@ page 50317 "Merged Units Card"
                                         SubMergedUnitRec."Market Rate per Square" := UnitRec."Market Rate per Sq. Ft.";
                                         SubMergedUnitRec."Amount" := UnitRec."Unit Size" * UnitRec."Market Rate per Sq. Ft.";
                                         SubMergedUnitRec."Single Unit Name" := UnitRec."Unit Name";
+
                                         SubMergedUnitRec.Insert();
 
                                         // Update unit's status
@@ -176,6 +179,7 @@ page 50317 "Merged Units Card"
                                 // Set the selected Unit IDs to the Unit ID field
                                 Rec."Unit ID" := SelectedUnits;
                                 Rec."Single Unit Name" := UnitNames;
+                                Rec."Unit Number" := UnitNumber;
 
                                 Rec."Spliting Status" := Rec."Spliting Status"::"Merge";
                                 Rec.Modify(); // Explicitly save changes to the current record
@@ -228,6 +232,13 @@ page 50317 "Merged Units Card"
                     ApplicationArea = All;
                     Editable = false;
                     MultiLine = true;
+                }
+
+                field("Unit Number"; Rec."Unit Number")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+
                 }
 
                 field("Status"; Rec."Status")

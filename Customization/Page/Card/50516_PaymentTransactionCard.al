@@ -14,6 +14,7 @@ page 50516 "Payment Transaction Card"
                 field("PT Id"; Rec."PT Id")
                 {
                     ApplicationArea = all;
+                    Editable = false;
                 }
                 field(SystemId; Rec.SystemId)
                 {
@@ -42,8 +43,9 @@ page 50516 "Payment Transaction Card"
                 part("Payment series"; "Payment Series Grid")
                 {
                     SubPageLink = "Contract Id" = FIELD("Contract Id"),
-                    "Tenant Id" = FIELD("Tenant Id"),
                     "Payment Transaction Id" = FIELD("PT Id");
+                    // "Tenant Id" = FIELD("Tenant Id");
+
 
                     ApplicationArea = All;
                 }
