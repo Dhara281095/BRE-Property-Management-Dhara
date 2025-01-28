@@ -1,7 +1,7 @@
 table 50507 "PDC Transaction"
 {
     DataClassification = ToBeClassified;
-    DataCaptionFields = SystemId, "PDC ID";
+    DataCaptionFields = "PDC ID";
     fields
     {
         field(50501; "PDC ID"; Code[20])
