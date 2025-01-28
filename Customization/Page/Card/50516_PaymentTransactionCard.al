@@ -36,6 +36,7 @@ page 50516 "Payment Transaction Card"
                 field("Approval Status"; Rec."Approval Status")
                 {
                     ApplicationArea = All;
+                    Editable = IsFinanceManager;
                 }
             }
             group("Payment Series Grid")
@@ -70,4 +71,21 @@ page 50516 "Payment Transaction Card"
 
     var
         myInt: Integer;
+        IsFinanceManager: Boolean;
+
+    trigger OnOpenPage()
+    var
+        PermissionSet: Record "User Personalization";
+    begin
+        // Check if the current user has the 'LEASE_MANAGER' permission set
+        IsFinanceManager := false;
+        PermissionSet.SetRange("User ID", UserId());
+        // PermissionSet.SetRange("Profile ID", 'LEASE_MANAGER');
+        if PermissionSet.FindSet() then begin
+            if PermissionSet."Profile ID" = 'FINANCE MANAGER' then
+                IsFinanceManager := true;
+        end;
+
+
+    end;
 }
