@@ -1,14 +1,14 @@
-page 50518 "Payment Transaction Data"
+page 50518 "Payment Series Data"
 {
     PageType = API;
     APIGroup = 'Finance';
     APIPublisher = 'RealeststeDev';
     APIVersion = 'v2.0';
     ApplicationArea = All;
-    Caption = 'Payment Transaction API';
+    Caption = 'Payment Series API';
     DelayedInsert = true;
-    EntityName = 'PaymentTransaction';
-    EntitySetName = 'PaymentTransactions';
+    EntityName = 'PaymentSeriesdata';
+    EntitySetName = 'PaymentSeriesdatas';
     ODataKeyFields = SystemId; // Ensure the SystemId is exposed in the API
     SourceTable = "Payment Series Details";
 
