@@ -125,7 +125,7 @@ table 50310 "Merged Units"
         field(50115; "Unit Number"; Text[500])
         {
             DataClassification = ToBeClassified;
-            Caption = 'Single Unit Names';
+            Caption = 'Unit Number';
         }
     }
 

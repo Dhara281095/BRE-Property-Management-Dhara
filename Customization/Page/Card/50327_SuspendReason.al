@@ -16,10 +16,28 @@ page 50327 "Suspend Reason Card"
             {
                 Caption = 'Tenancy Details';
 
+
+                field("Contract Type"; rec."Contract Type")
+                {
+                    ApplicationArea = All;
+                    trigger OnValidate()
+                    begin
+                        UpdateFieldsEnable();
+                    end;
+                }
+
                 field("Proposal ID"; Rec."Proposal ID")
                 {
                     ApplicationArea = All;
                     Caption = 'Proposal ID';
+                    Enabled = ProposalIDEnabled;
+                }
+
+                field("Renewal Proposal ID"; Rec."Renewal Proposal ID")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Renewal Proposal ID';
+                    Enabled = RenewalProposalIDEnabled;
                 }
 
                 field("Contract ID"; Rec."Contract ID")
@@ -186,5 +204,25 @@ page 50327 "Suspend Reason Card"
     begin
         ShowLegalReasonFields := (Rec.Reason = Rec.Reason::"Legal Reason");
         ShowBusinessReasonFields := (Rec.Reason = Rec.Reason::"Business Reason");
+    end;
+
+    trigger OnAfterGetRecord()
+    begin
+
+
+        UpdateFieldsEnable();
+    end;
+
+    var
+        ProposalIDEnabled: Boolean;
+        RenewalProposalIDEnabled: Boolean;
+
+
+    local procedure UpdateFieldsEnable()
+    begin
+        ProposalIDEnabled := Rec."Contract Type" = Rec."Contract Type"::"New Contract";
+        RenewalProposalIDEnabled := Rec."Contract Type" = Rec."Contract Type"::"Renewal Contract";
+
+        CurrPage.Update(false);
     end;
 }

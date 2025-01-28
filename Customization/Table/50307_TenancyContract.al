@@ -751,7 +751,7 @@ table 50307 "Tenancy Contract"
 
     keys
     {
-        key(PK; "Proposal ID", "Contract ID")
+        key(PK; "Proposal ID", "Contract ID", "Renewal Proposal ID")
         {
             Clustered = true;
         }
@@ -759,6 +759,15 @@ table 50307 "Tenancy Contract"
         key(PK1; SystemId)
         {
             Clustered = false;
+        }
+
+    }
+
+    fieldgroups
+    {
+        fieldgroup(DropDown; "Contract ID", "Proposal ID", "Renewal Proposal ID")
+        {
+
         }
     }
 
