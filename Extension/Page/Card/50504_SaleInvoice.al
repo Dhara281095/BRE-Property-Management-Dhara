@@ -59,6 +59,11 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                     Caption = 'Customer No.';
                     ApplicationArea = All;
                 }
+                field("Approval Status"; Rec."Approval Status")
+                {
+                    Caption = 'Approval Status';
+                    ApplicationArea = All;
+                }
             }
         }
     }
