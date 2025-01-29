@@ -22,6 +22,7 @@ page 50122 "Revenue Allocation Card"
                 {
                     ApplicationArea = All;
                     Caption = 'Month';
+
                 }
                 field("Financial Year"; Rec."Financial Year")
                 {
@@ -34,8 +35,6 @@ page 50122 "Revenue Allocation Card"
                 Caption = 'Revenue Allocation Report Details';
                 part("Revenue Allocation Details"; "Revenue Allocation SubGrid")
                 {
-                    ApplicationArea = All;
-                    SubPageLink = "Line No." = FIELD("No.");
                 }
             }
         }
@@ -43,144 +42,74 @@ page 50122 "Revenue Allocation Card"
 
     actions
     {
-        area(processing)
+        area(Processing)
         {
-            action(FilterContracts)
+            action(FilterSubgrid)
             {
-                ApplicationArea = All;
-                Caption = 'Filter Contracts by Month';
-                Image = Filter;
+
                 trigger OnAction()
-                var
-                    tenancyContractRec: Record "Tenancy Contract"; // Replace with the correct table name
-                    subGridRec: Record "Revenue Allocation SubGrid"; // Replace with the subgrid's source table
-                    contractStartMonth: Integer;
-                    contractEndMonth: Integer;
                 begin
-                    // Filter tenancy contracts
-                    subGridRec.Reset();
-                    subGridRec.DeleteAll(false); // Clear the subgrid before applying new filters
-
-                    if tenancyContractRec.FindSet() then begin
-                        repeat
-                            // Extract month values from Start Date and End Date
-                            contractStartMonth := Date2DMY(tenancyContractRec."Contract Start Date", 2);
-                            contractEndMonth := Date2DMY(tenancyContractRec."Contract End Date", 2);
-
-                        // Check if the Revenue Allocation Month falls within the contract period
-                        // if (Date2DMY(Rec.Month, 2) >= contractStartMonth) and
-                        //    (Date2DMY(Rec.Month, 2) <= contractEndMonth) then begin
-                        //     subGridRec.Init();
-                        //     subGridRec."Line No." := Rec."No."; // Link to the main record
-                        //     subGridRec."Posting Month" := Rec.Month; // Set Posting Month
-                        //     subGridRec.Insert();
-                        // end;
-                        until tenancyContractRec.Next() = 0;
-                    end;
-
-                    // Refresh the page to reflect filtered subgrid data
-                    CurrPage.Update();
+                    FetchContracts();
                 end;
             }
-
         }
     }
+    procedure FetchContracts()
+    var
+        FilterHeader: Record "Revenue Allocation Details";
+        ContractRec: Record "Tenancy Contract";
+        FilteredContractRec: Record "Revenue Allocation SubGrid";
+        SelectedMonthStart: Date;
+        SelectedMonthEnd: Date;
+        MonthNo: Integer;
+        FinancialYear: Integer;
+    begin
+        MonthNo := Rec.Month;
+        FinancialYear := Rec."Financial Year";
+
+        Message('Month: %1, Year: %2', Rec.Month, Rec."Financial Year");
+
+
+        SelectedMonthStart := DMY2Date(01, MonthNo, FinancialYear); // First day of the month
+        SelectedMonthEnd := CALCDATE('<+1M-1D>', SelectedMonthStart); // Last day of the month
+
+
+        // Loop through all contracts
+
+        if ContractRec.FindSet() then begin
+            repeat
+                // Include contracts that:
+                // 1. Start before or during the selected month and end after or during it
+                // 2. Fully start and end within the selected month
+                if ((ContractRec."Contract Start Date" <= SelectedMonthEnd) and
+                    (ContractRec."Contract End Date" >= SelectedMonthStart)) then begin
+                    // Add matching contracts to the temporary table
+                    FilteredContractRec.Init();
+                    FilteredContractRec."Contract Id" := ContractRec."Contract ID";
+                    FilteredContractRec."Contract Start Date" := ContractRec."Contract Start Date";
+                    FilteredContractRec."Contract End Date" := ContractRec."Contract End Date";
+                    FilteredContractRec.Insert();
+                    Clear(FilteredContractRec);
+                end;
+            until ContractRec.Next() = 0;
+        end;
+
+
+
+        // if ContractRec.FindSet() then begin
+        //     repeat
+        //         // Compare contract dates with the selected month range
+        //         if ((ContractRec."Contract Start Date" <= SelectedMonthStart) and
+        //             (ContractRec."Contract End Date" >= SelectedMonthEnd)) then begin
+        //             // Add matching contracts to the temporary table
+        //             FilteredContractRec."Contract Id" := ContractRec."Contract ID";
+        //             FilteredContractRec."Contract Start Date" := ContractRec."Contract Start Date";
+        //             FilteredContractRec."Contract End Date" := ContractRec."Contract End Date";
+        //             FilteredContractRec.Insert();
+        //             Clear(FilteredContractRec);
+        //         end;
+        //     until ContractRec.Next() = 0;
+        // end;
+
+    end;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// page 50122 "Revenue Allocation Card"
-// {
-//     PageType = Card;
-//     SourceTable = "Revenue Allocation Details";
-//     ApplicationArea = All;
-//     Caption = 'Revenue Allocation Details';
-//     UsageCategory = Administration;
-
-//     layout
-//     {
-//         area(content)
-//         {
-//             group(Group)
-//             {
-//                 Caption = 'Revenue Allocation Details';
-//                 field("No."; Rec."No.")
-//                 {
-//                     ApplicationArea = All;
-//                     Caption = 'No.';
-//                 }
-//                 field(Month; Rec.Month)
-//                 {
-//                     ApplicationArea = All;
-//                     Caption = 'Month';
-//                 }
-//                 field("Financial Year"; Rec."Financial Year")
-//                 {
-//                     ApplicationArea = All;
-//                     Caption = 'Financial Year';
-//                 }
-//             }
-//             group("Revenue Allocation Report Details")
-//             {
-//                 Caption = 'Revenue Allocation Report Details';
-//                 part("Revenue Allocation Details"; "Revenue Allocation SubGrid")
-//                 {
-//                     ApplicationArea = All;
-//                 }
-//             }
-//         }
-//     }
-
-//     actions
-//     {
-//         area(processing)
-//         {
-//             action(FilterSubGrid)
-//             {
-//                 ApplicationArea = All;
-//                 Caption = 'Filter Contracts by Month';
-//                 Image = Filter;
-//                 trigger OnAction()
-//                 var
-//                     contractMonth: Text[10];
-//                 begin
-//                     contractMonth := Format(Rec.Month); // Get the month from the current record
-//                     // Call a procedure to apply the filter to the subgrid
-//                     ApplySubGridFilter(contractMonth);
-//                 end;
-//             }
-//         }
-//     }
-//     procedure ApplySubGridFilter(contractMonth: Text[10])
-//     var
-//         subGridRec: Record "Revenue Allocation SubGrid";
-//     begin
-//         // Apply a filter to the subgrid's source table record
-//         subGridRec.SetRange("Posting Month", Rec.Month);
-
-//         // Force the page to refresh and reflect the filtered subgrid data
-//         CurrPage.Update;
-//     end;
-
-
-// }

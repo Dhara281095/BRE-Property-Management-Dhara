@@ -6,7 +6,7 @@ table 50110 "Revenue Allocation SubGrid"
     {
         field(1; "Line No."; Integer)
         {
-            DataClassification = SystemMetadata;
+            DataClassification = ToBeClassified;
             Caption = 'Line No.';
             AutoIncrement = true;
             Editable = false;
@@ -18,7 +18,7 @@ table 50110 "Revenue Allocation SubGrid"
             Caption = 'Property Name';
         }
 
-        field(3; "Contract Id"; Code[20])
+        field(3; "Contract Id"; Integer)
         {
             DataClassification = ToBeClassified;
             Caption = 'Contract Id';
@@ -145,6 +145,7 @@ table 50110 "Revenue Allocation SubGrid"
             DataClassification = ToBeClassified;
             Caption = 'Owner Share';
         }
+
     }
 
     keys
@@ -155,6 +156,8 @@ table 50110 "Revenue Allocation SubGrid"
         }
 
     }
+
+
 
     // trigger OnInsert()
     // begin
@@ -174,4 +177,7 @@ table 50110 "Revenue Allocation SubGrid"
     //         until Next() = 0;
     //     exit(MaxLineNo + 1);
     // end;
+
+
+
 }

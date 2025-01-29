@@ -8,9 +8,10 @@ table 50109 "Revenue Allocation Details"
         {
             DataClassification = SystemMetadata;
             Editable = false;
+            AutoIncrement = true;
         }
 
-        field(50101; "Financial Year"; Text[4])
+        field(50101; "Financial Year"; Integer)
         {
             DataClassification = ToBeClassified;
             Caption = 'Financial Year';
