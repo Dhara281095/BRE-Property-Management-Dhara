@@ -64,6 +64,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                     Caption = 'Approval Status';
                     ApplicationArea = All;
                     Editable = approvaleditable;
+                    //Editable = true;
                 }
             }
         }

@@ -40,6 +40,14 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
         {
             OptionMembers = " ",Approved,Rejected;
             Caption = 'Approval Status';
+            trigger OnValidate()
+            var
+                emailrecord: Codeunit SendInvoiceToTenant;
+            begin
+                if "Approval Status" = "Approval Status"::Approved then begin
+                    emailrecord.SendInvoice(Rec); // Pass the current record if needed
+                end;
+            end;
         }
 
     }

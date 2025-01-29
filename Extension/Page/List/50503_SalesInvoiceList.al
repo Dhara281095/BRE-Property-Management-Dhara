@@ -1,4 +1,4 @@
-pageextension 50107 salesinvoiceext extends "Sales Invoice List"
+pageextension 50503 salesinvoiceext extends "Sales Invoice List"
 {
     actions
     {
@@ -30,18 +30,7 @@ pageextension 50107 salesinvoiceext extends "Sales Invoice List"
 
                 end;
             }
-            action(SendInvoiceTenant)
-            {
-                Caption = 'Send Invoice To Tenant';
-                ApplicationArea = All;
-                trigger OnAction()
-                var
-                    sendinvoietenant: Codeunit SendInvoiceToTenant;
-                begin
-                    sendinvoietenant.SendInvoice();
 
-                end;
-            }
         }
     }
 }
