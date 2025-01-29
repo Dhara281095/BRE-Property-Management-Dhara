@@ -104,6 +104,11 @@ page 50711 PaymentApproval
                 {
                     Caption = 'Due Date';
                 }
+                field(Items; Rec.Items)
+                {
+                    Caption = 'Items';
+                }
+
             }
         }
     }
