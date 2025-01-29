@@ -56,7 +56,7 @@ table 50702 "Approval Payment Request"
         field(50109; "Change Amount"; Integer)
         {
             DataClassification = ToBeClassified;
-            Caption = 'New Amount';
+            Caption = 'New Amount Including VAT';
         }
         field(50112; "change Payment series"; Text[300])
         {
@@ -71,12 +71,12 @@ table 50702 "Approval Payment Request"
         field(50114; "Amount"; Integer)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Amount';
+            Caption = 'New Amount';
         }
         field(50115; "Vat Amount"; Integer)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Vat Amount';
+            Caption = 'New Vat Amount';
         }
         field(50116; "Deposit Bank"; Text[250])
         {
@@ -86,13 +86,19 @@ table 50702 "Approval Payment Request"
         field(50117; "Due Date"; Date)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Due Date';
+            Caption = 'New Due Date';
         }
         Field(50110; "Description"; Text[500])
         {
             DataClassification = ToBeClassified;
             Caption = 'Description';
             Editable = true;
+        }
+
+        field(50118; "Items"; Text[500])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Items';
         }
     }
 
