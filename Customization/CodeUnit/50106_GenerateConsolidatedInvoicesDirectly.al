@@ -8,7 +8,7 @@ codeunit 50106 GenerateConsolidatedInvoices
         newsalesheader: Record "Sales Header";
         todaydate: Date;
     begin
-        todaydate := 20251228D;
+        todaydate := 20251129D;
         paymentScheudle2.SetRange("Due Date", todaydate);
 
         if paymentScheudle2.FindSet() then

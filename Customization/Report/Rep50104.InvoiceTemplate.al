@@ -3,6 +3,7 @@ using Microsoft.Foundation.Company;
 
 using Microsoft.Sales.Document;
 using System.Text;
+using Microsoft.Bank.Check;
 
 report 50104 InvoiceTemplate
 {
@@ -111,6 +112,19 @@ report 50104 InvoiceTemplate
                 column(Line_Amount; "Line Amount")
                 {
                 }
+                column(VAT_Base_Amount; "VAT Base Amount")
+                {
+
+                }
+                column(Amount_Including_VAT; "Amount Including VAT")
+                {
+                }
+                column(VAT__; "VAT %")
+                {
+                }
+                column(Amount; Amount)
+                {
+                }
                 trigger OnAfterGetRecord()
                 begin
                     LineAmountText := Format("Line Amount");
@@ -123,6 +137,7 @@ report 50104 InvoiceTemplate
                     TotalAmountVAT += "Amount Including VAT" - Amount;
                     TotalAmountInclVAT += "Amount Including VAT";
                     TotalPaymentDiscOnVAT += -("Line Amount" - "Inv. Discount Amount" - "Amount Including VAT");
+
                 end;
             }
             dataitem(Totals; System.Utilities.Integer)
@@ -138,6 +153,7 @@ report 50104 InvoiceTemplate
                 { }
                 column("TotalDue"; Format(TotalDue, 0, AutoFormat.ResolveAutoFormat("Auto Format"::AmountFormat, SalesHeader."Currency Code")))
                 { }
+
             }
         }
 
@@ -183,6 +199,10 @@ report 50104 InvoiceTemplate
     end;
 
     var
+        //  AutoFormat: Codeunit "Auto Format";
+        //TotalAmountText: array[2] of Text[80];
+
+
         CompanyInfo: Record "Company Information";
         AutoFormat: Codeunit "Auto Format";
         LineAmountText: Text;
@@ -195,5 +215,7 @@ report 50104 InvoiceTemplate
         TotalAmountVAT: Decimal;
         TotalAmountInclVAT: Decimal;
         TotalPaymentDiscOnVAT: Decimal;
+
+
     // SalesLine: Record "Sales Line";
 }
