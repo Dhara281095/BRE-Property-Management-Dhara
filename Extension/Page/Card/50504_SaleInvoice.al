@@ -63,6 +63,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 {
                     Caption = 'Approval Status';
                     ApplicationArea = All;
+                    Editable = approvaleditable;
                 }
             }
         }
@@ -96,6 +97,30 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
         }
     }
 
+    procedure GetUserEditableStatus(): Boolean
+    var
+        UserPersonalization: Record "User Personalization";
+    begin
+
+        if UserPersonalization.Get(UserSecurityId()) then begin
+            // Assuming the role is stored in the "Profile ID" field as seen in the screenshot
+            case UserPersonalization."Profile ID" of
+                'PROPERTY MANAGER':
+                    exit(false);
+                'ACCOUNTING MANAGER':
+                    exit(true);
+            end;
+        end;
+
+        exit(false); // Default to not editable if the role is neither Property Manager nor Accounting Manager
+    end;
+
+    // trigger OnOpenPage()
+    // var
+    // begin
+    //     approvaleditable := GetUserEditableStatus();
+    // end;
+
     trigger OnAfterGetRecord()
     var
         tenancyContract: Record "Tenancy Contract";
@@ -103,7 +128,9 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
         salesline: Record "Sales Line";
         VATPostingSetup: Record "VAT Posting Setup";
 
+
     begin
+        approvaleditable := GetUserEditableStatus();
         customer.SetRange("No.", Rec."Sell-to Customer No.");
         if customer.FindSet() then begin
             Rec."Sell-to Customer Name" := customer.Name;
@@ -150,7 +177,8 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
     end;
 
 
-
+    var
+        approvaleditable: Boolean;
 
 }
 

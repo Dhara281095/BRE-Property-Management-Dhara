@@ -30,6 +30,18 @@ pageextension 50107 salesinvoiceext extends "Sales Invoice List"
 
                 end;
             }
+            action(SendInvoiceTenant)
+            {
+                Caption = 'Send Invoice To Tenant';
+                ApplicationArea = All;
+                trigger OnAction()
+                var
+                    sendinvoietenant: Codeunit SendInvoiceToTenant;
+                begin
+                    sendinvoietenant.SendInvoice();
+
+                end;
+            }
         }
     }
 }
