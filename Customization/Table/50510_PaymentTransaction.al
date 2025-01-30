@@ -1,7 +1,7 @@
 table 50510 "Payment Transaction"
 {
     DataClassification = ToBeClassified;
-    DataCaptionFields = SystemId, "PT Id";
+    DataCaptionFields = "PT Id";
     fields
     {
         field(50501; "PT Id"; Code[50])

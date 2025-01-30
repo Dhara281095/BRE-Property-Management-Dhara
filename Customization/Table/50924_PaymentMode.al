@@ -100,6 +100,24 @@ table 50924 "Payment Mode"
 
         }
 
+        field(50501; "Approval Status"; Enum "Approval Status Enum")
+        {
+            DataClassification = ToBeClassified;
+        }
+
+        field(50502; "On-hold"; Option)
+        {
+            // DataClassification = ToBeClassified;
+            OptionMembers = " ","True","False";
+
+        }
+
+        field(50503; "Isupdated"; Option)
+        {
+            // DataClassification = ToBeClassified;
+            OptionMembers = " ","True","False";
+        }
+
 
 
     }
