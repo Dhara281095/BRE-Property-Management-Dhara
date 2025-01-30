@@ -18,6 +18,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                     begin
                         tenancyContract.SetRange("Contract ID", Rec."Contract ID");
                         if tenancyContract.FindFirst() then begin
+
                             Rec."Property Name" := tenancyContract."Property Name";
                             Rec."Unit Name" := tenancyContract."Unit Name";
                             Rec."Contract Tenure" := tenancyContract."Contract Tenor";
@@ -25,6 +26,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                             rec."Property Name" := '';
                             Rec."Unit Name" := '';
                             Rec."Contract Tenure" := '';
+                            // Rec."Tenant Name" := '';
 
                         end;
                     end;
@@ -65,6 +67,11 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                     ApplicationArea = All;
                     Editable = approvaleditable;
                     //Editable = true;
+                }
+                field("Tenant Name"; Rec."Tenant Name")
+                {
+                    Caption = 'Tenant Name';
+                    ApplicationArea = All;
                 }
             }
         }
@@ -164,10 +171,12 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
 
         tenancyContract.SetRange("Contract ID", Rec."Contract ID");
         if tenancyContract.FindFirst() then begin
+
             Rec."Property Name" := tenancyContract."Property Name";
             Rec."Unit Name" := tenancyContract."Unit Name";
             Rec."Contract Tenure" := tenancyContract."Contract Tenor";
         end else begin
+            Rec."Tenant Name" := '';
             rec."Property Name" := '';
             Rec."Unit Name" := '';
             Rec."Contract Tenure" := '';
