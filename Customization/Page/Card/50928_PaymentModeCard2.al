@@ -349,9 +349,10 @@ actions
                 paymentGridRec : Record "Payment Series Details";
                 PrePaymentGridRec : Record "Payment Series Details";
                 IsPaymentTransactionCreated: Boolean;
+                Isupdate : Boolean;
             begin
-
-                approvalflow.SendPaymentModeApprovalToFinanceManger(Format(Rec."Contract ID"),Rec."Tenant Id",Rec."Contract ID");
+                Isupdate := false;
+                approvalflow.SendPaymentModeApprovalToFinanceManger(Format(Rec."Contract ID"),Rec."Tenant Id",Rec."Contract ID",Isupdate);
 
                 // Update Approval Status in the grid
                 PaymentModeRec.SetRange("Contract ID", Rec."Contract ID"); // Filter by Contract ID
@@ -408,6 +409,25 @@ actions
             end;
                        
                 
+        }
+
+        action(UpdateData)
+        {
+            ApplicationArea = All;
+            Caption = 'Update Data';
+            Image = NewDocument;
+
+            trigger OnAction()
+            var 
+                approvalflow : Codeunit 50510;
+                PaymentModeRec: Record "Payment Mode2";
+                paymentRec : Record "Payment Mode";
+                Isupdate : Boolean;
+            begin
+                Isupdate := true;
+                approvalflow.SendPaymentModeApprovalToFinanceManger(Format(Rec."Contract ID"),Rec."Tenant Id",Rec."Contract ID",Isupdate);
+            end;
+
         }
     }
 }
