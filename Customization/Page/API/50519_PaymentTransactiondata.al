@@ -19,6 +19,7 @@ page 50519 "Payment Transaction Data"
             repeater(Group)
             {
                 field("PT_Id"; Rec."PT Id") { }
+                field(SystemId; Rec.SystemId) { }
                 field("Tenant_Id"; Rec."Tenant Id") { }
                 field("Contract_Id"; Rec."Contract Id") { }
                 field("Approval_Status"; Rec."Approval Status") { }

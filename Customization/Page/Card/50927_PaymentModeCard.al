@@ -43,6 +43,48 @@ page 50927 "Payment Mode Card"
 
 
                 }
+                field("Approval Status"; Rec."Approval Status")
+                {
+                    ApplicationArea = All;
+                }
+                field("On-hold"; Rec."On-hold")
+                {
+                    ApplicationArea = All;
+                    trigger OnValidate()
+                    var
+                        paymentModeRec: Record "Payment Mode";
+                        paymentSeriesRec: Record "Payment Mode2";
+                        approvalPending: Boolean;
+                        sendRejectionToLeaseTeam: Codeunit 50511;
+                    begin
+                        if Rec."On-hold" = Rec."On-hold"::"True" then begin
+                            approvalPending := false;
+                            paymentSeriesRec.SetRange("Contract ID", Rec."Contract ID");
+                            paymentSeriesRec.SetRange("Tenant Id", Rec."Tenant Id");
+                            if paymentSeriesRec.FindSet() then begin
+                                repeat
+                                    if paymentSeriesRec."Approval Status" = paymentSeriesRec."Approval Status"::Pending then begin
+                                        approvalPending := true;
+                                        break;
+                                    end;
+                                until paymentSeriesRec.Next() = 0;
+                            end;
+
+                            // Exit if there are any "Pending" approval statuses
+                            if ApprovalPending then
+                                exit;
+
+                            if approvalPending = false then begin
+                                sendRejectionToLeaseTeam.SendPaymentRejectionToLeaseManager(paymentSeriesRec."Contract ID", paymentSeriesRec."Tenant Id", paymentSeriesRec."Contract ID", paymentSeriesRec.Reason);
+                            end;
+
+                        end;
+                    end;
+                }
+                field(Isupdated; Rec.Isupdated)
+                {
+                    ApplicationArea = All;
+                }
 
 
             }
