@@ -68,11 +68,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                     Editable = approvaleditable;
                     //Editable = true;
                 }
-                field("Tenant Name"; Rec."Tenant Name")
-                {
-                    Caption = 'Tenant Name';
-                    ApplicationArea = All;
-                }
+
             }
         }
     }
@@ -176,7 +172,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
             Rec."Unit Name" := tenancyContract."Unit Name";
             Rec."Contract Tenure" := tenancyContract."Contract Tenor";
         end else begin
-            Rec."Tenant Name" := '';
+
             rec."Property Name" := '';
             Rec."Unit Name" := '';
             Rec."Contract Tenure" := '';
