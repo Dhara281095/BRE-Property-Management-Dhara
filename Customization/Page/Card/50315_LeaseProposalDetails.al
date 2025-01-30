@@ -769,7 +769,7 @@ page 50315 "Lease Proposal Card"
         // EnableSingleUnit := true;
         // UpdateUnitEnableState();
         CurrPage."Revenue".Page.SetProposalId(Rec."Proposal ID");
-        CurrPage."Revenue".Page.SetStartEndDate(Rec."Lease Start Date", Rec."Lease End Date");
+        CurrPage."Revenue".Page.SetStartEndDate(Rec."Lease Start Date", Rec."Lease End Date", Rec."Unit Name", Rec."Property Name", Rec."Unit Size", Rec."Tenant Full Name");
         CurrPage."Revenue".Page.SetTenantID(Rec."Tenant ID");
 
         // CurrPage."Revenue2".Page.SetProposalId(Rec."Proposal ID");
@@ -814,7 +814,7 @@ page 50315 "Lease Proposal Card"
     trigger OnModifyRecord(): Boolean
     begin
         CurrPage."Revenue".Page.SetProposalId(Rec."Proposal ID");
-        CurrPage."Revenue".Page.SetStartEndDate(Rec."Lease Start Date", Rec."Lease End Date");
+        CurrPage."Revenue".Page.SetStartEndDate(Rec."Lease Start Date", Rec."Lease End Date", Rec."Unit Name", Rec."Property Name", Rec."Unit Size", Rec."Tenant Full Name");
         CurrPage."Revenue".Page.SetTenantID(Rec."Tenant ID");
 
         // CurrPage."Revenue2".Page.SetProposalId(Rec."Proposal ID");
@@ -828,7 +828,7 @@ page 50315 "Lease Proposal Card"
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     begin
         CurrPage."Revenue".Page.SetProposalId(Rec."Proposal ID");
-        CurrPage."Revenue".Page.SetStartEndDate(Rec."Lease Start Date", Rec."Lease End Date");
+        CurrPage."Revenue".Page.SetStartEndDate(Rec."Lease Start Date", Rec."Lease End Date", Rec."Unit Name", Rec."Property Name", Rec."Unit Size", Rec."Tenant Full Name");
         CurrPage."Revenue".Page.SetTenantID(Rec."Tenant ID");
 
         // CurrPage."Revenue2".Page.SetProposalId(Rec."Proposal ID");

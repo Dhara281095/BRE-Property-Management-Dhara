@@ -86,8 +86,37 @@ page 50909 "Revenue Item SubPage Card"
                     //     else
                     //         isvisible := false
                     // end;
+                }
 
-
+                field(ProposalID; Rec.ProposalID)
+                {
+                    ApplicationArea = All;
+                    Lookup = true;
+                    Visible = false;
+                }
+                field("Property Name"; Rec."Property Name")
+                {
+                    ApplicationArea = All;
+                    Lookup = true;
+                    Visible = false;
+                }
+                field("Unit Name"; Rec."Unit Name")
+                {
+                    ApplicationArea = All;
+                    Lookup = true;
+                    Visible = false;
+                }
+                field("Unit Size"; Rec."Unit Size")
+                {
+                    ApplicationArea = All;
+                    Lookup = true;
+                    Visible = false;
+                }
+                field(Customer_Name; Rec."Customer Name")
+                {
+                    ApplicationArea = All;
+                    Lookup = true;
+                    Visible = false;
                 }
 
 
@@ -386,10 +415,16 @@ page 50909 "Revenue Item SubPage Card"
     end;
 
 
-    procedure SetStartEndDate(pStartDate: Date; pEndDate: Date)
+    procedure SetStartEndDate(pStartDate: Date; pEndDate: Date; pUnitName: Code[100]; pPropertyName: Text[100]; pUnitSize: Decimal; pCustomerName: Text[100])
     begin
         startDate := pStartDate;
         endDate := pEndDate;
+
+        unitname := pUnitName;
+        propertyname := pPropertyName;
+        unitsize := pUnitSize;
+        customerName := pCustomerName;
+
     end;
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
@@ -400,6 +435,19 @@ page 50909 "Revenue Item SubPage Card"
         Rec."Start Date" := startDate;
         Rec."End Date" := endDate;
 
+        Rec."Unit Name" := unitname;
+        Rec."Property Name" := propertyname;
+        Rec."Unit Size" := unitsize;
+        Rec."Customer Name" := customerName;
+
+    end;
+
+    trigger OnAfterGetRecord()
+    begin
+        Rec."Unit Name" := unitname;
+        Rec."Property Name" := propertyname;
+        Rec."Unit Size" := unitsize;
+        Rec."Customer Name" := customerName;
     end;
 
     var
@@ -408,7 +456,10 @@ page 50909 "Revenue Item SubPage Card"
         tenantID: Code[20];
         startDate: Date;
         endDate: Date;
-
+        unitname: Code[100];
+        propertyname: Text[100];
+        unitsize: Decimal;
+        customerName: Text[100];
         isvisible: Boolean;
 
 

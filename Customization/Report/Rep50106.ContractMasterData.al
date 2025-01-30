@@ -9,12 +9,11 @@ report 50106 ContractMasterData
     ExcelLayout = 'Contract MasterData.xlsx';
     DefaultLayout = Excel;
 
-
     dataset
     {
         dataitem(TenancyContract; "Tenancy Contract")
         {
-            column(CustomDateRange; CustomDateRangeText)
+            column(Report_Period; CustomDateRangeText)
             {
             }
             column(Contract_ID; "Contract ID")
@@ -26,31 +25,31 @@ report 50106 ContractMasterData
             column(Customer_Name; "Customer Name")
             {
             }
-            column(Contract_Start_Date; "Contract Start Date")
+            column(Contract_Start_Date; ContractStartDateText)
             {
             }
-            column(Contract_End_Date; "Contract End Date")
+            column(Contract_End_Date; ContractEndDateText)
             {
             }
-            column(Contract_Type; "Contract Type")
+            column(Contract_Type; ContractTypeFormatted)
             {
             }
-            column(Proposal_Info; ProposalInfoText)
+            column(Proposal_ID; ProposalInfoText)
             {
             }
             column(Contract_Tenor; "Contract Tenor")
             {
             }
-            column(Tenant_Contract_Status; "Tenant Contract Status")
+            column(Tenant_Contract_Status; TenantStatusFormatted)
             {
             }
-            column(Contract_Amount; "Rent Amount")
+            column(Contract_Amount; AnnualRentAmountText)
             {
             }
-            column(Annual_Rent_Amount; "Annual Rent Amount")
+            column(Annual_Rent_Amount; RentAmountText)
             {
             }
-            column(Security_Deposit_Amount; "Security Deposit Amount")
+            column(Security_Deposit_Amount; SecurityDepositAmountText)
             {
             }
             column(Property_Name; "Property Name")
@@ -59,7 +58,7 @@ report 50106 ContractMasterData
             column(Unit_Name; "Unit Name")
             {
             }
-            column(UnitID; UnitID)
+            column(UnitID; UnitIDFormatted)
             {
             }
             column(Unit_Number; "Unit Number")
@@ -71,21 +70,19 @@ report 50106 ContractMasterData
             column(Unit_Usage_Type; "Usage Type")
             {
             }
-            column(Suspension_Date; SuspensionStartDate)
+            column(Suspension_Date; SuspensionDateText)
             {
             }
-            column(Suspended_Reason_list; "Suspended Reason list")
+            column(Suspended_Reason_list; SuspensionReasonText)
             {
             }
-
-
-            column(Grace_Start_Date; "Grace Start Date")
+            column(Grace_Start_Date; GraceStartDateText)
             {
             }
-            column(Grace_End_Date; "Grace End Date")
+            column(Grace_End_Date; GraceEndDateText)
             {
             }
-            column(Grace_Period; "Grace Period")
+            column(Grace_Period; GracePeriodText)
             {
             }
 
@@ -97,8 +94,8 @@ report 50106 ContractMasterData
             begin
                 // Set the custom date range text
                 CustomDateRangeText :=
-                    Format(CustomStartDate, 0, '<Day,2>/<Month,2>/<Year,4>') + ' - ' +
-                    Format(CustomEndDate, 0, '<Day,2>/<Month,2>/<Year,4>');
+                    Format(CustomStartDate, 0, '<Day,2>/<Month,2>/<Year4>') + ' - ' +
+                    Format(CustomEndDate, 0, '<Day,2>/<Month,2>/<Year4>');
 
                 // Check if Contract Start Date or Contract End Date is in the specified range
                 StartDateIsInRange := ("Contract Start Date" >= CustomStartDate) and ("Contract Start Date" <= CustomEndDate);
@@ -109,17 +106,118 @@ report 50106 ContractMasterData
 
                 // Reset suspension start date before searching
                 SuspensionStartDate := 0D;
+                SuspensionReasonText := '';
 
                 // Find suspension date for the current contract
                 SuspensionReasonRec.Reset();
                 SuspensionReasonRec.SetRange("Contract ID", "Contract ID");
                 if SuspensionReasonRec.FindFirst() then begin
                     SuspensionStartDate := SuspensionReasonRec.DateEffective;
+                    SuspensionReasonText := Format(SuspensionReasonRec.Reason);
                 end;
 
                 // Combine Proposal ID and Renewal Proposal ID after converting them to Text
-                ProposalInfoText := 'Proposal ID: ' + Format("Proposal ID") + ' / ' + 'ContractRenewal ID: ' + Format("Renewal Proposal ID");
+                // ProposalInfoText := 'Proposal ID: ' + Format("Proposal ID") + ' / ' + 'ContractRenewal ID: ' + Format("Renewal Proposal ID");
 
+                case "Contract Type" of
+                    "Contract Type"::"New Contract":
+                        ProposalInfoText := 'Proposal ID: ' + Format("Proposal ID");
+                    "Contract Type"::"Renewal Contract":
+                        ProposalInfoText := 'ContractRenewal ID: ' + Format("Renewal Proposal ID");
+                    else
+                        ProposalInfoText := '-';
+                end;
+
+                // Replace NULL values with a default '-'
+                if Format("Contract ID") = '' then
+                    "Contract ID" := '-';
+
+                if Format("Owner's Name") = '' then
+                    "Owner's Name" := '-';
+
+                if Format("Customer Name") = '' then
+                    "Customer Name" := '-';
+
+                if "Contract Start Date" = 0D then
+                    ContractStartDateText := '-'
+                else
+                    ContractStartDateText := Format("Contract Start Date", 0, '<Day,2>/<Month,2>/<Year4>');
+
+                if "Contract End Date" = 0D then
+                    ContractEndDateText := '-'
+                else
+                    ContractEndDateText := Format("Contract End Date", 0, '<Day,2>/<Month,2>/<Year4>');
+
+                if "Contract Type" = "Contract Type"::" " then
+                    ContractTypeFormatted := '-'
+                else
+                    ContractTypeFormatted := Format("Contract Type");
+
+                if Format("Contract Tenor") = '' then
+                    "Contract Tenor" := '-';
+
+                if "Tenant Contract Status" = "Tenant Contract Status"::" " then
+                    TenantStatusFormatted := '-'
+                else
+                    TenantStatusFormatted := Format("Tenant Contract Status");
+
+                if "Annual Rent Amount" = 0 then
+                    AnnualRentAmountText := '0.00'
+                else
+                    AnnualRentAmountText := Format("Annual Rent Amount", 0, '<Precision,2:2><Standard Format,0>');
+
+                if "Rent Amount" = 0 then
+                    RentAmountText := '0.00'
+                else
+                    RentAmountText := Format("Rent Amount", 0, '<Precision,2:2><Standard Format,0>');
+
+                if "Security Deposit Amount" = 0 then
+                    SecurityDepositAmountText := '0.00'
+                else
+                    SecurityDepositAmountText := Format("Security Deposit Amount", 0, '<Precision,2:2><Standard Format,0>');
+
+                if Format("Property Name") = '' then
+                    "Property Name" := '-';
+
+                if Format("Unit Name") = '' then
+                    "Unit Name" := '-';
+
+                if "Unit ID" = '' then
+                    UnitIDFormatted := '-'
+                else
+                    UnitIDFormatted := "Unit ID";
+
+                if Format("Unit Number") = '' then
+                    "Unit Number" := '-';
+
+                if Format("Unit Sq. Feet") = '' then
+                    "Unit Sq. Feet" := '-';
+
+                if Format("Usage Type") = '' then
+                    "Usage Type" := '-';
+
+                if SuspensionStartDate = 0D then
+                    SuspensionDateText := '-'
+                else
+                    SuspensionDateText := Format(SuspensionStartDate, 0, '<Day,2>/<Month,2>/<Year4>');
+
+                if SuspensionReasonText = '' then
+                    SuspensionReasonText := '-';
+
+                if "Grace Start Date" = 0D then
+                    GraceStartDateText := '-'
+                else
+                    GraceStartDateText := Format("Grace Start Date", 0, '<Day,2>/<Month,2>/<Year4>');
+
+                if "Grace End Date" = 0D then
+                    GraceEndDateText := '-'
+                else
+                    GraceEndDateText := Format("Grace End Date", 0, '<Day,2>/<Month,2>/<Year4>');
+
+                if Format("Grace Period") = '' then
+                    GracePeriodText := '0.00'
+                else
+                    GracePeriodText := Format("Grace Period")
             end;
         }
 
@@ -136,12 +234,12 @@ report 50106 ContractMasterData
                     field(CustomStartDate; CustomStartDate)
                     {
                         ApplicationArea = All;
-                        Caption = 'Custom Start Date';
+                        // Caption = 'Custom Start Date';
                     }
                     field(CustomEndDate; CustomEndDate)
                     {
                         ApplicationArea = All;
-                        Caption = 'Custom End Date';
+                        // Caption = 'Custom End Date';
                     }
                 }
             }
@@ -160,4 +258,17 @@ report 50106 ContractMasterData
         CustomDateRangeText: Text;
         ProposalInfoText: Text;
         SuspensionStartDate: Date;
+        ContractTypeFormatted: Text;
+        TenantStatusFormatted: Text;
+        UnitIDFormatted: Text;
+        ContractStartDateText: Text;
+        ContractEndDateText: Text;
+        GraceStartDateText: Text;
+        GraceEndDateText: Text;
+        SuspensionDateText: Text;
+        SuspensionReasonText: Text;
+        AnnualRentAmountText: Text;
+        RentAmountText: Text;
+        SecurityDepositAmountText: Text;
+        GracePeriodText: Text;
 }

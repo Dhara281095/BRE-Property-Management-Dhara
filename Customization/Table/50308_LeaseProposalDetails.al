@@ -253,7 +253,7 @@ table 50308 "Lease Proposal Details"
                 docAttach: Page "Revenue Item Subpage Card";
             begin
                 CalculateLeaseDuration();
-                docAttach.SetStartEndDate(Rec."Lease Start Date", Rec."Lease End Date");
+                docAttach.SetStartEndDate(Rec."Lease Start Date", Rec."Lease End Date", Rec."Unit Name", Rec."Property Name", Rec."Unit Size", Rec."Tenant Full Name");
             end;
         }
 
