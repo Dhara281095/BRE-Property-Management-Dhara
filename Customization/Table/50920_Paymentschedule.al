@@ -129,14 +129,15 @@ table 50920 "Payment Schedule"
 
     begin
         PaymentSchedule2.SetRange("Contract ID", Rec."Contract ID");
-        PaymentSchedule2.SetRange("Tenant ID", Rec."Tenant ID");
+        //PaymentSchedule2.SetRange("Tenant ID", Rec."Tenant ID");
 
         // PaymentSchedule2.SetRange("Proposal ID", Rec."Proposal ID");
         if PaymentSchedule2.FindSet() then begin
             PaymentSchedule2.DeleteAll();
         end;
-        PaymentSchedule2.SetRange("Contract ID", Rec."Contract ID");
-        PaymentSchedule2.SetRange("Tenant ID", Rec."Tenant ID");
+        // PaymentSchedule2.SetRange("Contract ID", Rec."Contract ID");
+        //PaymentSchedule2.SetRange("Tenant ID", Rec."Tenant ID");
+        RevenueSubpage.SetRange("ContractID", Rec."Contract ID");
         // RevenueSubpage.SetRange(ProposalID, Rec."Proposal ID");
         RevenueSubpage.SetRange("Payment Type", 1);
         if RevenueSubpage.FindSet() then
@@ -172,7 +173,7 @@ table 50920 "Payment Schedule"
     begin
 
         RevenueStructureSubpage.SetRange("Contract ID", Rec."Contract ID");
-        RevenueStructureSubpage.SetRange("Tenant ID", Rec."Tenant ID");
+        // RevenueStructureSubpage.SetRange("Tenant ID", Rec."Tenant ID");
 
         if RevenueStructureSubpage.FindSet() then
             repeat
@@ -366,9 +367,9 @@ table 50920 "Payment Schedule"
     begin
         //  Paymentschedulesubpage.SetRange("PS ID", Rec."PS Id");
 
-        // Paymentschedulesubpage.SetRange("Proposal ID", Rec."Proposal ID");
-        if Paymentschedulesubpage.FindSet() then
-            Paymentschedulesubpage.DeleteAll();
+        // Paymentschedulesubpage.SetRange("Contract ID", Rec."Contract ID");
+        // if Paymentschedulesubpage.FindSet() then
+        Paymentschedulesubpage.DeleteAll();
 
     end;
 
