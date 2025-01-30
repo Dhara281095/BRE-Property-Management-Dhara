@@ -103,6 +103,23 @@ table 50924 "Payment Mode"
         field(50501; "Approval Status"; Enum "Approval Status Enum")
         {
             DataClassification = ToBeClassified;
+            trigger OnValidate()
+            var
+                paymentGridRec: Record "Payment Mode2";
+
+            begin
+                if Rec."Approval Status" = Rec."Approval Status"::Approved then begin
+                    paymentGridRec.SetRange("Contract ID", Rec."Contract ID");
+                    if paymentGridRec.FindSet() then begin
+                        repeat
+                            paymentGridRec."Approval Status" := paymentGridRec."Approval Status"::Approved;
+
+                            paymentGridRec.Modify();
+                        until paymentGridRec.Next() = 0;
+                    end;
+                    Rec."On-hold" := Rec."On-hold"::"False";
+                end;
+            end;
         }
 
         field(50502; "On-hold"; Option)
