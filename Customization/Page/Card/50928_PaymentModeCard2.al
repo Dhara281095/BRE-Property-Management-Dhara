@@ -35,7 +35,7 @@ page 50928 "Payment Mode Card2"
                 field("Amount Including VAT"; Rec."Amount Including VAT")
                 {
                     ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
+                    Editable = true; // The ID is not editable since it's auto-incrementing
                 }
 
 
