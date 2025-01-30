@@ -367,9 +367,9 @@ table 50920 "Payment Schedule"
     begin
         //  Paymentschedulesubpage.SetRange("PS ID", Rec."PS Id");
 
-        // Paymentschedulesubpage.SetRange("Contract ID", Rec."Contract ID");
-        // if Paymentschedulesubpage.FindSet() then
-        Paymentschedulesubpage.DeleteAll();
+        Paymentschedulesubpage.SetRange("Contract ID", Rec."Contract ID");
+        if Paymentschedulesubpage.FindSet() then
+            Paymentschedulesubpage.DeleteAll();
 
     end;
 
