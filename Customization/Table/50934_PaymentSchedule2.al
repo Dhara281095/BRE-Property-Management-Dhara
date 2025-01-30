@@ -126,7 +126,10 @@ table 50934 "Payment Schedule2"
         {
             Caption = 'Contract ID';
         }
-
+        field(50916; "Tenant Name"; Text[100])
+        {
+            Caption = 'Tenant Name';
+        }
     }
 
     keys
