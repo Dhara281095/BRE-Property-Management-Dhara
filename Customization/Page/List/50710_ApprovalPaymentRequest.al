@@ -147,8 +147,9 @@ page 50710 "Approval Payment Request"
 
                     //UpdatePaymentModeBySeries();
                     // ProcessCombineRequest();
-                    ProcessSplitRequest();
+                    //ProcessSplitRequest();
                     //ProcessApprovalRequest();
+                    ProcessApprovalAndSplitRequest();
                     GetNextSequenceNo();
 
 
@@ -205,169 +206,248 @@ page 50710 "Approval Payment Request"
 
 
 
-    // procedure ProcessSplitRequest()
-    // var
-    //     PaymentChangeReqTable: Record "Approval Payment Request"; // Replace with your actual table name
-    //     PaymentModeTable: Record "Payment Mode2"; // Replace with your actual table name
-    //     PaymentSchedule: Record "Payment Schedule2";
-    //     payseries: Text[20];
-    //     NewPaymentCode: Code[20];
-    //     SequenceNo: Integer;
-    //     Combineseries: Text[100];
+
+    procedure ProcessApprovalAndSplitRequest()
+    var
+        PaymentChangeReqTable: Record "Approval Payment Request";
+        PaymentModeTable: Record "Payment Mode2";
+        PaymentSchedule: Record "Payment Schedule2";
+        ApprovalRec: Record "Approval Payment Request";
+        PaymentModeRec: Record "Payment Mode2";
+        PaymentScheduleRec: Record "Payment Schedule2";
+        PaymentSeriesList: List of [Text];
+        itemList: List of [Text];
+        //NewPaymentSeries: Code[20];
+        NewPaymentCode: Code[20];
+        PaymentSeries: Text[100];
+        RequestType: Text[20];
+        SequenceNo, increment : Integer;
+        ItemSeries: Text;
+        paymentSeriesNos: List of [Text];
+    //paymentSeries: Text[100];
+    begin
+        Message('Processing Record for: Contract ID: %1, Tenant ID: %2, ID: %3',
+            Rec."Contract ID", Rec."Tenant ID", Rec."ID");
+
+        // Fetch Approval Record for Current Contract, Tenant, and ID
+        ApprovalRec.Reset();
+        ApprovalRec.SetRange("Contract ID", Rec."Contract ID");
+        ApprovalRec.SetRange("Tenant ID", Rec."Tenant ID");
+        ApprovalRec.SetRange("ID", Rec."ID");
+        ApprovalRec.SetRange(Status, 'Approve');
+
+        if ApprovalRec.FindFirst() then begin
+            RequestType := ApprovalRec."Request Type";
+            PaymentSeries := ApprovalRec."Payment Series";
+
+            if RequestType = 'Split' then begin
+                // Filter Split Requests
+                PaymentChangeReqTable.Reset();
+                PaymentChangeReqTable.SetRange("Contract ID", Rec."Contract ID");
+                PaymentChangeReqTable.SetRange("Tenant ID", Rec."Tenant ID");
+                PaymentChangeReqTable.SetRange("ID", Rec."ID");
+                PaymentChangeReqTable.SetRange(Status, 'Approve');
+                PaymentChangeReqTable.SetRange("Request Type", 'Split');
+
+                if not PaymentChangeReqTable.FindSet() then begin
+                    Message('No matching records found for Contract ID: %1, Tenant ID: %2, ID: %3',
+                        Rec."Contract ID", Rec."Tenant ID", Rec."ID");
+                    exit;
+                end;
+
+                repeat
+                    // Debug message
+                    Message('Processing Split Request for ID: %1', PaymentChangeReqTable.ID);
+
+                    // Extract and store `Items` in a list
+                    Clear(itemList);
+                    if PaymentChangeReqTable."Items".Contains(',') then begin
+                        foreach ItemSeries in PaymentChangeReqTable."Items".Split(',') do
+                            itemList.Add(DelChr(ItemSeries, '>', ' '));
+                    end else
+                        itemList.Add(PaymentChangeReqTable."Items");
 
 
-    //     paymentSeriesNos: List of [Text];
-    //     paymentSeries: Text;
-    //     increment: Integer;
-    //     ItemSeries: Text;
-    // // productionOrder: Record "Production Order";
+                    // paymentSeries := PaymentChangeReqTable."Payment Series";
+
+                    // Cancel old payment records in PaymentModeTable
+                    if PaymentChangeReqTable."Payment Series" <> '' then begin
+                        PaymentModeTable.Reset();
+                        PaymentModeTable.SetRange("Contract ID", Rec."Contract ID");
+                        PaymentModeTable.SetRange("Tenant ID", Rec."Tenant ID");
+                        PaymentModeTable.SetRange("Payment Series", paymentSeries);
+
+                        if PaymentModeTable.FindSet() then begin
+                            // repeat
+                            PaymentModeTable."Payment Status" := PaymentModeTable."Payment Status"::Cancelled;
+                            PaymentModeTable.Modify(true);
+                            Message('Cancelled Payment Series: %1', PaymentModeTable."Payment Series");
+                            // until PaymentModeTable.Next() = 0;
+                            Clear(PaymentModeTable);
+                        end;
+                    end;
+
+                    // Generate new payment series
+                    SequenceNo := GetNextSequenceNo();
+                    NewPaymentCode := GeneratePaymentCode(SequenceNo);
+
+                    // Insert new Payment Mode record
+                    PaymentModeTable.Init();
+                    PaymentModeTable."Contract ID" := PaymentChangeReqTable."Contract ID";
+                    PaymentModeTable."Tenant ID" := PaymentChangeReqTable."Tenant ID";
+                    PaymentModeTable."ID" := PaymentChangeReqTable."ID";
+                    PaymentModeTable."Amount Including VAT" := PaymentChangeReqTable."Change Amount";
+                    PaymentModeTable.Amount := PaymentChangeReqTable.Amount;
+                    PaymentModeTable."VAT Amount" := PaymentChangeReqTable."Vat Amount";
+                    PaymentModeTable."Due Date" := PaymentChangeReqTable."Due Date";
+                    PaymentModeTable."Payment Mode" := PaymentChangeReqTable."Payment Mode";
+                    PaymentModeTable."Payment Series" := NewPaymentCode;
+                    PaymentModeTable.Insert(true);
+                    Clear(PaymentModeTable);
+                    Message('Inserted new Payment Mode record with Series: %1', NewPaymentCode);
+
+                    // Update Payment Schedule for matching `Items` and `Payment Series`
+                    for increment := 1 to itemList.Count() do begin
+                        //foreach ItemSeries in itemList do begin
+                        //foreach paymentSeries in paymentSeriesNos do begin
+                        PaymentSchedule.Reset();
+                        PaymentSchedule.SetRange("Contract ID", Rec."Contract ID");
+                        PaymentSchedule.SetRange("Tenant ID", Rec."Tenant ID");
+                        PaymentSchedule.SetRange("Secondary Item Type", itemList.Get(increment));
+                        PaymentSchedule.SetRange("Payment Series", paymentSeries);
+
+                        if PaymentSchedule.FindSet() then begin
+                            repeat
+                                PaymentSchedule."Payment Series" := NewPaymentCode;
+                                PaymentSchedule."Due Date" := PaymentChangeReqTable."Due Date";
+                                PaymentSchedule.Modify(true);
+                                Message('Updated Payment Schedule: %1, Item: %2', PaymentSchedule."Payment Series", itemList.Get(increment));
+                            until PaymentSchedule.Next() = 0;
+                        end;
+                        // end;
+                    end;
+
+                until PaymentChangeReqTable.Next() = 0;
+
+            end else if RequestType = 'Combine' then begin
+
+                // Filter PaymentChangeReqTable for approval requests with "Combine" type
+                PaymentChangeReqTable.Reset();
+                PaymentChangeReqTable.SetRange("Contract ID", Rec."Contract ID");
+                PaymentChangeReqTable.SetRange("Tenant ID", Rec."Tenant ID");
+                PaymentChangeReqTable.SetRange("ID", Rec."ID");
+                PaymentChangeReqTable.SetRange(Status, 'Approve');
+                PaymentChangeReqTable.SetRange("Request Type", 'Combine');
+
+                if not PaymentChangeReqTable.FindSet() then begin
+                    Message('No matching records found for Contract ID: %1, Tenant ID: %2, ID: %3',
+                        Rec."Contract ID", Rec."Tenant ID", Rec."ID");
+                    exit;
+                end;
+
+                repeat
+                    // Debug: Log each processing record
+                    Message('Processing Record: Contract ID: %1, Tenant ID: %2, ID: %3',
+                        PaymentChangeReqTable."Contract ID",
+                        PaymentChangeReqTable."Tenant ID", PaymentChangeReqTable."ID");
+                    // Clear(PaymentSeriesList);
+                    // if PaymentSeries.Contains(',') then begin
+                    //     foreach PaymentSeries in PaymentSeries.Split(',') do
+                    //         PaymentSeriesList.Add(DelChr(PaymentSeries, '=', ' '));
+                    // end else
+                    //     PaymentSeriesList.Add(PaymentSeries);
 
 
-    // begin
-    //     // Debug: Log curxszrent record IDs
-    //     Message('Processing Record for: Contract ID: %1, Tenant ID: %2, ID: %3',
-    //         Rec."Contract ID", Rec."Tenant ID", Rec."ID");
+                    Clear(paymentSeriesNos);
+                    if PaymentChangeReqTable."Payment Series".Contains(',') then begin
+                        foreach paymentSeries in PaymentChangeReqTable."Payment Series".Split(',') do
+                            paymentSeriesNos.Add(DelChr(paymentSeries, '=', ' '));
+                    end else begin
+                        paymentSeriesNos.Add(PaymentChangeReqTable."Payment Series");
+                    end;
+                    // Update status of old payment records
+                    for increment := 1 to paymentSeriesNos.Count() do begin
+                        PaymentModeTable.Reset();
+                        PaymentModeTable.SetRange("Payment Series", paymentSeriesNos.Get(increment));
+                        PaymentModeTable.SetRange("Contract ID", Rec."Contract ID");
+                        PaymentModeTable.SetRange("Tenant ID", Rec."Tenant ID");
 
-    //     // Filter PaymentChangeReqTable based on the current record's IDs
-    //     PaymentChangeReqTable.Reset();
-    //     PaymentChangeReqTable.SetRange("Contract ID", Rec."Contract ID");
-    //     PaymentChangeReqTable.SetRange("Tenant ID", Rec."Tenant ID");
-    //     PaymentChangeReqTable.SetRange("ID", Rec."ID");
-    //     PaymentChangeReqTable.SetRange(Status, 'Approve');
-    //     PaymentChangeReqTable.SetRange("Request Type", 'Split');
+                        if PaymentModeTable.FindSet() then begin
+                            //repeat
+                            PaymentModeTable."Payment Status" := PaymentModeTable."Payment Status"::Cancelled;
+                            PaymentModeTable.Modify(true);
+                            Message('Cancelled Payment Status for: %1', PaymentModeTable."Payment Series");
+                            Clear(PaymentModeTable);
+                            //until PaymentModeTable.Next() = 0;
+                        end;
+                    end;
 
-    //     // Debug: Check if filtered records exist
-    //     if not PaymentChangeReqTable.FindSet() then begin
-    //         Message('No matching records found for Contract ID: %1, Tenant ID: %2, ID: %3',
-    //             Rec."Contract ID", Rec."Tenant ID", Rec."ID");
-    //         exit;
-    //     end
-    //     else begin
-    //         // Process the filtered records
-    //         repeat
-    //             // Debug: Log each record being processed
-    //             Message('Processing Record: Contract ID: %1, Tenant ID: %2, ID: %3',
-    //                 PaymentChangeReqTable."Contract ID",
-    //                 PaymentChangeReqTable."Tenant ID", PaymentChangeReqTable."ID");
+                    // Generate new payment series
+                    SequenceNo := GetNextSequenceNo();
+                    NewPaymentCode := GeneratePaymentCode(SequenceNo);
 
-    //             // Fetch the last payment series if any
-    //             PaymentModeTable.Reset(); // Reset to clear filters
-    //             if PaymentModeTable.FindLast() then
-    //                 payseries := PaymentModeTable."Payment Series";
+                    // Check if a record already exists in PaymentModeTable
+                    PaymentModeTable.Reset();
+                    PaymentModeTable.SetRange(Id, PaymentChangeReqTable.ID);
+                    if not PaymentModeTable.FindFirst() then begin
+                        // Insert new record
+                        PaymentModeTable.Init();
+                        PaymentModeTable."Contract ID" := PaymentChangeReqTable."Contract ID";
+                        PaymentModeTable."Tenant ID" := PaymentChangeReqTable."Tenant ID";
+                        PaymentModeTable."ID" := PaymentChangeReqTable."ID";
+                        PaymentModeTable."Amount Including VAT" := PaymentChangeReqTable."Change Amount";
+                        PaymentModeTable.Amount := PaymentChangeReqTable.Amount;
+                        PaymentModeTable."VAT Amount" := PaymentChangeReqTable."Vat Amount";
+                        PaymentModeTable."Due Date" := PaymentChangeReqTable."Due Date";
+                        PaymentModeTable."Payment Mode" := PaymentChangeReqTable."Payment mode";
+                        PaymentModeTable."Payment Series" := NewPaymentCode;
+                        PaymentModeTable.Insert(true);
+                        Clear(PaymentModeTable);
+                        Message('Inserted new payment record with Payment Series: %1', NewPaymentCode);
+                    end else begin
+                        // Modify existing record
+                        PaymentModeTable."Amount Including VAT" := PaymentChangeReqTable."Change Amount";
+                        PaymentModeTable.Amount := PaymentChangeReqTable.Amount;
+                        PaymentModeTable."VAT Amount" := PaymentChangeReqTable."Vat Amount";
+                        PaymentModeTable."Due Date" := PaymentChangeReqTable."Due Date";
+                        PaymentModeTable.Modify(true);
+                        Message('Updated existing payment record with ID: %1', PaymentModeTable."ID");
+                    end;
 
-    //             Clear(PaymentModeTable);
+                    for increment := 1 to paymentSeriesNos.Count() do begin
+                        PaymentSchedule.Reset();
+                        PaymentSchedule.SetRange("Payment Series", paymentSeriesNos.Get(increment));
+                        PaymentSchedule.SetRange("Contract ID", Rec."Contract ID");
+                        PaymentSchedule.SetRange("Tenant ID", Rec."Tenant ID");
 
-    //             if PaymentChangeReqTable."Items".Contains(',') then begin
-    //                 foreach ItemSeries in PaymentChangeReqTable."Items".Split(',') do begin
-    //                     paymentSeriesNos.Add((DelChr(ItemSeries, '=', ' ')));
-    //                     Message('1');
-    //                 end;
-    //             end else begin
-    //                 paymentSeriesNos.Add(PaymentChangeReqTable."Items");
-    //                 Message('2');
-    //             end;
+                        if PaymentSchedule.FindSet() then begin
+                            repeat
+                                PaymentSchedule."Payment Series" := NewPaymentCode;
+                                PaymentSchedule."Due Date" := PaymentChangeReqTable."Due Date";
+                                PaymentSchedule.Modify(true);
+                                Message('Updated Payment Schedule for: %1', PaymentSchedule."Payment Series");
+                            until PaymentSchedule.Next() = 0;
+                        end;
+                    end;
+                until PaymentChangeReqTable.Next() = 0;
+            end
+            //end;
+            // end
+            else if RequestType = 'Payment Mode' then begin
+                PaymentModeRec.Reset();
+                PaymentModeRec.SetRange("Payment Series", PaymentSeries);
+                if PaymentModeRec.FindSet() then begin
+                    PaymentModeRec.ModifyAll("Payment Mode", ApprovalRec."Payment Mode");
+                    Message('Updated Payment Mode for Series: %1', PaymentSeries);
+                end else
+                    Error('Payment Series %1 not found in Payment Mode Table.', PaymentSeries);
+            end;
+        end else
+            Error('No matching Approval Record found for Contract ID: %1, Tenant ID: %2, ID: %3',
+                Rec."Contract ID", Rec."Tenant ID", Rec."ID");
 
-
-
-    //             if PaymentChangeReqTable."Payment Series" <> '' then begin
-    //                // PaymentModeTable.SetRange("Payment Series", paymentSeriesNos.Get(increment));
-    //                 PaymentModeTable.SetRange("Contract ID", Rec."Contract ID");
-    //                 PaymentModeTable.SetRange("Tenant ID", Rec."Tenant ID");
-    //                 //PaymentChangeReqTable.SetRange("ID", Rec."ID");
-    //                 //PaymentChangeReqTable.SetRange(Status, 'Approve');
-    //                 //PaymentChangeReqTable.SetRange("Request Type", 'Combine');
-    //                 PaymentModeTable.SetRange("Payment Series", Rec."Payment Series");
-    //                 Message('3');
-    //                 if PaymentModeTable.FindSet() then begin
-    //                     Message('4');
-    //                     repeat
-    //                         PaymentModeTable."Payment Status" := PaymentModeTable."Payment Status"::Cancelled; // Update the Payment Status
-    //                         PaymentModeTable.Modify();
-    //                         Message('Payment Status updated for Payment Series: %1', PaymentModeTable."Payment Series");
-    //                     until PaymentModeTable.Next() = 0;
-    //                     // PaymentModeTable.ModifyAll("Payment Status", PaymentModeTable."Payment Status");
-    //                     Message('5');
-
-    //                 end;
-    //                 Message('6');
-
-    //             end;
-
-    //             // Fetch the next sequence number and generate the new payment code
-    //             SequenceNo := GetNextSequenceNo();
-    //             NewPaymentCode := GeneratePaymentCode(SequenceNo);
-
-
-
-    //             PaymentModeTable.SetRange(Id, PaymentChangeReqTable.ID);
-    //             // Check if the record exists in the Payment Mode table
-    //             if PaymentModeTable.FindSet() then begin
-    //                 // If record exists, modify it
-    //                 PaymentModeTable."Amount Including VAT" := PaymentChangeReqTable."Change Amount";
-    //                 PaymentModeTable.Amount := PaymentChangeReqTable.Amount;
-    //                 PaymentModeTable."VAT Amount" := PaymentChangeReqTable."Vat Amount";
-    //                 PaymentModeTable."Due Date" := PaymentChangeReqTable."Due Date";
-
-    //                 // Log modification for debugging
-    //                 Message('Modified existing record: Contract ID: %1, Tenant ID: %2, ID: %3',
-    //                     PaymentModeTable."Contract ID",
-    //                     PaymentModeTable."Tenant ID", PaymentModeTable."ID");
-
-    //                 PaymentModeTable.Modify(true);
-    //             end
-    //             else begin
-    //                 // If record doesn't exist, insert a new one
-    //                 PaymentModeTable.Init();
-    //                 PaymentModeTable."Contract ID" := PaymentChangeReqTable."Contract ID";
-    //                 PaymentModeTable."Tenant ID" := PaymentChangeReqTable."Tenant ID";
-    //                 PaymentModeTable."ID" := PaymentChangeReqTable."ID";
-    //                 PaymentModeTable."Amount Including VAT" := PaymentChangeReqTable."Change Amount";
-    //                 PaymentModeTable.Amount := PaymentChangeReqTable.Amount;
-    //                 PaymentModeTable."VAT Amount" := PaymentChangeReqTable."Vat Amount";
-    //                 PaymentModeTable."Due Date" := PaymentChangeReqTable."Due Date";
-    //                 PaymentModeTable."Payment Mode" := PaymentChangeReqTable."Payment mode";
-    //                 PaymentModeTable."Payment Series" := NewPaymentCode;
-
-
-    //                 // Log insertion for debugging
-    //                 Message('Inserted new record: Contract ID: %1, Tenant ID: %2, ID: %3',
-    //                     PaymentModeTable."Contract ID",
-    //                     PaymentModeTable."Tenant ID", PaymentModeTable."ID");
-
-    //                 PaymentModeTable.Insert(true);
-    //                 Clear(PaymentModeTable);
-    //             end;
-
-
-    //             for increment := 1 to paymentSeriesNos.Count() do begin
-    //             PaymentSchedule.Reset();
-    //             PaymentSchedule.SetRange("Payment Series", paymentSeriesNos.Get(increment));
-    //             PaymentSchedule.SetRange("Contract ID", Rec."Contract ID");
-    //             PaymentSchedule.SetRange("Tenant ID", Rec."Tenant ID");
-
-    //             if PaymentSchedule.FindSet() then begin
-    //                 repeat
-    //                     PaymentSchedule."Payment Series" := NewPaymentCode;
-    //                     PaymentSchedule."Due Date" := PaymentChangeReqTable."Due Date";
-    //                     PaymentSchedule.Modify(true);
-    //                     Message('Updated Payment Schedule for: %1', PaymentSchedule."Payment Series");
-    //                 until PaymentSchedule.Next() = 0;
-    //             end;
-    //         end;
-
-
-    //         until PaymentChangeReqTable.Next() = 0;
-    //             end;
-
-    //             Message('Processing complete.');
-    // end;
-
-
-
-
-
-
-
+        Message('Processing complete.');
+    end;
 
 
 
@@ -376,22 +456,19 @@ page 50710 "Approval Payment Request"
     //     PaymentChangeReqTable: Record "Approval Payment Request";
     //     PaymentModeTable: Record "Payment Mode2";
     //     PaymentSchedule: Record "Payment Schedule2";
-    //     payseries: Text[20];
     //     NewPaymentCode: Code[20];
     //     SequenceNo: Integer;
     //     paymentSeriesNos: List of [Text];
+    //     itemList: List of [Text];
+    //     ItemSeries: Text;
     //     paymentSeries: Text;
     //     increment: Integer;
-
-    //     OldPaymentSeries: Code[20];
-    //     NewDueDate: Date;
-    //     ItemSeries: Text[100];
     // begin
-    //     // Debug: Log current record IDs
+    //     // Debug message
     //     Message('Processing Record for: Contract ID: %1, Tenant ID: %2, ID: %3',
     //         Rec."Contract ID", Rec."Tenant ID", Rec."ID");
 
-    //     // Filter PaymentChangeReqTable for approval requests with "Combine" type
+    //     // Filter records for 'Split' request type and 'Approved' status
     //     PaymentChangeReqTable.Reset();
     //     PaymentChangeReqTable.SetRange("Contract ID", Rec."Contract ID");
     //     PaymentChangeReqTable.SetRange("Tenant ID", Rec."Tenant ID");
@@ -406,54 +483,34 @@ page 50710 "Approval Payment Request"
     //     end;
 
     //     repeat
-    //         // Debug: Log each processing record
-    //         Message('Processing Record: Contract ID: %1, Tenant ID: %2, ID: %3',
-    //             PaymentChangeReqTable."Contract ID",
-    //             PaymentChangeReqTable."Tenant ID", PaymentChangeReqTable."ID");
+    //         // Debug message
+    //         Message('Processing Split Request for ID: %1', PaymentChangeReqTable.ID);
 
-    //         // Split payment series if it contains multiple values
-    //         Clear(paymentSeriesNos);
-    //         // if PaymentChangeReqTable."Payment Series".Contains(',') then begin
-    //         //     foreach paymentSeries in PaymentChangeReqTable."Payment Series".Split(',') do
-    //         //         paymentSeriesNos.Add(DelChr(paymentSeries, '=', ' '));
-    //         // end else begin
-    //         //     paymentSeriesNos.Add(PaymentChangeReqTable."Payment Series");
-    //         // end;
-
-
+    //         // Extract and store `Items` in a list
+    //         Clear(itemList);
     //         if PaymentChangeReqTable."Items".Contains(',') then begin
-    //             foreach ItemSeries in PaymentChangeReqTable."Items".Split(',') do begin
-    //                 paymentSeriesNos.Add((DelChr(ItemSeries, '=', ' ')));
-    //                 Message('1');
-    //             end;
-    //         end else begin
-    //             paymentSeriesNos.Add(PaymentChangeReqTable."Items");
-    //             Message('2');
-    //         end;
+    //             foreach ItemSeries in PaymentChangeReqTable."Items".Split(',') do
+    //                 itemList.Add(DelChr(ItemSeries, '>', ' '));
+    //         end else
+    //             itemList.Add(PaymentChangeReqTable."Items");
 
 
+    //         paymentSeries := PaymentChangeReqTable."Payment Series";
 
-
-
+    //         // Cancel old payment records in PaymentModeTable
     //         if PaymentChangeReqTable."Payment Series" <> '' then begin
+    //             PaymentModeTable.Reset();
     //             PaymentModeTable.SetRange("Contract ID", Rec."Contract ID");
     //             PaymentModeTable.SetRange("Tenant ID", Rec."Tenant ID");
-    //             PaymentModeTable.SetRange("Payment Series", Rec."Payment Series");
-    //             Message('3');
-    //             // Update status of old payment records
-    //             // for increment := 1 to paymentSeriesNos.Count() do begin
-    //             //     PaymentModeTable.Reset();
-    //             //     PaymentModeTable.SetRange("Payment Series", paymentSeriesNos.Get(increment));
-    //             //     PaymentModeTable.SetRange("Contract ID", Rec."Contract ID");
-    //             //     PaymentModeTable.SetRange("Tenant ID", Rec."Tenant ID");
+    //             PaymentModeTable.SetRange("Payment Series", paymentSeries);
 
     //             if PaymentModeTable.FindSet() then begin
-    //                 //repeat
+    //                 // repeat
     //                 PaymentModeTable."Payment Status" := PaymentModeTable."Payment Status"::Cancelled;
     //                 PaymentModeTable.Modify(true);
-    //                 Message('Cancelled Payment Status for: %1', PaymentModeTable."Payment Series");
+    //                 Message('Cancelled Payment Series: %1', PaymentModeTable."Payment Series");
+    //                 // until PaymentModeTable.Next() = 0;
     //                 Clear(PaymentModeTable);
-    //                 //until PaymentModeTable.Next() = 0;
     //             end;
     //         end;
 
@@ -461,173 +518,46 @@ page 50710 "Approval Payment Request"
     //         SequenceNo := GetNextSequenceNo();
     //         NewPaymentCode := GeneratePaymentCode(SequenceNo);
 
-    //         // Check if a record already exists in PaymentModeTable
-    //         PaymentModeTable.Reset();
-    //         PaymentModeTable.SetRange(Id, PaymentChangeReqTable.ID);
-    //         if not PaymentModeTable.FindFirst() then begin
-    //             // Insert new record
-    //             PaymentModeTable.Init();
-    //             PaymentModeTable."Contract ID" := PaymentChangeReqTable."Contract ID";
-    //             PaymentModeTable."Tenant ID" := PaymentChangeReqTable."Tenant ID";
-    //             PaymentModeTable."ID" := PaymentChangeReqTable."ID";
-    //             PaymentModeTable."Amount Including VAT" := PaymentChangeReqTable."Change Amount";
-    //             PaymentModeTable.Amount := PaymentChangeReqTable.Amount;
-    //             PaymentModeTable."VAT Amount" := PaymentChangeReqTable."Vat Amount";
-    //             PaymentModeTable."Due Date" := PaymentChangeReqTable."Due Date";
-    //             PaymentModeTable."Payment Mode" := PaymentChangeReqTable."Payment mode";
-    //             PaymentModeTable."Payment Series" := NewPaymentCode;
-    //             PaymentModeTable.Insert(true);
-    //             Clear(PaymentModeTable);
-    //             Message('Inserted new payment record with Payment Series: %1', NewPaymentCode);
-    //         end else begin
-    //             // Modify existing record
-    //             PaymentModeTable."Amount Including VAT" := PaymentChangeReqTable."Change Amount";
-    //             PaymentModeTable.Amount := PaymentChangeReqTable.Amount;
-    //             PaymentModeTable."VAT Amount" := PaymentChangeReqTable."Vat Amount";
-    //             PaymentModeTable."Due Date" := PaymentChangeReqTable."Due Date";
-    //             PaymentModeTable.Modify(true);
-    //             Message('Updated existing payment record with ID: %1', PaymentModeTable."ID");
-    //         end;
+    //         // Insert new Payment Mode record
+    //         PaymentModeTable.Init();
+    //         PaymentModeTable."Contract ID" := PaymentChangeReqTable."Contract ID";
+    //         PaymentModeTable."Tenant ID" := PaymentChangeReqTable."Tenant ID";
+    //         PaymentModeTable."ID" := PaymentChangeReqTable."ID";
+    //         PaymentModeTable."Amount Including VAT" := PaymentChangeReqTable."Change Amount";
+    //         PaymentModeTable.Amount := PaymentChangeReqTable.Amount;
+    //         PaymentModeTable."VAT Amount" := PaymentChangeReqTable."Vat Amount";
+    //         PaymentModeTable."Due Date" := PaymentChangeReqTable."Due Date";
+    //         PaymentModeTable."Payment Mode" := PaymentChangeReqTable."Payment Mode";
+    //         PaymentModeTable."Payment Series" := NewPaymentCode;
+    //         PaymentModeTable.Insert(true);
+    //         Clear(PaymentModeTable);
+    //         Message('Inserted new Payment Mode record with Series: %1', NewPaymentCode);
 
-    //         for increment := 1 to paymentSeriesNos.Count() do begin
+    //         // Update Payment Schedule for matching `Items` and `Payment Series`
+    //         for increment := 1 to itemList.Count() do begin
+    //             //foreach ItemSeries in itemList do begin
+    //             //foreach paymentSeries in paymentSeriesNos do begin
     //             PaymentSchedule.Reset();
-    //             PaymentSchedule.SetRange("Payment Series", paymentSeriesNos.Get(increment));
     //             PaymentSchedule.SetRange("Contract ID", Rec."Contract ID");
     //             PaymentSchedule.SetRange("Tenant ID", Rec."Tenant ID");
+    //             PaymentSchedule.SetRange("Secondary Item Type", itemList.Get(increment));
+    //             PaymentSchedule.SetRange("Payment Series", paymentSeries);
 
     //             if PaymentSchedule.FindSet() then begin
     //                 repeat
     //                     PaymentSchedule."Payment Series" := NewPaymentCode;
     //                     PaymentSchedule."Due Date" := PaymentChangeReqTable."Due Date";
     //                     PaymentSchedule.Modify(true);
-    //                     Message('Updated Payment Schedule for: %1', PaymentSchedule."Payment Series");
+    //                     Message('Updated Payment Schedule: %1, Item: %2', PaymentSchedule."Payment Series", itemList.Get(increment));
     //                 until PaymentSchedule.Next() = 0;
     //             end;
+    //             // end;
     //         end;
+
     //     until PaymentChangeReqTable.Next() = 0;
 
     //     Message('Processing complete.');
     // end;
-
-
-    procedure ProcessSplitRequest()
-    var
-        PaymentChangeReqTable: Record "Approval Payment Request";
-        PaymentModeTable: Record "Payment Mode2";
-        PaymentSchedule: Record "Payment Schedule2";
-        NewPaymentCode: Code[20];
-        SequenceNo: Integer;
-        paymentSeriesNos: List of [Text];
-        itemList: List of [Text];
-        ItemSeries: Text;
-        paymentSeries: Text;
-        increment: Integer;
-    begin
-        // Debug message
-        Message('Processing Record for: Contract ID: %1, Tenant ID: %2, ID: %3',
-            Rec."Contract ID", Rec."Tenant ID", Rec."ID");
-
-        // Filter records for 'Split' request type and 'Approved' status
-        PaymentChangeReqTable.Reset();
-        PaymentChangeReqTable.SetRange("Contract ID", Rec."Contract ID");
-        PaymentChangeReqTable.SetRange("Tenant ID", Rec."Tenant ID");
-        PaymentChangeReqTable.SetRange("ID", Rec."ID");
-        PaymentChangeReqTable.SetRange(Status, 'Approve');
-        PaymentChangeReqTable.SetRange("Request Type", 'Split');
-
-        if not PaymentChangeReqTable.FindSet() then begin
-            Message('No matching records found for Contract ID: %1, Tenant ID: %2, ID: %3',
-                Rec."Contract ID", Rec."Tenant ID", Rec."ID");
-            exit;
-        end;
-
-        repeat
-            // Debug message
-            Message('Processing Split Request for ID: %1', PaymentChangeReqTable.ID);
-
-            // Extract and store `Items` in a list
-            Clear(itemList);
-            if PaymentChangeReqTable."Items".Contains(',') then begin
-                foreach ItemSeries in PaymentChangeReqTable."Items".Split(',') do
-                    itemList.Add(DelChr(ItemSeries, '=', ' '));
-            end else
-                itemList.Add(PaymentChangeReqTable."Items");
-
-            // PaymentChangeReqTable.Reset(); // Reset to clear filters
-            // if PaymentChangeReqTable.FindSet() then
-            paymentSeries := PaymentChangeReqTable."Payment Series";
-
-            // Clear(PaymentChangeReqTable);
-
-            // Extract and store `Payment Series` in a list
-            // Clear(paymentSeriesNos);
-            // if PaymentChangeReqTable."Payment Series".Contains(',') then begin
-            //     foreach paymentSeries in PaymentChangeReqTable."Payment Series".Split(',') do
-            //         paymentSeriesNos.Add(DelChr(paymentSeries, '=', ' '));
-            // end else
-            //     paymentSeriesNos.Add(PaymentChangeReqTable."Payment Series");
-
-            // Cancel old payment records in PaymentModeTable
-            if PaymentChangeReqTable."Payment Series" <> '' then begin
-                PaymentModeTable.Reset();
-                PaymentModeTable.SetRange("Contract ID", Rec."Contract ID");
-                PaymentModeTable.SetRange("Tenant ID", Rec."Tenant ID");
-                PaymentModeTable.SetRange("Payment Series", paymentSeries);
-
-                if PaymentModeTable.FindSet() then begin
-                    // repeat
-                    PaymentModeTable."Payment Status" := PaymentModeTable."Payment Status"::Cancelled;
-                    PaymentModeTable.Modify(true);
-                    Message('Cancelled Payment Series: %1', PaymentModeTable."Payment Series");
-                    // until PaymentModeTable.Next() = 0;
-                    Clear(PaymentModeTable);
-                end;
-            end;
-
-            // Generate new payment series
-            SequenceNo := GetNextSequenceNo();
-            NewPaymentCode := GeneratePaymentCode(SequenceNo);
-
-            // Insert new Payment Mode record
-            PaymentModeTable.Init();
-            PaymentModeTable."Contract ID" := PaymentChangeReqTable."Contract ID";
-            PaymentModeTable."Tenant ID" := PaymentChangeReqTable."Tenant ID";
-            PaymentModeTable."ID" := PaymentChangeReqTable."ID";
-            PaymentModeTable."Amount Including VAT" := PaymentChangeReqTable."Change Amount";
-            PaymentModeTable.Amount := PaymentChangeReqTable.Amount;
-            PaymentModeTable."VAT Amount" := PaymentChangeReqTable."Vat Amount";
-            PaymentModeTable."Due Date" := PaymentChangeReqTable."Due Date";
-            PaymentModeTable."Payment Mode" := PaymentChangeReqTable."Payment Mode";
-            PaymentModeTable."Payment Series" := NewPaymentCode;
-            PaymentModeTable.Insert(true);
-            Clear(PaymentModeTable);
-            Message('Inserted new Payment Mode record with Series: %1', NewPaymentCode);
-
-            // Update Payment Schedule for matching `Items` and `Payment Series`
-            for increment := 1 to itemList.Count() do begin
-                //foreach ItemSeries in itemList do begin
-                //foreach paymentSeries in paymentSeriesNos do begin
-                PaymentSchedule.Reset();
-                PaymentSchedule.SetRange("Contract ID", Rec."Contract ID");
-                PaymentSchedule.SetRange("Tenant ID", Rec."Tenant ID");
-                PaymentSchedule.SetRange("Secondary Item Type", ItemSeries);
-                PaymentSchedule.SetRange("Payment Series", paymentSeries);
-
-                if PaymentSchedule.FindSet() then begin
-                    repeat
-                        PaymentSchedule."Payment Series" := NewPaymentCode;
-                        PaymentSchedule."Due Date" := PaymentChangeReqTable."Due Date";
-                        PaymentSchedule.Modify(true);
-                        Message('Updated Payment Schedule: %1, Item: %2', PaymentSchedule."Payment Series", ItemSeries);
-                    until PaymentSchedule.Next() = 0;
-                end;
-                // end;
-            end;
-
-        until PaymentChangeReqTable.Next() = 0;
-
-        Message('Processing complete.');
-    end;
 
 
 
