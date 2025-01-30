@@ -67,6 +67,11 @@ page 50922 "Payment Schedule Card2"
                     Editable = false; // The ID is not editable since it's auto-incrementing
                     Visible = true;
                 }
+                field("Tenant Name"; Rec."Tenant Name")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
 
 
 

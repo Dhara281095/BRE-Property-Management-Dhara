@@ -85,7 +85,7 @@ codeunit 50508 LeaseManagerSendMail
         SalesHeader.SetRange("Document Type", SalesHeader."Document Type"::Invoice);
         if SalesHeader.FindSet() then begin
             InvoicesExist := True; // Set to true if any invoices are found
-            TempEmailBody := '<table border = "1" style="width:100%; text-align:center;"><tr><th>Invoice No.</th><th>Contract ID</th><th>Amount Including VAT</th></tr>';
+            TempEmailBody := '<table border = "1" style="width:100%; text-align:center;"><tr><th>Invoice No.</th><th>Contract ID</th><th>Tenant Name</th><th>Amount Including VAT</th></tr>';
             repeat
                 TotalAmount := 0;
                 SalesLine.SetRange("Document No.", SalesHeader."No.");
@@ -95,8 +95,8 @@ codeunit 50508 LeaseManagerSendMail
                         TotalAmount += Round(SalesLine."Amount Including VAT");
 
                     until SalesLine.Next() = 0;
-                TempEmailBody += StrSubstNo('<tr><td style="text-align:center;">%1</td><td style="text-align:center;">%2</td><td style="text-align:center;">%3</td></tr>',
-                                  SalesHeader."No.", SalesHeader."Contract ID", Format(TotalAmount));
+                TempEmailBody += StrSubstNo('<tr><td style="text-align:center;">%1</td><td style="text-align:center;">%2</td><td style="text-align:center;">%3</td><td style="text-align:center;">%4</td></tr>',
+                                  SalesHeader."No.", SalesHeader."Contract ID", SalesHeader."Tenant Name", Format(TotalAmount));
             until SalesHeader.Next() = 0;
             TempEmailBody += '</table>';
         end;

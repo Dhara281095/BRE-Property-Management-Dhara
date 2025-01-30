@@ -23,6 +23,7 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
             // end;
 
         }
+
         field(50102; "Property Name"; Text[100])
         {
             Caption = 'Property Name';
@@ -48,6 +49,10 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
                     emailrecord.SendInvoice(Rec); // Pass the current record if needed
                 end;
             end;
+        }
+        field(50106; "Tenant Name"; Text[100])
+        {
+            Caption = 'Tenant Name';
         }
 
     }

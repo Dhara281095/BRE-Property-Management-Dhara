@@ -38,6 +38,11 @@ page 50921 "Payment Schedule Card"
                 //     Caption = 'Total Amount Including VAT';
 
                 // }
+                field("Tenant Name"; Rec."Tenant Name")
+                {
+                    Editable = false;
+                    ApplicationArea = All;
+                }
             }
 
             group("Payment Schedule")
