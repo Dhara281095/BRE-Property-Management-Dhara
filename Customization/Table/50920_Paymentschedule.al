@@ -58,12 +58,12 @@ table 50920 "Payment Schedule"
                 if leaserec.FindFirst() then begin
                     //"Proposal ID" := leaserec."Proposal ID";
                     "Tenant Id" := leaserec."Tenant Id";
-                    "Tenant Name" := leaserec."Customer Name";
+                    // "Tenant Name" := leaserec."Customer Name";
                 end else begin
                     // Clear the field if no record is found
                     // "Proposal Id" := '';
                     "Tenant Id" := '';
-                    "Tenant Name" := '';
+                    // "Tenant Name" := '';
                 end;
                 UpdatePaymentSchedule2();
                 addrevnuestructurpagelinePaymentschedule2();
@@ -100,10 +100,7 @@ table 50920 "Payment Schedule"
             FieldClass = FlowField;
             CalcFormula = sum("Payment Schedule2"."VAT Amount" where("Contract ID" = field("Contract ID"), "Tenant ID" = field("Tenant ID")));
         }
-        field(50913; "Tenant Name"; Text[100])
-        {
-            Caption = 'Tenant Name';
-        }
+
         // field(50913; "Total Amount Including VAT"; Decimal)
         // {
         //     Caption = 'Total Amount Including VAT';
