@@ -228,6 +228,21 @@ table 50925 "Payment Mode2"
             DataClassification = ToBeClassified;
         }
 
+        field(50125; "Approval Status"; Enum "Approval Status Enum")
+        {
+            DataClassification = ToBeClassified;
+        }
+
+        field(50126; "Reason"; Text[150])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(50127; "IsUpdated"; Option)
+        {
+            // DataClassification = ToBeClassified;
+            OptionMembers = " ","Yes","No";
+        }
+
 
     }
 
