@@ -149,6 +149,22 @@ table 50910 "Revenue Item Subpage"
             DataClassification = ToBeClassified;
             Caption = 'Tenant ID';
         }
+        field(50116; "Property Name"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(50117; "Unit Name"; Code[100])
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(50118; "Unit Size"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(50119; "Customer Name"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys

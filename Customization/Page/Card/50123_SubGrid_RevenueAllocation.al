@@ -130,18 +130,4 @@ page 50123 "Revenue Allocation SubGrid"
             }
         }
     }
-    procedure SetDateFilter(StartDate: Date; EndDate: Date)
-    begin
-        Rec.Reset();
-        Rec.SetFilter("Contract Start Date", '<=%1', EndDate);
-        Rec.SetFilter("Contract End Date", '>=%1', StartDate);
-
-        // Show debug information
-        Message('Filter applied:\nContract Start Date <= %1\nContract End Date >= %2\nCurrent Filter: %3',
-            Format(EndDate, 0, '<Day,2>/<Month,2>/<Year4>'),
-            Format(StartDate, 0, '<Day,2>/<Month,2>/<Year4>'),
-            Rec.GetFilters);
-
-        CurrPage.Update(false); // Force a refresh of the current page
-    end;
 }
