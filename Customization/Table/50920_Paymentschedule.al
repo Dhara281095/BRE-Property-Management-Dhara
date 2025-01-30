@@ -151,7 +151,7 @@ table 50920 "Payment Schedule"
                 // PaymentSchedule2."PS ID" := Rec."PS Id";
                 PaymentSchedule2."Contract ID" := RevenueSubpage."ContractID";
                 // PaymentSchedule2."Proposal ID" := rec."Proposal ID";
-                PaymentSchedule2."Tenant Name" := Rec."Tenant Name";
+                // PaymentSchedule2."Tenant Name" := Rec."Tenant Name";
                 PaymentSchedule2."Tenant ID" := RevenueSubpage."TenantId";
                 PaymentSchedule2."Secondary Item Type" := RevenueSubpage."Secondary Item Type";
                 PaymentSchedule2.Amount := RevenueSubpage.Amount;
@@ -183,7 +183,7 @@ table 50920 "Payment Schedule"
                 // PaymentSchedule3."PS ID" := Rec."PS Id";
                 PaymentSchedule3."Contract ID" := RevenueStructureSubpage."Contract ID";
                 // PaymentSchedule3."Proposal ID" := Rec."Proposal ID";
-                PaymentSchedule3."Tenant Name" := Rec."Tenant Name";
+                // PaymentSchedule3."Tenant Name" := Rec."Tenant Name";
                 PaymentSchedule3."Tenant ID" := RevenueStructureSubpage."Tenant Id";
                 PaymentSchedule3."Secondary Item Type" := RevenueStructureSubpage."Secondary Item Type";
                 PaymentSchedule3.Amount := RevenueStructureSubpage.Amount;
@@ -303,7 +303,7 @@ table 50920 "Payment Schedule"
                 //  PaymentScheduleRec2."Proposal ID" := Rec."Proposal ID";
                 PaymentScheduleRec2."Tenant ID" := Rec."Tenant ID";
                 PaymentScheduleRec2."Contract ID" := Rec."Contract ID";
-                PaymentScheduleRec2."Tenant Name" := Rec."Tenant Name";
+                //PaymentScheduleRec2."Tenant Name" := Rec."Tenant Name";
                 PaymentScheduleRec2."Due Date" := DueDate;
                 PaymentScheduleRec2."Payment Series" := NewPaymentCode;
 

@@ -113,7 +113,7 @@ table 50934 "Payment Schedule2"
         field(50111; "Tenant Name"; Text[100])
         {
 
-            Caption = 'Tenant ID';
+            Caption = 'Tenant Name';
 
         }
         // field(50111; "PS ID"; Integer)
@@ -132,10 +132,10 @@ table 50934 "Payment Schedule2"
         {
             Caption = 'Contract ID';
         }
-        field(50916; "Tenant Name"; Text[100])
-        {
-            Caption = 'Tenant Name';
-        }
+        // field(50916; "Tenant Name"; Text[100])
+        // {
+        //     Caption = 'Tenant Name';
+        // }
     }
 
     keys
