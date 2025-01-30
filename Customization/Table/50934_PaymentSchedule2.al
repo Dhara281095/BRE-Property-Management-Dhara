@@ -110,6 +110,12 @@ table 50934 "Payment Schedule2"
             Caption = 'Tenant ID';
 
         }
+        field(50111; "Tenant Name"; Text[100])
+        {
+
+            Caption = 'Tenant ID';
+
+        }
         // field(50111; "PS ID"; Integer)
         // {
 
