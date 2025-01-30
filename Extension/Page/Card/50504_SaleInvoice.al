@@ -11,7 +11,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 {
                     Caption = 'Contract ID';
                     ApplicationArea = All;
-                    // Editable = false;
+                    Editable = false;
                     trigger OnValidate()
                     var
                         tenancyContract: Record "Tenancy Contract";
@@ -22,6 +22,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                             Rec."Property Name" := tenancyContract."Property Name";
                             Rec."Unit Name" := tenancyContract."Unit Name";
                             Rec."Contract Tenure" := tenancyContract."Contract Tenor";
+
                         end else begin
                             rec."Property Name" := '';
                             Rec."Unit Name" := '';
@@ -35,31 +36,37 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 {
                     Caption = 'Property Name';
                     ApplicationArea = All;
+                    Editable = false;
                 }
                 field("Unit Name"; Rec."Unit Name")
                 {
                     Caption = 'Unit Name';
                     ApplicationArea = All;
+                    Editable = false;
                 }
                 field("Contract Tenure"; Rec."Contract Tenure")
                 {
                     Caption = 'Contract Tenure';
                     ApplicationArea = All;
+                    Editable = false;
                 }
                 field("Sell-to Phone No."; Rec."Sell-to Phone No.")
                 {
                     Caption = 'Customer Phone No.';
                     ApplicationArea = All;
+                    Editable = false;
                 }
                 field("Sell-to E-Mail"; Rec."Sell-to E-Mail")
                 {
                     Caption = 'Customer Email';
                     ApplicationArea = All;
+                    Editable = false;
                 }
                 field("Bill-to Customer No."; Rec."Bill-to Customer No.")
                 {
                     Caption = 'Customer No.';
                     ApplicationArea = All;
+                    Editable = false;
                 }
                 field("Approval Status"; Rec."Approval Status")
                 {
@@ -68,7 +75,11 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                     Editable = approvaleditable;
                     //Editable = true;
                 }
-
+                field("Tenant Name"; Rec."Tenant Name")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
             }
         }
     }
@@ -111,7 +122,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
             case UserPersonalization."Profile ID" of
                 'PROPERTY MANAGER':
                     exit(false);
-                'ACCOUNTING MANAGER':
+                'finance manager':
                     exit(true);
             end;
         end;
