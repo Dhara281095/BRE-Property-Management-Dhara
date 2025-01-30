@@ -23,7 +23,7 @@ codeunit 50106 GenerateConsolidatedInvoices
                         createSalesLines(SalesHeader, paymentScheudle2);
                     end
                     else begin
-                        newsalesheader := CreateSalesInvoice(paymentScheudle2."Tenant ID", paymentScheudle2."Due Date", paymentScheudle2."Contract ID");
+                        newsalesheader := CreateSalesInvoice(paymentScheudle2."Tenant ID", paymentScheudle2."Due Date", paymentScheudle2."Contract ID", paymentScheudle2."Tenant Name");
                         createSalesLines(newsalesheader, paymentScheudle2);
                     end;
                     paymentScheudle2.Invoiced := true;
@@ -32,7 +32,7 @@ codeunit 50106 GenerateConsolidatedInvoices
             until paymentScheudle2.Next() = 0;
     end;
 
-    procedure CreateSalesInvoice(TenantID: Code[20]; DueDate: Date; ContractID: Integer): Record "Sales Header"
+    procedure CreateSalesInvoice(TenantID: Code[20]; DueDate: Date; ContractID: Integer; TenantName: Text[100]): Record "Sales Header"
     var
         salesHeader: Record "Sales Header";
         salesReciveable: Record "Sales & Receivables Setup";
@@ -46,7 +46,7 @@ codeunit 50106 GenerateConsolidatedInvoices
 
         salesHeader."Due Date" := DueDate;
         salesHeader."Contract ID" := ContractID;
-        // salesHeader."Tenant Name" := TenantName;
+        salesHeader."Tenant Name" := TenantName;
         salesHeader."Document Date" := Today;
         salesHeader."Posting Date" := Today;
         salesHeader."Shipment Date" := Today;
