@@ -231,6 +231,49 @@ table 50925 "Payment Mode2"
         field(50125; "Approval Status"; Enum "Approval Status Enum")
         {
             DataClassification = ToBeClassified;
+            trigger OnValidate()
+            var
+                paymentModeRec: Record "Payment Mode";
+                paymentGridRec: Record "Payment Mode2";
+                AllApproved: Boolean;
+                AnyPendingOrRejected: Boolean;
+            begin
+                // Fetch the Parent Record (Main Payment Mode Card)
+                if paymentModeRec.Get(Rec."Contract ID") then begin
+
+                    AllApproved := true;
+                    AnyPendingOrRejected := false;
+
+                    // Check if all grid records have "Approved" status
+                    paymentGridRec.SetRange("Contract ID", Rec."Contract ID");
+
+                    if paymentGridRec.FindSet() then begin
+                        // paymentGridRec.Init();
+                        repeat
+                            if not (paymentGridRec."Approval Status" = paymentGridRec."Approval Status"::Approved) then
+                                AllApproved := false;
+
+                            if paymentGridRec."Approval Status" = paymentGridRec."Approval Status"::Pending then
+                                AnyPendingOrRejected := true;
+
+                            if paymentGridRec."Approval Status" = paymentGridRec."Approval Status"::Rejected then
+                                AnyPendingOrRejected := true;
+
+
+                        until paymentGridRec.Next() = 0;
+                    end;
+
+                    if AllApproved then begin
+                        paymentModeRec."Approval Status" := paymentModeRec."Approval Status"::Approved;
+                        paymentModeRec."On-hold" := paymentModeRec."On-hold"::"False";
+                        paymentModeRec.Modify();
+                    end
+                    else if AnyPendingOrRejected then begin
+                        paymentModeRec."On-hold" := paymentModeRec."On-hold"::"True";
+                    end;
+                    paymentModeRec.Modify();
+                end;
+            end;
         }
 
         field(50126; "Reason"; Text[150])
@@ -281,6 +324,9 @@ table 50925 "Payment Mode2"
     //         Modify();
     //     end;
     // end;
+
+
+
 
 
     trigger OnInsert()

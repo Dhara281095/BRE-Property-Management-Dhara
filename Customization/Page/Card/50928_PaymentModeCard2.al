@@ -349,9 +349,10 @@ actions
                 paymentGridRec : Record "Payment Series Details";
                 PrePaymentGridRec : Record "Payment Series Details";
                 IsPaymentTransactionCreated: Boolean;
+                Isupdate : Boolean;
             begin
-
-                approvalflow.SendPaymentModeApprovalToFinanceManger(Format(Rec."Contract ID"),Rec."Tenant Id",Rec."Contract ID");
+                Isupdate := false;
+                approvalflow.SendPaymentModeApprovalToFinanceManger(Format(Rec."Contract ID"),Rec."Tenant Id",Rec."Contract ID",Isupdate);
 
                 // Update Approval Status in the grid
                 PaymentModeRec.SetRange("Contract ID", Rec."Contract ID"); // Filter by Contract ID
@@ -409,38 +410,57 @@ actions
                        
                 
         }
+
+        action(UpdateData)
+        {
+            ApplicationArea = All;
+            Caption = 'Update Data';
+            Image = NewDocument;
+
+            trigger OnAction()
+            var 
+                approvalflow : Codeunit 50510;
+                PaymentModeRec: Record "Payment Mode2";
+                paymentRec : Record "Payment Mode";
+                Isupdate : Boolean;
+            begin
+                Isupdate := true;
+                approvalflow.SendPaymentModeApprovalToFinanceManger(Format(Rec."Contract ID"),Rec."Tenant Id",Rec."Contract ID",Isupdate);
+            end;
+
+        }
     }
 }
 
 
 
- trigger OnAfterGetRecord()
-    begin
-        // If the field is blank, assign '-'
-        if Rec."Cheque Number" = '' then
-            Rec."Cheque Number" := '-';
+//  trigger OnAfterGetRecord()
+//     begin
+//         // If the field is blank, assign '-'
+//         if Rec."Cheque Number" = '' then
+//             Rec."Cheque Number" := '-';
 
-            //  if Rec."Old Cheque #" = '' then
-            // Rec."Old Cheque #" := '-';
+//             //  if Rec."Old Cheque #" = '' then
+//             // Rec."Old Cheque #" := '-';
 
-            //  if Rec."Receipt #" = '' then
-            // Rec."Receipt #" := '-';
+//             //  if Rec."Receipt #" = '' then
+//             // Rec."Receipt #" := '-';
 
-            //  if Rec."Invoice #" = '' then
-            // Rec."Invoice #" := '-';
+//             //  if Rec."Invoice #" = '' then
+//             // Rec."Invoice #" := '-';
 
 
-            if Rec."Due Date" <> xRec."Due Date" then begin
-                    if Rec."Due Date" = Today() then
-                        Rec."Payment Status" := Rec."Payment Status"::"Due"
-                    else if Rec."Due Date" < Today() then
-                        Rec."Payment Status" := Rec."Payment Status"::"Overdue"
-                    else
-                        Rec."Payment Status" := Rec."Payment Status";
+//             if Rec."Due Date" <> xRec."Due Date" then begin
+//                     if Rec."Due Date" = Today() then
+//                         Rec."Payment Status" := Rec."Payment Status"::"Due"
+//                     else if Rec."Due Date" < Today() then
+//                         Rec."Payment Status" := Rec."Payment Status"::"Overdue"
+//                     else
+//                         Rec."Payment Status" := Rec."Payment Status";
 
-                 //   Modify();
-                end;
-    end;
+//                  //   Modify();
+//                 end;
+//     end;
     
     
   

@@ -50,10 +50,10 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
                 end;
             end;
         }
-        // field(50106; "Tenant Name"; Text[100])
-        // {
-        //     Caption = 'Tenant Name';
-        // }
+        field(50106; "Tenant Name"; Text[100])
+        {
+            Caption = 'Tenant Name';
+        }
 
     }
 
