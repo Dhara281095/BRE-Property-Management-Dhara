@@ -25,6 +25,9 @@ report 50108 "Contract Renewal"
             column(Annual_Rent_Amount; "Annual Rent Amount")
             {
             }
+            column(Contract_Amount; "Contract Amount")
+            {
+            }
             column(Rera; Rera)
             {
             }
