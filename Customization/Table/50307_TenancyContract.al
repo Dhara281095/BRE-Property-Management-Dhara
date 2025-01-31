@@ -120,6 +120,8 @@ table 50307 "Tenancy Contract"
                     "Facilities/Amenities" := LeaseProposalRec."Facilities/Amenities";
                     "Balance Amount" := LeaseProposalRec."Security Deposit Amount";
                     "Unit Number" := LeaseProposalRec."Unit Number";
+                    "Single Rent Calculation" := LeaseProposalRec."Single Rent Calculation";
+                    "Merge Rent Calculation" := LeaseProposalRec."Merge Rent Calculation";
 
 
 
@@ -661,6 +663,10 @@ table 50307 "Tenancy Contract"
                     "Property Size" := LeaseProposalRec."Property Size";
                     "No of Installments" := LeaseProposalRec."No of Installments";
                     "Balance Amount" := LeaseProposalRec."Security Deposit Amount";
+                    "Single Rent Calculation" := LeaseProposalRec."Single Rent Calculation";
+                    "Merge Rent Calculation" := LeaseProposalRec."Merge Rent Calculation";
+                    "Praposal Type Selected" := LeaseProposalRec."Praposal Type Selected";
+
 
 
 
@@ -747,6 +753,200 @@ table 50307 "Tenancy Contract"
             DataClassification = ToBeClassified;
         }
 
+        field(50170; "Single Rent Calculation"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Single Unit Rent Calculation Type';
+            OptionMembers = " ","Single Unit with square feet rate","Single Unit with lumpsum square feet rate";
+
+            trigger OnValidate()
+
+            var
+                LeaseProposal: Record "Contract Renewal"; // Replace with actual table name
+                SingleSameSquare: Record "TC Single Unit Rent SubPage"; // Target table
+                SingleLumSquare: Record "TC Single LumAnnualAmnt SP"; // Target table
+                PeriodStartDate: Date;
+                PeriodEndDate: Date;
+                LeaseEndDate: Date;
+                TotalDays: Integer;
+                DaysToAdd: Integer;
+                LeapDays: Integer;
+                CurrentYear: Integer;
+                YearCounter: Integer;
+                LineNoCounter: Integer;
+
+
+            begin
+
+                if "Single Rent Calculation" = "Single Rent Calculation"::"Single Unit with square feet rate" then begin
+                    SingleSameSquare.SetRange("ID", Rec."ID");
+                    if SingleSameSquare.FindSet() then
+                        repeat
+                            SingleSameSquare.Delete();
+                        until SingleSameSquare.Next() = 0;
+
+                    // Initialize variables
+                    PeriodStartDate := Rec."Contract Start Date";
+                    LeaseEndDate := Rec."Contract End Date";
+                    YearCounter := 1;
+                    LineNoCounter := 1;
+
+                    // Loop to divide the period into yearly chunks and create records
+                    while PeriodStartDate <= LeaseEndDate do begin
+                        SingleSameSquare.Init();
+                        SingleSameSquare."ID" := Rec."ID";
+                        SingleSameSquare."Line No." := LineNoCounter;
+                        SingleSameSquare.Year := YearCounter;
+                        SingleSameSquare."Start Date" := PeriodStartDate;
+
+                        // Calculate the End Date (365 days after Start Date, adjusted for leap years)
+                        DaysToAdd := 365; // Default to 365 days
+                        LeapDays := 0;
+
+                        // Check for leap years in the range from Start Date to Start Date + 364 days
+                        for CurrentYear := Date2DMY(PeriodStartDate, 3) to Date2DMY(PeriodStartDate + 364, 3) do begin
+                            if IsLeapYear(CurrentYear) then begin
+                                // Ensure the leap day (Feb 29) falls within the range
+                                if (DMY2Date(29, 2, CurrentYear) >= PeriodStartDate) and
+                                   (DMY2Date(29, 2, CurrentYear) <= PeriodStartDate + DaysToAdd - 1) then
+                                    LeapDays += 1;
+                            end;
+                        end;
+
+                        // Adjust DaysToAdd to account for any leap days
+                        DaysToAdd := DaysToAdd + LeapDays;
+
+                        // Calculate the PeriodEndDate
+                        PeriodEndDate := PeriodStartDate + DaysToAdd - 1;
+
+                        // Ensure the End Date does not exceed the Lease End Date
+                        if PeriodEndDate > LeaseEndDate then
+                            PeriodEndDate := LeaseEndDate;
+
+                        SingleSameSquare."End Date" := PeriodEndDate;
+
+                        // Calculate the number of days for this chunk
+                        TotalDays := PeriodEndDate - PeriodStartDate + 1;
+                        SingleSameSquare."Number of Days" := TotalDays;
+
+                        // Populate other fields
+                        SingleSameSquare."Unit ID" := Rec."Unit Name";
+                        SingleSameSquare."Unit Sq Ft" := Rec."Unit Sq. Feet";
+
+                        // Set default values for Rate per Sq.Ft and Annual Amount (to be manually entered)
+                        SingleSameSquare."Rate per Sq.Ft" := 0; // Initialize as 0; users will manually enter this
+                        SingleSameSquare."Annual Amount" := 0; // Calculated after manual input
+
+                        // Set Final Annual Amount to match Annual Amount
+                        SingleSameSquare."Final Annual Amount" := SingleSameSquare."Annual Amount";
+
+                        // Calculate Per Day Rent
+                        SingleSameSquare."Per Day Rent" := 0; // Will be calculated after manual input
+
+                        SingleSameSquare.Insert();
+
+                        // Move to the next period
+                        PeriodStartDate := PeriodEndDate + 1;
+                        YearCounter += 1;
+                        LineNoCounter += 1;
+                    end;
+                end
+                else if "Single Rent Calculation" = "Single Rent Calculation"::"Single Unit with lumpsum square feet rate" then begin
+
+                    if Rec."ID" = 0 then
+                        Error('Contract Renewal ID is missing or not assigned.');
+
+                    LeaseProposal.Reset();
+                    LeaseProposal.SetRange("ID", Rec."ID");
+
+                    if not LeaseProposal.FindFirst() then
+                        Error('No record found for Contract Renewal ID %1.', Rec."ID");
+
+                    // Delete existing records to avoid duplication
+                    SingleLumSquare.SetRange("ID", LeaseProposal."ID");
+                    if SingleLumSquare.FindSet() then
+                        repeat
+                            SingleLumSquare.Delete();
+                        until SingleLumSquare.Next() = 0;
+
+                    PeriodStartDate := LeaseProposal."Contract Start Date";
+                    YearCounter := 1;
+                    LineNoCounter := 1;
+
+                    // Loop to divide the period into yearly chunks and create records
+                    while PeriodStartDate <= LeaseProposal."Contract End Date" do begin
+                        SingleLumSquare.Init();
+                        SingleLumSquare."ID" := LeaseProposal."ID";
+                        SingleLumSquare."SL_Line No." := LineNoCounter;
+                        SingleLumSquare.SL_Year := YearCounter;
+                        SingleLumSquare."SL_Start Date" := PeriodStartDate;
+
+                        // Calculate the End Date (365 days after Start Date, adjusted for leap years)
+                        DaysToAdd := 365; // Default to 365 days
+                        LeapDays := 0;
+
+                        // Check for leap years in the range from Start Date to Start Date + 364 days
+                        for CurrentYear := Date2DMY(PeriodStartDate, 3) to Date2DMY(PeriodStartDate + 364, 3) do begin
+                            if IsLeapYear(CurrentYear) then begin
+                                // Ensure the leap day (Feb 29) falls within the range
+                                if (DMY2Date(29, 2, CurrentYear) >= PeriodStartDate) and
+                                   (DMY2Date(29, 2, CurrentYear) <= PeriodStartDate + DaysToAdd - 1) then
+                                    LeapDays += 1;
+                            end;
+                        end;
+
+                        // Adjust DaysToAdd to account for any leap days
+                        DaysToAdd := DaysToAdd + LeapDays;
+
+                        // Calculate the PeriodEndDate
+                        PeriodEndDate := PeriodStartDate + DaysToAdd - 1;
+
+                        // Ensure the end date does not exceed the Lease End Date
+                        if PeriodEndDate > LeaseProposal."Contract End Date" then
+                            PeriodEndDate := LeaseProposal."Contract End Date";
+
+                        SingleLumSquare."SL_End Date" := PeriodEndDate;
+
+                        // Calculate the number of days
+                        TotalDays := PeriodEndDate - PeriodStartDate + 1;
+                        SingleLumSquare."SL_Number of Days" := TotalDays;
+
+                        // Populate other fields
+                        SingleLumSquare."SL_Unit ID" := LeaseProposal."Unit Name";
+                        SingleLumSquare."SL_Unit Sq Ft" := LeaseProposal."Unit Sq. Feet";
+
+                        // For the first year, initialize the Annual Amount and Final Annual Amount
+                        if YearCounter = 1 then begin
+                            SingleLumSquare."SL_Annual Amount" := 0; // User will enter manually
+                            SingleLumSquare."SL_Final Annual Amount" := 0;
+                        end;
+
+                        // Calculate Per Day Rent
+                        if TotalDays > 0 then
+                            SingleLumSquare."SL_Per Day Rent" := SingleLumSquare."SL_Final Annual Amount" / TotalDays
+                        else
+                            SingleLumSquare."SL_Per Day Rent" := 0;
+
+                        SingleLumSquare.Insert();
+
+                        // Update for the next year
+                        PeriodStartDate := PeriodEndDate + 1;
+                        YearCounter += 1;
+                        LineNoCounter += 1;
+                    end;
+                end;
+            end;
+
+        }
+
+
+
+        field(50171; "Merge Rent Calculation"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Merge Unit Rent Calculation Type';
+            OptionMembers = " ","Merged Unit with same square feet","Merged Unit with differential square feet rate","Merged Unit with lumpsum annual amount";
+        }
     }
 
     keys
@@ -968,4 +1168,14 @@ table 50307 "Tenancy Contract"
     end;
 
     //-------------Calculate Grace Period--------------//
+
+    //-------------Leap year Counting--------------//
+    local procedure IsLeapYear(Year: Integer): Boolean
+    begin
+        if (Year mod 4 = 0) and ((Year mod 100 <> 0) or (Year mod 400 = 0)) then
+            exit(true);
+        exit(false);
+    end;
+
+    //-------------Leap year Counting--------------//
 }

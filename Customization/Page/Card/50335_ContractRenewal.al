@@ -356,23 +356,23 @@ page 50335 "Contract Renewal Card"
                     // Visible = false;
                 }
 
-                // field("Rera"; Rec."Rera")
-                // {
-                //     ApplicationArea = All;
-                //     Editable = true;
-                // }
+                field("Rera"; Rec."Rera")
+                {
+                    ApplicationArea = All;
+                    Editable = true;
+                }
 
-                // field("Ejari Processing Charges"; Rec."Ejari Processing Charges")
-                // {
-                //     ApplicationArea = All;
-                //     Editable = true;
-                // }
+                field("Ejari Processing Charges"; Rec."Ejari Processing Charges")
+                {
+                    ApplicationArea = All;
+                    Editable = true;
+                }
 
-                // field("Renewal Charges"; Rec."Renewal Charges")
-                // {
-                //     ApplicationArea = All;
-                //     Editable = true;
-                // }
+                field("Renewal Charges"; Rec."Renewal Charges")
+                {
+                    ApplicationArea = All;
+                    Editable = true;
+                }
             }
 
 
@@ -458,7 +458,7 @@ page 50335 "Contract Renewal Card"
                 field("Renewal Contract Status"; rec."Renewal Contract Status")
                 {
                     ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
+                    Editable = true; // The ID is not editable since it's auto-incrementing
                 }
 
                 field("Original Contract ID"; rec."Original Contract ID")

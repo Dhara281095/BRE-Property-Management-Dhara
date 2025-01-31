@@ -388,6 +388,29 @@ page 50313 "Tenancy Contract Card"
                     ApplicationArea = All;
                 }
 
+                field("Single Rent Calculation"; Rec."Single Rent Calculation")
+                {
+                    ApplicationArea = All;
+                    Editable = Rec."Praposal Type Selected" = Rec."Praposal Type Selected"::"Single Unit";
+
+                    trigger OnValidate()
+                    begin
+                        UpdateVisibility();
+                    end;
+                }
+
+                field("Merge Rent Calculation"; Rec."Merge Rent Calculation")
+                {
+                    ApplicationArea = All;
+                    Editable = Rec."Praposal Type Selected" = Rec."Praposal Type Selected"::"Merge Unit";
+
+                    trigger OnValidate()
+                    begin
+                        UpdateVisibility();
+                    end;
+                }
+
+
                 field("upload document"; rec."upload document")
                 {
                     ApplicationArea = All;
@@ -490,7 +513,7 @@ page 50313 "Tenancy Contract Card"
                 field("Tenant Contract Status"; rec."Tenant Contract Status")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
 
                 field("Renewal Contract Status"; rec."Renewal Contract Status")
@@ -542,6 +565,80 @@ page 50313 "Tenancy Contract Card"
                     Visible = Rec."Praposal Type Selected" = Rec."Praposal Type Selected"::"Merge Unit"; // Visible when "Praposal Type Selected" is "Merge Unit"
                 }
             }
+
+            group("Single Unit with lumpsum square feet rate")
+            {
+                Caption = 'Single Unit with lumpsum square feet rate';
+                Visible = ShowLegalReasonFields3;
+
+                part("Single Unit lumpsum Rent"; "TC Single LumAnnualAmnt SP")
+                {
+                    SubPageLink = "ID" = FIELD("ID"); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    // Visible = isVisible;
+                }
+            }
+
+
+            group("Single Unit with square feet rate")
+            {
+                Caption = 'Single Unit With Square Feet Rate';
+                Visible = ShowLegalReasonFields;
+
+                part("Single Unit Rent"; "TC Single Unit Rent SubPage")
+                {
+                    SubPageLink = "ID" = FIELD("ID"); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    // Visible = isVisible;
+                }
+
+            }
+            group("Merged Unit with same square feet")
+            {
+                Caption = 'Merged Unit With Same Square Feet';
+                Visible = ShowBusinessReasonFields;
+                part("Merge SameSqure Rent"; "TC Merge SameSqure SubPage")
+                {
+                    SubPageLink = "ID" = FIELD("ID"); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    // Visible = isVisible;
+                }
+            }
+            group("Merged Unit with differential square feet rate")
+            {
+                Caption = 'Merged Unit With Differential Square Feet Rate';
+                Visible = ShowLegalReasonFields1;
+                part("Merge DifferentSqure Rent"; "TC Merge DifferentSq SubPage")
+                {
+                    SubPageLink = "ID" = FIELD("ID"); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    // Visible = isVisible;
+                }
+            }
+            group("Merged Unit with lumpsum annual amount")
+            {
+                Caption = 'Merged Unit With Lumpsum Annual Amount';
+                Visible = ShowBusinessReasonFields2;
+                part("Merge Lum_AnnualAmount Rent"; "TC Merge Lum_AnnualAmount SP")
+                {
+                    SubPageLink = "ID" = FIELD("ID"); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    // Visible = isVisible;
+                }
+            }
+
+            group("Per Day Rent for Revenue Allocation")
+            {
+                Caption = 'Per Day Rent for Revenue Allocation';
+                part("Per Day Rent for Revenue"; "TC PerDayRent for Revenue Card")
+                {
+                    SubPageLink = "Contract Renewal Id" = FIELD(Id); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    Visible = Rec."Praposal Type Selected" = Rec."Praposal Type Selected"::"Merge Unit"; // Visible when "Praposal Type Selected" is "Merge Unit"
+                }
+            }
+
+
 
             group("Other Payments")
             {
@@ -625,6 +722,7 @@ page 50313 "Tenancy Contract Card"
         CurrPage."Revenues".Page.SetProposalId(Rec."Proposal ID");
 
         UpdateFieldsEnable();
+        UpdateVisibility();
     end;
 
     trigger OnModifyRecord(): Boolean
@@ -658,6 +756,38 @@ page 50313 "Tenancy Contract Card"
 
         CurrPage.Update(false);
     end;
+
+    var
+        ShowLegalReasonFields: Boolean;
+        ShowBusinessReasonFields: Boolean;
+
+        ShowLegalReasonFields1: Boolean;
+        ShowBusinessReasonFields2: Boolean;
+        ShowLegalReasonFields3: Boolean;
+
+        ShowLegalReasonFields4: Boolean;
+
+        ShowLegalReasonFields5: Boolean;
+
+
+    // trigger OnAfterge
+    // begin
+
+    //     // SetRange("Merge Unit ID", Rec."Merge Unit ID");
+    // end;
+
+    // Procedure to update visibility dynamically
+    procedure UpdateVisibility()
+    begin
+        ShowLegalReasonFields := (Rec."Single Rent Calculation" = Rec."Single Rent Calculation"::"Single Unit with square feet rate");
+        ShowBusinessReasonFields := (Rec."Merge Rent Calculation" = Rec."Merge Rent Calculation"::"Merged Unit with same square feet");
+        ShowLegalReasonFields1 := (Rec."Merge Rent Calculation" = Rec."Merge Rent Calculation"::"Merged Unit with differential square feet rate");
+        ShowBusinessReasonFields2 := (Rec."Merge Rent Calculation" = Rec."Merge Rent Calculation"::"Merged Unit with lumpsum annual amount");
+        ShowLegalReasonFields3 := (Rec."Single Rent Calculation" = Rec."Single Rent Calculation"::"Single Unit with lumpsum square feet rate");
+        ShowLegalReasonFields4 := (Rec."Praposal Type Selected" = Rec."Praposal Type Selected"::"Merge Unit");
+    end;
+
+
 
 
 }
