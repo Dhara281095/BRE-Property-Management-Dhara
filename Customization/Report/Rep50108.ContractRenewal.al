@@ -22,7 +22,7 @@ report 50108 "Contract Renewal"
             column(Tenant_Full_Name; "Tenant Full Name")
             {
             }
-            column(Rent_Amount; "Rent Amount")
+            column(Annual_Rent_Amount; "Annual Rent Amount")
             {
             }
             column(Rera; Rera)
