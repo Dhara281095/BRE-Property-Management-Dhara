@@ -61,9 +61,9 @@ page 50928 "Payment Mode Card2"
                 field("Cheque Number"; Rec."Cheque Number")
                 {
                     ApplicationArea = All;
-                     Editable = (Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" <> Rec."Payment Status"::Cancelled);  // The ID is not editable since it's auto-incrementing
-                    //Editable = (Rec."Payment Mode" = 'Cheque'); // Editable only if Payment Mode is 'Cheque'
-                     //Editable = not ((Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" = Rec."Payment Status"::Cancelled));
+                    Editable = (Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" <> Rec."Payment Status"::Cancelled);  // The ID is not editable since it's auto-incrementing
+                                                                                                                               //Editable = (Rec."Payment Mode" = 'Cheque'); // Editable only if Payment Mode is 'Cheque'
+                                                                                                                               //Editable = not ((Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" = Rec."Payment Status"::Cancelled));
 
 
                 }
@@ -107,27 +107,27 @@ page 50928 "Payment Mode Card2"
                 field("Invoice #"; Rec."Invoice #")
                 {
                     ApplicationArea = All;
-                     Editable = (Rec."Payment Status" <> Rec."Payment Status"::Cancelled); // Makes the field editable unless Payment Status is "Cancelled"
-                 
+                    Editable = (Rec."Payment Status" <> Rec."Payment Status"::Cancelled); // Makes the field editable unless Payment Status is "Cancelled"
+
                 }
 
                 field("Receipt #"; Rec."Receipt #")
                 {
                     ApplicationArea = All;
                     Editable = (Rec."Payment Status" <> Rec."Payment Status"::Cancelled); // Makes the field editable unless Payment Status is "Cancelled"
-           
+
                 }
 
                 field("Old Cheque #"; Rec."Old Cheque #")
                 {
                     ApplicationArea = All;
-                     Editable = (Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" <> Rec."Payment Status"::Cancelled);  
-                   // Editable = (Rec."Payment Mode" = 'Cheque'); // Editable only if Payment Mode is 'Cheque'
-                   // Editable = (Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" <> Rec."Payment Status"::Cancelled);
-                  // Editable = not ((Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" = Rec."Payment Status"::Cancelled));
+                    Editable = (Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" <> Rec."Payment Status"::Cancelled);
+                    // Editable = (Rec."Payment Mode" = 'Cheque'); // Editable only if Payment Mode is 'Cheque'
+                    // Editable = (Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" <> Rec."Payment Status"::Cancelled);
+                    // Editable = not ((Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" = Rec."Payment Status"::Cancelled));
 
 
-                    
+
 
                     trigger OnValidate()
                     begin
@@ -140,9 +140,9 @@ page 50928 "Payment Mode Card2"
                 field("Upload Cheque"; Rec."Upload Cheque")
                 {
                     ApplicationArea = All;
-                     DrillDown = true;
+                    DrillDown = true;
                     Editable = false;
-                   
+
                     trigger OnDrillDown()
                     var
                         AzureBlobUploader: Codeunit "Azure Blob Management";
@@ -202,7 +202,7 @@ page 50928 "Payment Mode Card2"
                     ApplicationArea = All;
                     Editable = false;
                     DrillDown = true;
-                  
+
                     trigger OnValidate()
                     begin
                         if Rec."Payment Mode" <> 'Cheque' then
@@ -230,35 +230,35 @@ page 50928 "Payment Mode Card2"
                     ApplicationArea = All;
                     Editable = false;
                     DrillDown = true;
-                      
 
-                     trigger OnDrillDown()
-                     var
-                     PaymentModeRec: Record "Payment Mode2";
-                    PaymentScheduleRec: Record "Payment Schedule2";
-                    FilteredSchedulePage: Page "Payment Schedule Card2"; // Replace with your actual page name
+
+                    trigger OnDrillDown()
+                    var
+                        PaymentModeRec: Record "Payment Mode2";
+                        PaymentScheduleRec: Record "Payment Schedule2";
+                        FilteredSchedulePage: Page "Payment Schedule Card2"; // Replace with your actual page name
                     begin
-                    // Fetch the first entry's due date
-                    //  if PaymentModeRec.FindSet() then begin
-                    //  repeat
-                    // Fetch the due date and apply it as a filter
-              
-                    PaymentScheduleRec.SetRange("Contract ID", Rec."Contract ID");
-                   // PaymentScheduleRec.SetRange("Proposal ID", Rec."Proposal ID");
-                    PaymentScheduleRec.SetRange("Tenant ID", Rec."Tenant ID");
-                    PaymentScheduleRec.SetRange("Due Date", Rec."Due Date");
-                    PaymentScheduleRec.SetRange("Payment Series", Rec."Payment Series");
+                        // Fetch the first entry's due date
+                        //  if PaymentModeRec.FindSet() then begin
+                        //  repeat
+                        // Fetch the due date and apply it as a filter
 
-                    // Hide other data and show the filtered records
-                   if PaymentScheduleRec.FindFirst() then
-                   FilteredSchedulePage.SetTableView(PaymentScheduleRec);
+                        PaymentScheduleRec.SetRange("Contract ID", Rec."Contract ID");
+                        // PaymentScheduleRec.SetRange("Proposal ID", Rec."Proposal ID");
+                        PaymentScheduleRec.SetRange("Tenant ID", Rec."Tenant ID");
+                        PaymentScheduleRec.SetRange("Due Date", Rec."Due Date");
+                        PaymentScheduleRec.SetRange("Payment Series", Rec."Payment Series");
 
-                   // Open the filtered page
-                   PAGE.Run(PAGE::"Payment Schedule Card2", PaymentScheduleRec);
+                        // Hide other data and show the filtered records
+                        if PaymentScheduleRec.FindFirst() then
+                            FilteredSchedulePage.SetTableView(PaymentScheduleRec);
 
-                    // until PaymentModeRec.Next() = 0;
-                //    end;
-                 end;
+                        // Open the filtered page
+                        PAGE.Run(PAGE::"Payment Schedule Card2", PaymentScheduleRec);
+
+                        // until PaymentModeRec.Next() = 0;
+                        //    end;
+                    end;
 
                 }
 
@@ -283,17 +283,18 @@ page 50928 "Payment Mode Card2"
                     Visible = true;
                 }
 
-                field("Approval Status";Rec."Approval Status")
+                field("Approval Status"; Rec."Approval Status")
                 {
                     ApplicationArea = All;
                 }
-                field(Reason;Rec.Reason)
+                field(Reason; Rec.Reason)
                 {
                     ApplicationArea = All;
                 }
-                field(IsUpdated;Rec.IsUpdated)
+                field(IsUpdated; Rec.IsUpdated)
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
 
 
@@ -301,7 +302,7 @@ page 50928 "Payment Mode Card2"
 
 
 
-              group(TotalAmountCalculation)
+            group(TotalAmountCalculation)
             {
                 field("Total Amount"; Rec."Total Amount")
                 {
@@ -327,143 +328,145 @@ page 50928 "Payment Mode Card2"
 
 
 
-actions
-{
-    area(processing)
+    actions
     {
-        action(InsertData)
+        area(processing)
         {
-            ApplicationArea = All;
-            Caption = 'Insert Data';
-            Image = NewDocument;
+            action(InsertData)
+            {
+                ApplicationArea = All;
+                Caption = 'Insert Data';
+                Image = NewDocument;
+                Visible = IsLeaseManager;
 
-            trigger OnAction()
-            var
-                approvalflow : Codeunit 50510;
-                PaymentModeRec: Record "Payment Mode2";
-                PrePDCTransRec: Record "PDC Transaction";
-                PDCTransRec: Record "PDC Transaction";
-                paymentRec : Record "Payment Mode";
-                paymentTransRec : Record "Payment Transaction";
-                PrePaymentTransRec : Record "Payment Transaction";
-                paymentGridRec : Record "Payment Series Details";
-                PrePaymentGridRec : Record "Payment Series Details";
-                IsPaymentTransactionCreated: Boolean;
-                Isupdate : Boolean;
-            begin
-                Isupdate := false;
-                approvalflow.SendPaymentModeApprovalToFinanceManger(Format(Rec."Contract ID"),Rec."Tenant Id",Rec."Contract ID",Isupdate);
+                trigger OnAction()
+                var
+                    approvalflow: Codeunit 50510;
+                    PaymentModeRec: Record "Payment Mode2";
+                    PrePDCTransRec: Record "PDC Transaction";
+                    PDCTransRec: Record "PDC Transaction";
+                    paymentRec: Record "Payment Mode";
+                    paymentTransRec: Record "Payment Transaction";
+                    PrePaymentTransRec: Record "Payment Transaction";
+                    paymentGridRec: Record "Payment Series Details";
+                    PrePaymentGridRec: Record "Payment Series Details";
+                    IsPaymentTransactionCreated: Boolean;
+                    Isupdate: Boolean;
+                begin
+                    Isupdate := false;
+                    approvalflow.SendPaymentModeApprovalToFinanceManger(Format(Rec."Contract ID"), Rec."Tenant Id", Rec."Contract ID", Isupdate);
 
-                // Update Approval Status in the grid
-                PaymentModeRec.SetRange("Contract ID", Rec."Contract ID"); // Filter by Contract ID
-                if PaymentModeRec.FindSet() then begin
-                    repeat
-                        PaymentModeRec."Approval Status" := PaymentModeRec."Approval Status"::Pending; // Set Approval Status to Pending
-                        
-                        PaymentModeRec.Modify();
-                    until PaymentModeRec.Next() = 0;
+                    // Update Approval Status in the grid
+                    PaymentModeRec.SetRange("Contract ID", Rec."Contract ID"); // Filter by Contract ID
+                    if PaymentModeRec.FindSet() then begin
+                        repeat
+                            PaymentModeRec."Approval Status" := PaymentModeRec."Approval Status"::Pending; // Set Approval Status to Pending
+
+                            PaymentModeRec.Modify();
+                        until PaymentModeRec.Next() = 0;
+                    end;
+
+                    paymentRec.SetRange("Contract ID", Rec."Contract ID");
+                    paymentRec.SetRange("Tenant Id", Rec."Tenant Id");
+                    if paymentRec.FindSet() then begin
+                        paymentRec."Approval Status" := paymentRec."Approval Status"::Pending;
+
+                    end;
+
+                    // Insert records into PDC Transaction for Payment Modes with "Cheque"
+                    PaymentModeRec.SetRange("Contract ID", Rec."Contract ID"); // Filter by Contract ID
+                    PaymentModeRec.SetRange("Tenant Id", Rec."Tenant Id"); // Filter by Tenant ID
+                    PaymentModeRec.SetRange("Payment Mode", 'Cheque'); // Filter by Payment Mode = Cheque
+
+                    if PaymentModeRec.FindSet() then begin
+                        repeat
+                            // Check for duplicate PDC Transaction record
+                            PrePDCTransRec.SetRange("Cheque Number", PaymentModeRec."Cheque Number");
+                            PrePDCTransRec.SetRange("Tenant Id", PaymentModeRec."Tenant Id");
+                            PrePDCTransRec.SetRange("Contract ID", PaymentModeRec."Contract ID");
+                            PrePDCTransRec.SetRange("payment Series", PaymentModeRec."Payment Series");
+
+                            if not PrePDCTransRec.FindFirst() then begin
+                                // Insert record into PDC Transaction
+                                PDCTransRec.Init();
+                                PDCTransRec."Cheque Number" := PaymentModeRec."Cheque Number";
+                                PDCTransRec."Bank Name" := PaymentModeRec."Deposit Bank";
+                                PDCTransRec."Cheque Date" := PaymentModeRec."Due Date";
+                                PDCTransRec.Amount := PaymentModeRec."Amount Including VAT";
+                                PDCTransRec."Tenant Id" := PaymentModeRec."Tenant Id";
+                                PDCTransRec."Contract ID" := PaymentModeRec."Contract ID";
+                                PDCTransRec."Cheque Status" := PDCTransRec."Cheque Status"::"Cheque Received";
+                                PDCTransRec."Approval Status" := PDCTransRec."Approval Status"::Pending;
+                                PDCTransRec.View := PaymentModeRec."View Document URL";
+                                PDCTransRec."payment Series" := PaymentModeRec."Payment Series";
+                                PDCTransRec.Insert(true);
+                                Clear(PDCTransRec);
+                            end;
+
+                        until PaymentModeRec.Next() = 0;
+
+                        Message('PDC Transaction records successfully created for Cheque payment modes.');
+                    end else
+                        Message('No payment modes with "Cheque" found for the given Contract ID and Tenant ID.');
                 end;
 
-                paymentRec.SetRange("Contract ID",Rec."Contract ID");
-                paymentRec.SetRange("Tenant Id",Rec."Tenant Id");
-                if paymentRec.FindSet() then begin
-                    paymentRec."Approval Status" := paymentRec."Approval Status"::Pending;
-                    
+
+            }
+
+            action(UpdateData)
+            {
+                ApplicationArea = All;
+                Caption = 'Update Data';
+                Image = NewDocument;
+                Visible = IsLeaseManager;
+
+                trigger OnAction()
+                var
+                    approvalflow: Codeunit 50510;
+                    PaymentModeRec: Record "Payment Mode2";
+                    paymentRec: Record "Payment Mode";
+                    Isupdate: Boolean;
+                begin
+                    Isupdate := true;
+                    approvalflow.SendPaymentModeApprovalToFinanceManger(Format(Rec."Contract ID"), Rec."Tenant Id", Rec."Contract ID", Isupdate);
                 end;
 
-                // Insert records into PDC Transaction for Payment Modes with "Cheque"
-                PaymentModeRec.SetRange("Contract ID", Rec."Contract ID"); // Filter by Contract ID
-                PaymentModeRec.SetRange("Tenant Id", Rec."Tenant Id"); // Filter by Tenant ID
-                PaymentModeRec.SetRange("Payment Mode", 'Cheque'); // Filter by Payment Mode = Cheque
-
-                if PaymentModeRec.FindSet() then begin
-                    repeat
-                        // Check for duplicate PDC Transaction record
-                        PrePDCTransRec.SetRange("Cheque Number", PaymentModeRec."Cheque Number");
-                        PrePDCTransRec.SetRange("Tenant Id", PaymentModeRec."Tenant Id");
-                        PrePDCTransRec.SetRange("Contract ID", PaymentModeRec."Contract ID");
-                        PrePDCTransRec.SetRange("payment Series", PaymentModeRec."Payment Series");
-
-                        if not PrePDCTransRec.FindFirst() then begin
-                            // Insert record into PDC Transaction
-                            PDCTransRec.Init();
-                            PDCTransRec."Cheque Number" := PaymentModeRec."Cheque Number";
-                            PDCTransRec."Bank Name" := PaymentModeRec."Deposit Bank";
-                            PDCTransRec."Cheque Date" := PaymentModeRec."Due Date";
-                            PDCTransRec.Amount := PaymentModeRec."Amount Including VAT";
-                            PDCTransRec."Tenant Id" := PaymentModeRec."Tenant Id";
-                            PDCTransRec."Contract ID" := PaymentModeRec."Contract ID";
-                            PDCTransRec."Cheque Status" := PDCTransRec."Cheque Status"::"Cheque Received";
-                            PDCTransRec."Approval Status" := PDCTransRec."Approval Status"::Pending;
-                            PDCTransRec.View := PaymentModeRec."View Document URL";
-                            PDCTransRec."payment Series" := PaymentModeRec."Payment Series";
-                            PDCTransRec.Insert(true);
-                            Clear(PDCTransRec);
-                        end;
-
-                    until PaymentModeRec.Next() = 0;
-
-                    Message('PDC Transaction records successfully created for Cheque payment modes.');
-                end else
-                    Message('No payment modes with "Cheque" found for the given Contract ID and Tenant ID.');
-            end;
-                       
-                
-        }
-
-        action(UpdateData)
-        {
-            ApplicationArea = All;
-            Caption = 'Update Data';
-            Image = NewDocument;
-
-            trigger OnAction()
-            var 
-                approvalflow : Codeunit 50510;
-                PaymentModeRec: Record "Payment Mode2";
-                paymentRec : Record "Payment Mode";
-                Isupdate : Boolean;
-            begin
-                Isupdate := true;
-                approvalflow.SendPaymentModeApprovalToFinanceManger(Format(Rec."Contract ID"),Rec."Tenant Id",Rec."Contract ID",Isupdate);
-            end;
-
+            }
         }
     }
-}
 
 
 
-//  trigger OnAfterGetRecord()
-//     begin
-//         // If the field is blank, assign '-'
-//         if Rec."Cheque Number" = '' then
-//             Rec."Cheque Number" := '-';
+    //  trigger OnAfterGetRecord()
+    //     begin
+    //         // If the field is blank, assign '-'
+    //         if Rec."Cheque Number" = '' then
+    //             Rec."Cheque Number" := '-';
 
-//             //  if Rec."Old Cheque #" = '' then
-//             // Rec."Old Cheque #" := '-';
+    //             //  if Rec."Old Cheque #" = '' then
+    //             // Rec."Old Cheque #" := '-';
 
-//             //  if Rec."Receipt #" = '' then
-//             // Rec."Receipt #" := '-';
+    //             //  if Rec."Receipt #" = '' then
+    //             // Rec."Receipt #" := '-';
 
-//             //  if Rec."Invoice #" = '' then
-//             // Rec."Invoice #" := '-';
+    //             //  if Rec."Invoice #" = '' then
+    //             // Rec."Invoice #" := '-';
 
 
-//             if Rec."Due Date" <> xRec."Due Date" then begin
-//                     if Rec."Due Date" = Today() then
-//                         Rec."Payment Status" := Rec."Payment Status"::"Due"
-//                     else if Rec."Due Date" < Today() then
-//                         Rec."Payment Status" := Rec."Payment Status"::"Overdue"
-//                     else
-//                         Rec."Payment Status" := Rec."Payment Status";
+    //             if Rec."Due Date" <> xRec."Due Date" then begin
+    //                     if Rec."Due Date" = Today() then
+    //                         Rec."Payment Status" := Rec."Payment Status"::"Due"
+    //                     else if Rec."Due Date" < Today() then
+    //                         Rec."Payment Status" := Rec."Payment Status"::"Overdue"
+    //                     else
+    //                         Rec."Payment Status" := Rec."Payment Status";
 
-//                  //   Modify();
-//                 end;
-//     end;
-    
-    
-  
+    //                  //   Modify();
+    //                 end;
+    //     end;
+
+
+
     procedure SetProposalID(pProposalID: Integer)
     begin
         proposalID := pProposalID;
@@ -474,12 +477,12 @@ actions
         tenantID := pTenantID;
     end;
 
-     procedure SetContractID(pContractID: Integer)
+    procedure SetContractID(pContractID: Integer)
     begin
         ContractID := pContractID;
     end;
 
-      procedure OpenFileInBrowser(URL: Text)
+    procedure OpenFileInBrowser(URL: Text)
     begin
         // Use the Hyperlink method to open the file in the browser
         if URL <> '' then
@@ -497,8 +500,8 @@ actions
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     begin
 
-         Rec."Tenant ID" := tenantID;
-         Rec."Contract ID" := ContractID;
+        Rec."Tenant ID" := tenantID;
+        Rec."Contract ID" := ContractID;
 
     end;
 
@@ -506,6 +509,25 @@ actions
         proposalID: Integer;
         tenantID: Code[20];
         ContractID: Integer;
+        isApproved: Boolean;
+        IsLeaseManager: Boolean;
+
+    trigger OnOpenPage()
+    var
+        PermissionSet: Record "User Personalization";
+    begin
+        // Check if the current user has the 'LEASE_MANAGER' permission set
+        IsLeaseManager := false;
+        PermissionSet.SetRange("User ID", UserId());
+        // PermissionSet.SetRange("Profile ID", 'LEASE_MANAGER');
+        if PermissionSet.FindSet() then begin
+            if PermissionSet."Profile ID" = 'LEASE_MANAGER' then
+                IsLeaseManager := true;
+        end;
+
+
+    end;
+
 
 
 }
