@@ -11,6 +11,18 @@ report 50101 "Tenancy Contract"
     {
         dataitem(TenancyContract; "Tenancy Contract")
         {
+            column(Contract_ID; "Contract ID")
+            {
+            }
+            column(Contract_Type; "Contract Type")
+            {
+            }
+            column(Proposal_ID; "Proposal ID")
+            {
+            }
+            column(Renewal_Proposal_ID; "Renewal Proposal ID")
+            {
+            }
             column(OwnersName; "Owner's Name")
             {
             }
