@@ -91,13 +91,18 @@ page 50337 "Security Deposit Card"
                 field("New_Security Deposit Amount"; rec."New_Security Deposit Amount")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
 
                     trigger OnValidate()
                     begin
                         rec."Adjusted amount" := rec."New_Security Deposit Amount" - rec."Security Deposit Amount";
                         CurrPage.Update();
                     end;
+                }
+                field("New Security Amount"; rec."New Security Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
                 }
 
                 field("Adjusted amount"; rec."Adjusted amount")

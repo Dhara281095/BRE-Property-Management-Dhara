@@ -24,7 +24,12 @@ page 50707 paymentdata
                 {
                     Caption = 'Amount';
                 }
-                field(amountIncludingVAT; Rec."Amount Including VAT")
+                // field(amountIncludingVAT; Rec."Amount Including VAT")
+                // {
+                //     Caption = 'Amount Including VAT';
+                // }
+
+                field(amountIncludingVAT; Format(Rec."Amount Including VAT", 0, '<Integer><Decimals,2>'))
                 {
                     Caption = 'Amount Including VAT';
                 }
@@ -40,7 +45,7 @@ page 50707 paymentdata
                 {
                     Caption = 'Deposit Status';
                 }
-                field(dueDate; Rec."Due Date")
+                field(dueDate; Format(Rec."Due Date", 0, '<Day,2>/<Month,2>/<Year4>'))
                 {
                     Caption = 'Due Date';
                 }

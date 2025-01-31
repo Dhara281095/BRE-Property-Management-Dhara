@@ -503,7 +503,7 @@ page 50341 "CR Merge DifferentSq SubPage"
         LeaseProposalRec.SetRange("ID", Rec."ID");
         if LeaseProposalRec.FindSet() then begin
             LeaseProposalRec."Rent Amount" := FirstYearAnnualAmount; // Update Rent Amount with the sum of first year's Final Annual Amount
-            LeaseProposalRec."Annual Rent Amount" := TotalFinalAmount; // Update Annual Rent Amount with the total of all years' Final Annual Amounts
+            LeaseProposalRec."Contract Amount" := TotalFinalAmount; // Update Annual Rent Amount with the total of all years' Final Annual Amounts
 
 
             // if LeaseProposalRec."Rent Amount VAT %" = LeaseProposalRec."Rent Amount VAT %"::"5%" then

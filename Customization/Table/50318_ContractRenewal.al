@@ -62,9 +62,11 @@ table 50318 "Contract Renewal"
             Caption = 'Contract ID';
             TableRelation = "Tenancy Contract"."Contract ID";
 
+
             trigger OnValidate()
             var
                 TenancyContractRec: Record "Tenancy Contract";
+                EndDate: Date;
 
 
 
@@ -72,7 +74,14 @@ table 50318 "Contract Renewal"
                 // Fetch details if Contract ID is valid
                 TenancyContractRec.SetRange("Contract ID", "Contract ID");
                 if TenancyContractRec.FindFirst() then begin
-                    "Contract Start Date" := TenancyContractRec."Contract End Date";
+
+                    EndDate := TenancyContractRec."Contract End Date" + 1;
+
+                    // Set the new start date (contract start date + 1 day)
+                    "Contract Start Date" := EndDate;
+
+
+                    // "Contract Start Date" := TenancyContractRec."Contract End Date";
                     // "Contract End Date" := TenancyContractRec."Contract End Date";
                     "Contract Amount" := TenancyContractRec."Annual Rent Amount";
                     "Unit ID" := TenancyContractRec."Unit ID";
@@ -545,19 +554,19 @@ table 50318 "Contract Renewal"
             end;
 
         }
-        field(50156; "Rera"; code[100])
+        field(50156; "Rera"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Rera';
 
         }
-        field(50157; "Ejari Processing Charges"; code[100])
+        field(50157; "Ejari Processing Charges"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Ejari Processing Charges';
 
         }
-        field(50158; "Renewal Charges"; code[100])
+        field(50158; "Renewal Charges"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Renewal Charges';

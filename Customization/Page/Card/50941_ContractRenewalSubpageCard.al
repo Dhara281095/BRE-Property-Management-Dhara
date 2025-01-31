@@ -415,26 +415,56 @@ page 50941 "Contract Renewal SubPage Card"
 
 
 
+    // procedure UpdateLeaseProposalAmount()
+    // var
+    //     LeaseProposal: Record "Contract Renewal";
+    // // Replace with your actual Lease Proposal table name
+    // begin
+    //     // Apply a filter on the ProposalID to find matching Lease Proposal records
+    //     if rec."Secondary Item Type" = 'Security Deposit Amount' then begin
+
+    //         LeaseProposal.SetRange("ID", Rec.ID); // Adjust the field names to your table schema
+
+    //         if LeaseProposal.FindSet() then begin
+    //             // Loop through all matching records if there are multiple
+
+
+    //             LeaseProposal."Security Deposit Amount" := Rec.Amount;
+    //             LeaseProposal.Modify(); // Save the changes
+
+    //         end;
+    //     end;
+    // end;
+
     procedure UpdateLeaseProposalAmount()
     var
-        LeaseProposal: Record "Contract Renewal";
-    // Replace with your actual Lease Proposal table name
+        LeaseProposal: Record "Contract Renewal"; // Replace with your actual Lease Proposal table name
     begin
         // Apply a filter on the ProposalID to find matching Lease Proposal records
-        if rec."Secondary Item Type" = 'Security Deposit Amount' then begin
-
-            LeaseProposal.SetRange("ID", Rec.ID); // Adjust the field names to your table schema
+        if (Rec."Secondary Item Type" = 'Security Deposit Amount') or
+           (Rec."Secondary Item Type" = 'Rera Fees') or
+           (Rec."Secondary Item Type" = 'Ejari Processing Fees') or
+           (Rec."Secondary Item Type" = 'Renewal Amount') then begin
+            LeaseProposal.SetRange("ID", Rec."ID"); // Adjust the field names to your table schema
 
             if LeaseProposal.FindSet() then begin
-                // Loop through all matching records if there are multiple
+                // Update the respective fields based on "Secondary Item Type"
+                case Rec."Secondary Item Type" of
+                    'Security Deposit Amount':
+                        LeaseProposal."Security Deposit Amount" := Rec."Amount Including VAT";
+                    'Rera Fees':
+                        LeaseProposal."Rera" := Rec."Amount Including VAT";
+                    'Ejari Processing Fees':
+                        LeaseProposal."Ejari Processing Charges" := Rec."Amount Including VAT";
+                    'Renewal Amount':
+                        LeaseProposal."Renewal Charges" := Rec."Amount Including VAT";
+                end;
 
-
-                LeaseProposal."Security Deposit Amount" := Rec.Amount;
                 LeaseProposal.Modify(); // Save the changes
-
             end;
         end;
     end;
+
 
 }
 
