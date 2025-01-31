@@ -226,8 +226,8 @@ page 50710 "Approval Payment Request"
         paymentSeriesNos: List of [Text];
     //paymentSeries: Text[100];
     begin
-        Message('Processing Record for: Contract ID: %1, Tenant ID: %2, ID: %3',
-            Rec."Contract ID", Rec."Tenant ID", Rec."ID");
+        //Message('Processing Record for: Contract ID: %1, Tenant ID: %2, ID: %3',
+        //Rec."Contract ID", Rec."Tenant ID", Rec."ID");
 
         // Fetch Approval Record for Current Contract, Tenant, and ID
         ApprovalRec.Reset();
@@ -281,7 +281,7 @@ page 50710 "Approval Payment Request"
                             // repeat
                             PaymentModeTable."Payment Status" := PaymentModeTable."Payment Status"::Cancelled;
                             PaymentModeTable.Modify(true);
-                            Message('Cancelled Payment Series: %1', PaymentModeTable."Payment Series");
+                            // Message('Cancelled Payment Series: %1', PaymentModeTable."Payment Series");
                             // until PaymentModeTable.Next() = 0;
                             Clear(PaymentModeTable);
                         end;
@@ -304,7 +304,7 @@ page 50710 "Approval Payment Request"
                     PaymentModeTable."Payment Series" := NewPaymentCode;
                     PaymentModeTable.Insert(true);
                     Clear(PaymentModeTable);
-                    Message('Inserted new Payment Mode record with Series: %1', NewPaymentCode);
+                    // Message('Inserted new Payment Mode record with Series: %1', NewPaymentCode);
 
                     // Update Payment Schedule for matching `Items` and `Payment Series`
                     for increment := 1 to itemList.Count() do begin
@@ -321,7 +321,7 @@ page 50710 "Approval Payment Request"
                                 PaymentSchedule."Payment Series" := NewPaymentCode;
                                 PaymentSchedule."Due Date" := PaymentChangeReqTable."Due Date";
                                 PaymentSchedule.Modify(true);
-                                Message('Updated Payment Schedule: %1, Item: %2', PaymentSchedule."Payment Series", itemList.Get(increment));
+                            // Message('Updated Payment Schedule: %1, Item: %2', PaymentSchedule."Payment Series", itemList.Get(increment));
                             until PaymentSchedule.Next() = 0;
                         end;
                         // end;
@@ -376,7 +376,7 @@ page 50710 "Approval Payment Request"
                             //repeat
                             PaymentModeTable."Payment Status" := PaymentModeTable."Payment Status"::Cancelled;
                             PaymentModeTable.Modify(true);
-                            Message('Cancelled Payment Status for: %1', PaymentModeTable."Payment Series");
+                            // Message('Cancelled Payment Status for: %1', PaymentModeTable."Payment Series");
                             Clear(PaymentModeTable);
                             //until PaymentModeTable.Next() = 0;
                         end;
@@ -403,7 +403,7 @@ page 50710 "Approval Payment Request"
                         PaymentModeTable."Payment Series" := NewPaymentCode;
                         PaymentModeTable.Insert(true);
                         Clear(PaymentModeTable);
-                        Message('Inserted new payment record with Payment Series: %1', NewPaymentCode);
+                        // Message('Inserted new payment record with Payment Series: %1', NewPaymentCode);
                     end else begin
                         // Modify existing record
                         PaymentModeTable."Amount Including VAT" := PaymentChangeReqTable."Change Amount";
@@ -425,7 +425,7 @@ page 50710 "Approval Payment Request"
                                 PaymentSchedule."Payment Series" := NewPaymentCode;
                                 PaymentSchedule."Due Date" := PaymentChangeReqTable."Due Date";
                                 PaymentSchedule.Modify(true);
-                                Message('Updated Payment Schedule for: %1', PaymentSchedule."Payment Series");
+                            //  Message('Updated Payment Schedule for: %1', PaymentSchedule."Payment Series");
                             until PaymentSchedule.Next() = 0;
                         end;
                     end;
@@ -438,7 +438,7 @@ page 50710 "Approval Payment Request"
                 PaymentModeRec.SetRange("Payment Series", PaymentSeries);
                 if PaymentModeRec.FindSet() then begin
                     PaymentModeRec.ModifyAll("Payment Mode", ApprovalRec."Payment Mode");
-                    Message('Updated Payment Mode for Series: %1', PaymentSeries);
+                    //  Message('Updated Payment Mode for Series: %1', PaymentSeries);
                 end else
                     Error('Payment Series %1 not found in Payment Mode Table.', PaymentSeries);
             end;

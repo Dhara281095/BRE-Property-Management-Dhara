@@ -16,6 +16,7 @@ table 50938 "Tenancy Contract Subpage"
             DataClassification = ToBeClassified;
             Caption = 'Secondary Item';
             TableRelation = "Secondary Item"."Secondary Item Type";
+            Editable = false;
             //TableRelation = "Secondary Item"."Secondary Item Type" WHERE("Payment System" = const("Installment"));
 
             trigger OnValidate()
@@ -40,6 +41,7 @@ table 50938 "Tenancy Contract Subpage"
         {
             DataClassification = ToBeClassified;
             Caption = 'Amount';
+            Editable = false;
 
             trigger OnValidate()
             begin
@@ -96,14 +98,14 @@ table 50938 "Tenancy Contract Subpage"
         {
             DataClassification = ToBeClassified;
             Caption = 'Start Date';
-            Editable = True;
+            Editable = false;
         }
 
         field(50107; "End Date"; Date)
         {
             DataClassification = ToBeClassified;
             Caption = 'End Date';
-            Editable = True;
+            Editable = false;
         }
 
         // field(50108; "No. of Installments"; Integer)
