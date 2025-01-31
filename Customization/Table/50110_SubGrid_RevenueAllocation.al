@@ -155,28 +155,4 @@ table 50110 "Revenue Allocation SubGrid"
         }
 
     }
-
-
-
-    // trigger OnInsert()
-    // begin
-    //     if "Line No." = 0 then
-    //         "Line No." := GetNextLineNo();
-    // end;
-
-    // local procedure GetNextLineNo(): Integer
-    // var
-    //     MaxLineNo: Integer;
-    // begin
-    //     MaxLineNo := 0;
-    //     if FindSet() then
-    //         repeat
-    //             if "Line No." > MaxLineNo then
-    //                 MaxLineNo := "Line No.";
-    //         until Next() = 0;
-    //     exit(MaxLineNo + 1);
-    // end;
-
-
-
 }
