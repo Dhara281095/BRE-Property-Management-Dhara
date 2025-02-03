@@ -93,26 +93,26 @@ table 50331 "TC Single LumAnnualAmnt SP"
         field(50116; "TotalFinalAmount"; Decimal)
         {
             FieldClass = FlowField;
-            CalcFormula = sum("CR Single LumAnnualAmnt SP"."SL_Final Annual Amount" where("Id" = field("Id")));
+            CalcFormula = sum("TC Single LumAnnualAmnt SP"."SL_Final Annual Amount" where("Id" = field("Id")));
         }
 
         field(50117; "TotalAnnualAmount"; Decimal)
         {
             FieldClass = FlowField;
-            CalcFormula = sum("CR Single LumAnnualAmnt SP"."SL_Annual Amount" where("Id" = field("Id")));
+            CalcFormula = sum("TC Single LumAnnualAmnt SP"."SL_Annual Amount" where("Id" = field("Id")));
         }
 
         field(50118; "TotalRoundOff"; Decimal)
         {
             FieldClass = FlowField;
-            CalcFormula = sum("CR Single LumAnnualAmnt SP"."SL_Round off" where("Id" = field("Id")));
+            CalcFormula = sum("TC Single LumAnnualAmnt SP"."SL_Round off" where("Id" = field("Id")));
         }
 
 
         field(50119; "TotalFirstAnnualAmount"; Decimal)
         {
             FieldClass = FlowField;
-            CalcFormula = sum("CR Single LumAnnualAmnt SP"."SL_Final Annual Amount" where("Id" = field("Id"), SL_Year = const(1)));
+            CalcFormula = sum("TC Single LumAnnualAmnt SP"."SL_Final Annual Amount" where("Id" = field("Id"), SL_Year = const(1)));
         }
 
     }

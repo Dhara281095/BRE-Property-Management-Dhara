@@ -162,6 +162,8 @@ table 50307 "Tenancy Contract"
                 TenantContractRec: Record "Tenancy Contract";
                 CRSingleUnitRent: Record "Single Unit Rent SubPage"; // Source table
                 TCSingleUnitRent: Record "TC Single Unit Rent SubPage"; // Target table
+                TCLumpsumUnitRate: Record "TC Single LumAnnualAmnt SP"; // Target table
+                CRLumpsumUnitRent: Record "Single Lum_AnnualAmnt SubPage"; // Source table
                 LineNoCounter: Integer;
             begin
                 // Check for existing Proposal ID
@@ -237,42 +239,90 @@ table 50307 "Tenancy Contract"
                     "Unit Number" := '';
                 end;
 
-                // ✅ **Delete Existing Records Before Insert**
-                TCSingleUnitRent.Reset();
-                TCSingleUnitRent.SetRange("ID", "Proposal ID");
+                if "Single Rent Calculation" = "Single Rent Calculation"::"Single Unit with square feet rate" then begin
 
-                if TCSingleUnitRent.FindSet() then begin
-                    TCSingleUnitRent.DeleteAll();
-                end;
+                    // ✅ **Delete Existing Records Before Insert**
+                    TCSingleUnitRent.Reset();
+                    TCSingleUnitRent.SetRange("ID", "Proposal ID");
 
-                // ✅ **Fetch Data from Single Unit Rent SubPage where Proposal ID = Proposal ID**
-                CRSingleUnitRent.Reset();
-                CRSingleUnitRent.SetRange("Proposal ID", "Proposal ID"); // Correct condition
+                    if TCSingleUnitRent.FindSet() then begin
+                        TCSingleUnitRent.DeleteAll();
+                    end;
 
-                if CRSingleUnitRent.FindSet() then begin
-                    LineNoCounter := 1; // Start line numbering from 1
-                    repeat
-                        TCSingleUnitRent.Init();
-                        TCSingleUnitRent."ID" := "Proposal ID"; // Ensure Proposal ID is stored in target ID field
-                        TCSingleUnitRent."Line No." := LineNoCounter; // Ensure unique line number
-                        TCSingleUnitRent."Unit ID" := CRSingleUnitRent."Unit ID";
-                        TCSingleUnitRent.Year := CRSingleUnitRent.Year;
-                        TCSingleUnitRent."Start Date" := CRSingleUnitRent."Start Date";
-                        TCSingleUnitRent."End Date" := CRSingleUnitRent."End Date";
-                        TCSingleUnitRent."Number of Days" := CRSingleUnitRent."Number of Days";
-                        TCSingleUnitRent."Unit Sq Ft" := CRSingleUnitRent."Unit Sq Ft";
-                        TCSingleUnitRent."Rate per Sq.Ft" := CRSingleUnitRent."Rate per Sq.Ft";
-                        TCSingleUnitRent."Rent Increase %" := CRSingleUnitRent."Rent Increase %";
-                        TCSingleUnitRent."Annual Amount" := CRSingleUnitRent."Annual Amount";
-                        TCSingleUnitRent."Round off" := CRSingleUnitRent."Round off";
-                        TCSingleUnitRent."Final Annual Amount" := CRSingleUnitRent."Final Annual Amount";
-                        TCSingleUnitRent."Per Day Rent" := CRSingleUnitRent."Per Day Rent";
-                        TCSingleUnitRent.Insert();
+                    // ✅ **Fetch Data from Single Unit Rent SubPage where Proposal ID = Proposal ID**
+                    CRSingleUnitRent.Reset();
+                    CRSingleUnitRent.SetRange("Proposal ID", "Proposal ID"); // Correct condition
 
-                        LineNoCounter += 1; // Increment line number
-                    until CRSingleUnitRent.Next() = 0;
-                end else begin
-                    Message('No existing records found for Proposal ID: %1 in Single Unit Rent SubPage.', "Proposal ID");
+                    if CRSingleUnitRent.FindSet() then begin
+                        LineNoCounter := 1; // Start line numbering from 1
+                        repeat
+                            TCSingleUnitRent.Init();
+                            TCSingleUnitRent."ID" := "Proposal ID"; // Ensure Proposal ID is stored in target ID field
+                            TCSingleUnitRent."Line No." := LineNoCounter; // Ensure unique line number
+                            TCSingleUnitRent."Unit ID" := CRSingleUnitRent."Unit ID";
+                            TCSingleUnitRent.Year := CRSingleUnitRent.Year;
+                            TCSingleUnitRent."Start Date" := CRSingleUnitRent."Start Date";
+                            TCSingleUnitRent."End Date" := CRSingleUnitRent."End Date";
+                            TCSingleUnitRent."Number of Days" := CRSingleUnitRent."Number of Days";
+                            TCSingleUnitRent."Unit Sq Ft" := CRSingleUnitRent."Unit Sq Ft";
+                            TCSingleUnitRent."Rate per Sq.Ft" := CRSingleUnitRent."Rate per Sq.Ft";
+                            TCSingleUnitRent."Rent Increase %" := CRSingleUnitRent."Rent Increase %";
+                            TCSingleUnitRent."Annual Amount" := CRSingleUnitRent."Annual Amount";
+                            TCSingleUnitRent."Round off" := CRSingleUnitRent."Round off";
+                            TCSingleUnitRent."Final Annual Amount" := CRSingleUnitRent."Final Annual Amount";
+                            TCSingleUnitRent."Per Day Rent" := CRSingleUnitRent."Per Day Rent";
+                            TCSingleUnitRent.Insert();
+
+                            LineNoCounter += 1; // Increment line number
+                        until CRSingleUnitRent.Next() = 0;
+                    end else begin
+                        Message('No existing records found for Proposal ID: %1 in Single Unit Rent SubPage.', "Proposal ID");
+                    end;
+                end
+                else if "Single Rent Calculation" = "Single Rent Calculation"::"Single Unit with lumpsum square feet rate" then begin
+
+                    // ✅ Delete Existing Records Before Insert in TC Single LumAnnualAmnt SP
+                    TCLumpsumUnitRate.Reset();
+                    TCLumpsumUnitRate.SetRange("ID", "Proposal ID");
+                    if TCLumpsumUnitRate.FindSet() then begin
+                        TCLumpsumUnitRate.DeleteAll();
+                    end;
+
+                    // ✅ Fetch Data from CR Single LumAnnualAmnt SP and Insert into TC Single LumAnnualAmnt SP
+                    CRLumpsumUnitRent.Reset();
+                    CRLumpsumUnitRent.SetRange("Proposal ID", "Proposal ID");
+
+                    if CRLumpsumUnitRent.FindSet() then begin
+                        LineNoCounter := 1; // Start line numbering from 1
+                        repeat
+                            TCLumpsumUnitRate.Init();
+
+                            TCLumpsumUnitRate."ID" := CRLumpsumUnitRent."Proposal ID";
+                            TCLumpsumUnitRate."SL_Line No." := LineNoCounter; // Ensure unique line number
+                            TCLumpsumUnitRate."SL_Unit ID" := CRLumpsumUnitRent."SL_Unit ID";
+                            TCLumpsumUnitRate.SL_Year := CRLumpsumUnitRent.SL_Year;
+                            TCLumpsumUnitRate."SL_Start Date" := CRLumpsumUnitRent."SL_Start Date";
+                            TCLumpsumUnitRate."SL_End Date" := CRLumpsumUnitRent."SL_End Date";
+                            TCLumpsumUnitRate."SL_Number of Days" := CRLumpsumUnitRent."SL_Number of Days";
+                            TCLumpsumUnitRate."SL_Unit Sq Ft" := CRLumpsumUnitRent."SL_Unit Sq Ft";
+                            TCLumpsumUnitRate."SL_Rate per Sq.Ft" := CRLumpsumUnitRent."SL_Rate per Sq.Ft";
+                            TCLumpsumUnitRate."SL_Rent Increase %" := CRLumpsumUnitRent."SL_Rent Increase %";
+                            TCLumpsumUnitRate."SL_Annual Amount" := CRLumpsumUnitRent."SL_Annual Amount";
+                            TCLumpsumUnitRate."SL_Round off" := CRLumpsumUnitRent."SL_Round off";
+                            TCLumpsumUnitRate."SL_Final Annual Amount" := CRLumpsumUnitRent."SL_Final Annual Amount";
+                            TCLumpsumUnitRate."SL_Per Day Rent" := CRLumpsumUnitRent."SL_Per Day Rent";
+                            TCLumpsumUnitRate.TotalFinalAmount := CRSingleUnitRent.TotalFinalAmount;
+                            TCLumpsumUnitRate.TotalAnnualAmount := CRSingleUnitRent.TotalAnnualAmount;
+                            TCLumpsumUnitRate.TotalRoundOff := CRSingleUnitRent.TotalRoundOff;
+                            TCLumpsumUnitRate.TotalFirstAnnualAmount := CRSingleUnitRent.TotalFirstAnnualAmount;
+
+
+                            TCLumpsumUnitRate.Insert();
+                            LineNoCounter += 1; // Increment line number
+                        until CRLumpsumUnitRent.Next() = 0;
+                    end else begin
+                        Message('No existing records found for ID: %1 in CR Single LumAnnualAmnt SP.', "Proposal ID");
+                    end;
                 end;
 
                 UpdatePaymentSchedule2();
@@ -834,6 +884,9 @@ table 50307 "Tenancy Contract"
                 TenantContractRec: Record "Tenancy Contract";
                 CRSingleUnitRent: Record "CR Single Unit Rent SubPage"; // Source table
                 TCSingleUnitRent: Record "TC Single Unit Rent SubPage"; // Target table
+                TCLumpsumUnitRate: Record "TC Single LumAnnualAmnt SP"; // Target table
+                CRLumpsumUnitRent: Record "CR Single LumAnnualAmnt SP"; // Source table
+
                 LineNoCounter: Integer;
             begin
                 // Check for existing Proposal ID
@@ -899,46 +952,95 @@ table 50307 "Tenancy Contract"
                     "Unit Number" := '';
                 end;
 
-                // ✅ **Delete Existing Records Before Insert**
-                TCSingleUnitRent.Reset();
-                TCSingleUnitRent.SetRange("ID", "Renewal Proposal ID");
+                if "Single Rent Calculation" = "Single Rent Calculation"::"Single Unit with square feet rate" then begin
 
-                if TCSingleUnitRent.FindSet() then begin
-                    TCSingleUnitRent.DeleteAll();
-                end;
+                    // ✅ **Delete Existing Records Before Insert**
+                    TCSingleUnitRent.Reset();
+                    TCSingleUnitRent.SetRange("ID", "Renewal Proposal ID");
 
-                // ✅ **Fetch Data from CR Single Unit Rent SubPage and Insert into TC Single Unit Rent SubPage**
-                CRSingleUnitRent.Reset();
-                CRSingleUnitRent.SetRange("ID", "Renewal Proposal ID");
+                    if TCSingleUnitRent.FindSet() then begin
+                        TCSingleUnitRent.DeleteAll();
+                    end;
 
-                if CRSingleUnitRent.FindSet() then begin
-                    LineNoCounter := 1; // Start line numbering from 1
-                    repeat
-                        TCSingleUnitRent.Init();
-                        TCSingleUnitRent."ID" := CRSingleUnitRent."ID";
-                        TCSingleUnitRent."Line No." := LineNoCounter; // Ensure unique line number
-                        TCSingleUnitRent."Unit ID" := CRSingleUnitRent."Unit ID";
-                        TCSingleUnitRent.Year := CRSingleUnitRent.Year;
-                        TCSingleUnitRent."Start Date" := CRSingleUnitRent."Start Date";
-                        TCSingleUnitRent."End Date" := CRSingleUnitRent."End Date";
-                        TCSingleUnitRent."Number of Days" := CRSingleUnitRent."Number of Days";
-                        TCSingleUnitRent."Unit Sq Ft" := CRSingleUnitRent."Unit Sq Ft";
-                        TCSingleUnitRent."Rate per Sq.Ft" := CRSingleUnitRent."Rate per Sq.Ft";
-                        TCSingleUnitRent."Rent Increase %" := CRSingleUnitRent."Rent Increase %";
-                        TCSingleUnitRent."Annual Amount" := CRSingleUnitRent."Annual Amount";
-                        TCSingleUnitRent."Round off" := CRSingleUnitRent."Round off";
-                        TCSingleUnitRent."Final Annual Amount" := CRSingleUnitRent."Final Annual Amount";
-                        TCSingleUnitRent."Per Day Rent" := CRSingleUnitRent."Per Day Rent";
-                        TCSingleUnitRent.TotalFinalAmount := CRSingleUnitRent.TotalFinalAmount;
-                        TCSingleUnitRent.TotalAnnualAmount := CRSingleUnitRent.TotalAnnualAmount;
-                        TCSingleUnitRent.TotalRoundOff := CRSingleUnitRent.TotalRoundOff;
-                        TCSingleUnitRent.TotalFirstAnnualAmount := CRSingleUnitRent.TotalFirstAnnualAmount;
-                        TCSingleUnitRent.Insert();
+                    // ✅ **Fetch Data from CR Single Unit Rent SubPage and Insert into TC Single Unit Rent SubPage**
+                    CRSingleUnitRent.Reset();
+                    CRSingleUnitRent.SetRange("ID", "Renewal Proposal ID");
 
-                        LineNoCounter += 1; // Increment line number
-                    until CRSingleUnitRent.Next() = 0;
-                end else begin
-                    Message('No existing records found for ID: %1 in CR Single Unit Rent SubPage.', "Renewal Proposal ID");
+                    if CRSingleUnitRent.FindSet() then begin
+                        LineNoCounter := 1; // Start line numbering from 1
+                        repeat
+                            TCSingleUnitRent.Init();
+                            TCSingleUnitRent."ID" := CRSingleUnitRent."ID";
+                            TCSingleUnitRent."Line No." := LineNoCounter; // Ensure unique line number
+                            TCSingleUnitRent."Unit ID" := CRSingleUnitRent."Unit ID";
+                            TCSingleUnitRent.Year := CRSingleUnitRent.Year;
+                            TCSingleUnitRent."Start Date" := CRSingleUnitRent."Start Date";
+                            TCSingleUnitRent."End Date" := CRSingleUnitRent."End Date";
+                            TCSingleUnitRent."Number of Days" := CRSingleUnitRent."Number of Days";
+                            TCSingleUnitRent."Unit Sq Ft" := CRSingleUnitRent."Unit Sq Ft";
+                            TCSingleUnitRent."Rate per Sq.Ft" := CRSingleUnitRent."Rate per Sq.Ft";
+                            TCSingleUnitRent."Rent Increase %" := CRSingleUnitRent."Rent Increase %";
+                            TCSingleUnitRent."Annual Amount" := CRSingleUnitRent."Annual Amount";
+                            TCSingleUnitRent."Round off" := CRSingleUnitRent."Round off";
+                            TCSingleUnitRent."Final Annual Amount" := CRSingleUnitRent."Final Annual Amount";
+                            TCSingleUnitRent."Per Day Rent" := CRSingleUnitRent."Per Day Rent";
+                            TCSingleUnitRent.TotalFinalAmount := CRSingleUnitRent.TotalFinalAmount;
+                            TCSingleUnitRent.TotalAnnualAmount := CRSingleUnitRent.TotalAnnualAmount;
+                            TCSingleUnitRent.TotalRoundOff := CRSingleUnitRent.TotalRoundOff;
+                            TCSingleUnitRent.TotalFirstAnnualAmount := CRSingleUnitRent.TotalFirstAnnualAmount;
+                            TCSingleUnitRent.Insert();
+
+                            LineNoCounter += 1; // Increment line number
+                        until CRSingleUnitRent.Next() = 0;
+                    end else begin
+                        Message('No existing records found for ID: %1 in CR Single Unit Rent SubPage.', "Renewal Proposal ID");
+                    end;
+
+                end
+
+                else if "Single Rent Calculation" = "Single Rent Calculation"::"Single Unit with lumpsum square feet rate" then begin
+                    // ✅ Delete Existing Records Before Insert in TC Single LumAnnualAmnt SP
+                    TCLumpsumUnitRate.Reset();
+                    TCLumpsumUnitRate.SetRange("ID", "Renewal Proposal ID");
+                    if TCLumpsumUnitRate.FindSet() then begin
+                        TCLumpsumUnitRate.DeleteAll();
+                    end;
+
+                    // ✅ Fetch Data from CR Single LumAnnualAmnt SP and Insert into TC Single LumAnnualAmnt SP
+                    CRLumpsumUnitRent.Reset();
+                    CRLumpsumUnitRent.SetRange("ID", "Renewal Proposal ID");
+
+                    if CRLumpsumUnitRent.FindSet() then begin
+                        LineNoCounter := 1; // Start line numbering from 1
+                        repeat
+                            TCLumpsumUnitRate.Init();
+
+                            TCLumpsumUnitRate."ID" := CRLumpsumUnitRent."ID";
+                            TCLumpsumUnitRate."SL_Line No." := LineNoCounter; // Ensure unique line number
+                            TCLumpsumUnitRate."SL_Unit ID" := CRLumpsumUnitRent."SL_Unit ID";
+                            TCLumpsumUnitRate.SL_Year := CRLumpsumUnitRent.SL_Year;
+                            TCLumpsumUnitRate."SL_Start Date" := CRLumpsumUnitRent."SL_Start Date";
+                            TCLumpsumUnitRate."SL_End Date" := CRLumpsumUnitRent."SL_End Date";
+                            TCLumpsumUnitRate."SL_Number of Days" := CRLumpsumUnitRent."SL_Number of Days";
+                            TCLumpsumUnitRate."SL_Unit Sq Ft" := CRLumpsumUnitRent."SL_Unit Sq Ft";
+                            TCLumpsumUnitRate."SL_Rate per Sq.Ft" := CRLumpsumUnitRent."SL_Rate per Sq.Ft";
+                            TCLumpsumUnitRate."SL_Rent Increase %" := CRLumpsumUnitRent."SL_Rent Increase %";
+                            TCLumpsumUnitRate."SL_Annual Amount" := CRLumpsumUnitRent."SL_Annual Amount";
+                            TCLumpsumUnitRate."SL_Round off" := CRLumpsumUnitRent."SL_Round off";
+                            TCLumpsumUnitRate."SL_Final Annual Amount" := CRLumpsumUnitRent."SL_Final Annual Amount";
+                            TCLumpsumUnitRate."SL_Per Day Rent" := CRLumpsumUnitRent."SL_Per Day Rent";
+                            TCLumpsumUnitRate.TotalFinalAmount := CRSingleUnitRent.TotalFinalAmount;
+                            TCLumpsumUnitRate.TotalAnnualAmount := CRSingleUnitRent.TotalAnnualAmount;
+                            TCLumpsumUnitRate.TotalRoundOff := CRSingleUnitRent.TotalRoundOff;
+                            TCLumpsumUnitRate.TotalFirstAnnualAmount := CRSingleUnitRent.TotalFirstAnnualAmount;
+
+
+                            TCLumpsumUnitRate.Insert();
+                            LineNoCounter += 1; // Increment line number
+                        until CRLumpsumUnitRent.Next() = 0;
+                    end else begin
+                        Message('No existing records found for ID: %1 in CR Single LumAnnualAmnt SP.', "Renewal Proposal ID");
+                    end;
                 end;
 
                 Updateotherpayment();
