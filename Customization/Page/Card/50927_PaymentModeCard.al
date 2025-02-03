@@ -46,6 +46,7 @@ page 50927 "Payment Mode Card"
                 field("Approval Status"; Rec."Approval Status")
                 {
                     ApplicationArea = All;
+                    Editable = IsFinanceManager;
                     // trigger OnValidate()
                     // begin
                     //     // Scenario 1: Update all payment grid records to "Approved" when card status changes
@@ -58,36 +59,36 @@ page 50927 "Payment Mode Card"
                 field("On-hold"; Rec."On-hold")
                 {
                     ApplicationArea = All;
-                    trigger OnValidate()
-                    var
-                        paymentModeRec: Record "Payment Mode";
-                        paymentSeriesRec: Record "Payment Mode2";
-                        approvalPending: Boolean;
-                        sendRejectionToLeaseTeam: Codeunit 50511;
-                    begin
-                        if Rec."On-hold" = Rec."On-hold"::"True" then begin
-                            approvalPending := false;
-                            paymentSeriesRec.SetRange("Contract ID", Rec."Contract ID");
-                            paymentSeriesRec.SetRange("Tenant Id", Rec."Tenant Id");
-                            if paymentSeriesRec.FindSet() then begin
-                                repeat
-                                    if paymentSeriesRec."Approval Status" = paymentSeriesRec."Approval Status"::Pending then begin
-                                        approvalPending := true;
-                                        break;
-                                    end;
-                                until paymentSeriesRec.Next() = 0;
-                            end;
+                    // trigger OnValidate()
+                    // var
+                    //     paymentModeRec: Record "Payment Mode";
+                    //     paymentSeriesRec: Record "Payment Mode2";
+                    //     approvalPending: Boolean;
+                    //     sendRejectionToLeaseTeam: Codeunit 50511;
+                    // begin
+                    //     if Rec."On-hold" = Rec."On-hold"::"True" then begin
+                    //         approvalPending := false;
+                    //         paymentSeriesRec.SetRange("Contract ID", Rec."Contract ID");
+                    //         paymentSeriesRec.SetRange("Tenant Id", Rec."Tenant Id");
+                    //         if paymentSeriesRec.FindSet() then begin
+                    //             repeat
+                    //                 if paymentSeriesRec."Approval Status" = paymentSeriesRec."Approval Status"::Pending then begin
+                    //                     approvalPending := true;
+                    //                     break;
+                    //                 end;
+                    //             until paymentSeriesRec.Next() = 0;
+                    //         end;
 
-                            // Exit if there are any "Pending" approval statuses
-                            if ApprovalPending then
-                                exit;
+                    //         // Exit if there are any "Pending" approval statuses
+                    //         if ApprovalPending then
+                    //             exit;
 
-                            if approvalPending = false then begin
-                                sendRejectionToLeaseTeam.SendPaymentRejectionToLeaseManager(paymentSeriesRec."Contract ID", paymentSeriesRec."Tenant Id", paymentSeriesRec."Contract ID");
-                            end;
+                    //         if approvalPending = false then begin
+                    //             sendRejectionToLeaseTeam.SendPaymentRejectionToLeaseManager(paymentSeriesRec."Contract ID", paymentSeriesRec."Tenant Id", paymentSeriesRec."Contract ID");
+                    //         end;
 
-                        end;
-                    end;
+                    //     end;
+                    // end;
                 }
                 field(Isupdated; Rec.Isupdated)
                 {
@@ -261,7 +262,24 @@ page 50927 "Payment Mode Card"
     //         Rec.Modify();
     //     end;
     // end;
+    var
+        IsFinanceManager: Boolean;
 
+    trigger OnOpenPage()
+    var
+        PermissionSet: Record "User Personalization";
+    begin
+        // Check if the current user has the 'LEASE_MANAGER' permission set
+        IsFinanceManager := false;
+        PermissionSet.SetRange("User ID", UserId());
+        // PermissionSet.SetRange("Profile ID", 'LEASE_MANAGER');
+        if PermissionSet.FindSet() then begin
+            if PermissionSet."Profile ID" = 'FINANCE MANAGER' then
+                IsFinanceManager := true;
+        end;
+
+
+    end;
 
 }
 

@@ -106,7 +106,11 @@ table 50924 "Payment Mode"
             trigger OnValidate()
             var
                 paymentGridRec: Record "Payment Mode2";
-
+                paymentModeRec: Record "Payment Mode";
+                paymentSeriesRec: Record "Payment Mode2";
+                approvalPending: Boolean;
+                Isrejected: Boolean;
+                sendRejectionToLeaseTeam: Codeunit 50511;
             begin
                 if Rec."Approval Status" = Rec."Approval Status"::Approved then begin
                     paymentGridRec.SetRange("Contract ID", Rec."Contract ID");
@@ -119,6 +123,43 @@ table 50924 "Payment Mode"
                     end;
                     Rec."On-hold" := Rec."On-hold"::"False";
                 end;
+                if Rec."Approval Status" = Rec."Approval Status"::Rejected then begin
+                    paymentGridRec.SetRange("Contract ID", Rec."Contract ID");
+                    if paymentGridRec.FindSet() then begin
+                        repeat
+                            paymentGridRec."Approval Status" := paymentGridRec."Approval Status"::Rejected;
+                            paymentGridRec.Modify();
+                        until paymentGridRec.Next() = 0;
+                    end;
+                    Rec."On-hold" := Rec."On-hold"::"True";
+                end;
+
+                if Rec."On-hold" = Rec."On-hold"::"True" then begin
+                    approvalPending := false;
+                    Isrejected := false;
+                    paymentSeriesRec.SetRange("Contract ID", Rec."Contract ID");
+                    paymentSeriesRec.SetRange("Tenant Id", Rec."Tenant Id");
+                    if paymentSeriesRec.FindSet() then begin
+                        repeat
+                            if paymentSeriesRec."Approval Status" = paymentSeriesRec."Approval Status"::Pending then begin
+                                approvalPending := true;
+                                break;
+                            end
+                            else if paymentSeriesRec."Approval Status" = paymentSeriesRec."Approval Status"::Rejected then begin
+                                Isrejected := true;
+                            end;
+                        until paymentSeriesRec.Next() = 0;
+                    end;
+
+                    // Exit if there are any "Pending" approval statuses
+                    if ApprovalPending then
+                        exit;
+
+                    if approvalPending = false and Isrejected = true then begin
+                        sendRejectionToLeaseTeam.SendPaymentRejectionToLeaseManager(paymentSeriesRec."Contract ID", paymentSeriesRec."Tenant Id", paymentSeriesRec."Contract ID");
+                    end;
+
+                end;
             end;
         }
 
@@ -126,7 +167,6 @@ table 50924 "Payment Mode"
         {
             // DataClassification = ToBeClassified;
             OptionMembers = " ","True","False";
-
         }
 
         field(50503; "Isupdated"; Option)
