@@ -49,6 +49,10 @@ page 50707 paymentdata
                 {
                     Caption = 'Due Date';
                 }
+                field(dueDate2; Rec."Due Date")
+                {
+                    Caption = 'Due Date';
+                }
                 field(paymentMode; Rec."Payment Mode")
                 {
                     Caption = 'Payment Mode';
