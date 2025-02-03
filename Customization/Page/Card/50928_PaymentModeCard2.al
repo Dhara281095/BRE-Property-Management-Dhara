@@ -65,9 +65,7 @@ page 50928 "Payment Mode Card2"
                                                                                                                                //Editable = (Rec."Payment Mode" = 'Cheque'); // Editable only if Payment Mode is 'Cheque'
                                                                                                                                //Editable = not ((Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" = Rec."Payment Status"::Cancelled));
 
-
                 }
-
 
                 field("Deposit Bank"; Rec."Deposit Bank")
                 {
@@ -88,6 +86,13 @@ page 50928 "Payment Mode Card2"
                 field("Payment Status"; Rec."Payment Status")
                 {
                     ApplicationArea = All;
+
+                     trigger OnValidate()
+                    var
+                        Statuschange: Codeunit "Daily Job Queue";
+                    begin
+                        Statuschange.UpdateStatusForDueDate(Rec);
+                    end;
                 }
 
                 field("Cheque Status"; Rec."Cheque Status")
@@ -108,7 +113,6 @@ page 50928 "Payment Mode Card2"
                 {
                     ApplicationArea = All;
                     Editable = (Rec."Payment Status" <> Rec."Payment Status"::Cancelled); // Makes the field editable unless Payment Status is "Cancelled"
-
                 }
 
                 field("Receipt #"; Rec."Receipt #")
@@ -159,6 +163,11 @@ page 50928 "Payment Mode Card2"
                         documentattachment: Codeunit UploadAttachment;
 
                     begin
+
+                        if Rec."Payment Status" = Rec."Payment Status"::Cancelled then begin
+                            Message('Upload Cheque cannot be accessed because Payment Status is Cancelled');
+                            exit; // Stop execution here
+                        end;
                         // Validate and retrieve the SAS URL from the configuration table
                         if not ConfigRecord.FindFirst() then
                             Error('Azure configuration is missing. Please set up the SAS URL in the Azure Configuration table.');
@@ -193,6 +202,9 @@ page 50928 "Payment Mode Card2"
                             Message('Document uploaded successfully: %1', FileName);
                         end else
                             Message('No document was selected for upload.');
+
+                        // end 
+                        //    else Message('Upload Cheque cannot be access for Payment Status is Cancelled');
                     end;
                 }
 
@@ -213,6 +225,11 @@ page 50928 "Payment Mode Card2"
                     var
                         FileURL: Text;
                     begin
+
+                        if Rec."Payment Status" = Rec."Payment Status"::Cancelled then begin
+                            Message('View cannot be accessed because Payment Status is Cancelled');
+                            exit; // Stop execution here
+                        end;
                         // Get the URL of the uploaded document
                         FileURL := Rec."View Document URL";
 
@@ -222,6 +239,7 @@ page 50928 "Payment Mode Card2"
 
                         // Open the file URL in the browser (new tab)
                         OpenFileInBrowser(FileURL);
+                
                     end;
                 }
 
@@ -238,11 +256,10 @@ page 50928 "Payment Mode Card2"
                         PaymentScheduleRec: Record "Payment Schedule2";
                         FilteredSchedulePage: Page "Payment Schedule Card2"; // Replace with your actual page name
                     begin
-                        // Fetch the first entry's due date
-                        //  if PaymentModeRec.FindSet() then begin
-                        //  repeat
-                        // Fetch the due date and apply it as a filter
-
+                        if Rec."Payment Status" = Rec."Payment Status"::Cancelled then begin
+                          Message('View Revenue Details cannot be accessed because Payment Status is Cancelled');
+                           exit; // Stop execution here
+                         end;
                         PaymentScheduleRec.SetRange("Contract ID", Rec."Contract ID");
                         // PaymentScheduleRec.SetRange("Proposal ID", Rec."Proposal ID");
                         PaymentScheduleRec.SetRange("Tenant ID", Rec."Tenant ID");
@@ -256,8 +273,6 @@ page 50928 "Payment Mode Card2"
                         // Open the filtered page
                         PAGE.Run(PAGE::"Payment Schedule Card2", PaymentScheduleRec);
 
-                        // until PaymentModeRec.Next() = 0;
-                        //    end;
                     end;
 
                 }
