@@ -63,6 +63,10 @@ report 50104 InvoiceTemplate
             column(Contract_ID; "Contract ID")
             {
             }
+            column(Document_Date; "Document Date")
+            {
+
+            }
             // column(Property_Name; "Property Name")
             // {
             // }

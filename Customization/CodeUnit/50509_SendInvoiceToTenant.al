@@ -10,6 +10,7 @@ codeunit 50509 SendInvoiceToTenant
         SalesHeader: Record "Sales Header";
         FileManagement: Codeunit "File Management";
         TodayDate: Date;
+        Tomail: List of [Text];
         EmailAddress: List of [Text];
         CCMail: List of [Text];
         UserRec: Record User; // Record for User
@@ -29,9 +30,18 @@ codeunit 50509 SendInvoiceToTenant
         TempFilePath: Text[250];
         ReportID: Integer;
         ConfirmationResult: Boolean;
+        UserPersonalizationRec: Record "User Personalization";
 
     begin
 
+        UserPersonalizationRec.SetRange("Profile ID", 'Accounting Manager'); // Accounting Manager
+        if UserPersonalizationRec.FindFirst() then begin
+            UserRec.Get(UserPersonalizationRec."User SID");
+            EmailAddress.Add(UserRec."Contact Email");
+            Username := UserRec."User Name";
+            //CCMail.Add('dhruvp6373@gmail.com');
+
+        end;
 
         ReportID := 50104;
         SalesHeader.SetRange("No.", Rec."No.");
@@ -62,8 +72,8 @@ codeunit 50509 SendInvoiceToTenant
                 if CompanyInfo.Get() then begin
                     if SalesHeader."Sell-to E-Mail" = '' then begin
                         customer.Get(SalesHeader."Sell-to Customer No.");
-
-                        EmailMessage.Create(customer."E-Mail", 'Your Invoice ' + SalesHeader."No.",
+                        Tomail.Add(customer."E-Mail");
+                        EmailMessage.Create(Tomail, 'Your Invoice ' + SalesHeader."No.",
                         '<html>' +
                          '<body>' +
                          '<p>Dear ' + SalesHeader."Sell-to Customer Name" + ',</p>' +
@@ -74,11 +84,12 @@ codeunit 50509 SendInvoiceToTenant
                                              '<p>Best regards,<br/>' + CompanyInfo.Name + '</p>' +
                          '</body>' +
                          '</html>',
-                          true);
+                          true, EmailAddress, BCCMail);
 
                     end
                     else begin
-                        EmailMessage.Create(SalesHeader."Sell-to E-Mail", 'Your Invoice ' + SalesHeader."No.",
+                        Tomail.Add(SalesHeader."Sell-to E-Mail");
+                        EmailMessage.Create(Tomail, 'Your Invoice ' + SalesHeader."No.",
                         '<html>' +
                          '<body>' +
                          '<p>Dear ' + SalesHeader."Sell-to Customer Name" + ',</p>' +
@@ -91,7 +102,7 @@ codeunit 50509 SendInvoiceToTenant
 
                                             '</body>' +
                                             '</html>',
-                          true);
+                          true, EmailAddress, BCCMail);
                     end;
                 end;
                 EmailMessage.AddAttachment(FileName, '', InStream);

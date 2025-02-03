@@ -121,7 +121,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
             // Assuming the role is stored in the "Profile ID" field as seen in the screenshot
             case UserPersonalization."Profile ID" of
                 'PROPERTY MANAGER':
-                    exit(false);
+                    exit(true);
                 'finance manager':
                     exit(true);
             end;

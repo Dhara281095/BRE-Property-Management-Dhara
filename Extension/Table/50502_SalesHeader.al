@@ -44,10 +44,14 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
             trigger OnValidate()
             var
                 emailrecord: Codeunit SendInvoiceToTenant;
+                Rejectionmail: Codeunit RejectSalesInvoice;
             begin
                 if "Approval Status" = "Approval Status"::Approved then begin
                     emailrecord.SendInvoice(Rec); // Pass the current record if needed
-                end;
+                end else
+                    if "Approval Status" = "Approval Status"::Rejected then begin
+                        Rejectionmail.SendInvoiceToLeaseManager(Rec);
+                    end;
             end;
         }
         field(50106; "Tenant Name"; Text[100])
