@@ -585,13 +585,21 @@ page 50313 "Tenancy Contract Card"
                 Caption = 'Single Unit With Square Feet Rate';
                 Visible = ShowLegalReasonFields;
 
-                part("Single Unit Rent"; "TC Single Unit Rent SubPage")
+                // ✅ Part for Renewal Proposal ID
+                part("Single Unit Rent (Renewal)"; "TC Single Unit Rent SubPage")
                 {
-                    SubPageLink = "ID" = FIELD("ID"); // Link to filter attachments for this owner only
+                    SubPageLink = "ID" = FIELD("Renewal Proposal ID"); // Uses Renewal Proposal ID
                     ApplicationArea = All;
-                    // Visible = isVisible;
+                    Visible = (Rec."Renewal Proposal ID" <> 0); // Show only if Renewal Proposal ID is set
                 }
 
+                // ✅ Part for Proposal ID (Fallback)
+                part("Single Unit Rent (Proposal)"; "TC Single Unit Rent SubPage")
+                {
+                    SubPageLink = "ID" = FIELD("Proposal ID"); // Uses Proposal ID if Renewal is empty
+                    ApplicationArea = All;
+                    Visible = (Rec."Renewal Proposal ID" = 0); // Show only if Renewal Proposal ID is empty
+                }
             }
             group("Merged Unit with same square feet")
             {
@@ -599,7 +607,7 @@ page 50313 "Tenancy Contract Card"
                 Visible = ShowBusinessReasonFields;
                 part("Merge SameSqure Rent"; "TC Merge SameSqure SubPage")
                 {
-                    SubPageLink = "ID" = FIELD("ID"); // Link to filter attachments for this owner only
+                    SubPageLink = "ID" = FIELD("Renewal Proposal ID"); // Link to filter attachments for this owner only
                     ApplicationArea = All;
                     // Visible = isVisible;
                 }

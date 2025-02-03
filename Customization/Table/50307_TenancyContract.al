@@ -57,6 +57,99 @@ table 50307 "Tenancy Contract"
             AutoIncrement = true;
         }
 
+        // field(50108; "Proposal ID"; Integer)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Proposal ID';
+        //     TableRelation = "Lease Proposal Details"."Proposal ID" WHERE("Proposal Status" = CONST(Approved));
+
+        //     trigger OnValidate()
+        //     var
+        //         LeaseProposalRec: Record "Lease Proposal Details";
+        //         TenantContractRec: Record "Tenancy Contract";
+        //     begin
+        //         // Check for existing Proposal ID
+        //         TenantContractRec.Reset();
+        //         TenantContractRec.SetRange("Proposal ID", "Proposal ID");
+
+        //         if TenantContractRec.FindFirst() and (TenantContractRec."Contract ID" <> "Contract ID") then
+        //             Error('The selected Proposal ID is already used for another tenant contract.');
+
+        //         // Fetch details if Proposal ID is valid
+        //         LeaseProposalRec.SetRange("Proposal ID", "Proposal ID");
+        //         if LeaseProposalRec.FindSet() then begin
+        //             "Tenant ID" := LeaseProposalRec."Tenant ID";
+        //             "Tenant_License No." := LeaseProposalRec."License No.";
+        //             "Tenant_Licensing Authority" := LeaseProposalRec."Licensing Authority";
+        //             "Customer Name" := LeaseProposalRec."Tenant Full Name";
+        //             "Email Address" := LeaseProposalRec."Tenant Contact Email";
+        //             "Emirates ID" := LeaseProposalRec."Emirates ID";
+        //             "Property ID" := LeaseProposalRec."Property ID";
+        //             "Payment Frequency" := LeaseProposalRec."Payment Frequency";
+        //             "Payment Method" := LeaseProposalRec."Payment Method";
+        //             "Base Unit of Measure" := LeaseProposalRec."Base Unit of Measure";
+        //             "Contact Number" := LeaseProposalRec."Tenant Contact Phone";
+        //             "Unit ID" := LeaseProposalRec."Unit ID";
+        //             "Merge Unit ID" := LeaseProposalRec."Merge Unit ID";
+        //             "Unit Name" := LeaseProposalRec."Unit Name";
+        //             "Unit Sq. Feet" := LeaseProposalRec."Unit Size";
+        //             "Annual Rent Amount" := LeaseProposalRec."Rent Amount";
+        //             "UnitID" := LeaseProposalRec."UnitID";
+        //             "Property Classification" := LeaseProposalRec."Usage Type";
+        //             "Property Type" := LeaseProposalRec."Unit Type";
+        //             "Property Name" := LeaseProposalRec."Property Name";
+        //             "Contract Start Date" := LeaseProposalRec."Lease Start Date";
+        //             "Contract End Date" := LeaseProposalRec."Lease End Date";
+        //             "Contract Tenor" := LeaseProposalRec."Lease Duration";
+        //             "Annual Rent Amount" := LeaseProposalRec."Annual Rent Amount";
+        //             "Rent Amount" := LeaseProposalRec."Rent Amount";
+        //             "Security Deposit Amount" := LeaseProposalRec."Security Deposit Amount";
+        //             "Unit Number" := LeaseProposalRec."Unit Number";
+        //             "Makani Number" := LeaseProposalRec."Makani Number";
+        //             Emirate := LeaseProposalRec.Emirate;
+        //             Community := LeaseProposalRec.Community;
+        //             "DEWA Number" := LeaseProposalRec."DEWA Number";
+        //             "Property Size" := LeaseProposalRec."Property Size";
+        //             "No of Installments" := LeaseProposalRec."No of Installments";
+        //             "praposal Type Selected" := LeaseProposalRec."praposal Type Selected";
+        //             "Unit Address" := LeaseProposalRec."Unit Address";
+        //             "Usage Type" := LeaseProposalRec."Usage Type";
+        //             "Unit Type" := LeaseProposalRec."Unit Type";
+        //             "Single Unit Name" := LeaseProposalRec."Single Unit Name";
+        //             "Market Rate per Sq. Ft." := LeaseProposalRec."Market Rate per Sq. Ft.";
+        //             "Facilities/Amenities" := LeaseProposalRec."Facilities/Amenities";
+        //             "Balance Amount" := LeaseProposalRec."Security Deposit Amount";
+        //             "Unit Number" := LeaseProposalRec."Unit Number";
+        //             "Single Rent Calculation" := LeaseProposalRec."Single Rent Calculation";
+        //             "Merge Rent Calculation" := LeaseProposalRec."Merge Rent Calculation";
+
+
+
+        //             // Do not set "Handover is Completed" automatically
+        //             // Allow manual setting of "Handover is Completed"
+        //         end else begin
+        //             // Clear fields if no record is found
+        //             "Tenant ID" := '';
+        //             "Customer Name" := '';
+        //             "Property ID" := '';
+        //             "Unit ID" := '';
+        //             "Merge Unit ID" := '';
+        //             "Unit Name" := '';
+        //             "Unit Sq. Feet" := 0;
+        //             "Annual Rent Amount" := 0;
+        //             "Property Name" := '';
+        //             "Emirates ID" := '';
+        //             "Email Address" := '';
+        //             "Property Classification" := '';
+        //             "Property Type" := '';
+        //             "Property Name" := '';
+        //             "Unit Number" := '';
+        //         end;
+
+        //         UpdatePaymentSchedule2();
+        //     end;
+        // }
+
         field(50108; "Proposal ID"; Integer)
         {
             DataClassification = ToBeClassified;
@@ -67,6 +160,9 @@ table 50307 "Tenancy Contract"
             var
                 LeaseProposalRec: Record "Lease Proposal Details";
                 TenantContractRec: Record "Tenancy Contract";
+                CRSingleUnitRent: Record "Single Unit Rent SubPage"; // Source table
+                TCSingleUnitRent: Record "TC Single Unit Rent SubPage"; // Target table
+                LineNoCounter: Integer;
             begin
                 // Check for existing Proposal ID
                 TenantContractRec.Reset();
@@ -122,11 +218,6 @@ table 50307 "Tenancy Contract"
                     "Unit Number" := LeaseProposalRec."Unit Number";
                     "Single Rent Calculation" := LeaseProposalRec."Single Rent Calculation";
                     "Merge Rent Calculation" := LeaseProposalRec."Merge Rent Calculation";
-
-
-
-                    // Do not set "Handover is Completed" automatically
-                    // Allow manual setting of "Handover is Completed"
                 end else begin
                     // Clear fields if no record is found
                     "Tenant ID" := '';
@@ -144,6 +235,44 @@ table 50307 "Tenancy Contract"
                     "Property Type" := '';
                     "Property Name" := '';
                     "Unit Number" := '';
+                end;
+
+                // ✅ **Delete Existing Records Before Insert**
+                TCSingleUnitRent.Reset();
+                TCSingleUnitRent.SetRange("ID", "Proposal ID");
+
+                if TCSingleUnitRent.FindSet() then begin
+                    TCSingleUnitRent.DeleteAll();
+                end;
+
+                // ✅ **Fetch Data from Single Unit Rent SubPage where Proposal ID = Proposal ID**
+                CRSingleUnitRent.Reset();
+                CRSingleUnitRent.SetRange("Proposal ID", "Proposal ID"); // Correct condition
+
+                if CRSingleUnitRent.FindSet() then begin
+                    LineNoCounter := 1; // Start line numbering from 1
+                    repeat
+                        TCSingleUnitRent.Init();
+                        TCSingleUnitRent."ID" := "Proposal ID"; // Ensure Proposal ID is stored in target ID field
+                        TCSingleUnitRent."Line No." := LineNoCounter; // Ensure unique line number
+                        TCSingleUnitRent."Unit ID" := CRSingleUnitRent."Unit ID";
+                        TCSingleUnitRent.Year := CRSingleUnitRent.Year;
+                        TCSingleUnitRent."Start Date" := CRSingleUnitRent."Start Date";
+                        TCSingleUnitRent."End Date" := CRSingleUnitRent."End Date";
+                        TCSingleUnitRent."Number of Days" := CRSingleUnitRent."Number of Days";
+                        TCSingleUnitRent."Unit Sq Ft" := CRSingleUnitRent."Unit Sq Ft";
+                        TCSingleUnitRent."Rate per Sq.Ft" := CRSingleUnitRent."Rate per Sq.Ft";
+                        TCSingleUnitRent."Rent Increase %" := CRSingleUnitRent."Rent Increase %";
+                        TCSingleUnitRent."Annual Amount" := CRSingleUnitRent."Annual Amount";
+                        TCSingleUnitRent."Round off" := CRSingleUnitRent."Round off";
+                        TCSingleUnitRent."Final Annual Amount" := CRSingleUnitRent."Final Annual Amount";
+                        TCSingleUnitRent."Per Day Rent" := CRSingleUnitRent."Per Day Rent";
+                        TCSingleUnitRent.Insert();
+
+                        LineNoCounter += 1; // Increment line number
+                    until CRSingleUnitRent.Next() = 0;
+                end else begin
+                    Message('No existing records found for Proposal ID: %1 in Single Unit Rent SubPage.', "Proposal ID");
                 end;
 
                 UpdatePaymentSchedule2();
@@ -607,24 +736,109 @@ table 50307 "Tenancy Contract"
         }
 
 
+        // field(50160; "Renewal Proposal ID"; Integer)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Renewal Proposal ID';
+        //     TableRelation = "Contract Renewal".Id WHERE("Final Status" = CONST(Approved));
+
+
+        //     trigger OnValidate()
+        //     var
+        //         LeaseProposalRec: Record "Contract Renewal";
+        //         TenantContractRec: Record "Tenancy Contract";
+        //     begin
+        //         // Check for existing Proposal ID
+        //         TenantContractRec.Reset();
+        //         TenantContractRec.SetRange("Proposal ID", "Proposal ID");
+
+        //         // if TenantContractRec.FindFirst() and (TenantContractRec."Contract ID" <> "Contract ID") then
+        //         //     Error('The selected Proposal ID is already used for another tenant contract.');
+
+        //         // Fetch details if Proposal ID is valid
+        //         LeaseProposalRec.SetRange(ID, "Renewal Proposal ID");
+        //         if LeaseProposalRec.FindSet() then begin
+        //             "Tenant ID" := LeaseProposalRec."Tenant ID";
+        //             "Tenant_License No." := LeaseProposalRec."License No.";
+        //             "Tenant_Licensing Authority" := LeaseProposalRec."Licensing Authority";
+        //             "Customer Name" := LeaseProposalRec."Tenant Full Name";
+        //             "Email Address" := LeaseProposalRec."Email Address";
+        //             "Emirates ID" := LeaseProposalRec."Emirates ID";
+        //             "Property ID" := LeaseProposalRec."Property ID";
+        //             "Payment Frequency" := LeaseProposalRec."Payment Frequency";
+        //             "Payment Method" := LeaseProposalRec."Payment Method";
+        //             "Base Unit of Measure" := LeaseProposalRec."Base Unit of Measure";
+        //             "Contact Number" := LeaseProposalRec."Contact Number";
+        //             "Unit ID" := LeaseProposalRec."Unit ID";
+        //             "Merge Unit ID" := LeaseProposalRec."Merge Unit ID";
+        //             "Unit Name" := LeaseProposalRec."Unit Name";
+        //             "Unit Sq. Feet" := LeaseProposalRec."Unit Sq. Feet";
+        //             "Annual Rent Amount" := LeaseProposalRec."Rent Amount";
+        //             "UnitID" := LeaseProposalRec."UnitID";
+        //             "Property Classification" := LeaseProposalRec."Property Classification";
+        //             "Property Type" := LeaseProposalRec."Property Type";
+        //             "Property Name" := LeaseProposalRec."Property Name";
+        //             "Contract Start Date" := LeaseProposalRec."Contract Start Date";
+        //             "Contract End Date" := LeaseProposalRec."Contract End Date";
+        //             "Contract Tenor" := LeaseProposalRec."Contract Tenor";
+        //             "Annual Rent Amount" := LeaseProposalRec."Annual Rent Amount";
+        //             "Rent Amount" := LeaseProposalRec."Rent Amount";
+        //             "Security Deposit Amount" := LeaseProposalRec."Security Deposit Amount";
+        //             "Unit Number" := LeaseProposalRec."Unit Number";
+        //             "Makani Number" := LeaseProposalRec."Makani Number";
+        //             Emirate := LeaseProposalRec.Emirate;
+        //             Community := LeaseProposalRec.Community;
+        //             "DEWA Number" := LeaseProposalRec."DEWA Number";
+        //             "Property Size" := LeaseProposalRec."Property Size";
+        //             "No of Installments" := LeaseProposalRec."No of Installments";
+        //             "Balance Amount" := LeaseProposalRec."Security Deposit Amount";
+        //             "Single Rent Calculation" := LeaseProposalRec."Single Rent Calculation";
+        //             "Merge Rent Calculation" := LeaseProposalRec."Merge Rent Calculation";
+        //             "Praposal Type Selected" := LeaseProposalRec."Praposal Type Selected";
+
+
+
+
+        //         end else begin
+        //             // Clear fields if no record is found
+        //             "Tenant ID" := '';
+        //             "Customer Name" := '';
+        //             "Property ID" := '';
+        //             "Unit ID" := '';
+        //             "Merge Unit ID" := '';
+        //             "Unit Name" := '';
+        //             "Unit Sq. Feet" := 0;
+        //             "Annual Rent Amount" := 0;
+        //             "Property Name" := '';
+        //             "Emirates ID" := '';
+        //             "Email Address" := '';
+        //             "Property Classification" := '';
+        //             "Property Type" := '';
+        //             "Property Name" := '';
+        //             "Unit Number" := '';
+        //         end;
+
+
+        //         Updateotherpayment();
+        //     end;
+        // }
         field(50160; "Renewal Proposal ID"; Integer)
         {
             DataClassification = ToBeClassified;
             Caption = 'Renewal Proposal ID';
             TableRelation = "Contract Renewal".Id WHERE("Final Status" = CONST(Approved));
 
-
             trigger OnValidate()
             var
                 LeaseProposalRec: Record "Contract Renewal";
                 TenantContractRec: Record "Tenancy Contract";
+                CRSingleUnitRent: Record "CR Single Unit Rent SubPage"; // Source table
+                TCSingleUnitRent: Record "TC Single Unit Rent SubPage"; // Target table
+                LineNoCounter: Integer;
             begin
                 // Check for existing Proposal ID
                 TenantContractRec.Reset();
                 TenantContractRec.SetRange("Proposal ID", "Proposal ID");
-
-                // if TenantContractRec.FindFirst() and (TenantContractRec."Contract ID" <> "Contract ID") then
-                //     Error('The selected Proposal ID is already used for another tenant contract.');
 
                 // Fetch details if Proposal ID is valid
                 LeaseProposalRec.SetRange(ID, "Renewal Proposal ID");
@@ -652,7 +866,7 @@ table 50307 "Tenancy Contract"
                     "Contract Start Date" := LeaseProposalRec."Contract Start Date";
                     "Contract End Date" := LeaseProposalRec."Contract End Date";
                     "Contract Tenor" := LeaseProposalRec."Contract Tenor";
-                    "Annual Rent Amount" := LeaseProposalRec."Annual Rent Amount";
+                    "Annual Rent Amount" := LeaseProposalRec."Contract Amount";
                     "Rent Amount" := LeaseProposalRec."Rent Amount";
                     "Security Deposit Amount" := LeaseProposalRec."Security Deposit Amount";
                     "Unit Number" := LeaseProposalRec."Unit Number";
@@ -666,10 +880,6 @@ table 50307 "Tenancy Contract"
                     "Single Rent Calculation" := LeaseProposalRec."Single Rent Calculation";
                     "Merge Rent Calculation" := LeaseProposalRec."Merge Rent Calculation";
                     "Praposal Type Selected" := LeaseProposalRec."Praposal Type Selected";
-
-
-
-
                 end else begin
                     // Clear fields if no record is found
                     "Tenant ID" := '';
@@ -689,10 +899,53 @@ table 50307 "Tenancy Contract"
                     "Unit Number" := '';
                 end;
 
+                // ✅ **Delete Existing Records Before Insert**
+                TCSingleUnitRent.Reset();
+                TCSingleUnitRent.SetRange("ID", "Renewal Proposal ID");
+
+                if TCSingleUnitRent.FindSet() then begin
+                    TCSingleUnitRent.DeleteAll();
+                end;
+
+                // ✅ **Fetch Data from CR Single Unit Rent SubPage and Insert into TC Single Unit Rent SubPage**
+                CRSingleUnitRent.Reset();
+                CRSingleUnitRent.SetRange("ID", "Renewal Proposal ID");
+
+                if CRSingleUnitRent.FindSet() then begin
+                    LineNoCounter := 1; // Start line numbering from 1
+                    repeat
+                        TCSingleUnitRent.Init();
+                        TCSingleUnitRent."ID" := CRSingleUnitRent."ID";
+                        TCSingleUnitRent."Line No." := LineNoCounter; // Ensure unique line number
+                        TCSingleUnitRent."Unit ID" := CRSingleUnitRent."Unit ID";
+                        TCSingleUnitRent.Year := CRSingleUnitRent.Year;
+                        TCSingleUnitRent."Start Date" := CRSingleUnitRent."Start Date";
+                        TCSingleUnitRent."End Date" := CRSingleUnitRent."End Date";
+                        TCSingleUnitRent."Number of Days" := CRSingleUnitRent."Number of Days";
+                        TCSingleUnitRent."Unit Sq Ft" := CRSingleUnitRent."Unit Sq Ft";
+                        TCSingleUnitRent."Rate per Sq.Ft" := CRSingleUnitRent."Rate per Sq.Ft";
+                        TCSingleUnitRent."Rent Increase %" := CRSingleUnitRent."Rent Increase %";
+                        TCSingleUnitRent."Annual Amount" := CRSingleUnitRent."Annual Amount";
+                        TCSingleUnitRent."Round off" := CRSingleUnitRent."Round off";
+                        TCSingleUnitRent."Final Annual Amount" := CRSingleUnitRent."Final Annual Amount";
+                        TCSingleUnitRent."Per Day Rent" := CRSingleUnitRent."Per Day Rent";
+                        TCSingleUnitRent.TotalFinalAmount := CRSingleUnitRent.TotalFinalAmount;
+                        TCSingleUnitRent.TotalAnnualAmount := CRSingleUnitRent.TotalAnnualAmount;
+                        TCSingleUnitRent.TotalRoundOff := CRSingleUnitRent.TotalRoundOff;
+                        TCSingleUnitRent.TotalFirstAnnualAmount := CRSingleUnitRent.TotalFirstAnnualAmount;
+                        TCSingleUnitRent.Insert();
+
+                        LineNoCounter += 1; // Increment line number
+                    until CRSingleUnitRent.Next() = 0;
+                end else begin
+                    Message('No existing records found for ID: %1 in CR Single Unit Rent SubPage.', "Renewal Proposal ID");
+                end;
 
                 Updateotherpayment();
             end;
         }
+
+
 
         field(50161; "Yes/No"; Boolean)
         {
@@ -759,183 +1012,183 @@ table 50307 "Tenancy Contract"
             Caption = 'Single Unit Rent Calculation Type';
             OptionMembers = " ","Single Unit with square feet rate","Single Unit with lumpsum square feet rate";
 
-            trigger OnValidate()
+            // trigger OnValidate()
 
-            var
-                LeaseProposal: Record "Contract Renewal"; // Replace with actual table name
-                SingleSameSquare: Record "TC Single Unit Rent SubPage"; // Target table
-                SingleLumSquare: Record "TC Single LumAnnualAmnt SP"; // Target table
-                PeriodStartDate: Date;
-                PeriodEndDate: Date;
-                LeaseEndDate: Date;
-                TotalDays: Integer;
-                DaysToAdd: Integer;
-                LeapDays: Integer;
-                CurrentYear: Integer;
-                YearCounter: Integer;
-                LineNoCounter: Integer;
+            // var
+            //     LeaseProposal: Record "Contract Renewal"; // Replace with actual table name
+            //     SingleSameSquare: Record "TC Single Unit Rent SubPage"; // Target table
+            //     SingleLumSquare: Record "TC Single LumAnnualAmnt SP"; // Target table
+            //     PeriodStartDate: Date;
+            //     PeriodEndDate: Date;
+            //     LeaseEndDate: Date;
+            //     TotalDays: Integer;
+            //     DaysToAdd: Integer;
+            //     LeapDays: Integer;
+            //     CurrentYear: Integer;
+            //     YearCounter: Integer;
+            //     LineNoCounter: Integer;
 
 
-            begin
+            // begin
 
-                if "Single Rent Calculation" = "Single Rent Calculation"::"Single Unit with square feet rate" then begin
-                    SingleSameSquare.SetRange("ID", Rec."ID");
-                    if SingleSameSquare.FindSet() then
-                        repeat
-                            SingleSameSquare.Delete();
-                        until SingleSameSquare.Next() = 0;
+            //     if "Single Rent Calculation" = "Single Rent Calculation"::"Single Unit with square feet rate" then begin
+            //         SingleSameSquare.SetRange("ID", Rec."ID");
+            //         if SingleSameSquare.FindSet() then
+            //             repeat
+            //                 SingleSameSquare.Delete();
+            //             until SingleSameSquare.Next() = 0;
 
-                    // Initialize variables
-                    PeriodStartDate := Rec."Contract Start Date";
-                    LeaseEndDate := Rec."Contract End Date";
-                    YearCounter := 1;
-                    LineNoCounter := 1;
+            //         // Initialize variables
+            //         PeriodStartDate := Rec."Contract Start Date";
+            //         LeaseEndDate := Rec."Contract End Date";
+            //         YearCounter := 1;
+            //         LineNoCounter := 1;
 
-                    // Loop to divide the period into yearly chunks and create records
-                    while PeriodStartDate <= LeaseEndDate do begin
-                        SingleSameSquare.Init();
-                        SingleSameSquare."ID" := Rec."ID";
-                        SingleSameSquare."Line No." := LineNoCounter;
-                        SingleSameSquare.Year := YearCounter;
-                        SingleSameSquare."Start Date" := PeriodStartDate;
+            //         // Loop to divide the period into yearly chunks and create records
+            //         while PeriodStartDate <= LeaseEndDate do begin
+            //             SingleSameSquare.Init();
+            //             SingleSameSquare."ID" := Rec."ID";
+            //             SingleSameSquare."Line No." := LineNoCounter;
+            //             SingleSameSquare.Year := YearCounter;
+            //             SingleSameSquare."Start Date" := PeriodStartDate;
 
-                        // Calculate the End Date (365 days after Start Date, adjusted for leap years)
-                        DaysToAdd := 365; // Default to 365 days
-                        LeapDays := 0;
+            //             // Calculate the End Date (365 days after Start Date, adjusted for leap years)
+            //             DaysToAdd := 365; // Default to 365 days
+            //             LeapDays := 0;
 
-                        // Check for leap years in the range from Start Date to Start Date + 364 days
-                        for CurrentYear := Date2DMY(PeriodStartDate, 3) to Date2DMY(PeriodStartDate + 364, 3) do begin
-                            if IsLeapYear(CurrentYear) then begin
-                                // Ensure the leap day (Feb 29) falls within the range
-                                if (DMY2Date(29, 2, CurrentYear) >= PeriodStartDate) and
-                                   (DMY2Date(29, 2, CurrentYear) <= PeriodStartDate + DaysToAdd - 1) then
-                                    LeapDays += 1;
-                            end;
-                        end;
+            //             // Check for leap years in the range from Start Date to Start Date + 364 days
+            //             for CurrentYear := Date2DMY(PeriodStartDate, 3) to Date2DMY(PeriodStartDate + 364, 3) do begin
+            //                 if IsLeapYear(CurrentYear) then begin
+            //                     // Ensure the leap day (Feb 29) falls within the range
+            //                     if (DMY2Date(29, 2, CurrentYear) >= PeriodStartDate) and
+            //                        (DMY2Date(29, 2, CurrentYear) <= PeriodStartDate + DaysToAdd - 1) then
+            //                         LeapDays += 1;
+            //                 end;
+            //             end;
 
-                        // Adjust DaysToAdd to account for any leap days
-                        DaysToAdd := DaysToAdd + LeapDays;
+            //             // Adjust DaysToAdd to account for any leap days
+            //             DaysToAdd := DaysToAdd + LeapDays;
 
-                        // Calculate the PeriodEndDate
-                        PeriodEndDate := PeriodStartDate + DaysToAdd - 1;
+            //             // Calculate the PeriodEndDate
+            //             PeriodEndDate := PeriodStartDate + DaysToAdd - 1;
 
-                        // Ensure the End Date does not exceed the Lease End Date
-                        if PeriodEndDate > LeaseEndDate then
-                            PeriodEndDate := LeaseEndDate;
+            //             // Ensure the End Date does not exceed the Lease End Date
+            //             if PeriodEndDate > LeaseEndDate then
+            //                 PeriodEndDate := LeaseEndDate;
 
-                        SingleSameSquare."End Date" := PeriodEndDate;
+            //             SingleSameSquare."End Date" := PeriodEndDate;
 
-                        // Calculate the number of days for this chunk
-                        TotalDays := PeriodEndDate - PeriodStartDate + 1;
-                        SingleSameSquare."Number of Days" := TotalDays;
+            //             // Calculate the number of days for this chunk
+            //             TotalDays := PeriodEndDate - PeriodStartDate + 1;
+            //             SingleSameSquare."Number of Days" := TotalDays;
 
-                        // Populate other fields
-                        SingleSameSquare."Unit ID" := Rec."Unit Name";
-                        SingleSameSquare."Unit Sq Ft" := Rec."Unit Sq. Feet";
+            //             // Populate other fields
+            //             SingleSameSquare."Unit ID" := Rec."Unit Name";
+            //             SingleSameSquare."Unit Sq Ft" := Rec."Unit Sq. Feet";
 
-                        // Set default values for Rate per Sq.Ft and Annual Amount (to be manually entered)
-                        SingleSameSquare."Rate per Sq.Ft" := 0; // Initialize as 0; users will manually enter this
-                        SingleSameSquare."Annual Amount" := 0; // Calculated after manual input
+            //             // Set default values for Rate per Sq.Ft and Annual Amount (to be manually entered)
+            //             SingleSameSquare."Rate per Sq.Ft" := 0; // Initialize as 0; users will manually enter this
+            //             SingleSameSquare."Annual Amount" := 0; // Calculated after manual input
 
-                        // Set Final Annual Amount to match Annual Amount
-                        SingleSameSquare."Final Annual Amount" := SingleSameSquare."Annual Amount";
+            //             // Set Final Annual Amount to match Annual Amount
+            //             SingleSameSquare."Final Annual Amount" := SingleSameSquare."Annual Amount";
 
-                        // Calculate Per Day Rent
-                        SingleSameSquare."Per Day Rent" := 0; // Will be calculated after manual input
+            //             // Calculate Per Day Rent
+            //             SingleSameSquare."Per Day Rent" := 0; // Will be calculated after manual input
 
-                        SingleSameSquare.Insert();
+            //             SingleSameSquare.Insert();
 
-                        // Move to the next period
-                        PeriodStartDate := PeriodEndDate + 1;
-                        YearCounter += 1;
-                        LineNoCounter += 1;
-                    end;
-                end
-                else if "Single Rent Calculation" = "Single Rent Calculation"::"Single Unit with lumpsum square feet rate" then begin
+            //             // Move to the next period
+            //             PeriodStartDate := PeriodEndDate + 1;
+            //             YearCounter += 1;
+            //             LineNoCounter += 1;
+            //         end;
+            //     end
+            //     else if "Single Rent Calculation" = "Single Rent Calculation"::"Single Unit with lumpsum square feet rate" then begin
 
-                    if Rec."ID" = 0 then
-                        Error('Contract Renewal ID is missing or not assigned.');
+            //         if Rec."ID" = 0 then
+            //             Error('Contract Renewal ID is missing or not assigned.');
 
-                    LeaseProposal.Reset();
-                    LeaseProposal.SetRange("ID", Rec."ID");
+            //         LeaseProposal.Reset();
+            //         LeaseProposal.SetRange("ID", Rec."ID");
 
-                    if not LeaseProposal.FindFirst() then
-                        Error('No record found for Contract Renewal ID %1.', Rec."ID");
+            //         if not LeaseProposal.FindFirst() then
+            //             Error('No record found for Contract Renewal ID %1.', Rec."ID");
 
-                    // Delete existing records to avoid duplication
-                    SingleLumSquare.SetRange("ID", LeaseProposal."ID");
-                    if SingleLumSquare.FindSet() then
-                        repeat
-                            SingleLumSquare.Delete();
-                        until SingleLumSquare.Next() = 0;
+            //         // Delete existing records to avoid duplication
+            //         SingleLumSquare.SetRange("ID", LeaseProposal."ID");
+            //         if SingleLumSquare.FindSet() then
+            //             repeat
+            //                 SingleLumSquare.Delete();
+            //             until SingleLumSquare.Next() = 0;
 
-                    PeriodStartDate := LeaseProposal."Contract Start Date";
-                    YearCounter := 1;
-                    LineNoCounter := 1;
+            //         PeriodStartDate := LeaseProposal."Contract Start Date";
+            //         YearCounter := 1;
+            //         LineNoCounter := 1;
 
-                    // Loop to divide the period into yearly chunks and create records
-                    while PeriodStartDate <= LeaseProposal."Contract End Date" do begin
-                        SingleLumSquare.Init();
-                        SingleLumSquare."ID" := LeaseProposal."ID";
-                        SingleLumSquare."SL_Line No." := LineNoCounter;
-                        SingleLumSquare.SL_Year := YearCounter;
-                        SingleLumSquare."SL_Start Date" := PeriodStartDate;
+            //         // Loop to divide the period into yearly chunks and create records
+            //         while PeriodStartDate <= LeaseProposal."Contract End Date" do begin
+            //             SingleLumSquare.Init();
+            //             SingleLumSquare."ID" := LeaseProposal."ID";
+            //             SingleLumSquare."SL_Line No." := LineNoCounter;
+            //             SingleLumSquare.SL_Year := YearCounter;
+            //             SingleLumSquare."SL_Start Date" := PeriodStartDate;
 
-                        // Calculate the End Date (365 days after Start Date, adjusted for leap years)
-                        DaysToAdd := 365; // Default to 365 days
-                        LeapDays := 0;
+            //             // Calculate the End Date (365 days after Start Date, adjusted for leap years)
+            //             DaysToAdd := 365; // Default to 365 days
+            //             LeapDays := 0;
 
-                        // Check for leap years in the range from Start Date to Start Date + 364 days
-                        for CurrentYear := Date2DMY(PeriodStartDate, 3) to Date2DMY(PeriodStartDate + 364, 3) do begin
-                            if IsLeapYear(CurrentYear) then begin
-                                // Ensure the leap day (Feb 29) falls within the range
-                                if (DMY2Date(29, 2, CurrentYear) >= PeriodStartDate) and
-                                   (DMY2Date(29, 2, CurrentYear) <= PeriodStartDate + DaysToAdd - 1) then
-                                    LeapDays += 1;
-                            end;
-                        end;
+            //             // Check for leap years in the range from Start Date to Start Date + 364 days
+            //             for CurrentYear := Date2DMY(PeriodStartDate, 3) to Date2DMY(PeriodStartDate + 364, 3) do begin
+            //                 if IsLeapYear(CurrentYear) then begin
+            //                     // Ensure the leap day (Feb 29) falls within the range
+            //                     if (DMY2Date(29, 2, CurrentYear) >= PeriodStartDate) and
+            //                        (DMY2Date(29, 2, CurrentYear) <= PeriodStartDate + DaysToAdd - 1) then
+            //                         LeapDays += 1;
+            //                 end;
+            //             end;
 
-                        // Adjust DaysToAdd to account for any leap days
-                        DaysToAdd := DaysToAdd + LeapDays;
+            //             // Adjust DaysToAdd to account for any leap days
+            //             DaysToAdd := DaysToAdd + LeapDays;
 
-                        // Calculate the PeriodEndDate
-                        PeriodEndDate := PeriodStartDate + DaysToAdd - 1;
+            //             // Calculate the PeriodEndDate
+            //             PeriodEndDate := PeriodStartDate + DaysToAdd - 1;
 
-                        // Ensure the end date does not exceed the Lease End Date
-                        if PeriodEndDate > LeaseProposal."Contract End Date" then
-                            PeriodEndDate := LeaseProposal."Contract End Date";
+            //             // Ensure the end date does not exceed the Lease End Date
+            //             if PeriodEndDate > LeaseProposal."Contract End Date" then
+            //                 PeriodEndDate := LeaseProposal."Contract End Date";
 
-                        SingleLumSquare."SL_End Date" := PeriodEndDate;
+            //             SingleLumSquare."SL_End Date" := PeriodEndDate;
 
-                        // Calculate the number of days
-                        TotalDays := PeriodEndDate - PeriodStartDate + 1;
-                        SingleLumSquare."SL_Number of Days" := TotalDays;
+            //             // Calculate the number of days
+            //             TotalDays := PeriodEndDate - PeriodStartDate + 1;
+            //             SingleLumSquare."SL_Number of Days" := TotalDays;
 
-                        // Populate other fields
-                        SingleLumSquare."SL_Unit ID" := LeaseProposal."Unit Name";
-                        SingleLumSquare."SL_Unit Sq Ft" := LeaseProposal."Unit Sq. Feet";
+            //             // Populate other fields
+            //             SingleLumSquare."SL_Unit ID" := LeaseProposal."Unit Name";
+            //             SingleLumSquare."SL_Unit Sq Ft" := LeaseProposal."Unit Sq. Feet";
 
-                        // For the first year, initialize the Annual Amount and Final Annual Amount
-                        if YearCounter = 1 then begin
-                            SingleLumSquare."SL_Annual Amount" := 0; // User will enter manually
-                            SingleLumSquare."SL_Final Annual Amount" := 0;
-                        end;
+            //             // For the first year, initialize the Annual Amount and Final Annual Amount
+            //             if YearCounter = 1 then begin
+            //                 SingleLumSquare."SL_Annual Amount" := 0; // User will enter manually
+            //                 SingleLumSquare."SL_Final Annual Amount" := 0;
+            //             end;
 
-                        // Calculate Per Day Rent
-                        if TotalDays > 0 then
-                            SingleLumSquare."SL_Per Day Rent" := SingleLumSquare."SL_Final Annual Amount" / TotalDays
-                        else
-                            SingleLumSquare."SL_Per Day Rent" := 0;
+            //             // Calculate Per Day Rent
+            //             if TotalDays > 0 then
+            //                 SingleLumSquare."SL_Per Day Rent" := SingleLumSquare."SL_Final Annual Amount" / TotalDays
+            //             else
+            //                 SingleLumSquare."SL_Per Day Rent" := 0;
 
-                        SingleLumSquare.Insert();
+            //             SingleLumSquare.Insert();
 
-                        // Update for the next year
-                        PeriodStartDate := PeriodEndDate + 1;
-                        YearCounter += 1;
-                        LineNoCounter += 1;
-                    end;
-                end;
-            end;
+            //             // Update for the next year
+            //             PeriodStartDate := PeriodEndDate + 1;
+            //             YearCounter += 1;
+            //             LineNoCounter += 1;
+            //         end;
+            //     end;
+            // end;
 
         }
 
@@ -947,6 +1200,7 @@ table 50307 "Tenancy Contract"
             Caption = 'Merge Unit Rent Calculation Type';
             OptionMembers = " ","Merged Unit with same square feet","Merged Unit with differential square feet rate","Merged Unit with lumpsum annual amount";
         }
+
     }
 
     keys
