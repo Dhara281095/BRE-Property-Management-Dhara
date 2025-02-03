@@ -34,10 +34,10 @@ codeunit 50512 RejectSalesInvoice
 
     begin
 
-        UserPersonalizationRec.SetRange("Profile ID", 'finanace manager'); // Accounting Manager
+        UserPersonalizationRec.SetRange("Profile ID", 'LEASE_MANAGER'); // Accounting Manager
         if UserPersonalizationRec.FindFirst() then begin
             UserRec.Get(UserPersonalizationRec."User SID");
-            EmailAddress.Add(UserRec."Authentication Email");
+            EmailAddress.Add(UserRec."Contact Email");
             Username := UserRec."User Name";
             //CCMail.Add('dhruvp6373@gmail.com');
 

@@ -34,7 +34,7 @@ codeunit 50509 SendInvoiceToTenant
 
     begin
 
-        UserPersonalizationRec.SetRange("Profile ID", 'Accounting Manager'); // Accounting Manager
+        UserPersonalizationRec.SetRange("Profile ID", 'LEASE_MANAGER'); // Accounting Manager
         if UserPersonalizationRec.FindFirst() then begin
             UserRec.Get(UserPersonalizationRec."User SID");
             EmailAddress.Add(UserRec."Contact Email");
