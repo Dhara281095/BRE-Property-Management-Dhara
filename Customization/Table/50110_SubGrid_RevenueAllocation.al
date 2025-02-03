@@ -8,7 +8,6 @@ table 50110 "Revenue Allocation SubGrid"
         {
             DataClassification = ToBeClassified;
             Caption = 'Line No.';
-            AutoIncrement = true;
             Editable = false;
         }
 
@@ -144,15 +143,21 @@ table 50110 "Revenue Allocation SubGrid"
             DataClassification = ToBeClassified;
             Caption = 'Owner Share';
         }
+        field(50123; "Header No."; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Header No.';
+        }
 
     }
 
     keys
     {
-        key(Key1; "Line No.")
+        key(Key1; "Header No.", "Line No.")
         {
             Clustered = true;
         }
 
     }
+
 }

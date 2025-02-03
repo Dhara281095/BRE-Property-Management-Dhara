@@ -40,6 +40,7 @@ page 50122 "Revenue Allocation Card"
                 Caption = 'Revenue Allocation Report Details';
                 part("Revenue Allocation Details"; "Revenue Allocation SubGrid")
                 {
+                    SubPageLink = "Header No." = field("No.");
                 }
             }
         }
@@ -69,6 +70,7 @@ page 50122 "Revenue Allocation Card"
         FilteredContractRec: Record "Revenue Allocation SubGrid";
     begin
         FilteredContractRec.Reset();
+        FilteredContractRec.SetRange("Header No.", Rec."No.");
         FilteredContractRec.DeleteAll();
     end;
 
@@ -82,9 +84,15 @@ page 50122 "Revenue Allocation Card"
         SelectedMonthEnd: Date;
         MonthNo: Integer;
         FinancialYear: Integer;
+        NextLineNo: Integer;
     begin
+        // Clear existing data
+        ClearSubgridData();
+
         MonthNo := Rec.Month + 1;
         FinancialYear := Rec."Financial Year";
+
+        NextLineNo := 1;  // Start from 1 for each header
 
         Message('Month: %1, Year: %2', Rec.Month, Rec."Financial Year");
 
@@ -92,7 +100,13 @@ page 50122 "Revenue Allocation Card"
         SelectedMonthStart := DMY2Date(01, MonthNo, FinancialYear); // First day of the month
         SelectedMonthEnd := CALCDATE('<+1M-1D>', SelectedMonthStart); // Last day of the month
 
-
+        // Initialize NextLineNo
+        // FilteredContractRec.Reset();
+        // // FilteredContractRec.SetRange("Header No.", Rec."No.");
+        // if FilteredContractRec.FindLast() then
+        //     NextLineNo := FilteredContractRec."Line No." + 10000
+        // else
+        //     NextLineNo := 10000;
 
         // Loop through all contracts
         if ContractRec.FindSet() then begin
@@ -101,6 +115,9 @@ page 50122 "Revenue Allocation Card"
                     (ContractRec."Contract End Date" >= SelectedMonthStart)) then begin
                     // Add matching contracts to the temporary table
                     FilteredContractRec.Init();
+                    // Assign Line No. first
+                    FilteredContractRec."Line No." := NextLineNo;
+                    FilteredContractRec."Header No." := Rec."No.";
                     FilteredContractRec."Property Name" := ContractRec."Property Name";
                     FilteredContractRec."Contract Id" := ContractRec."Contract ID";
                     FilteredContractRec."Contract Tenure" := ContractRec."Contract Tenor";
@@ -128,6 +145,7 @@ page 50122 "Revenue Allocation Card"
                     FilteredContractRec."Owner Name" := ContractRec."Owner's Name";
                     // FilteredContractRec."Owner Share" := ContractRec."Owner's Name";
                     FilteredContractRec.Insert();
+                    NextLineNo += 1;
                     Clear(FilteredContractRec);
                 end;
             until ContractRec.Next() = 0;

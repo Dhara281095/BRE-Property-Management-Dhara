@@ -65,7 +65,7 @@ codeunit 50502 "Send Proposal Email"
                     '<h3>Property Details:</h3>' +
                     '<p><b>Property Name:</b> ' + ConsolidatedInvoiceHeader."Property Name" + '<br/>' +
                     '<b>Unit Number:</b> ' + ConsolidatedInvoiceHeader."Unit Number" + '<br/>' +
-                    '<b>Area:</b> ' + ConsolidatedInvoiceHeader."Property Size" + '<br/>' +
+                    '<b>Area:</b> ' + Format(ConsolidatedInvoiceHeader."Unit Size") + '<br/>' +
                     '<b>Lease Amount:</b> ' + Format(ConsolidatedInvoiceHeader."Annual Rent Amount") + '<br/>' +
                     '<b>Lease Term:</b> ' + ConsolidatedInvoiceHeader."Lease Duration" + '</p>' +
                     '<h3>Terms and Conditions:</h3>' +
