@@ -1,0 +1,190 @@
+page 50927 "Payment Details Card"
+{
+    PageType = Card;
+    SourceTable = "Payment Details";
+    ApplicationArea = All;
+    Caption = 'Payment Method Card';
+    // UsageCategory = Administration;
+
+    layout
+    {
+        area(content)
+        {
+            group(Group)
+            {
+
+                field("Contract ID"; Rec."Contract ID")
+                {
+                    ApplicationArea = All;
+                    //Editable = false; // The ID is not editable since it's auto-incrementing
+                }
+
+                // field("PS ID"; Rec."PS ID")
+                // {
+                //     ApplicationArea = All;
+                //     // Editable = false; // The ID is not editable since it's auto-incrementing
+                // }
+
+                //Caption = 'Primary Item Details';
+                // field("Proposal ID"; Rec."Proposal ID")
+                // {
+                //     ApplicationArea = All;
+                //     // Editable = false; // The ID is not editable since it's auto-incrementing
+                //     Lookup = true;
+
+
+                // }
+
+                field("Tenant ID"; Rec."Tenant ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false; // The ID is not editable since it's auto-incrementing
+                    Lookup = true;
+
+
+                }
+                field("Approval Status"; Rec."Approval Status")
+                {
+                    ApplicationArea = All;
+                    // trigger OnValidate()
+                    // begin
+                    //     // Scenario 1: Update all payment grid records to "Approved" when card status changes
+                    //     if Rec."Approval Status" = Rec."Approval Status"::Approved then begin
+                    //         UpdateAllPaymentGridApprovalStatus(Rec."Contract ID", Rec."Approval Status");
+                    //     end;
+                    // end;
+
+                }
+                field("On-hold"; Rec."On-hold")
+                {
+                    ApplicationArea = All;
+                    trigger OnValidate()
+                    var
+                        paymentModeRec: Record "Payment Details";
+                        paymentSeriesRec: Record "Payment MethodSub";
+                        approvalPending: Boolean;
+                        sendRejectionToLeaseTeam: Codeunit 50511;
+                    begin
+                        if Rec."On-hold" = Rec."On-hold"::"True" then begin
+                            approvalPending := false;
+                            paymentSeriesRec.SetRange("Contract ID", Rec."Contract ID");
+                            paymentSeriesRec.SetRange("Tenant Id", Rec."Tenant Id");
+                            if paymentSeriesRec.FindSet() then begin
+                                repeat
+                                    if paymentSeriesRec."Approval Status" = paymentSeriesRec."Approval Status"::Pending then begin
+                                        approvalPending := true;
+                                        break;
+                                    end;
+                                until paymentSeriesRec.Next() = 0;
+                            end;
+
+                            // Exit if there are any "Pending" approval statuses
+                            if ApprovalPending then
+                                exit;
+
+                            if approvalPending = false then begin
+                                sendRejectionToLeaseTeam.SendPaymentRejectionToLeaseManager(paymentSeriesRec."Contract ID", paymentSeriesRec."Tenant Id", paymentSeriesRec."Contract ID");
+                            end;
+
+                        end;
+                    end;
+                }
+                field(Isupdated; Rec.Isupdated)
+                {
+                    ApplicationArea = All;
+                }
+
+
+            }
+
+
+
+            group("Payment Details")
+            {
+                part("PaymentMode"; "Payment Method Subpage")
+                {
+                    SubPageLink = "Contract ID" = FIELD("Contract ID"),
+                      "Tenant ID" = FIELD("Tenant ID"); // Link to filter attachments for this owner only
+                                                        // "Contract ID" = FIELD("Contract ID")
+                    ApplicationArea = All;
+
+                }
+            }
+
+        }
+    }
+
+
+
+    trigger OnAfterGetRecord()
+    begin
+
+        // CurrPage."PaymentMode".Page.SetProposalID(Rec."Proposal ID");
+        CurrPage."PaymentMode".Page.SetTenantID(Rec."Tenant ID");
+        CurrPage."PaymentMode".Page.SetContractID(Rec."Contract ID");
+
+
+    end;
+
+
+    trigger OnModifyRecord(): Boolean
+    begin
+        //CurrPage."PaymentMode".Page.SetProposalID(Rec."Proposal ID");
+        //CurrPage."Revenue".Page.SetStartEndDate(Rec."Lease Start Date", Rec."Lease End Date");
+        CurrPage."PaymentMode".Page.SetTenantID(Rec."Tenant ID");
+        CurrPage."PaymentMode".Page.SetContractID(Rec."Contract ID");
+
+
+
+
+    end;
+
+    trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    begin
+        // CurrPage."PaymentMode".Page.SetProposalID(Rec."Proposal ID");
+        // CurrPage."Revenue".Page.SetStartEndDate(Rec."Lease Start Date", Rec."Lease End Date");
+        CurrPage."PaymentMode".Page.SetTenantID(Rec."Tenant ID");
+        CurrPage."PaymentMode".Page.SetContractID(Rec."Contract ID");
+
+
+    end;
+
+    // procedure UpdateAllPaymentGridApprovalStatus(ContractID: Integer; NewStatus: Enum "Approval Status Enum")
+    // var
+    //     PaymentGridRec: Record "Payment Mode2";
+    // begin
+    //     PaymentGridRec.SetRange("Contract ID", PaymentGridRec."Contract ID");
+    //     if PaymentGridRec.FindSet() then
+    //         repeat
+    //             PaymentGridRec."Approval Status" := NewStatus;
+    //             PaymentGridRec.Modify();
+    //         until PaymentGridRec.Next() = 0;
+
+    //     // Check if all are approved
+    //     CheckAndUpdateCardApprovalStatus(ContractID);
+    // end;
+
+    // procedure CheckAndUpdateCardApprovalStatus(ContractID: Integer)
+    // var
+    //     PaymentGridRec: Record "Payment Mode2";
+    //     AllApproved: Boolean;
+    // begin
+    //     AllApproved := true;
+    //     PaymentGridRec.SetRange("Contract ID", ContractID);
+    //     if PaymentGridRec.FindSet() then
+    //         repeat
+    //             if PaymentGridRec."Approval Status" <> PaymentGridRec."Approval Status"::Approved then
+    //                 AllApproved := false;
+    //         until (PaymentGridRec.Next() = 0) or not AllApproved;
+
+    //     if AllApproved then begin
+    //         Rec."Approval Status" := Rec."Approval Status"::Approved;
+    //         Rec.Modify();
+    //     end;
+    // end;
+
+
+}
+
+
+

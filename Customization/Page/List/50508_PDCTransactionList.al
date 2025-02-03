@@ -150,7 +150,7 @@ page 50508 "PDC Transactions"
                 var
                     UnitRec: Record "PDC Transaction";
                     PDCStatusEnum: Enum "PDC Status Type Enum";
-                    PaymentSeriesRec: Record "Payment Mode2";
+                    PaymentSeriesRec: Record "Payment MethodSub";
 
                 begin
                     // Filter for selected records

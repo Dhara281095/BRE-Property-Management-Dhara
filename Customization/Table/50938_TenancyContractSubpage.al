@@ -119,6 +119,7 @@ table 50938 "Tenancy Contract Subpage"
             DataClassification = ToBeClassified;
             Caption = 'Generate Payment Schedule';
             InitValue = 'Generate Payment Schedule';
+            Editable = false;
 
         }
         field(50110; "Entry No."; Integer)

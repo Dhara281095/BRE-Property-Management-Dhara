@@ -78,6 +78,7 @@ page 50909 "Revenue Item SubPage Card"
                     ApplicationArea = All;
                     Caption = 'Payment Type';
                     ToolTip = 'Enter the Payment Type.';
+                    Visible = false;
 
                     // trigger OnValidate()
                     // begin

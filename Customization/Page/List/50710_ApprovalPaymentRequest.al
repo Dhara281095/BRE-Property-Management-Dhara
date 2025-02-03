@@ -136,6 +136,9 @@ page 50710 "Approval Payment Request"
                                 SelectedRecs.Status := 'Approve';
                                 SelectedRecs.Modify();
                                 ApproveCount += 1;
+                                ProcessApprovalAndSplitRequest();
+                                GetNextSequenceNo();
+
                             end else
                                 ErrorCount += 1;
                         until SelectedRecs.Next() = 0;
@@ -149,8 +152,6 @@ page 50710 "Approval Payment Request"
                     // ProcessCombineRequest();
                     //ProcessSplitRequest();
                     //ProcessApprovalRequest();
-                    ProcessApprovalAndSplitRequest();
-                    GetNextSequenceNo();
 
 
                 end;
@@ -210,10 +211,10 @@ page 50710 "Approval Payment Request"
     procedure ProcessApprovalAndSplitRequest()
     var
         PaymentChangeReqTable: Record "Approval Payment Request";
-        PaymentModeTable: Record "Payment Mode2";
+        PaymentModeTable: Record "Payment MethodSub";
         PaymentSchedule: Record "Payment Schedule2";
         ApprovalRec: Record "Approval Payment Request";
-        PaymentModeRec: Record "Payment Mode2";
+        PaymentModeRec: Record "Payment MethodSub";
         PaymentScheduleRec: Record "Payment Schedule2";
         PaymentSeriesList: List of [Text];
         itemList: List of [Text];
@@ -589,7 +590,7 @@ page 50710 "Approval Payment Request"
     var
         MaxSequence: Integer;
         LastSequence: Text[10];
-        MergedRecord: Record "Payment Mode2";
+        MergedRecord: Record "Payment MethodSub";
     begin
         MergedRecord.Reset();
         MergedRecord.SetRange("Contract ID", Rec."Contract ID");

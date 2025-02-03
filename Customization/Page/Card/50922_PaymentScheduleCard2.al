@@ -2,9 +2,8 @@ page 50922 "Payment Schedule Card2"
 {
     PageType = ListPart;
     SourceTable = "Payment Schedule2";
-    //SourceTable = "Revenue Structure Subpage1";
     ApplicationArea = All;
-    Caption = 'Payment Schedule Card2';
+    Caption = 'Payment Schedule Details';
     // UsageCategory = Administration;
 
     layout
@@ -18,53 +17,53 @@ page 50922 "Payment Schedule Card2"
                 {
                     ApplicationArea = All;
                     Caption = 'Item Types';
-                    Editable = false; // The ID is not editable since it's auto-incrementing
+                    Editable = false;
                 }
                 field("Amount"; Rec."Amount")
                 {
                     ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
+                    Editable = false;
                 }
                 field("VAT Amount"; Rec."VAT Amount")
                 {
                     ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
+                    Editable = false;
                 }
                 field("Amount Including VAT"; Rec."Amount Including VAT")
                 {
                     ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
+                    Editable = false;
                 }
 
                 field("Installment Start Date"; Rec."Installment Start Date")
                 {
                     ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
+                    Editable = false;
                 }
 
                 field("Installment End Date"; Rec."Installment End Date")
                 {
                     ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
+                    Editable = false;
                 }
 
                 field("Due Date"; Rec."Due Date")
                 {
                     ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
+                    Editable = false;
                 }
 
                 field("Installment No."; Rec."Installment No.")
                 {
                     ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
+                    Editable = false;
                 }
 
 
                 field("Payment Series"; Rec."Payment Series")
                 {
                     ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
+                    Editable = false;
                     Visible = false;
                 }
                 field("Tenant Name"; Rec."Tenant Name")

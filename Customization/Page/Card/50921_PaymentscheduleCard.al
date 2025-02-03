@@ -47,7 +47,7 @@ page 50921 "Payment Schedule Card"
 
             }
 
-            group("Payment Schedule")
+            group("Payment Schedule Details")
             {
                 part("PaymentSchedule"; "Payment Schedule Card2")
                 {
