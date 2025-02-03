@@ -146,7 +146,7 @@ page 50351 "TC Single Unit Rent SubPage"
                 field("Rate per Sq.Ft"; rec."Rate per Sq.Ft")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
 
                     trigger OnValidate()
                     var
@@ -245,6 +245,7 @@ page 50351 "TC Single Unit Rent SubPage"
                     ApplicationArea = All;
                     Caption = 'Rent Increase %';
                     ToolTip = 'Enter the rent increase percentage for this year.';
+                    Editable = false;
 
                     trigger OnValidate()
                     var
@@ -296,12 +297,14 @@ page 50351 "TC Single Unit Rent SubPage"
                     Caption = 'Annual Amount';
                     ToolTip = 'Displays the calculated annual amount for the year.';
                     DecimalPlaces = 2 : 2;
+
                 }
 
                 field("Round off"; rec."Round off")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Enter the round off value. The Final Annual Amount will be recalculated automatically.';
+                    Editable = false;
 
                     trigger OnValidate()
                     begin
