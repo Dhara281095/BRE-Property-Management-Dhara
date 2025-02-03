@@ -54,7 +54,7 @@ page 50509 "PDC Transaction"
                     Editable = IsLeaseManager;
                     trigger OnValidate()
                     var
-                        PaymentSeriesRec: Record "Payment MethodSub";
+                        PaymentSeriesRec: Record "Payment Mode2";
                     begin
                         // Check if the Cheque Status is set to 'Cleared'
                         if Rec."Cheque Status" = Rec."Cheque Status"::Cleared then begin

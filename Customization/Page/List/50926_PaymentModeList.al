@@ -1,7 +1,7 @@
 page 50926 "Payment Mode List"
 {
     PageType = List;
-    SourceTable = "Payment Details";
+    SourceTable = "Payment Mode";
     ApplicationArea = All;
     Caption = 'Payment Mode List';
     UsageCategory = Lists;
