@@ -506,13 +506,13 @@ page 50349 "TC Merge DifferentSq SubPage"
             LeaseProposalRec."Annual Rent Amount" := TotalFinalAmount; // Update Annual Rent Amount with the total of all years' Final Annual Amounts
 
 
-            // if LeaseProposalRec."Rent Amount VAT %" = LeaseProposalRec."Rent Amount VAT %"::"5%" then
-            //     vatPer := 5
-            // else
-            //     vatPer := 0;
+            if LeaseProposalRec."Rent Amount VAT %" = LeaseProposalRec."Rent Amount VAT %"::"5%" then
+                vatPer := 5
+            else
+                vatPer := 0;
 
-            // LeaseProposalRec."Rent VAT Amount" := LeaseProposalRec."Annual Rent Amount" * (vatPer / 100);
-            // LeaseProposalRec."Rent Amount Including VAT" := LeaseProposalRec."Annual Rent Amount" + LeaseProposalRec."Rent VAT Amount";
+            LeaseProposalRec."Rent VAT Amount" := LeaseProposalRec."Annual Rent Amount" * (vatPer / 100);
+            LeaseProposalRec."Rent Amount Including VAT" := LeaseProposalRec."Annual Rent Amount" + LeaseProposalRec."Rent VAT Amount";
 
             LeaseProposalRec.Modify(); // Save the changes to the Lease Proposal record
         end;
