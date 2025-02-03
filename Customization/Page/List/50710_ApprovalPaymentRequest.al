@@ -211,10 +211,10 @@ page 50710 "Approval Payment Request"
     procedure ProcessApprovalAndSplitRequest()
     var
         PaymentChangeReqTable: Record "Approval Payment Request";
-        PaymentModeTable: Record "Payment MethodSub";
+        PaymentModeTable: Record "Payment Mode2";
         PaymentSchedule: Record "Payment Schedule2";
         ApprovalRec: Record "Approval Payment Request";
-        PaymentModeRec: Record "Payment MethodSub";
+        PaymentModeRec: Record "Payment Mode2";
         PaymentScheduleRec: Record "Payment Schedule2";
         PaymentSeriesList: List of [Text];
         itemList: List of [Text];
@@ -590,7 +590,7 @@ page 50710 "Approval Payment Request"
     var
         MaxSequence: Integer;
         LastSequence: Text[10];
-        MergedRecord: Record "Payment MethodSub";
+        MergedRecord: Record "Payment Mode2";
     begin
         MergedRecord.Reset();
         MergedRecord.SetRange("Contract ID", Rec."Contract ID");

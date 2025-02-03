@@ -11,7 +11,7 @@ page 50707 paymentdata
     EntityName = 'paymentData';
     EntitySetName = 'paymentData';
     PageType = API;
-    SourceTable = "Payment MethodSub";
+    SourceTable = "Payment Mode2";
     ODataKeyFields = SystemId;
 
     layout
