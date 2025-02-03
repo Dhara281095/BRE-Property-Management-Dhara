@@ -43,13 +43,14 @@ report 50106 ContractMasterData
             column(Tenant_Contract_Status; TenantStatusFormatted)
             {
             }
-            column(Contract_Amount; AnnualRentAmountText)
+            column(Contract_Amount; "Annual Rent Amount")
+            {
+
+            }
+            column(Annual_Rent_Amount; "Rent Amount")
             {
             }
-            column(Annual_Rent_Amount; RentAmountText)
-            {
-            }
-            column(Security_Deposit_Amount; SecurityDepositAmountText)
+            column(Security_Deposit_Amount; "Security Deposit Amount")
             {
             }
             column(Property_Name; "Property Name")
@@ -82,7 +83,7 @@ report 50106 ContractMasterData
             column(Grace_End_Date; GraceEndDateText)
             {
             }
-            column(Grace_Period; GracePeriodText)
+            column(Grace_Period; "Grace Period")
             {
             }
 
@@ -161,20 +162,29 @@ report 50106 ContractMasterData
                 else
                     TenantStatusFormatted := Format("Tenant Contract Status");
 
+                // if "Annual Rent Amount" = 0 then
+                //     AnnualRentAmountText := '0.00'
+                // else
+                //     AnnualRentAmountText := Format("Annual Rent Amount", 0, '<Precision,2:2><Standard Format,0>');
+
+                // if "Rent Amount" = 0 then
+                //     RentAmountText := '0.00'
+                // else
+                //     RentAmountText := Format("Rent Amount", 0, '<Precision,2:2><Standard Format,0>');
+
+                // if "Security Deposit Amount" = 0 then
+                //     SecurityDepositAmountText := '0.00'
+                // else
+                //     SecurityDepositAmountText := Format("Security Deposit Amount", 0, '<Precision,2:2><Standard Format,0>');
+
                 if "Annual Rent Amount" = 0 then
-                    AnnualRentAmountText := '0.00'
-                else
-                    AnnualRentAmountText := Format("Annual Rent Amount", 0, '<Precision,2:2><Standard Format,0>');
+                    "Annual Rent Amount" := 0;
 
                 if "Rent Amount" = 0 then
-                    RentAmountText := '0.00'
-                else
-                    RentAmountText := Format("Rent Amount", 0, '<Precision,2:2><Standard Format,0>');
+                    "Rent Amount" := 0;
 
                 if "Security Deposit Amount" = 0 then
-                    SecurityDepositAmountText := '0.00'
-                else
-                    SecurityDepositAmountText := Format("Security Deposit Amount", 0, '<Precision,2:2><Standard Format,0>');
+                    "Security Deposit Amount" := 0;
 
                 if Format("Property Name") = '' then
                     "Property Name" := '-';
@@ -214,10 +224,8 @@ report 50106 ContractMasterData
                 else
                     GraceEndDateText := Format("Grace End Date", 0, '<Day,2>/<Month,2>/<Year4>');
 
-                if Format("Grace Period") = '' then
-                    GracePeriodText := '0.00'
-                else
-                    GracePeriodText := Format("Grace Period")
+                if "Grace Period" = 0 then
+                    "Grace Period" := 0;
             end;
         }
 
@@ -267,8 +275,8 @@ report 50106 ContractMasterData
         GraceEndDateText: Text;
         SuspensionDateText: Text;
         SuspensionReasonText: Text;
-        AnnualRentAmountText: Text;
-        RentAmountText: Text;
-        SecurityDepositAmountText: Text;
-        GracePeriodText: Text;
+    // AnnualRentAmountText: Text;
+    // RentAmountText: Text;
+    // SecurityDepositAmountText: Text;
+    // GracePeriodText: Text;
 }

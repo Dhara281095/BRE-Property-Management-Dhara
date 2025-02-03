@@ -12,6 +12,11 @@ page 50123 "Revenue Allocation SubGrid"
         {
             repeater(Group)
             {
+                field("Header No."; Rec."Header No.")  // Add this field
+                {
+                    ApplicationArea = All;
+                    Visible = false;  // Usually kept hidden since it's just for linking
+                }
                 field("Line No."; Rec."Line No.")
                 {
                     ApplicationArea = All;
