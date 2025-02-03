@@ -58,11 +58,7 @@ codeunit 50508 LeaseManagerSendMail
 
             // if 
             Email.Send(EmailMessage)
-            // then begin
-            //    // Message('Mail sent successfully.');
-            // end;
-            // end else begin
-            // Message('No invoices match today''s date. No email sent.');
+
         end;
     end;
 
