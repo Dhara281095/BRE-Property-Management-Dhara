@@ -571,10 +571,18 @@ page 50313 "Tenancy Contract Card"
                 Caption = 'Single Unit with lumpsum square feet rate';
                 Visible = ShowLegalReasonFields3;
 
-                part("Single Unit lumpsum Rent"; "TC Single LumAnnualAmnt SP")
+                part("Single Unit lumpsum Rent (Renewal)"; "TC Single LumAnnualAmnt SP")
                 {
-                    SubPageLink = "ID" = FIELD("ID"); // Link to filter attachments for this owner only
+                    SubPageLink = "ID" = FIELD("Renewal Proposal ID"); // Link to filter attachments for this owner only
                     ApplicationArea = All;
+                    Visible = (Rec."Renewal Proposal ID" <> 0); // Show only if Renewal Proposal ID is set
+                    // Visible = isVisible;
+                }
+                part("Single Unit lumpsum Rent (Proposal)"; "TC Single LumAnnualAmnt SP")
+                {
+                    SubPageLink = "ID" = FIELD("Proposal ID"); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    Visible = (Rec."Renewal Proposal ID" = 0); // Show only if Renewal Proposal ID is empty
                     // Visible = isVisible;
                 }
             }
