@@ -286,10 +286,12 @@ page 50928 "Payment Mode Card2"
                 field("Approval Status"; Rec."Approval Status")
                 {
                     ApplicationArea = All;
+                    // Editable = IsFinanceManager;
                 }
                 field(Reason; Rec.Reason)
                 {
                     ApplicationArea = All;
+                    // Editable = IsFinanceManager;
                 }
                 field(IsUpdated; Rec.IsUpdated)
                 {
@@ -511,6 +513,7 @@ page 50928 "Payment Mode Card2"
         ContractID: Integer;
         isApproved: Boolean;
         IsLeaseManager: Boolean;
+        IsFinanceManager: Boolean;
 
     trigger OnOpenPage()
     var
@@ -518,12 +521,15 @@ page 50928 "Payment Mode Card2"
     begin
         // Check if the current user has the 'LEASE_MANAGER' permission set
         IsLeaseManager := false;
+        IsFinanceManager :=false;
         PermissionSet.SetRange("User ID", UserId());
         // PermissionSet.SetRange("Profile ID", 'LEASE_MANAGER');
         if PermissionSet.FindSet() then begin
             if PermissionSet."Profile ID" = 'LEASE_MANAGER' then
                 IsLeaseManager := true;
-        end;
+        end
+        // else if PermissionSet."Profile ID" = 'FINANCE MANAGER' then
+        //         IsFinanceManager := true;
 
 
     end;
