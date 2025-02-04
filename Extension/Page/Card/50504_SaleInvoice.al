@@ -80,6 +80,18 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field("Customer P.O"; Rec."Customer P.O")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Customer P.O';
+                }
+                field("Customer P.O Date"; Rec."Customer P.O Date")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Customer P.O Date';
+                }
+
+
             }
         }
     }
