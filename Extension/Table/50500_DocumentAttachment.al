@@ -67,18 +67,19 @@ tableextension 50500 MyDocumentAttachment extends "Document Attachment"
         // Add changes to field groups here
     }
 
-    trigger OnBeforeDelete()
-    var
-        RecordRef: RecordRef;
-        FieldRef: FieldRef;
-    begin
-        RecordRef.Open("Table ID");
-        RecordRef.GetBySystemId("Record Id");
 
-        FieldRef := RecordRef.Field("Field No.");
-        FieldRef.Value := '';
-        RecordRef.Modify();
-    end;
+    // trigger OnBeforeDelete()
+    // var
+    //     RecordRef: RecordRef;
+    //     FieldRef: FieldRef;
+    // begin
+    //     RecordRef.Open("Table ID");
+    //     RecordRef.GetBySystemId("Record Id");
+
+    //     FieldRef := RecordRef.Field("Field No.");
+    //     FieldRef.Value := '';
+    //     RecordRef.Modify();
+    // end;
 
 
     var
