@@ -87,12 +87,12 @@ page 50928 "Payment Mode Card2"
                 {
                     ApplicationArea = All;
 
-                     trigger OnValidate()
-                    var
-                        Statuschange: Codeunit "Daily Job Queue";
-                    begin
-                        Statuschange.UpdateStatusForDueDate(Rec);
-                    end;
+                    //  trigger OnValidate()
+                    // var
+                    //     Statuschange: Codeunit "Daily Job Queue";
+                    // begin
+                    //     Statuschange.UpdateStatusForDueDate(Rec);
+                    // end;
                 }
 
                 field("Cheque Status"; Rec."Cheque Status")
@@ -454,33 +454,33 @@ page 50928 "Payment Mode Card2"
 
 
 
-    //  trigger OnAfterGetRecord()
-    //     begin
-    //         // If the field is blank, assign '-'
-    //         if Rec."Cheque Number" = '' then
-    //             Rec."Cheque Number" := '-';
+     trigger OnAfterGetRecord()
+        begin
+            // If the field is blank, assign '-'
+            if Rec."Cheque Number" = '' then
+                Rec."Cheque Number" := '-';
 
-    //             //  if Rec."Old Cheque #" = '' then
-    //             // Rec."Old Cheque #" := '-';
+                 if Rec."Old Cheque #" = '' then
+                Rec."Old Cheque #" := '-';
 
-    //             //  if Rec."Receipt #" = '' then
-    //             // Rec."Receipt #" := '-';
+                 if Rec."Receipt #" = '' then
+                Rec."Receipt #" := '-';
 
-    //             //  if Rec."Invoice #" = '' then
-    //             // Rec."Invoice #" := '-';
+                 if Rec."Invoice #" = '' then
+                Rec."Invoice #" := '-';
 
 
-    //             if Rec."Due Date" <> xRec."Due Date" then begin
-    //                     if Rec."Due Date" = Today() then
-    //                         Rec."Payment Status" := Rec."Payment Status"::"Due"
-    //                     else if Rec."Due Date" < Today() then
-    //                         Rec."Payment Status" := Rec."Payment Status"::"Overdue"
-    //                     else
-    //                         Rec."Payment Status" := Rec."Payment Status";
+                // if Rec."Due Date" <> xRec."Due Date" then begin
+                //         if Rec."Due Date" = Today() then
+                //             Rec."Payment Status" := Rec."Payment Status"::"Due"
+                //         else if Rec."Due Date" < Today() then
+                //             Rec."Payment Status" := Rec."Payment Status"::"Overdue"
+                //         else
+                //             Rec."Payment Status" := Rec."Payment Status";
 
-    //                  //   Modify();
-    //                 end;
-    //     end;
+                //      //   Modify();
+                //     end;
+        end;
 
 
 
