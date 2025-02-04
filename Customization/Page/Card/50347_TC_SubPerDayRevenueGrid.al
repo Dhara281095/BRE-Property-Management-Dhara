@@ -55,6 +55,11 @@ page 50347 "TC PerDayRent for Revenue Card"
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field("Line No."; rec."Line No.")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
 
                 field("Per Day Rent Per Unit"; rec."Per Day Rent Per Unit")
                 {

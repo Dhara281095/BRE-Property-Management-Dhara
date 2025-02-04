@@ -46,6 +46,10 @@ table 50332 "TC Per Day Rent for Revenue"
         {
             DataClassification = ToBeClassified;
         }
+        field(50110; "Line No."; Integer)
+        {
+            DataClassification = ToBeClassified;
+        }
 
         field(50107; "Get Data"; Code[100])
         {

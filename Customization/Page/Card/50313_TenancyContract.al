@@ -613,10 +613,19 @@ page 50313 "Tenancy Contract Card"
             {
                 Caption = 'Merged Unit With Same Square Feet';
                 Visible = ShowBusinessReasonFields;
-                part("Merge SameSqure Rent"; "TC Merge SameSqure SubPage")
+                part("Merge SameSqure Rent (Renewal)"; "TC Merge SameSqure SubPage")
                 {
                     SubPageLink = "ID" = FIELD("Renewal Proposal ID"); // Link to filter attachments for this owner only
                     ApplicationArea = All;
+                    Visible = (Rec."Renewal Proposal ID" <> 0); // Show only if Renewal Proposal ID is set
+                    // Visible = isVisible;
+                }
+
+                part("Merge SameSqure Rent (Proposal)"; "TC Merge SameSqure SubPage")
+                {
+                    SubPageLink = "ID" = FIELD("Proposal ID"); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    Visible = (Rec."Renewal Proposal ID" = 0); // Show only if Renewal Proposal ID is empty
                     // Visible = isVisible;
                 }
             }
@@ -643,16 +652,40 @@ page 50313 "Tenancy Contract Card"
                 }
             }
 
+            // group("Per Day Rent for Revenue Allocation")
+            // {
+            //     Caption = 'Per Day Rent for Revenue Allocation';
+            //     part("Per Day Rent for Revenue"; "TC PerDayRent for Revenue Card")
+            //     {
+            //         SubPageLink = "Contract Renewal Id" = FIELD(Id); // Link to filter attachments for this owner only
+            //         ApplicationArea = All;
+            //         Visible = Rec."Praposal Type Selected" = Rec."Praposal Type Selected"::"Merge Unit"; // Visible when "Praposal Type Selected" is "Merge Unit"
+            //     }
+
+            // }
             group("Per Day Rent for Revenue Allocation")
             {
                 Caption = 'Per Day Rent for Revenue Allocation';
-                part("Per Day Rent for Revenue"; "TC PerDayRent for Revenue Card")
+
+                // ✅ Show for Renewal Proposal if "Praposal Type Selected" = "Merge Unit"
+                part("Per Day Rent (Renewal)"; "TC PerDayRent for Revenue Card")
                 {
-                    SubPageLink = "Contract Renewal Id" = FIELD(Id); // Link to filter attachments for this owner only
+                    SubPageLink = "Contract Renewal Id" = FIELD("Renewal Proposal ID"); // Link to Renewal Proposal ID
                     ApplicationArea = All;
-                    Visible = Rec."Praposal Type Selected" = Rec."Praposal Type Selected"::"Merge Unit"; // Visible when "Praposal Type Selected" is "Merge Unit"
+                    Visible = (Rec."Renewal Proposal ID" <> 0) and
+                  (Rec."Praposal Type Selected" = Rec."Praposal Type Selected"::"Merge Unit");
+                }
+
+                // ✅ Show for Normal Proposal if "Praposal Type Selected" = "Merge Unit"
+                part("Per Day Rent (Proposal)"; "TC PerDayRent for Revenue Card")
+                {
+                    SubPageLink = "Contract Renewal Id" = FIELD("Proposal ID"); // Link to Proposal ID
+                    ApplicationArea = All;
+                    Visible = (Rec."Renewal Proposal ID" = 0) and
+                  (Rec."Praposal Type Selected" = Rec."Praposal Type Selected"::"Merge Unit");
                 }
             }
+
 
 
 
