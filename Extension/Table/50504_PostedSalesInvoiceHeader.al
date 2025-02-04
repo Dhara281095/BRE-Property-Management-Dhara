@@ -47,6 +47,16 @@ tableextension 50504 PostedSalesInvoiceHeader extends "Sales Invoice Header"
             DataClassification = ToBeClassified;
             Caption = 'Customer P.O Date';
         }
+        field(50109; "Contract Period"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Contract Period';
+        }
+        field(50110; "Reason For Rejection"; Text[1000])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Reason For Rejection';
+        }
 
 
     }

@@ -47,6 +47,16 @@ pageextension 50506 PostedSalesInvoiceHeader extends "Posted Sales Invoice"
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field("Contract Period"; Rec."Contract Period")
+                {
+                    Caption = 'Contract Period';
+                    ApplicationArea = All;
+                }
+                field("Reason for Rejection"; Rec."Reason for Rejection")
+                {
+                    Caption = 'Reason For Rejection';
+                    ApplicationArea = All;
+                }
                 field("Approval Status"; Rec."Approval Status")
                 {
                     Caption = 'Approval Status';
