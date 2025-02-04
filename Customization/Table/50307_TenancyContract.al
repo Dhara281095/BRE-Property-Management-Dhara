@@ -1408,6 +1408,14 @@ table 50307 "Tenancy Contract"
             OptionMembers = " ","Merged Unit with same square feet","Merged Unit with differential square feet rate","Merged Unit with lumpsum annual amount";
         }
 
+        field(50172; "Update Data"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Update Data';
+            InitValue = 'Update Data';
+
+        }
+
     }
 
     keys
