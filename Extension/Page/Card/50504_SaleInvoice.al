@@ -95,7 +95,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 field("Reason for Rejection"; Rec."Reason for Rejection")
                 {
                     Caption = 'Reason For Rejection';
-                    ApplicationArea = Alll;
+                    ApplicationArea = All;
                 }
 
                 field("Approval Status"; Rec."Approval Status")
