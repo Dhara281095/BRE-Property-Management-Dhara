@@ -58,6 +58,14 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
         {
             Caption = 'Tenant Name';
         }
+        field(50107; "Customer P.O"; Code[100])
+        {
+            Caption = 'Customer P.O';
+        }
+        field(50108; "Customer P.O Date"; Date)
+        {
+            Caption = 'Customer P.O Date';
+        }
 
     }
 

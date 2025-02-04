@@ -91,6 +91,14 @@ report 50104 InvoiceTemplate
             column(BankBranch; CompanyInfo."Bank Branch No.")
             {
             }
+            column(Customer_P_O; "Customer P.O")
+            {
+
+            }
+            column(Customer_P_O_Date; "Customer P.O Date")
+            {
+
+            }
             dataitem("Tenancy Contract"; "Tenancy Contract")
             {
                 DataItemLink = "Contract ID" = field("Contract ID");
