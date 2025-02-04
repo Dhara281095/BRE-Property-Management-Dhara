@@ -22,11 +22,14 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                             Rec."Property Name" := tenancyContract."Property Name";
                             Rec."Unit Name" := tenancyContract."Unit Name";
                             Rec."Contract Tenure" := tenancyContract."Contract Tenor";
+                            Rec."Contract Period" := Format(tenancyContract."Contract Start Date") + 'To' + Format(tenancyContract."Contract End Date");
 
                         end else begin
                             rec."Property Name" := '';
                             Rec."Unit Name" := '';
                             Rec."Contract Tenure" := '';
+                            Rec."Contract Period" := ''
+
                             // Rec."Tenant Name" := '';
 
                         end;
@@ -68,13 +71,6 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field("Approval Status"; Rec."Approval Status")
-                {
-                    Caption = 'Approval Status';
-                    ApplicationArea = All;
-                    Editable = approvaleditable;
-                    //Editable = true;
-                }
                 field("Tenant Name"; Rec."Tenant Name")
                 {
                     ApplicationArea = All;
@@ -89,6 +85,25 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 {
                     ApplicationArea = All;
                     Caption = 'Customer P.O Date';
+                }
+                field("Contract Period"; Rec."Contract Period")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Contract Period';
+                    Editable = false;
+                }
+                field("Reason for Rejection"; Rec."Reason for Rejection")
+                {
+                    Caption = 'Reason For Rejection';
+                    ApplicationArea = Alll;
+                }
+
+                field("Approval Status"; Rec."Approval Status")
+                {
+                    Caption = 'Approval Status';
+                    ApplicationArea = All;
+                    Editable = approvaleditable;
+                    //Editable = true;
                 }
 
 
@@ -194,12 +209,13 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
             Rec."Property Name" := tenancyContract."Property Name";
             Rec."Unit Name" := tenancyContract."Unit Name";
             Rec."Contract Tenure" := tenancyContract."Contract Tenor";
+            Rec."Contract Period" := Format(tenancyContract."Contract Start Date") + ' To ' + Format(tenancyContract."Contract End Date")
         end else begin
 
             rec."Property Name" := '';
             Rec."Unit Name" := '';
             Rec."Contract Tenure" := '';
-
+            Rec."Contract Period" := '';
         end;
 
 
