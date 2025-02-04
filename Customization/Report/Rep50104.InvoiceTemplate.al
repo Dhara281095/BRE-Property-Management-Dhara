@@ -99,6 +99,10 @@ report 50104 InvoiceTemplate
             {
 
             }
+            column(Contract_Period; "Contract Period")
+            {
+
+            }
             dataitem("Tenancy Contract"; "Tenancy Contract")
             {
                 DataItemLink = "Contract ID" = field("Contract ID");

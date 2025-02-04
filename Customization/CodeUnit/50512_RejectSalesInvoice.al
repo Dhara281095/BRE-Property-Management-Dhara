@@ -70,7 +70,8 @@ codeunit 50512 RejectSalesInvoice
                          '<b>Contract ID:</b> ' + Format(SalesHeader."Contract ID") + '<br/>' +
                          '<b>Property Name:</b> ' + SalesHeader."Property Name" + '<br/>' +
                          '<b>Total Amount:</b> ' + Format(TotalAmount) + '<br/>' +
-                         '<p>Please review the details</p>' +
+                         '<b>Reason For Rejection:</b>' + SalesHeader."Reason for Rejection" + '<br/>' +
+                         '<p>Please review the details and update the invoice</p>' +
                          '<p>Best regards,<br/>' + CompanyInfo.Name + '</p>' +
 
                         '</body>' +
