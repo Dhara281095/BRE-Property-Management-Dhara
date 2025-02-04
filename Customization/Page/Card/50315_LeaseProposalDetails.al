@@ -400,6 +400,7 @@ page 50315 "Lease Proposal Card"
                     ApplicationArea = All;
                     Editable = false;
                     DrillDown = true;
+                    Visible = false;
 
                     trigger OnDrillDown()
                     var

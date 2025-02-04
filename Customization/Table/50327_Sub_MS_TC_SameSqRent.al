@@ -99,24 +99,24 @@ table 50327 "TC Merge SameSqure SubPage"
         field(50117; "TotalFinalAmount"; Decimal)
         {
             FieldClass = FlowField;
-            CalcFormula = sum("CR Merge SameSqure SubPage"."MS_Final Annual Amount" where("Id" = field("Id")));
+            CalcFormula = sum("TC Merge SameSqure SubPage"."MS_Final Annual Amount" where("Id" = field("Id")));
         }
         field(50118; "TotalAnnualAmount"; Decimal)
         {
             FieldClass = FlowField;
-            CalcFormula = sum("CR Merge SameSqure SubPage"."MS_Annual Amount" where("Id" = field("Id")));
+            CalcFormula = sum("TC Merge SameSqure SubPage"."MS_Annual Amount" where("Id" = field("Id")));
         }
         field(50119; "TotalRoundOff"; Decimal)
         {
             FieldClass = FlowField;
-            CalcFormula = sum("CR Merge SameSqure SubPage"."MS_Round off" where("Id" = field("Id")));
+            CalcFormula = sum("TC Merge SameSqure SubPage"."MS_Round off" where("Id" = field("Id")));
         }
 
 
         field(50120; "TotalFirstAnnualAmount"; Decimal)
         {
             FieldClass = FlowField;
-            CalcFormula = sum("CR Merge SameSqure SubPage"."MS_Final Annual Amount" where("Id" = field("Id"), MS_Year = const(1)));
+            CalcFormula = sum("TC Merge SameSqure SubPage"."MS_Final Annual Amount" where("Id" = field("Id"), MS_Year = const(1)));
         }
     }
 
