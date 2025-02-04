@@ -29,7 +29,7 @@ page 50707 paymentdata
                 //     Caption = 'Amount Including VAT';
                 // }
 
-                field(amountIncludingVAT; Format(Rec."Amount Including VAT", 0, '<Integer><Decimals,2>'))
+                field(amountIncludingVAT; Format(Rec."Amount Including VAT", 0, '<Integer><Decimals,3>'))
                 {
                     Caption = 'Amount Including VAT';
                 }
