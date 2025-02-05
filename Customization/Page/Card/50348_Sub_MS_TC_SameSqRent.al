@@ -302,6 +302,12 @@ page 50348 "TC Merge SameSqure SubPage"
                     DecimalPlaces = 2 : 2;
 
                 }
+                field("Contract ID"; rec."Contract ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Visible = false;
+                }
 
             }
 
@@ -578,4 +584,20 @@ page 50348 "TC Merge SameSqure SubPage"
     end;
 
     //-----------------Calculate Per Day Rent -----------------//
+
+    procedure SetContractIDs(pContractID: Integer)
+    begin
+        ContractID := pContractID;
+    end;
+
+
+    trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    begin
+        Rec."Contract ID" := ContractID;
+
+    end;
+
+    var
+        ContractID: Integer;
+
 }

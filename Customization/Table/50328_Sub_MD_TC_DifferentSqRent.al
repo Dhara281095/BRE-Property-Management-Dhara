@@ -96,19 +96,19 @@ table 50328 "TC Merge DifferentSq SubPage"
         field(50117; "TotalFinalAmount"; Decimal)
         {
             FieldClass = FlowField;
-            CalcFormula = sum("CR Merge DifferentSq SubPage"."MD_Final Annual Amount" where("Id" = field("Id")));
+            CalcFormula = sum("TC Merge DifferentSq SubPage"."MD_Final Annual Amount" where("Id" = field("Id")));
 
         }
         field(50118; "TotalAnnualAmount"; Decimal)
         {
             FieldClass = FlowField;
-            CalcFormula = sum("CR Merge DifferentSq SubPage"."MD_Annual Amount" where("Id" = field("Id")));
+            CalcFormula = sum("TC Merge DifferentSq SubPage"."MD_Annual Amount" where("Id" = field("Id")));
 
         }
         field(50119; "TotalRoundOff"; Decimal)
         {
             FieldClass = FlowField;
-            CalcFormula = sum("CR Merge DifferentSq SubPage"."MD_Round off" where("Id" = field("Id")));
+            CalcFormula = sum("TC Merge DifferentSq SubPage"."MD_Round off" where("Id" = field("Id")));
 
         }
 
@@ -116,9 +116,14 @@ table 50328 "TC Merge DifferentSq SubPage"
         field(50120; "TotalFirstAnnualAmount"; Decimal)
         {
             FieldClass = FlowField;
-            CalcFormula = sum("CR Merge DifferentSq SubPage"."MD_Final Annual Amount" where("Id" = field(ID), MD_Year = const(1)));
+            CalcFormula = sum("TC Merge DifferentSq SubPage"."MD_Final Annual Amount" where("Id" = field(ID), MD_Year = const(1)));
 
         }
+        field(50121; "Contract Id"; Integer)
+        {
+            DataClassification = ToBeClassified;
+        }
+
     }
 
     keys

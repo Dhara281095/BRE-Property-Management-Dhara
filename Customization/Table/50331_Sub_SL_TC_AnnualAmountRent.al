@@ -114,6 +114,11 @@ table 50331 "TC Single LumAnnualAmnt SP"
             FieldClass = FlowField;
             CalcFormula = sum("TC Single LumAnnualAmnt SP"."SL_Final Annual Amount" where("Id" = field("Id"), SL_Year = const(1)));
         }
+        field(50121; "Contract Id"; Integer)
+        {
+            DataClassification = ToBeClassified;
+        }
+
 
     }
 

@@ -185,6 +185,13 @@ page 50350 "TC Merge Lum_AnnualAmount SP"
                     end;
                 }
 
+                field("Contract ID"; rec."Contract ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Visible = false;
+                }
+
 
             }
 
@@ -493,6 +500,22 @@ page 50350 "TC Merge Lum_AnnualAmount SP"
         CurrPage.Update();
     end;
     //-----------------Calculate Total -----------------//
+
+    procedure SetContractIDs(pContractID: Integer)
+    begin
+        ContractID := pContractID;
+    end;
+
+
+    trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    begin
+        Rec."Contract ID" := ContractID;
+
+    end;
+
+    var
+        ContractID: Integer;
+
 
 }
 

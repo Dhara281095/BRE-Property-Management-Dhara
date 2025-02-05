@@ -117,6 +117,11 @@ table 50329 "TC Merge LumAnnualAmount SP"
             FieldClass = FlowField;
             CalcFormula = sum("CR Merge LumAnnualAmount SP"."ML_Final Annual Amount" where("Id" = field("Id"), ML_Year = const(1)));
         }
+        field(50121; "Contract Id"; Integer)
+        {
+            DataClassification = ToBeClassified;
+        }
+
 
     }
 
