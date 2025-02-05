@@ -118,6 +118,11 @@ table 50329 "TC Merge LumAnnualAmount SP"
             CalcFormula = sum("CR Merge LumAnnualAmount SP"."ML_Final Annual Amount" where("Id" = field("Id"), ML_Year = const(1)));
         }
 
+        field(50120; "Contract Id"; Integer)
+        {
+            DataClassification = ToBeClassified;
+        }
+
     }
 
     keys
