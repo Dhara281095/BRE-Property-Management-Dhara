@@ -122,12 +122,6 @@ table 50329 "TC Merge LumAnnualAmount SP"
             DataClassification = ToBeClassified;
         }
 
-
-        field(50120; "Contract Id"; Integer)
-        {
-            DataClassification = ToBeClassified;
-        }
-
     }
 
     keys
