@@ -1243,6 +1243,110 @@ table 50318 "Contract Renewal"
 
     //-------------Leap year Counting--------------//
 
+    trigger OnDelete()
+    var
+    begin
+        DeleteSingleUnitSameRate();
+        DeleteMergeUnitSameRate();
+        DeletePerDayRevenueUnitSameRate();
+        DeleteLeaseMergeAllUnitDetails();
+        DeleteMergeUnitDiffRate();
+        DeleteSingleUnitLumpsumRate();
+        DeleteMergeUnitLumpsumRate();
+
+    end;
+
+    procedure DeleteSingleUnitSameRate()
+    var
+        deleteSingleUnitRecords: Record "CR Single Unit Rent SubPage";
+
+    begin
+        deleteSingleUnitRecords.SetRange("ID", Rec."Proposal ID");
+
+        if deleteSingleUnitRecords.FindSet() then begin
+            deleteSingleUnitRecords.DeleteAll();
+        end
+
+    end;
+
+    procedure DeleteMergeUnitSameRate()
+    var
+        deleteMergeUnitRecords: Record "CR Merge SameSqure SubPage";
+
+    begin
+        deleteMergeUnitRecords.SetRange("ID", Rec."Proposal ID");
+
+        if deleteMergeUnitRecords.FindSet() then begin
+            deleteMergeUnitRecords.DeleteAll();
+        end
+
+    end;
+
+    procedure DeletePerDayRevenueUnitSameRate()
+    var
+        deletePerDayRevenueUnitRecords: Record "CR Per Day Rent for Revenue";
+
+    begin
+        deletePerDayRevenueUnitRecords.SetRange("Proposal Id", Rec."Proposal ID");
+
+        if deletePerDayRevenueUnitRecords.FindSet() then begin
+            deletePerDayRevenueUnitRecords.DeleteAll();
+        end
+
+    end;
+
+    procedure DeleteLeaseMergeAllUnitDetails()
+    var
+        deleteAllUnitRecords: Record "CR Sub Lease Merged Units";
+
+    begin
+        deleteAllUnitRecords.SetRange("ID", Rec."Proposal ID");
+
+        if deleteAllUnitRecords.FindSet() then begin
+            deleteAllUnitRecords.DeleteAll();
+        end
+
+    end;
+
+    procedure DeleteMergeUnitDiffRate()
+    var
+        deleteMergeUnitDiffRecords: Record "CR Merge DifferentSq SubPage";
+
+    begin
+        deleteMergeUnitDiffRecords.SetRange("ID", Rec."Proposal ID");
+
+        if deleteMergeUnitDiffRecords.FindSet() then begin
+            deleteMergeUnitDiffRecords.DeleteAll();
+        end
+
+    end;
+
+    procedure DeleteMergeUnitLumpsumRate()
+    var
+        deleteMergeUnitLumpsumRecords: Record "CR Merge LumAnnualAmount SP";
+
+    begin
+        deleteMergeUnitLumpsumRecords.SetRange("ID", Rec."Proposal ID");
+
+        if deleteMergeUnitLumpsumRecords.FindSet() then begin
+            deleteMergeUnitLumpsumRecords.DeleteAll();
+        end
+
+    end;
+
+    procedure DeleteSingleUnitLumpsumRate()
+    var
+        deleteSingleUnitLumpsumRecords: Record "Single Lum_AnnualAmnt SubPage";
+
+    begin
+        deleteSingleUnitLumpsumRecords.SetRange("Proposal Id", Rec."Proposal ID");
+
+        if deleteSingleUnitLumpsumRecords.FindSet() then begin
+            deleteSingleUnitLumpsumRecords.DeleteAll();
+        end
+
+    end;
+
 
 
 }

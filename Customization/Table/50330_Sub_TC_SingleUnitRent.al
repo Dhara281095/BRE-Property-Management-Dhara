@@ -115,6 +115,11 @@ table 50330 "TC Single Unit Rent SubPage"
             FieldClass = FlowField;
             CalcFormula = sum("TC Single Unit Rent SubPage"."Final Annual Amount" where("Id" = field("Id"), Year = const(1)));
         }
+        field(50121; "Contract Id"; Integer)
+        {
+            DataClassification = ToBeClassified;
+        }
+
 
     }
 
