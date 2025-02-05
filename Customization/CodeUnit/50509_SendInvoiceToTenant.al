@@ -32,6 +32,7 @@ codeunit 50509 SendInvoiceToTenant
         ConfirmationResult: Boolean;
         UserPersonalizationRec: Record "User Personalization";
 
+
     begin
 
         UserPersonalizationRec.SetRange("Profile ID", 'LEASE_MANAGER'); // Accounting Manager
