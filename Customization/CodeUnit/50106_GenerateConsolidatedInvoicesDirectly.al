@@ -43,7 +43,9 @@ codeunit 50106 GenerateConsolidatedInvoices
             salesHeader."No." := noseries.GetNextNo(salesReciveable."Invoice Nos.", Today, true);
         salesHeader."Document Type" := SalesHeader."Document Type"::Invoice;
         salesHeader."Sell-to Customer No." := TenantID;
-
+        salesHeader."Bill-to Customer No." := TenantID;
+        salesHeader."Bill-to Name" := TenantName;
+        salesHeader."Sell-to Customer Name" := TenantName;
         salesHeader."Due Date" := DueDate;
         salesHeader."Contract ID" := ContractID;
         salesHeader."Tenant Name" := TenantName;
