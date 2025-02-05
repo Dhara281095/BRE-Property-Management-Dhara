@@ -136,8 +136,10 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                     SalesInvoiceReport.Run();
                 end;
             }
+
         }
     }
+
 
     procedure GetUserEditableStatus(): Boolean
     var
