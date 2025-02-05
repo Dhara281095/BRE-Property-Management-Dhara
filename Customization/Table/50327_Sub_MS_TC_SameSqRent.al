@@ -118,6 +118,11 @@ table 50327 "TC Merge SameSqure SubPage"
             FieldClass = FlowField;
             CalcFormula = sum("TC Merge SameSqure SubPage"."MS_Final Annual Amount" where("Id" = field("Id"), MS_Year = const(1)));
         }
+        field(50121; "Contract Id"; Integer)
+        {
+            DataClassification = ToBeClassified;
+        }
+
     }
 
     keys

@@ -15,6 +15,12 @@ page 50352 "TC Single LumAnnualAmnt SP"
                 {
                     ApplicationArea = All;
                 }
+                field("Contract ID"; rec."Contract ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Visible = false;
+                }
                 field("SL_Merged Unit ID"; rec."SL_Merged Unit ID")
                 {
                     ApplicationArea = All;
@@ -373,5 +379,19 @@ page 50352 "TC Single LumAnnualAmnt SP"
         CurrPage.Update();
     end;
 
+    procedure SetContractIDs(pContractID: Integer)
+    begin
+        ContractID := pContractID;
+    end;
+
+
+    trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    begin
+        Rec."Contract ID" := ContractID;
+
+    end;
+
+    var
+        ContractID: Integer;
 
 }

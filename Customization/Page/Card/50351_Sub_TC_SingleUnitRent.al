@@ -16,6 +16,12 @@ page 50351 "TC Single Unit Rent SubPage"
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field("Contract ID"; rec."Contract ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    // Visible = false;
+                }
                 field("Merged Unit ID"; rec."Merged Unit ID")
                 {
                     ApplicationArea = All;
@@ -812,5 +818,19 @@ page 50351 "TC Single Unit Rent SubPage"
         CurrPage.Update();
     end;
 
+    procedure SetContractIDs(pContractID: Integer)
+    begin
+        ContractID := pContractID;
+    end;
+
+
+    trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    begin
+        Rec."Contract ID" := ContractID;
+
+    end;
+
+    var
+        ContractID: Integer;
 
 }

@@ -79,11 +79,11 @@ table 50307 "Tenancy Contract"
 
                 //---Merge unit  diff sq ft rate ---//
                 TCMergediffUnitRate: Record "TC Merge DifferentSq SubPage"; // Target table
-                CRMergediffUnitRent: Record "CR Merge DifferentSq SubPage"; // Source table
+                CRMergediffUnitRent: Record "Merge DifferentSqure SubPage"; // Source table
 
                 //---Merge unit  lumpsum sq ft rate ---//
                 TCMergeLumpsumUnitRate: Record "TC Merge LumAnnualAmount SP"; // Target table
-                CRMergeLumpsumUnitRent: Record "CR Merge LumAnnualAmount SP"; // Source table
+                CRMergeLumpsumUnitRent: Record "Merge Lum_AnnualAmount SubPage"; // Source table
 
                 TCPerDayRevenewUnitRate: Record "TC Per Day Rent for Revenue"; // Target table
                 CRPerDayRevenewUnitRate: Record "Per Day Rent for Revenue"; // Source table
@@ -182,6 +182,7 @@ table 50307 "Tenancy Contract"
                         repeat
                             TCSingleUnitRent.Init();
                             TCSingleUnitRent."ID" := "Proposal ID"; // Ensure Proposal ID is stored in target ID field
+                            TCSingleUnitRent."Contract Id" := "Contract ID";
                             TCSingleUnitRent."Line No." := LineNoCounter; // Ensure unique line number
                             TCSingleUnitRent."Unit ID" := CRSingleUnitRent."Unit ID";
                             TCSingleUnitRent.Year := CRSingleUnitRent.Year;
@@ -222,6 +223,7 @@ table 50307 "Tenancy Contract"
                             TCLumpsumUnitRate.Init();
 
                             TCLumpsumUnitRate."ID" := CRLumpsumUnitRent."Proposal ID";
+                            TCLumpsumUnitRate."Contract Id" := "Contract ID";
                             TCLumpsumUnitRate."SL_Line No." := LineNoCounter; // Ensure unique line number
                             TCLumpsumUnitRate."SL_Unit ID" := CRLumpsumUnitRent."SL_Unit ID";
                             TCLumpsumUnitRate.SL_Year := CRLumpsumUnitRent.SL_Year;
@@ -268,6 +270,7 @@ table 50307 "Tenancy Contract"
                         repeat
                             TCMergeUnitRate.Init();
                             TCMergeUnitRate."ID" := CRMergeUnitRent."Proposal ID";
+                            TCMergeUnitRate."Contract Id" := "Contract ID";
                             TCMergeUnitRate."MS_Line No." := LineNoCounter; // Ensure unique line number
                             TCMergeUnitRate."MS_Merged Unit ID" := CRMergeUnitRent."MS_Merged Unit ID";
                             TCMergeUnitRate.MS_Year := CRMergeUnitRent.MS_Year;
@@ -295,10 +298,11 @@ table 50307 "Tenancy Contract"
 
                 end;
 
+
+
                 // ✅ **Delete Existing Records Before Insert (TC Per Day Rent for Revenue)**
                 TCPerDayRevenewUnitRate.Reset();
                 TCPerDayRevenewUnitRate.SetRange("Proposal Id", "Proposal ID");
-
 
                 if TCPerDayRevenewUnitRate.FindSet() then begin
                     TCPerDayRevenewUnitRate.DeleteAll();
