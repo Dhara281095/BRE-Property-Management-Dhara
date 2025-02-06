@@ -1336,10 +1336,10 @@ table 50318 "Contract Renewal"
 
     procedure DeleteSingleUnitLumpsumRate()
     var
-        deleteSingleUnitLumpsumRecords: Record "Single Lum_AnnualAmnt SubPage";
+        deleteSingleUnitLumpsumRecords: Record "CR Single LumAnnualAmnt SP";
 
     begin
-        deleteSingleUnitLumpsumRecords.SetRange("Proposal Id", Rec."Proposal ID");
+        deleteSingleUnitLumpsumRecords.SetRange("ID", Rec."Proposal ID");
 
         if deleteSingleUnitLumpsumRecords.FindSet() then begin
             deleteSingleUnitLumpsumRecords.DeleteAll();
