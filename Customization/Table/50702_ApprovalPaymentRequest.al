@@ -78,11 +78,7 @@ table 50702 "Approval Payment Request"
             DataClassification = ToBeClassified;
             Caption = 'New Vat Amount';
         }
-        field(50116; "Deposit Bank"; Text[250])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Deposit Bank';
-        }
+
         field(50117; "Due Date"; Date)
         {
             DataClassification = ToBeClassified;
