@@ -129,6 +129,9 @@ table 50318 "Contract Renewal"
                     UnitID := TenancyContractRec.UnitID;
                     "Lessor's Phone" := TenancyContractRec."Lessor's Phone";
                     "Praposal Type Selected" := TenancyContractRec."Praposal Type Selected";
+                    "Rent Amount VAT %" := TenancyContractRec."Contract VAT %";
+                    "Rent VAT Amount" := TenancyContractRec."Contract VAT Amount";
+                    "Rent Amount Including VAT" := TenancyContractRec."Contract Amount Including VAT";
 
                 end else begin
                     // Clear fields if no record is found
@@ -1336,10 +1339,10 @@ table 50318 "Contract Renewal"
 
     procedure DeleteSingleUnitLumpsumRate()
     var
-        deleteSingleUnitLumpsumRecords: Record "Single Lum_AnnualAmnt SubPage";
+        deleteSingleUnitLumpsumRecords: Record "CR Single LumAnnualAmnt SP";
 
     begin
-        deleteSingleUnitLumpsumRecords.SetRange("Proposal Id", Rec."Proposal ID");
+        deleteSingleUnitLumpsumRecords.SetRange("ID", Rec."Proposal ID");
 
         if deleteSingleUnitLumpsumRecords.FindSet() then begin
             deleteSingleUnitLumpsumRecords.DeleteAll();

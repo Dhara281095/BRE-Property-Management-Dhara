@@ -312,6 +312,27 @@ page 50313 "Tenancy Contract Card"
                     //Caption = 'Contract Amount';
                 }
 
+                field("Contract VAT %"; Rec."Contract VAT %")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    //Caption = 'Contract Amount';
+                }
+
+                field("Contract VAT Amount"; Rec."Contract VAT Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    //Caption = 'Contract Amount';
+                }
+
+                field("Contract Amount Including VAT"; Rec."Contract Amount Including VAT")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    //Caption = 'Contract Amount';
+                }
+
                 field("Annual Rent Amount"; Rec."Annual Rent Amount")
                 {
                     ApplicationArea = All;
@@ -575,6 +596,8 @@ page 50313 "Tenancy Contract Card"
                             RentRecord."Amount" := Tenancycontract."Annual Rent Amount";
                             RentRecord."Tenant ID" := Tenancycontract."Tenant ID";
                             RentRecord."Secondary Item Type" := 'Rent';
+                            RentRecord."VAT Amount" := Tenancycontract."Contract VAT Amount";
+                            RentRecord."Amount Including VAT" := Tenancycontract."Contract Amount Including VAT";
                             // RentRecord."VAT Amount" := Tenancycontract."Contract VAT Amount";
                             // RentRecord."Amount Including VAT" := Tenancycontract."Rent Amount Including VAT";
 
