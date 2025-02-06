@@ -296,7 +296,66 @@ table 50307 "Tenancy Contract"
                         Message('No existing records found for ID: %1 in CR Single Unit Rent SubPage.', "Renewal Proposal ID");
                     end;
 
+                end
+
+                else if "Merge Rent Calculation" = "Merge Rent Calculation"::"Merged Unit with differential square feet rate" then begin
+
+                    // ✅ **Delete Existing Records Before Insert**
+                    TCMergediffUnitRate.Reset();
+                    TCMergediffUnitRate.SetRange("ID", "Proposal ID");
+
+                    if TCMergediffUnitRate.FindSet() then begin
+                        TCMergediffUnitRate.DeleteAll();
+                    end;
+
+                    // ✅ **Fetch Data from CR Merge Diff Unit Rent SubPage and Insert into TC Merge Diff Unit Rent SubPage**
+                    CRMergediffUnitRent.Reset();
+                    CRMergediffUnitRent.SetRange("Proposal ID", "Proposal ID");
+
+                    if CRMergediffUnitRent.FindSet() then begin
+                        LineNoCounter := 1; // Start line numbering from 1
+                        repeat
+                            // Before inserting, check if the record exists with the same Proposal ID and MD_Line No.
+                            TCMergediffUnitRate.Reset();
+                            TCMergediffUnitRate.SetRange("ID", CRMergediffUnitRent."Proposal ID");
+                            TCMergediffUnitRate.SetRange("MD_Line No.", LineNoCounter);
+
+                            if TCMergediffUnitRate.FindFirst() then begin
+                                // If a record exists with the same Proposal ID and MD_Line No., skip this record
+                                Message('Record with the same Proposal ID and Line No. already exists for Proposal ID: %1, Line No: %2', CRMergediffUnitRent."Proposal ID", LineNoCounter);
+                            end else begin
+                                // Proceed with inserting the new record
+                                TCMergediffUnitRate.Init();
+                                TCMergediffUnitRate."ID" := CRMergediffUnitRent."Proposal ID";
+                                TCMergediffUnitRate."MD_Line No." := LineNoCounter; // Ensure unique line number
+                                TCMergediffUnitRate."MD_Merged Unit ID" := CRMergediffUnitRent."MD_Merged Unit ID";
+                                TCMergediffUnitRate.MD_Year := CRMergediffUnitRent.MD_Year;
+                                TCMergediffUnitRate."MD_Start Date" := CRMergediffUnitRent."MD_Start Date";
+                                TCMergediffUnitRate."MD_End Date" := CRMergediffUnitRent."MD_End Date";
+                                TCMergediffUnitRate."MD_Number of Days" := CRMergediffUnitRent."MD_Number of Days";
+                                TCMergediffUnitRate."MD_Unit Sq Ft" := CRMergediffUnitRent."MD_Unit Sq Ft";
+                                TCMergediffUnitRate."MD_Rate per Sq.Ft" := CRMergediffUnitRent."MD_Rate per Sq.Ft";
+                                TCMergediffUnitRate."MD_Rent Increase %" := CRMergediffUnitRent."MD_Rent Increase %";
+                                TCMergediffUnitRate."MD_Annual Amount" := CRMergediffUnitRent."MD_Annual Amount";
+                                TCMergediffUnitRate."MD_Round off" := CRMergediffUnitRent."MD_Round off";
+                                TCMergediffUnitRate."MD_Final Annual Amount" := CRMergediffUnitRent."MD_Final Annual Amount";
+                                TCMergediffUnitRate."MD_Per Day Rent" := CRMergediffUnitRent."MD_Per Day Rent";
+                                TCMergediffUnitRate.TotalFinalAmount := CRMergediffUnitRent.TotalFinalAmount;
+                                TCMergediffUnitRate.TotalAnnualAmount := CRMergediffUnitRent.TotalAnnualAmount;
+                                TCMergediffUnitRate.TotalRoundOff := CRMergediffUnitRent.TotalRoundOff;
+                                TCMergediffUnitRate.TotalFirstAnnualAmount := CRMergediffUnitRent.TotalFirstAnnualAmount;
+
+                                // Insert the new record
+                                TCMergediffUnitRate.Insert();
+                            end;
+
+                            LineNoCounter += 1; // Increment line number for next record
+                        until CRMergediffUnitRent.Next() = 0;
+                    end else begin
+                        Message('No existing records found for Proposal ID: %1 in CR Merge Diff Unit Rent SubPage.', "Proposal ID");
+                    end;
                 end;
+
 
 
 
@@ -1036,9 +1095,65 @@ table 50307 "Tenancy Contract"
                         Message('No existing records found for ID: %1 in CR Single Unit Rent SubPage.', "Renewal Proposal ID");
                     end;
 
+                end
+                else if "Merge Rent Calculation" = "Merge Rent Calculation"::"Merged Unit with differential square feet rate" then begin
+
+                    // ✅ **Delete Existing Records Before Insert**
+                    TCMergediffUnitRate.Reset();
+                    TCMergediffUnitRate.SetRange("ID", "Renewal Proposal ID");
+
+                    if TCMergediffUnitRate.FindSet() then begin
+                        TCMergediffUnitRate.DeleteAll();
+                    end;
+
+                    // ✅ **Fetch Data from CR Merge Diff Unit Rent SubPage and Insert into TC Merge Diff Unit Rent SubPage**
+                    CRMergediffUnitRent.Reset();
+                    CRMergediffUnitRent.SetRange("ID", "Renewal Proposal ID");
+
+                    if CRMergediffUnitRent.FindSet() then begin
+                        LineNoCounter := 1; // Start line numbering from 1
+                        repeat
+                            // Before inserting, check if the record exists with the same ID and MD_Line No.
+                            TCMergediffUnitRate.Reset();
+                            TCMergediffUnitRate.SetRange("ID", CRMergediffUnitRent."ID");
+                            TCMergediffUnitRate.SetRange("MD_Line No.", LineNoCounter);
+
+                            if TCMergediffUnitRate.FindFirst() then begin
+                                // If a record exists with the same ID and MD_Line No., skip this record
+                                Message('Record with the same ID and Line No. already exists for ID: %1, Line No: %2', CRMergediffUnitRent."ID", LineNoCounter);
+                            end else begin
+                                // Proceed with inserting the new record
+                                TCMergediffUnitRate.Init();
+                                TCMergediffUnitRate."ID" := CRMergediffUnitRent."ID";
+                                TCMergediffUnitRate."MD_Line No." := LineNoCounter; // Ensure unique line number
+                                TCMergediffUnitRate."MD_Merged Unit ID" := CRMergediffUnitRent."MD_Merged Unit ID";
+                                TCMergediffUnitRate.MD_Year := CRMergediffUnitRent.MD_Year;
+                                TCMergediffUnitRate."MD_Start Date" := CRMergediffUnitRent."MD_Start Date";
+                                TCMergediffUnitRate."MD_End Date" := CRMergediffUnitRent."MD_End Date";
+                                TCMergediffUnitRate."MD_Number of Days" := CRMergediffUnitRent."MD_Number of Days";
+                                TCMergediffUnitRate."MD_Unit Sq Ft" := CRMergediffUnitRent."MD_Unit Sq Ft";
+                                TCMergediffUnitRate."MD_Rate per Sq.Ft" := CRMergediffUnitRent."MD_Rate per Sq.Ft";
+                                TCMergediffUnitRate."MD_Rent Increase %" := CRMergediffUnitRent."MD_Rent Increase %";
+                                TCMergediffUnitRate."MD_Annual Amount" := CRMergediffUnitRent."MD_Annual Amount";
+                                TCMergediffUnitRate."MD_Round off" := CRMergediffUnitRent."MD_Round off";
+                                TCMergediffUnitRate."MD_Final Annual Amount" := CRMergediffUnitRent."MD_Final Annual Amount";
+                                TCMergediffUnitRate."MD_Per Day Rent" := CRMergediffUnitRent."MD_Per Day Rent";
+                                TCMergediffUnitRate.TotalFinalAmount := CRMergediffUnitRent.TotalFinalAmount;
+                                TCMergediffUnitRate.TotalAnnualAmount := CRMergediffUnitRent.TotalAnnualAmount;
+                                TCMergediffUnitRate.TotalRoundOff := CRMergediffUnitRent.TotalRoundOff;
+                                TCMergediffUnitRate.TotalFirstAnnualAmount := CRMergediffUnitRent.TotalFirstAnnualAmount;
+
+                                // Insert the new record
+                                TCMergediffUnitRate.Insert();
+                            end;
+
+                            LineNoCounter += 1; // Increment line number for next record
+                        until CRMergediffUnitRent.Next() = 0;
+                    end else begin
+                        Message('No existing records found for ID: %1 in CR Merge Diff Unit Rent SubPage.', "Renewal Proposal ID");
+                    end;
                 end;
 
-                // ✅ **Delete Existing Records Before Insert (TC Per Day Rent for Revenue)**
                 TCPerDayRevenewUnitRate.Reset();
                 TCPerDayRevenewUnitRate.SetRange("Contract Renewal Id", "Renewal Proposal ID");
 
