@@ -310,21 +310,21 @@ page 50335 "Contract Renewal Card"
                 field("Rent VAT Amount"; rec."Rent VAT Amount")
                 {
                     ApplicationArea = All;
-                    Editable = true; // The ID is not editable since it's auto-incrementing
+
 
                 }
 
                 field("Rent Amount VAT %"; rec."Rent Amount VAT %")
                 {
                     ApplicationArea = All;
-                    Editable = true; // The ID is not editable since it's auto-incrementing
+
 
                 }
 
                 field("Rent Amount Including VAT"; rec."Rent Amount Including VAT")
                 {
                     ApplicationArea = All;
-                    Editable = true; // The ID is not editable since it's auto-incrementing
+
 
                 }
 

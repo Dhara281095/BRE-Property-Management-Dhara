@@ -129,6 +129,9 @@ table 50318 "Contract Renewal"
                     UnitID := TenancyContractRec.UnitID;
                     "Lessor's Phone" := TenancyContractRec."Lessor's Phone";
                     "Praposal Type Selected" := TenancyContractRec."Praposal Type Selected";
+                    "Rent Amount VAT %" := TenancyContractRec."Contract VAT %";
+                    "Rent VAT Amount" := TenancyContractRec."Contract VAT Amount";
+                    "Rent Amount Including VAT" := TenancyContractRec."Contract Amount Including VAT";
 
                 end else begin
                     // Clear fields if no record is found

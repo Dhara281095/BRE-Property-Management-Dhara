@@ -144,6 +144,9 @@ table 50307 "Tenancy Contract"
                     "Unit Number" := LeaseProposalRec."Unit Number";
                     "Single Rent Calculation" := LeaseProposalRec."Single Rent Calculation";
                     "Merge Rent Calculation" := LeaseProposalRec."Merge Rent Calculation";
+                    "Contract VAT %" := LeaseProposalRec."Rent Amount VAT %";
+                    "Contract VAT Amount" := LeaseProposalRec."Rent VAT Amount";
+                    "Contract Amount Including VAT" := LeaseProposalRec."Rent Amount Including VAT";
                 end else begin
                     // Clear fields if no record is found
                     "Tenant ID" := '';
@@ -1198,6 +1201,7 @@ table 50307 "Tenancy Contract"
 
 
 
+
         field(50161; "Yes/No"; Boolean)
         {
             DataClassification = ToBeClassified;
@@ -1280,6 +1284,25 @@ table 50307 "Tenancy Contract"
             Caption = 'Update Data';
             InitValue = 'Update Data';
 
+        }
+
+        field(50173; "Contract VAT %"; Option)
+        {
+            OptionMembers = "0%","5%";
+            Editable = false;
+
+        }
+
+        field(50174; "Contract VAT Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Editable = false;
+        }
+
+        field(50175; "Contract Amount Including VAT"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Editable = false;
         }
 
     }
