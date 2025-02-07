@@ -26,7 +26,7 @@ report 50110 "Other Payment Details"
             column(Customer_Name; "Customer Name")
             {
             }
-            column(Entry_No_; "Entry No.")
+            column(Entry_No_; AutoEntryNo)
             {
             }
             column(Secondary_Item_Type; "Secondary Item Type")
@@ -59,6 +59,7 @@ report 50110 "Other Payment Details"
 
             trigger OnAfterGetRecord()
             begin
+                AutoEntryNo += 1;  // Auto-increment Entry No.
                 // Store values in global variables
                 PropertyNameStored := "Property Name";
                 UnitNameStored := "Unit Name";
@@ -81,6 +82,27 @@ report 50110 "Other Payment Details"
             {
             }
             column(Total_Amount_Including_VAT; TotalAmountIncludingVAT)
+            {
+            }
+        }
+
+        dataitem("Lease Proposal Details"; "Lease Proposal Details")
+        {
+            DataItemLink = "Proposal ID" = field(ProposalID);
+            DataItemLinkReference = TenancyContractSubpage;
+            column(ID; "Proposal ID")
+            {
+            }
+            column(Rent_Amount; "Rent Amount")
+            {
+            }
+            column(Annual_R_A; "Annual Rent Amount")
+            {
+            }
+            column(Rent_VAT_A; "Rent VAT Amount")
+            {
+            }
+            column(Rent_A_Incl_VAT; "Rent Amount Including VAT")
             {
             }
         }
@@ -121,6 +143,7 @@ report 50110 "Other Payment Details"
             // CompanyAddress := CompanyInfo.City + ', ' + CompanyInfo.County + ' ' + CompanyInfo."Post Code";
             CompanyInfo.CalcFields(Picture);
         end;
+        AutoEntryNo := 0;  // Initialize auto-increment variable
     end;
 
     var
@@ -132,6 +155,7 @@ report 50110 "Other Payment Details"
         UnitNameStored: Text;
         UnitSizeStored: Decimal;
         CustomerNameStored: Text[100];
+        AutoEntryNo: Integer;  // New variable for auto-increment Entry No.
 
 
 }

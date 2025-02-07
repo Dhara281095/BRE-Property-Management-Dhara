@@ -83,11 +83,7 @@ page 50710 "Approval Payment Request"
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field("Deposit Bank"; Rec."Deposit Bank")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
+
                 field(Description; Rec.Description)
                 {
                     ApplicationArea = All;

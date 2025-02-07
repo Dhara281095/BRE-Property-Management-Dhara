@@ -96,10 +96,7 @@ page 50711 PaymentApproval
                 {
                     Caption = 'Vat Amount';
                 }
-                field("DepositBank"; Rec."Deposit Bank")
-                {
-                    Caption = 'Deposit Bank';
-                }
+
                 field("DueDate"; Rec."Due Date")
                 {
                     Caption = 'Due Date';
