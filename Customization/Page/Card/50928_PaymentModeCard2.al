@@ -313,6 +313,10 @@ page 50928 "Payment Mode Card2"
                     ApplicationArea = All;
                     Visible = false;
                 }
+                field("Approve/Decline Status";Rec."Approve/Decline Status")
+                {
+                    ApplicationArea = All;
+                }
 
 
             }
