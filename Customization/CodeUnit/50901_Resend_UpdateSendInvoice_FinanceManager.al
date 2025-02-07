@@ -1,6 +1,6 @@
-codeunit 50512 RejectSalesInvoice
+codeunit 50901 ResendUpdateInvoiceFM
 {
-    procedure SendInvoiceToLeaseManager(Rec: Record "Sales Header")
+    procedure ResendUpdateInvoice(Rec: Record "Sales Header")
     var
         EmailBody: Text;
         TempBlob: Codeunit "Temp Blob";
@@ -22,70 +22,64 @@ codeunit 50512 RejectSalesInvoice
         CompanyInfo: Record "Company Information";
         RecRef: RecordRef;
         UserPersonalizationRec: Record "User Personalization";
+        InvoiceLink: Text;
 
-
-
-    // OutStream: OutStream;
-    // InStream: InStream;
-    // FileName: Text[250];
-    // TempFilePath: Text[250];
-    // ReportID: Integer;
-    // ConfirmationResult: Boolean;
 
     begin
 
-        UserPersonalizationRec.SetRange("Profile ID", 'LEASE_MANAGER'); // Accounting Manager
+        UserPersonalizationRec.SetRange("Profile ID", 'FINANCE MANAGER');
         if UserPersonalizationRec.FindFirst() then begin
             UserRec.Get(UserPersonalizationRec."User SID");
             EmailAddress.Add(UserRec."Contact Email");
             Username := UserRec."User Name";
-            //CCMail.Add('dhruvp6373@gmail.com');
-
         end;
+
+
 
         SalesHeader.SetRange("No.", Rec."No.");
         SalesHeader.SetRange("Document Type", Rec."Document Type"::Invoice);
 
-
         if SalesHeader.FindSet() then
             repeat
-
                 TotalAmount := 0;
                 SalesLine.SetRange("Document No.", SalesHeader."No.");
                 if SalesLine.FindSet() then
                     repeat
                         TotalAmount += Round(SalesLine."Amount Including VAT");
                     until SalesLine.Next() = 0;
+            until SalesHeader.Next = 0;
 
-                if CompanyInfo.Get() then begin
 
-                    EmailMessage.Create(EmailAddress, 'Invoice Rejection Notification - ' + SalesHeader."No.",
-                        '<html>' +
+        InvoiceLink := GETURL(ClientType::Current, COMPANYNAME, ObjectType::Page, PAGE::"Sales Invoice", Rec);
+        if CompanyInfo.get() then begin
+
+
+            EmailMessage.Create(EmailAddress, 'Updated Invoice Notification - ' + SalesHeader."No.",
+            '<html>' +
                          '<body>' +
                          '<p>Dear ' + Username + ',</p>' +
-                         '<h3>Invoice Rejection Details:</h3>' +
-                         '<p>The following invoice has been rejected:</p>' +
+                         '<h3>Updated Invoice Details</h3>' +
+                         '<p>The following invoice has been Updated:</p>' +
                          '<p><b>Invoice ID:</b> ' + SalesHeader."No." + '<br/>' +
                          '<b>Contract ID:</b> ' + Format(SalesHeader."Contract ID") + '<br/>' +
                          '<b>Property Name:</b> ' + SalesHeader."Property Name" + '<br/>' +
                          '<b>Total Amount:</b> ' + Format(TotalAmount) + '<br/>' +
-                         '<b>Reason For Rejection:</b> ' + SalesHeader."Reason for Rejection" + '<br/>' +
-                         '<p>Please review the details and update the invoice</p>' +
+                         '<p>Please review the updated details and provide your approval at your earliest convenience. If any adjustments are needed, kindly let us know.</p>' +
+                       '<p><a href="' + InvoiceLink + '" target="_blank">Click here to view the invoice</a></p>' +
                          '<p>Best regards,<br/>' + CompanyInfo.Name + '</p>' +
 
                         '</body>' +
                         '</html>',
                         true);
-                end;
 
-                if Email.Send(EmailMessage)
-                then begin
-                    Message('Rejection email sent successfully.');
-                end
-                else begin
-                    Error('Failed to send rejection email.');
-                end;
+            if Email.Send(EmailMessage)
+   then begin
+                Message('Email sent successfully.');
+            end
+            else begin
+                Error('Failed to send email.');
+            end;
+        end;
 
-            until SalesHeader.Next() = 0;
     end;
 }
