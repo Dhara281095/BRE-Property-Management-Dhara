@@ -74,14 +74,16 @@ page 50122 "Revenue Allocation Card"
     end;
     // Helper procedure to insert allocation line
     procedure InsertAllocationLine(
-        ContractRec: Record "Tenancy Contract";
-        MultiYearStartDate: Date;
-        MultiYearEndDate: Date;
-        NoOfDays: Integer;
-        PerDayRent: Decimal;
-        LineNo: Integer;
-        MonthNo: Integer;
-        FinancialYear: Integer)
+     ContractRec: Record "Tenancy Contract";
+     MultiYearStartDate: Date;
+     MultiYearEndDate: Date;
+     NoOfDays: Integer;
+     PerDayRent: Decimal;
+     TotalAnnualAmount: Decimal;  // Added new parameter
+     OwnerShareAmount: Decimal;   // Added new parameter
+     LineNo: Integer;
+     MonthNo: Integer;
+     FinancialYear: Integer)
     var
         FilteredContractRec: Record "Revenue Allocation SubGrid";
         SuspensionRec: Record SuspendReasonTable;
@@ -108,9 +110,11 @@ page 50122 "Revenue Allocation Card"
         FilteredContractRec."Multi Year Start Date" := MultiYearStartDate;
         FilteredContractRec."Multi Year End Date" := MultiYearEndDate;
         FilteredContractRec."No Of Days" := NoOfDays;
-        FilteredContractRec."Per Day Rent" := PerDayRent;  // <-- NEW FIELD
+        FilteredContractRec."Per Day Rent" := PerDayRent;
         FilteredContractRec."Contract Amount" := ContractRec."Annual Rent Amount";
         FilteredContractRec."Annual Amount" := ContractRec."Rent Amount";
+        FilteredContractRec."Total Value" := TotalAnnualAmount;  // Using passed parameter
+        FilteredContractRec."Owner Share" := OwnerShareAmount;    // Using passed parameter
         FilteredContractRec."Posting Month" := MonthNo - 1;
         FilteredContractRec."Posting Year" := FinancialYear;
         FilteredContractRec."Posting Period" := Format(FilteredContractRec."Posting Month") +
@@ -137,10 +141,6 @@ page 50122 "Revenue Allocation Card"
         MonthNo: Integer;
         FinancialYear: Integer;
         NextLineNo: Integer;
-        Debug: Text;
-        ContractsChecked: Integer;
-        ContractsInRange: Integer;
-        RecordsInserted: Integer;
     begin
         ClearSubgridData();
 
@@ -151,113 +151,113 @@ page 50122 "Revenue Allocation Card"
         SelectedMonthStart := DMY2Date(01, MonthNo, FinancialYear);
         SelectedMonthEnd := CALCDATE('<+1M-1D>', SelectedMonthStart);
 
-        // Debug := 'Fetching contracts for:\';
-        // Debug += 'Month: ' + Format(MonthNo) + '\';
-        // Debug += 'Year: ' + Format(FinancialYear) + '\';
-        // Debug += 'Date Range: ' + Format(SelectedMonthStart) + ' to ' + Format(SelectedMonthEnd) + '\';
-
         if ContractRec.FindSet() then begin
             repeat
-                ContractsChecked += 1;
-                // Debug += '\Contract ' + ContractRec."Contract ID" + ':\';
-                // Debug += '  Dates: ' + Format(ContractRec."Contract Start Date") + ' to ' + Format(ContractRec."Contract End Date");
-
                 if ((ContractRec."Contract Start Date" <= SelectedMonthEnd) and
                     (ContractRec."Contract End Date" >= SelectedMonthStart)) then begin
-                    ContractsInRange += 1;
-                    // Debug += '  (In Range)\';
 
                     // Check Single Unit Rent grid
                     SingleUnitRent.Reset();
                     SingleUnitRent.SetRange("Contract ID", ContractRec."Contract ID");
-                    // Debug += '    SingleUnitRent Records: ' + Format(SingleUnitRent.Count) + '\';
+                    if SingleUnitRent.FindSet() then begin
+                        repeat
+                            InsertAllocationLine(
+                                ContractRec,
+                                SingleUnitRent."Start Date",
+                                SingleUnitRent."End Date",
+                                SingleUnitRent."Number of Days",
+                                SingleUnitRent."Per Day Rent",
+                                SingleUnitRent."Final Annual Amount",    // Pass Total Annual Amount
+                                SingleUnitRent."Final Annual Amount",     // Pass Owner Share Amount
+                                NextLineNo,
+                                MonthNo,
+                                FinancialYear);
+                            NextLineNo += 1;
+                        until SingleUnitRent.Next() = 0;
+                    end;
 
                     // Check Multi Unit Rent grid
                     MultiUnitRent.Reset();
                     MultiUnitRent.SetRange("Contract ID", ContractRec."Contract ID");
-                    // Debug += '    MultiUnitRent Records: ' + Format(MultiUnitRent.Count) + '\';
+                    if MultiUnitRent.FindSet() then begin
+                        repeat
+                            InsertAllocationLine(
+                                ContractRec,
+                                MultiUnitRent."SL_Start Date",
+                                MultiUnitRent."SL_End Date",
+                                MultiUnitRent."SL_Number of Days",
+                                MultiUnitRent."SL_Per Day Rent",
+                                MultiUnitRent."SL_Final Annual Amount",  // Pass Total Annual Amount
+                                MultiUnitRent."SL_Final Annual Amount",   // Pass Owner Share Amount
+                                NextLineNo,
+                                MonthNo,
+                                FinancialYear);
+                            NextLineNo += 1;
+                        until MultiUnitRent.Next() = 0;
+                    end;
 
                     // Check Merged Single Rent grid
                     MergedSingleRent.Reset();
                     MergedSingleRent.SetRange("Contract ID", ContractRec."Contract ID");
-                    // Debug += '    MergedSingleRent Records: ' + Format(MergedSingleRent.Count) + '\';
+                    if MergedSingleRent.FindSet() then begin
+                        repeat
+                            InsertAllocationLine(
+                                ContractRec,
+                                MergedSingleRent."MS_Start Date",
+                                MergedSingleRent."MS_End Date",
+                                MergedSingleRent."MS_Number of Days",
+                                MergedSingleRent."MS_Per Day Rent",
+                                MergedSingleRent."MS_Final Annual Amount",  // Pass Total Annual Amount
+                                MergedSingleRent."MS_Final Annual Amount",   // Pass Owner Share Amount
+                                NextLineNo,
+                                MonthNo,
+                                FinancialYear);
+                            NextLineNo += 1;
+                        until MergedSingleRent.Next() = 0;
+                    end;
 
                     // Check Merged Multi Rent grid
                     MergedMultiRent.Reset();
                     MergedMultiRent.SetRange("Contract ID", ContractRec."Contract ID");
-                    // Debug += '    MergedMultiRent Records: ' + Format(MergedMultiRent.Count) + '\';
+                    if MergedMultiRent.FindSet() then begin
+                        repeat
+                            InsertAllocationLine(
+                                ContractRec,
+                                MergedMultiRent."MD_Start Date",
+                                MergedMultiRent."MD_End Date",
+                                MergedMultiRent."MD_Number of Days",
+                                MergedMultiRent."MD_Per Day Rent",
+                                MergedMultiRent."MD_Final Annual Amount",   // Pass Total Annual Amount
+                                MergedMultiRent."MD_Final Annual Amount",    // Pass Owner Share Amount
+                                NextLineNo,
+                                MonthNo,
+                                FinancialYear);
+                            NextLineNo += 1;
+                        until MergedMultiRent.Next() = 0;
+                    end;
 
                     // Check Special Rent grid
                     SpecialRent.Reset();
                     SpecialRent.SetRange("Contract ID", ContractRec."Contract ID");
-                    // Debug += '    SpecialRent Records: ' + Format(SpecialRent.Count) + '\';
-
-                    // Now try to insert records from each grid...
-                    if SingleUnitRent.FindSet() then begin
-                        repeat
-                            InsertAllocationLine(
-                                ContractRec, SingleUnitRent."Start Date", SingleUnitRent."End Date",
-                                SingleUnitRent."Number of Days", SingleUnitRent."Per Day Rent", NextLineNo, MonthNo, FinancialYear);
-                            NextLineNo += 1;
-                            RecordsInserted += 1;
-                        until SingleUnitRent.Next() = 0;
-                    end;
-                    // Now try to insert records from each grid...
-                    if MultiUnitRent.FindSet() then begin
-                        repeat
-                            InsertAllocationLine(
-                                ContractRec, MultiUnitRent."SL_Start Date", MultiUnitRent."SL_End Date",
-                                MultiUnitRent."SL_Number of Days", MultiUnitRent."SL_Per Day Rent", NextLineNo, MonthNo, FinancialYear);
-                            NextLineNo += 1;
-                            RecordsInserted += 1;
-                        until MultiUnitRent.Next() = 0;
-                    end;
-                    // Now try to insert records from each grid...
-                    if MergedSingleRent.FindSet() then begin
-                        repeat
-                            InsertAllocationLine(
-                                ContractRec, MergedSingleRent."MS_Start Date", MergedSingleRent."MS_End Date",
-                                MergedSingleRent."MS_Number of Days", MergedSingleRent."MS_Per Day Rent", NextLineNo, MonthNo, FinancialYear);
-                            NextLineNo += 1;
-                            RecordsInserted += 1;
-                        until MergedSingleRent.Next() = 0;
-                    end;
-                    // Now try to insert records from each grid...
-                    if MergedMultiRent.FindSet() then begin
-                        repeat
-                            InsertAllocationLine(
-                                ContractRec, MergedMultiRent."MD_Start Date", MergedMultiRent."MD_End Date",
-                                MergedMultiRent."MD_Number of Days", MergedMultiRent."MD_Per Day Rent", NextLineNo, MonthNo, FinancialYear);
-                            NextLineNo += 1;
-                            RecordsInserted += 1;
-                        until MergedMultiRent.Next() = 0;
-                    end;
-                    // Now try to insert records from each grid...
                     if SpecialRent.FindSet() then begin
                         repeat
                             InsertAllocationLine(
-                                ContractRec, SpecialRent."ML_Start Date", SpecialRent."ML_End Date",
-                                SpecialRent."ML_Number of Days", SpecialRent."ML_Per Day Rent", NextLineNo, MonthNo, FinancialYear);
+                                ContractRec,
+                                SpecialRent."ML_Start Date",
+                                SpecialRent."ML_End Date",
+                                SpecialRent."ML_Number of Days",
+                                SpecialRent."ML_Per Day Rent",
+                                SpecialRent."ML_Final Annual Amount",    // Pass Total Annual Amount
+                                SpecialRent."ML_Final Annual Amount",     // Pass Owner Share Amount
+                                NextLineNo,
+                                MonthNo,
+                                FinancialYear);
                             NextLineNo += 1;
-                            RecordsInserted += 1;
                         until SpecialRent.Next() = 0;
                     end;
-
-                    // ... [Rest of the insertion code remains the same]
-
-                end
-            // Debug += '  (Out of Range)';
-
+                end;
             until ContractRec.Next() = 0;
         end;
-
-        // Debug += '\\\Summary:\';
-        // Debug += Format(ContractsChecked) + ' contracts checked\';
-        // Debug += Format(ContractsInRange) + ' contracts in date range\';
-        // Debug += Format(RecordsInserted) + ' total records inserted';
-
-        // Message(Debug);
     end;
-
 
 }
