@@ -149,8 +149,9 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
 
                 trigger OnAction()
                 var
+                    ResendInvoiceMail: Codeunit ResendUpdateInvoiceFM;
                 begin
-
+                    ResendInvoiceMail.ResendUpdateInvoice(Rec);
                 end;
             }
         }
