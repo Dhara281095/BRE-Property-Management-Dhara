@@ -11,7 +11,8 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 {
                     Caption = 'Contract ID';
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
+                    //Editable = approvaleditable;
                     trigger OnValidate()
                     var
                         tenancyContract: Record "Tenancy Contract";
@@ -96,6 +97,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 {
                     Caption = 'Reason For Rejection';
                     ApplicationArea = All;
+                    Editable = approvaleditable;
                 }
 
                 field("Approval Status"; Rec."Approval Status")
@@ -137,6 +139,20 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 end;
             }
 
+        }
+        addafter(Action9)
+        {
+            action(ResendForApproval)
+            {
+                ApplicationArea = All;
+                Caption = 'Resend For Approval';
+
+                trigger OnAction()
+                var
+                begin
+
+                end;
+            }
         }
         modify(Post)
         {
@@ -249,7 +265,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
             // Assuming the role is stored in the "Profile ID" field as seen in the screenshot
             case UserPersonalization."Profile ID" of
                 'PROPERTY MANAGER':
-                    exit(true);
+                    exit(false);
                 'finance manager':
                     exit(true);
             end;
