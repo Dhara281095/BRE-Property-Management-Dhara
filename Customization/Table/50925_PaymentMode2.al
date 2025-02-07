@@ -95,7 +95,19 @@ table 50925 "Payment Mode2"
         field(50107; "Deposit Bank"; Code[100])
         {
             Caption = 'Deposit Bank';
-            TableRelation = "Bank Account"."No.";
+            TableRelation = "Bank Account"; // You can add a TableRelation here if required
+
+            trigger OnValidate()
+            var
+                BankAccountRec: Record "Bank Account";
+            begin
+                // When a Deposit Bank is selected (i.e., a Bank Account No. is provided)
+                if "Deposit Bank" <> '' then begin
+                    // Attempt to find the Bank Account using the No. from the Deposit Bank
+                    if BankAccountRec.Get("Deposit Bank") then
+                        "Deposit Bank" := BankAccountRec."Name"; // Populating the Name field from the Bank Account table
+                end;
+            end;
         }
 
         field(50108; "Deposit Status"; Option)
@@ -236,40 +248,85 @@ table 50925 "Payment Mode2"
                 paymentModeRec: Record "Payment Mode";
                 paymentGridRec: Record "Payment Mode2";
                 AllApproved: Boolean;
-                AnyPendingOrRejected: Boolean;
+                AnyPending: Boolean;
+                AnyRejected: Boolean;
+                CurrApproved: Boolean;
+                CurrRejected: Boolean;
+                CurrAnyPending: Boolean;
             begin
                 // Fetch the Parent Record (Main Payment Mode Card)
                 if paymentModeRec.Get(Rec."Contract ID") then begin
 
-                    AllApproved := true;
-                    AnyPendingOrRejected := false;
+                    AllApproved := false;
+                    AnyPending := false;
+                    CurrApproved := false;
+                    CurrAnyPending := false;
+                    AnyRejected := false;
+                    CurrRejected := false;
 
                     // Check if all grid records have "Approved" status
                     paymentGridRec.SetRange("Contract ID", Rec."Contract ID");
+                    paymentGridRec.SetFilter("Entry No.", '<>%1', Rec."Entry No.");
+
 
                     if paymentGridRec.FindSet() then begin
                         // paymentGridRec.Init();
                         repeat
-                            if not (paymentGridRec."Approval Status" = paymentGridRec."Approval Status"::Approved) then
-                                AllApproved := false;
-
-                            if paymentGridRec."Approval Status" = paymentGridRec."Approval Status"::Pending then
-                                AnyPendingOrRejected := true;
-
-                            if paymentGridRec."Approval Status" = paymentGridRec."Approval Status"::Rejected then
-                                AnyPendingOrRejected := true;
-
+                            if (paymentGridRec."Approval Status" = paymentGridRec."Approval Status"::Approved) then begin
+                                // AnyPending := false;
+                                AllApproved := true;
+                                // AnyRejected := false;
+                            end
+                            else if paymentGridRec."Approval Status" = paymentGridRec."Approval Status"::Pending then begin
+                                AnyPending := true;
+                                // AllApproved := false;
+                                // AnyRejected := false;
+                            end
+                            else if paymentGridRec."Approval Status" = paymentGridRec."Approval Status"::Rejected then begin
+                                // AnyPending := false;
+                                // AllApproved := false;
+                                AnyRejected := true;
+                            end;
 
                         until paymentGridRec.Next() = 0;
+
+                        if (Rec."Approval Status" = Rec."Approval Status"::Approved) then begin
+                            CurrAnyPending := false;
+                            CurrApproved := true;
+                            CurrRejected := false;
+                        end
+                        else if Rec."Approval Status" = Rec."Approval Status"::Pending then begin
+                            CurrAnyPending := true;
+                            CurrApproved := false;
+                            CurrRejected := false;
+                        end
+                        else if Rec."Approval Status" = Rec."Approval Status"::Rejected then begin
+                            CurrAnyPending := false;
+                            CurrApproved := false;
+                            CurrRejected := true;
+                        end;
+
                     end;
 
-                    if AllApproved then begin
+                    if AllApproved and CurrApproved and (not CurrRejected and not AnyRejected) and (not CurrAnyPending and not AnyPending) then begin
                         paymentModeRec."Approval Status" := paymentModeRec."Approval Status"::Approved;
                         paymentModeRec."On-hold" := paymentModeRec."On-hold"::"False";
                         paymentModeRec.Modify();
                     end
-                    else if AnyPendingOrRejected then begin
+                    else if AnyPending or CurrAnyPending then begin
                         paymentModeRec."On-hold" := paymentModeRec."On-hold"::"True";
+                        paymentModeRec."Approval Status" := paymentModeRec."Approval Status"::Pending;
+                        paymentModeRec.Modify();
+                    end
+                    else if AnyRejected and CurrRejected and (not AllApproved and not CurrApproved) and (not AnyPending and not CurrAnyPending) then begin
+                        paymentModeRec."Approval Status" := paymentModeRec."Approval Status"::Rejected;
+                        paymentModeRec."On-hold" := paymentModeRec."On-hold"::"True";
+                        paymentModeRec.Modify();
+                    end
+                    else if (AllApproved or CurrApproved) and (AnyRejected or CurrRejected) and (not AnyPending and not CurrAnyPending) then begin
+                        paymentModeRec."Approval Status" := paymentModeRec."Approval Status"::"On-Hold";
+                        paymentModeRec."On-hold" := paymentModeRec."On-hold"::"True";
+                        paymentModeRec.Modify();
                     end;
                     paymentModeRec.Modify();
                 end;
@@ -284,6 +341,11 @@ table 50925 "Payment Mode2"
         {
             // DataClassification = ToBeClassified;
             OptionMembers = " ","Yes","No";
+        }
+
+        field(50128; "Approve/Decline Status"; Text[50])
+        {
+            DataClassification = ToBeClassified;
         }
 
 

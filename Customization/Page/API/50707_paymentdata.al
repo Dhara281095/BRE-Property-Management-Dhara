@@ -141,6 +141,10 @@ page 50707 paymentdata
                 {
                     Caption = 'Entry No';
                 }
+                field("Approve_Decline_Status"; Rec."Approve/Decline Status")
+                {
+                    Caption = 'Approve/Decline Status';
+                }
             }
         }
     }
