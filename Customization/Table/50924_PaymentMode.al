@@ -100,9 +100,10 @@ table 50924 "Payment Mode"
 
         }
 
-        field(50501; "Approval Status"; Enum "Approval Status Enum")
+        field(50501; "Approval Status"; Option)
         {
-            DataClassification = ToBeClassified;
+            // DataClassification = ToBeClassified;
+            OptionMembers = " ","Pending","Approved","On-Hold","Rejected";
             trigger OnValidate()
             var
                 paymentGridRec: Record "Payment Mode2";
