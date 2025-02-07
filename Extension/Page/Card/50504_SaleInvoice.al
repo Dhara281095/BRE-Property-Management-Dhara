@@ -146,6 +146,8 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
             {
                 ApplicationArea = All;
                 Caption = 'Resend For Approval';
+                Image = SendMail;
+
 
                 trigger OnAction()
                 var

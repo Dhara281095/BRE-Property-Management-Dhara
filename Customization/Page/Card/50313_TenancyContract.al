@@ -584,6 +584,7 @@ page 50313 "Tenancy Contract Card"
                         MU_differentsquare: Record "TC Merge DifferentSq SubPage";
                         MU_lumpsum: Record "TC Merge LumAnnualAmount SP";
                         RentSubpage: Record "Rent Calculation Subpage";
+                        Lastyear: Integer;
                     begin
                         // Find the lease proposal record
                         Tenancycontract.SetRange("Contract ID", Rec."Contract ID");
@@ -746,7 +747,20 @@ page 50313 "Tenancy Contract Card"
                             // end else
                             // Error('No data found in Merged Unit with same square feet subpage for Proposal ID %1.', LeaseProposal."Proposal ID");
                         end;
-
+                        RentSubpage.SetRange("RC ID", RentRecord."RC ID");
+                        RentSubpage.SetRange("Contract ID", RentRecord."Contract ID");
+                        RentSubpage.SetCurrentKey(Year);
+                        if RentSubpage.FindLast() then begin
+                            Lastyear := RentSubpage.Year;
+                            Clear(RentSubpage);
+                            RentSubpage.SetRange("RC ID", RentRecord."RC ID");
+                            RentSubpage.SetRange("Contract ID", RentRecord."Contract ID");
+                            if RentSubpage.FindSet() then
+                                repeat
+                                    RentSubpage."Yearly No. of Installment" := RentRecord."Number of Installments" / Lastyear;
+                                    RentSubpage.Modify(true);
+                                until RentSubpage.Next() = 0;
+                        end;
                         Message('New record has been created in Revenue Structure and subpage updated successfully.');
                         // end else
                         //     Error('Lease Proposal not found for Proposal ID %1.', Rec."Proposal ID");
