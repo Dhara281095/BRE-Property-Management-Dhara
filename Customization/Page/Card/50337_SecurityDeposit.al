@@ -54,6 +54,8 @@ page 50337 "Security Deposit Card"
                     ApplicationArea = All;
                     Editable = false;
                 }
+
+
             }
 
             group("Carry Forward To")
@@ -96,6 +98,12 @@ page 50337 "Security Deposit Card"
 
                 }
                 field("New Security Amount"; rec."New Security Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
+                field("New_Balance Amount"; rec."New_Balance Amount")
                 {
                     ApplicationArea = All;
                     Editable = false;
