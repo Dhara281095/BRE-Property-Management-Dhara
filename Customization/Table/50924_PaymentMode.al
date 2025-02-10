@@ -18,17 +18,22 @@ table 50924 "Payment Mode"
             var
                 leaserec: Record "Payment Schedule";
                 payschedule: Record "Payment Schedule2";
+                Tenancycontract: Record "Tenancy Contract";
             begin
 
                 leaserec.SetRange("Contract ID", Rec."Contract ID");
+                Tenancycontract.SetRange("Contract ID", Rec."Contract ID");
                 if leaserec.FindFirst() then begin
-                    // "Proposal ID" := leaserec."Proposal ID";
                     "Tenant Id" := leaserec."Tenant Id";
-
                 end else begin
-                    // Clear the field if no record is found
-                    // "Proposal Id" := '';
                     "Tenant Id" := '';
+                end;
+                if Tenancycontract.FindFirst() then begin
+                    "Tenant Name" := Tenancycontract."Customer Name";
+                    "Tenant Email" := Tenancycontract."Email Address";
+                end else begin
+                    "Tenant Name" := '';
+                    "Tenant Email" := '';
                 end;
                 EvaluatePaymentSchedule();
                 GetNextSequenceNo();
@@ -174,6 +179,16 @@ table 50924 "Payment Mode"
         {
             // DataClassification = ToBeClassified;
             OptionMembers = " ","True","False";
+        }
+
+        field(50129; "Tenant Name"; Text[100])
+        {
+            Caption = 'Tenant Name';
+        }
+
+        field(50130; "Tenant Email"; Text[80])
+        {
+            Caption = 'Tenant Email';
         }
 
 
@@ -388,6 +403,8 @@ table 50924 "Payment Mode"
                 // MergedRecord."Proposal ID" := Rec."Proposal ID";
                 MergedRecord."Tenant ID" := Rec."Tenant ID";
                 MergedRecord."Contract ID" := Rec."Contract ID";
+                MergedRecord."Tenant Email" := Rec."Tenant Email";
+                MergedRecord."Tenant Name" := Rec."Tenant Name";
                 MergedRecord."Payment Series" := NewPaymentCode;
                 MergedRecord."Amount" := TotalAmount;
                 MergedRecord."VAT Amount" := TotalVAT;

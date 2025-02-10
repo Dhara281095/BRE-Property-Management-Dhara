@@ -24,6 +24,11 @@ page 50315 "Lease Proposal Card"
                     ShowMandatory = true;
                     NotBlank = true;
 
+                    trigger OnValidate()
+                    begin
+                        CurrPage.Update(true);
+                    end;
+
                    
                 }
                 
@@ -910,11 +915,38 @@ page 50315 "Lease Proposal Card"
     //     Rec.Modify(false);
     // end;
 
+    // trigger OnQueryClosePage(CloseAction: Action): Boolean
+    // var
+    // begin
+    //     Rec.TestField("Property ID");
+
+    // end;
+
     trigger OnQueryClosePage(CloseAction: Action): Boolean
     var
+        IsNewUnmodified: Boolean;
+        RecRef: RecordRef;
+        xRecRef: RecordRef;
     begin
-        Rec.TestField("Property ID");
-      
+        // Get record references
+        RecRef.GetTable(Rec);
+        xRecRef.GetTable(xRec);
+
+        // Check if this is a new unmodified record by comparing current and previous state
+        IsNewUnmodified := (RecRef.Count = 0) or (Format(Rec) = Format(xRec));
+
+        // If it's a new unmodified record and user is trying to close/cancel
+        if IsNewUnmodified and (CloseAction = ACTION::Cancel) then
+            exit(true); // Allow closing without validation
+
+        // For all other cases (modified records or OK action)
+        if CloseAction = ACTION::OK then begin
+            if not IsNewUnmodified then  // Only validate if the record has been modified
+                Rec.TestField("Property ID");
+                 Rec.TestField("Praposal Type Selected");
+        end;
+
+        exit(true);
     end;
 
    
