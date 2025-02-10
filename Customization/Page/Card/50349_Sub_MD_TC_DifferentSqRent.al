@@ -178,7 +178,7 @@ page 50349 "TC Merge DifferentSq SubPage"
                 {
                     ApplicationArea = All;
                     Caption = 'Round off';
-                    Editable = true;
+                    Editable = false;
 
                     trigger OnValidate()
                     begin

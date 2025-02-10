@@ -43,6 +43,19 @@ page 50927 "Payment Mode Card"
 
 
                 }
+
+                field("Tenant Name"; Rec."Tenant Name")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
+                field("Tenant Email"; Rec."Tenant Email")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
                 field("Approval Status"; Rec."Approval Status")
                 {
                     ApplicationArea = All;
@@ -202,6 +215,8 @@ page 50927 "Payment Mode Card"
         // CurrPage."PaymentMode".Page.SetProposalID(Rec."Proposal ID");
         CurrPage."PaymentMode".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."PaymentMode".Page.SetContractID(Rec."Contract ID");
+        CurrPage.PaymentMode.Page.SetDetails(Rec."Tenant Name", Rec."Tenant Email");
+
 
 
     end;
@@ -213,6 +228,7 @@ page 50927 "Payment Mode Card"
         //CurrPage."Revenue".Page.SetStartEndDate(Rec."Lease Start Date", Rec."Lease End Date");
         CurrPage."PaymentMode".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."PaymentMode".Page.SetContractID(Rec."Contract ID");
+        CurrPage.PaymentMode.Page.SetDetails(Rec."Tenant Name", Rec."Tenant Email");
 
 
 
@@ -225,6 +241,7 @@ page 50927 "Payment Mode Card"
         // CurrPage."Revenue".Page.SetStartEndDate(Rec."Lease Start Date", Rec."Lease End Date");
         CurrPage."PaymentMode".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."PaymentMode".Page.SetContractID(Rec."Contract ID");
+        CurrPage.PaymentMode.Page.SetDetails(Rec."Tenant Name", Rec."Tenant Email");
 
 
     end;

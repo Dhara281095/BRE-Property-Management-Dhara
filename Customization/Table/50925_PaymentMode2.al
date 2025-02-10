@@ -120,7 +120,26 @@ table 50925 "Payment Mode2"
         {
             //OptionMembers = "Scheduled","Due","Received","Overdue","Cancelled";
             Caption = 'Payment Status';
+
+            trigger OnValidate()
+            var
+                emailrec: Codeunit "Send PaymentMode Email";
+            begin
+                // Check the status and call the appropriate email procedure
+                if Rec."Payment Status" = Rec."Payment Status"::Received then begin
+                    emailrec.SendEmail(Rec); // Call for Received status
+                end
+
+                else if Rec."Payment Status" = Rec."Payment Status"::Cancelled then begin
+                    emailrec.SendEmailCancelled(Rec); // Call for Cancelled status
+                end
+
+                else if Rec."Payment Status" = Rec."Payment Status"::Overdue then begin
+                    emailrec.SendEmailOverdue(Rec); // Call for Overdue status
+                end;
+            end;
         }
+
 
         field(50113; "Cheque Status"; Enum "PDC Status Type Enum")
         {
@@ -224,6 +243,8 @@ table 50925 "Payment Mode2"
         {
             Caption = 'Tenant Id';
         }
+
+
         field(50111; "Contract ID"; Integer)
         {
             Caption = 'Contract ID';
@@ -346,6 +367,16 @@ table 50925 "Payment Mode2"
         field(50128; "Approve/Decline Status"; Text[50])
         {
             DataClassification = ToBeClassified;
+        }
+
+        field(50129; "Tenant Name"; Text[100])
+        {
+            Caption = 'Tenant Name';
+        }
+
+        field(50130; "Tenant Email"; Text[80])
+        {
+            Caption = 'Tenant Email';
         }
 
 

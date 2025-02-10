@@ -239,7 +239,7 @@ page 50928 "Payment Mode Card2"
 
                         // Open the file URL in the browser (new tab)
                         OpenFileInBrowser(FileURL);
-                
+
                     end;
                 }
 
@@ -257,9 +257,9 @@ page 50928 "Payment Mode Card2"
                         FilteredSchedulePage: Page "Payment Schedule Card2"; // Replace with your actual page name
                     begin
                         if Rec."Payment Status" = Rec."Payment Status"::Cancelled then begin
-                          Message('View Revenue Details cannot be accessed because Payment Status is Cancelled');
-                           exit; // Stop execution here
-                         end;
+                            Message('View Revenue Details cannot be accessed because Payment Status is Cancelled');
+                            exit; // Stop execution here
+                        end;
                         PaymentScheduleRec.SetRange("Contract ID", Rec."Contract ID");
                         // PaymentScheduleRec.SetRange("Proposal ID", Rec."Proposal ID");
                         PaymentScheduleRec.SetRange("Tenant ID", Rec."Tenant ID");
@@ -313,7 +313,7 @@ page 50928 "Payment Mode Card2"
                     ApplicationArea = All;
                     Visible = false;
                 }
-                field("Approve/Decline Status";Rec."Approve/Decline Status")
+                field("Approve/Decline Status"; Rec."Approve/Decline Status")
                 {
                     ApplicationArea = All;
                 }
@@ -340,6 +340,19 @@ page 50928 "Payment Mode Card2"
                     Caption = 'Total Amount Including VAT';
                     Editable = false;
                 }
+
+                field("Tenant Name"; Rec."Tenant Name")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
+                field("Tenant Email"; Rec."Tenant Email")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
             }
 
 
@@ -458,33 +471,33 @@ page 50928 "Payment Mode Card2"
 
 
 
-     trigger OnAfterGetRecord()
-        begin
-            // If the field is blank, assign '-'
-            if Rec."Cheque Number" = '' then
-                Rec."Cheque Number" := '-';
+    trigger OnAfterGetRecord()
+    begin
+        // If the field is blank, assign '-'
+        if Rec."Cheque Number" = '' then
+            Rec."Cheque Number" := '-';
 
-                 if Rec."Old Cheque #" = '' then
-                Rec."Old Cheque #" := '-';
+        if Rec."Old Cheque #" = '' then
+            Rec."Old Cheque #" := '-';
 
-                 if Rec."Receipt #" = '' then
-                Rec."Receipt #" := '-';
+        if Rec."Receipt #" = '' then
+            Rec."Receipt #" := '-';
 
-                 if Rec."Invoice #" = '' then
-                Rec."Invoice #" := '-';
+        if Rec."Invoice #" = '' then
+            Rec."Invoice #" := '-';
 
 
-                // if Rec."Due Date" <> xRec."Due Date" then begin
-                //         if Rec."Due Date" = Today() then
-                //             Rec."Payment Status" := Rec."Payment Status"::"Due"
-                //         else if Rec."Due Date" < Today() then
-                //             Rec."Payment Status" := Rec."Payment Status"::"Overdue"
-                //         else
-                //             Rec."Payment Status" := Rec."Payment Status";
+        // if Rec."Due Date" <> xRec."Due Date" then begin
+        //         if Rec."Due Date" = Today() then
+        //             Rec."Payment Status" := Rec."Payment Status"::"Due"
+        //         else if Rec."Due Date" < Today() then
+        //             Rec."Payment Status" := Rec."Payment Status"::"Overdue"
+        //         else
+        //             Rec."Payment Status" := Rec."Payment Status";
 
-                //      //   Modify();
-                //     end;
-        end;
+        //      //   Modify();
+        //     end;
+    end;
 
 
 
@@ -496,11 +509,13 @@ page 50928 "Payment Mode Card2"
     procedure SetTenantID(pTenantID: Code[20])
     begin
         tenantID := pTenantID;
+        
     end;
 
     procedure SetContractID(pContractID: Integer)
     begin
         ContractID := pContractID;
+
     end;
 
     procedure OpenFileInBrowser(URL: Text)
@@ -512,23 +527,28 @@ page 50928 "Payment Mode Card2"
             Error('The file URL is invalid.');
     end;
 
-    // procedure SetStartEndDate(pStartDate: Date; pEndDate: Date)
-    // begin
-    //     startDate := pStartDate;
-    //     endDate := pEndDate;
-    // end;
+    procedure SetDetails(pTenantName: Text[100]; pTenantEmail: Text[80])
+    begin
+        tenantName := pTenantName;
+        tenantEmail := pTenantEmail;
+    end;
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     begin
 
         Rec."Tenant ID" := tenantID;
         Rec."Contract ID" := ContractID;
+        Rec."Tenant Name" := tenantName;
+        Rec."Tenant Email" := tenantEmail;  
 
     end;
 
     var
         proposalID: Integer;
         tenantID: Code[20];
+
+        tenantName: Text[100];
+        tenantEmail: Text[80];
         ContractID: Integer;
         isApproved: Boolean;
         IsLeaseManager: Boolean;
