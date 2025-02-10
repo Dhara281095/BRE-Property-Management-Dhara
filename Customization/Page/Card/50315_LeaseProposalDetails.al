@@ -21,7 +21,12 @@ page 50315 "Lease Proposal Card"
                 {
                     ApplicationArea = All;
                     Lookup = true; // Enable lookup for Property ID
+                    ShowMandatory = true;
+                    NotBlank = true;
+
+                   
                 }
+                
 
                 field("Property Name"; rec."Property Name")
                 {
@@ -904,6 +909,13 @@ page 50315 "Lease Proposal Card"
     //     // Save changes
     //     Rec.Modify(false);
     // end;
+
+    trigger OnQueryClosePage(CloseAction: Action): Boolean
+    var
+    begin
+        Rec.TestField("Property ID");
+      
+    end;
 
    
 

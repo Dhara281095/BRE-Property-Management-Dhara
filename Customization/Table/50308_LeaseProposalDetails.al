@@ -1586,7 +1586,11 @@ table 50308 "Lease Proposal Details"
         docAttach: Page "Revenue Item Subpage Card";
     begin
         docAttach.SetProposalID(Rec."Proposal ID");
+
+        ValidateRecord();
     end;
+
+
 
     //-------------Record Insert--------------//
 
@@ -1611,6 +1615,15 @@ table 50308 "Lease Proposal Details"
     end;
 
     //-------------Leap year Counting--------------//
+
+
+
+    procedure ValidateRecord()
+    begin
+        TestField(Rec."Property ID");
+
+        // you can add the custom validation here also for other type of fields like email,contact
+    end;
 
 
 }
