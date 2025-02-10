@@ -111,6 +111,38 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
 
             }
         }
+
+        addlast(General)
+        {
+            field("View Document URL"; Rec."View Document URL")
+            {
+                ApplicationArea = All;
+                Caption = 'View Document URL';
+            }
+            field("View Invoice"; Rec."View Invoice")
+            {
+                ApplicationArea = All;
+                Caption = 'View Invoice';
+                Editable = false;
+                DrillDown = true;
+                trigger OnDrillDown()
+                var
+                    FileURL: Text;
+                begin
+                    // Get the URL of the uploaded document
+                    FileURL := Rec."View Document URL";
+
+                    // Check if the file URL is not empty
+                    if FileURL = '' then
+                        Error('No document is available to view.');
+
+                    // Open the file URL in the browser (new tab)
+                    OpenFileInBrowser(FileURL);
+                end;
+
+            }
+        }
+
     }
 
     actions
@@ -157,25 +189,40 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 end;
             }
         }
+
         modify(Post)
         {
             trigger OnBeforeAction()
             var
-
-                TempBlob: Codeunit "Temp Blob";
-                OutStream: OutStream;
+                AzureBlobUploader: Codeunit "Azure Blob Management";
                 InStream: InStream;
                 FileName: Text;
-                FileExtension: Text;
-                DocumentAttachment: Record "Document Attachment";
+                SASUrlBase: Text;
+                SASUrlWithFileName: Text;
+                UploadResult: Text;
+                TempBlob: Codeunit "Temp Blob";
+                ValidFormats: List of [Text];
+                FileExtension: Text[10];
+                FileSize: Decimal;
+                ConfigRecord: Record AzureConfiguration;
                 ReportID: Integer; // Your report ID
                 RecRef: RecordRef;
-                FieldRef: FieldRef;
-                MIMEType: Text[250];
-                SystemIdFieldNo: Integer;
-
+                OutStream: OutStream;
+                documentattachment: Codeunit UploadAttachment;
             begin
 
+                if not ConfigRecord.FindFirst() then
+                    Error('Azure configuration is missing. Please set up the SAS URL in the Azure Configuration table.');
+                // Error('formate validate enter');
+                // Message('formate validate enter');
+                // Allowed file formats
+                ValidFormats.Add('.png');
+                ValidFormats.Add('.jpg');
+                ValidFormats.Add('.jpeg');
+                // Error('formate validate');
+                // Message('formate validate');
+
+                SASUrlBase := ConfigRecord."SAS URL";
                 FileExtension := '.pdf';
                 ReportID := 50104;
                 RecRef.Open(DATABASE::"Sales Header"); // Open the table reference
@@ -185,79 +232,32 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
 
                 TempBlob.CreateInStream(InStream);
                 FileName := 'Invoice_' + Rec."No." + FileExtension;
-                MIMEType := GetMimeTypeFromFileName(FileName);
-                SystemIdFieldNo := RecRef.SystemIdNo();
-                FieldRef := RecRef.Field(SystemIdFieldNo);
-                DocumentAttachment.Init();
-                DocumentAttachment.SaveAttachmentFromStream(InStream, RecRef, FileName);
-                DocumentAttachment."Record Id" := FieldRef.Value;
-                DocumentAttachment."Table ID" := DATABASE::"Sales Header"; // Set to your table ID, for Sales Header
-                DocumentAttachment."No." := Rec."No.";
-                DocumentAttachment."Document Type" := DocumentAttachment."Document Type"::Invoice;
-                DocumentAttachment."File Name" := FileName;
-                DocumentAttachment."DocumentMedia".ImportStream(InStream, FileName);
-                DocumentAttachment."Document BLOB".CreateInStream(InStream);
-                DocumentAttachment."MIME Type" := MIMEType;
-                DocumentAttachment.Modify();
+                // FileName := 'SalesInvoice' + FileExtension;
+                SASUrlWithFileName := StrSubstNo('%1/%2?%3', CopyStr(SASUrlBase, 1, StrPos(SASUrlBase, '?') - 1), FileName, CopyStr(SASUrlBase, StrPos(SASUrlBase, '?') + 1));
+
+
+                // Call the upload function with the modified SAS URL
+                UploadResult := documentattachment.UploadDocumentToBlobStorage(SASUrlWithFileName, FileName, InStream);
+                Rec."View Invoice" := FileName;
+                Rec."View Document URL" := UploadResult;
+                Rec.Modify();
             end;
         }
 
 
     }
 
-    procedure GetMimeTypeFromFileName(FileName: Text): Text
-    var
-        FileExtension: Text;
+
+
+
+    procedure OpenFileInBrowser(URL: Text)
     begin
-        // Extract the file extension from the file name
-        FileExtension := LowerCase(CopyStr(FileName, StrPos(FileName, '.'), StrLen(FileName) - StrPos(FileName, '.') + 1));
-
-        case FileExtension of
-            '.pdf':
-                exit('application/pdf');
-            '.jpg', '.jpeg':
-                exit('image/jpeg');
-            '.png':
-                exit('image/png');
-            '.gif':
-                exit('image/gif');
-            '.txt':
-                exit('text/plain');
-            '.doc', '.docx':
-                exit('application/msword');
-            '.xls', '.xlsx':
-                exit('application/vnd.ms-excel');
-            '.ppt', '.pptx':
-                exit('application/vnd.ms-powerpoint');
-            '.zip':
-                exit('application/zip');
-            '.rar':
-                exit('application/x-rar-compressed');
-            '.csv':
-                exit('text/csv');
-            '.json':
-                exit('application/json');
-            '.xml':
-                exit('application/xml');
-            '.html', '.htm':
-                exit('text/html');
-            '.mp4':
-                exit('video/mp4');
-            '.mp3':
-                exit('audio/mpeg');
-            '.wav':
-                exit('audio/wav');
-            '.avi':
-                exit('video/x-msvideo');
-            '.exe':
-                exit('application/x-msdownload');
-            else
-                exit('application/octet-stream'); // Default MIME type for unknown files
-        end;
+        // Use the Hyperlink method to open the file in the browser
+        if URL <> '' then
+            Hyperlink(URL)
+        else
+            Error('The file URL is invalid.');
     end;
-
-
-
 
     procedure GetUserEditableStatus(): Boolean
     var

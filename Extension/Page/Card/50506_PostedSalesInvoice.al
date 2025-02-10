@@ -81,5 +81,44 @@ pageextension 50506 PostedSalesInvoiceHeader extends "Posted Sales Invoice"
                 }
             }
         }
+
+        addlast(General)
+        {
+            field("View Invoice"; Rec."View Invoice")
+            {
+                ApplicationArea = All;
+                Caption = 'View Invoice';
+                Editable = false;
+                DrillDown = true;
+                trigger OnDrillDown()
+                var
+                    FileURL: Text;
+                begin
+                    // Get the URL of the uploaded document
+                    FileURL := Rec."View Document URL";
+
+                    // Check if the file URL is not empty
+                    if FileURL = '' then
+                        Error('No document is available to view.');
+
+                    // Open the file URL in the browser (new tab)
+                    OpenFileInBrowser(FileURL);
+                end;
+
+            }
+            field("View Document URL"; Rec."View Document URL")
+            {
+                ApplicationArea = All;
+                Caption = 'View Document URL';
+            }
+        }
     }
+    procedure OpenFileInBrowser(URL: Text)
+    begin
+        // Use the Hyperlink method to open the file in the browser
+        if URL <> '' then
+            Hyperlink(URL)
+        else
+            Error('The file URL is invalid.');
+    end;
 }
