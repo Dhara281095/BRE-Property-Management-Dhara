@@ -943,7 +943,7 @@ page 50315 "Lease Proposal Card"
         if CloseAction = ACTION::OK then begin
             if not IsNewUnmodified then  // Only validate if the record has been modified
                 Rec.TestField("Property ID");
-                 Rec.TestField("Praposal Type Selected");
+                
         end;
 
         exit(true);
