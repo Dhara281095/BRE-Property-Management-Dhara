@@ -79,7 +79,14 @@ table 50102 "Country"
             else
                 "Sl No." := 1; // Start from 1 if no records exist
         end;
+        ValidateRecord();
     end;
     //-------------Record Insert--------------//
+
+    procedure ValidateRecord()
+    begin
+        TestField(Rec."Country Name");
+        // you can add the custom validation here also for other type of fields like email,contact
+    end;
 
 }
