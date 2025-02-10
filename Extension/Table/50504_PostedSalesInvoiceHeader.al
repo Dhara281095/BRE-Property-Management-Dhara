@@ -57,7 +57,16 @@ tableextension 50504 PostedSalesInvoiceHeader extends "Sales Invoice Header"
             DataClassification = ToBeClassified;
             Caption = 'Reason For Rejection';
         }
-
+        field(50111; "View Invoice"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'View Invoice';
+        }
+        field(50112; "View Document URL"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'View Document URL';
+        }
 
     }
 }
