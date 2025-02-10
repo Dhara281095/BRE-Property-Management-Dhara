@@ -52,14 +52,6 @@ page 50947 "Rent Calculation SubCard2"
 
                 }
 
-                // field("Proposal ID"; Rec."Proposal ID")
-                // {
-                //     ApplicationArea = All;
-                //     Editable = false; // The ID is not editable since it's auto-incrementing
-                //     Lookup = true;
-                //     Visible = false;
-                // }
-
                 field("VAT Amount"; Rec."VAT Amount")
                 {
                     ApplicationArea = All;
@@ -111,13 +103,6 @@ page 50947 "Rent Calculation SubCard2"
                 }
 
 
-                // field("Payment Mode"; Rec."Payment Mode")
-                // {
-                //     ApplicationArea = All;
-                //     Caption = 'Payment Mode';
-
-                // }
-
             }
             group(TotalAmount)
             {
@@ -147,46 +132,17 @@ page 50947 "Rent Calculation SubCard2"
         tenantID := pTenantID;
     end;
 
-    // procedure SetStartEndDates(pInstallmentStartDate: Date; pInstallmentEndDate: Date; pInstallmentNo: Integer; pAmount: Decimal; pvatamount: Decimal; pamountincludeingVATamount: Decimal; psecondaryItemtype: Text)
-    // begin
-
-    //     startDate := pInstallmentStartDate;
-    //     endDate := pInstallmentEndDate;
-    //     InstallmentNo := pInstallmentNo;
-    //     Amount := pAmount;
-    //     SecondaryItemType := psecondaryItemtype;
-
-    // end;
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     begin
-        // Rec."RS ID" := proposalID;
         Rec."Contract ID" := ContractID;
         Rec."Tenant ID" := tenantID;
-        // Rec."Proposal ID" := proposalID;
-        // Rec."Installment Start Date" := startDate;
-        // Rec."Installment End Date" := endDate;
-        // Rec."Installment No." := InstallmentNo;
-        // Rec."Amount" := Amount;
-        // Rec."Secondary Item Type" := SecondaryItemType;
-        // Rec."VAT Amount" := VATamount;
-        // Rec."Amount Including VAT" := AmountIncludingVATamount;
     end;
 
     var
         ContractID: Integer;
         proposalID: Integer;
         tenantID: Code[20];
-    // startDate: Date;
-    // endDate: Date;
-
-    // InstallmentNo: Integer;
-
-    // Amount: Decimal;
-    // SecondaryItemType: Text;
-
-    // VATamount: Decimal;
-    // AmountIncludingVATamount: Decimal;
 
 
 

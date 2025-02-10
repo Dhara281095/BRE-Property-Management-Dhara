@@ -1622,6 +1622,13 @@ table 50308 "Lease Proposal Details"
     begin
         TestField(Rec."Property ID");
 
+        // TestField(Rec."Lease Start Date");
+        // TestField(Rec."Lease End Date");
+        // TestField(Rec."Unit ID");
+        // TestField(Rec."Unit Name");
+        // TestField(Rec."Merge Unit ID");
+
+
         // you can add the custom validation here also for other type of fields like email,contact
     end;
 

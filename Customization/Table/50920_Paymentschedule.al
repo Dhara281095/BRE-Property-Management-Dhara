@@ -68,6 +68,7 @@ table 50920 "Payment Schedule"
                     "Tenant Name" := '';
                 end;
                 UpdatePaymentSchedule2();
+                UpdatePaymentSchedule();
                 addrevnuestructurpagelinePaymentschedule2();
                 // AssignPaymentSeries();
                 EvaluatePaymentSchedule();
@@ -171,6 +172,41 @@ table 50920 "Payment Schedule"
 
 
     end;
+
+
+    procedure UpdatePaymentSchedule()
+    var
+        RentCalculationSubpage: Record "Rent Calculation Subpage2";
+        PaymentSchedule: Record "Payment Schedule2";
+
+    begin
+
+        RentCalculationSubpage.SetRange("Contract ID", Rec."Contract ID");
+        // RevenueStructureSubpage.SetRange("Tenant ID", Rec."Tenant ID");
+
+        if RentCalculationSubpage.FindSet() then
+            repeat
+                PaymentSchedule.Init();
+                // PaymentSchedule3."PS ID" := Rec."PS Id";
+                PaymentSchedule."Contract ID" := RentCalculationSubpage."Contract ID";
+                // PaymentSchedule3."Proposal ID" := Rec."Proposal ID";
+                PaymentSchedule."Tenant Name" := Rec."Tenant Name";
+                PaymentSchedule."Tenant ID" := RentCalculationSubpage."Tenant Id";
+                PaymentSchedule."Secondary Item Type" := RentCalculationSubpage."Secondary Item Type";
+                PaymentSchedule.Amount := RentCalculationSubpage.Amount;
+                PaymentSchedule."VAT Amount" := RentCalculationSubpage."VAT Amount";
+                PaymentSchedule."Installment Start Date" := RentCalculationSubpage."Installment Start Date";
+                PaymentSchedule."Installment End Date" := RentCalculationSubpage."Installment End Date";
+                PaymentSchedule."Installment No." := RentCalculationSubpage."Installment No.";
+                PaymentSchedule."Amount Including VAT" := RentCalculationSubpage."Amount Including VAT";
+                PaymentSchedule."Due Date" := RentCalculationSubpage."Due Date";
+                PaymentSchedule.Insert();
+                Clear(PaymentSchedule);
+            until RentCalculationSubpage.Next() = 0;
+
+    end;
+
+
 
     procedure addrevnuestructurpagelinePaymentschedule2()
     var

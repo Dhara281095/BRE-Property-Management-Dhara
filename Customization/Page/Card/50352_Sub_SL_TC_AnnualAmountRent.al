@@ -31,16 +31,19 @@ page 50352 "TC Single LumAnnualAmnt SP"
                 {
                     ApplicationArea = All;
                     Caption = 'Unit ID';
+                    Editable = false;
                 }
                 field("SL_Year"; rec.SL_Year)
                 {
                     ApplicationArea = All;
                     Caption = 'Year';
+                    Editable = false;
                 }
                 field("SL_Start Date"; rec."SL_Start Date")
                 {
                     ApplicationArea = All;
                     Caption = 'Start Date';
+                    Editable = false;
                     trigger OnValidate()
                     begin
                         // Recalculate Number of Days
@@ -52,6 +55,7 @@ page 50352 "TC Single LumAnnualAmnt SP"
                 {
                     ApplicationArea = All;
                     Caption = 'End Date';
+                    Editable = false;
                     trigger OnValidate()
                     begin
                         // Recalculate Number of Days
@@ -62,6 +66,7 @@ page 50352 "TC Single LumAnnualAmnt SP"
                 {
                     ApplicationArea = All;
                     Caption = 'Number of Days';
+                    Editable = false;
                 }
                 field("SL_Unit Sq Ft"; rec."SL_Unit Sq Ft")
                 {
@@ -87,6 +92,7 @@ page 50352 "TC Single LumAnnualAmnt SP"
                 {
                     ApplicationArea = All;
                     Caption = 'Rent Increase %';
+                    Editable = false;
                     trigger OnValidate()
                     begin
                         if Rec."SL_Rent Increase %" < 0 then
@@ -109,6 +115,7 @@ page 50352 "TC Single LumAnnualAmnt SP"
                     Caption = 'Annual Amount';
                     ToolTip = 'Enter the annual amount manually or let it be calculated based on rate per sq.ft.';
                     DecimalPlaces = 2 : 2;
+                    Editable = false;
                     trigger OnValidate()
                     var
                         PreviousYearRecord: Record "CR Single LumAnnualAmnt SP";
@@ -149,6 +156,7 @@ page 50352 "TC Single LumAnnualAmnt SP"
                     ApplicationArea = All;
                     Caption = 'Round off';
                     ToolTip = 'Enter the round off value. The Final Annual Amount will be recalculated automatically.';
+                    Editable = false;
                     trigger OnValidate()
                     begin
                         // Recalculate the final annual amount
