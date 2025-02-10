@@ -16,6 +16,7 @@ page 50927 "Payment Mode Card"
                 field("Contract ID"; Rec."Contract ID")
                 {
                     ApplicationArea = All;
+                    Editable = IsFieldEditable;
                     //Editable = false; // The ID is not editable since it's auto-incrementing
                 }
 
@@ -59,7 +60,7 @@ page 50927 "Payment Mode Card"
                 field("Approval Status"; Rec."Approval Status")
                 {
                     ApplicationArea = All;
-                    Editable = IsFinanceManager;
+                    Editable = IsFinanceManager AND IsFieldEditable;
                     // trigger OnValidate()
                     // begin
                     //     // Scenario 1: Update all payment grid records to "Approved" when card status changes
@@ -72,6 +73,7 @@ page 50927 "Payment Mode Card"
                 field("On-hold"; Rec."On-hold")
                 {
                     ApplicationArea = All;
+                    Editable = IsFieldEditable;
                     // trigger OnValidate()
                     // var
                     //     paymentModeRec: Record "Payment Mode";
@@ -106,6 +108,7 @@ page 50927 "Payment Mode Card"
                 field(Isupdated; Rec.Isupdated)
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
 
 
@@ -121,7 +124,7 @@ page 50927 "Payment Mode Card"
                       "Tenant ID" = FIELD("Tenant ID"); // Link to filter attachments for this owner only
                                                         // "Contract ID" = FIELD("Contract ID")
                     ApplicationArea = All;
-
+                    Editable = IsFieldEditable;
                     // Visible = isVisible;
                 }
             }
@@ -211,7 +214,8 @@ page 50927 "Payment Mode Card"
 
     trigger OnAfterGetRecord()
     begin
-
+        // Fields are editable only if Approval Status is not "Approved"
+        IsFieldEditable := (Rec."Approval Status" <> Rec."Approval Status"::Approved);
         // CurrPage."PaymentMode".Page.SetProposalID(Rec."Proposal ID");
         CurrPage."PaymentMode".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."PaymentMode".Page.SetContractID(Rec."Contract ID");
@@ -281,6 +285,7 @@ page 50927 "Payment Mode Card"
     // end;
     var
         IsFinanceManager: Boolean;
+        IsFieldEditable: Boolean;
 
     trigger OnOpenPage()
     var

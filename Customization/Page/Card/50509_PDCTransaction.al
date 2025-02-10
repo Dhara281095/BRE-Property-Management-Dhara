@@ -22,6 +22,10 @@ page 50509 "PDC Transaction"
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field("Contract ID"; Rec."Contract ID")
+                {
+                    ApplicationArea = All;
+                }
                 field("Tenant Name"; Rec."Tenant Id")
                 {
                     ApplicationArea = All;
@@ -31,15 +35,15 @@ page 50509 "PDC Transaction"
                     ApplicationArea = All;
 
                 }
-
-                field("Bank Name"; Rec."Bank Name")
-                {
-                    ApplicationArea = All;
-                }
                 field("Cheque Number"; Rec."Cheque Number")
                 {
                     ApplicationArea = All;
                 }
+                field("Bank Name"; Rec."Bank Name")
+                {
+                    ApplicationArea = All;
+                }
+
                 field("Cheque Date"; Rec."Cheque Date")
                 {
                     ApplicationArea = All;
@@ -47,6 +51,11 @@ page 50509 "PDC Transaction"
                 field(Amount; Rec.Amount)
                 {
                     ApplicationArea = All;
+                }
+                field("Old Cheque#"; Rec."Old Cheque#")
+                {
+                    ApplicationArea = All;
+
                 }
                 field(Status; Rec."Cheque Status")
                 {
@@ -117,7 +126,13 @@ page 50509 "PDC Transaction"
                                 PaymentSeriesRec."Cheque Status" := PaymentSeriesRec."Cheque Status"::"Replaced & Received";
                                 PaymentSeriesRec."Payment Status" := PaymentSeriesRec."Payment Status"::Scheduled;
                                 PaymentSeriesRec."Deposit Status" := PaymentSeriesRec."Deposit Status"::"-";
+                                // PaymentSeriesRec.Modify();
+                                PaymentSeriesRec."Old Cheque #" := PaymentSeriesRec."Cheque Number";
+                                PaymentSeriesRec."Cheque Number" := '';
                                 PaymentSeriesRec.Modify();
+                                Rec."Old Cheque#" := Rec."Cheque Number";
+                                Rec."Cheque Number" := '';
+                                Rec.Modify();
                             end else
                                 Error('The related Payment Series record was not found.');
                         end
@@ -128,6 +143,13 @@ page 50509 "PDC Transaction"
                                 PaymentSeriesRec."Cheque Status" := PaymentSeriesRec."Cheque Status"::Retrieved;
                                 PaymentSeriesRec."Payment Status" := PaymentSeriesRec."Payment Status"::Scheduled;
                                 PaymentSeriesRec."Deposit Status" := PaymentSeriesRec."Deposit Status"::"-";
+                                // PaymentSeriesRec.Modify();
+                                PaymentSeriesRec."Old Cheque #" := PaymentSeriesRec."Cheque Number";
+                                PaymentSeriesRec."Cheque Number" := '';
+                                PaymentSeriesRec.Modify();
+                                Rec."Old Cheque#" := Rec."Cheque Number";
+                                Rec."Cheque Number" := '';
+                                Rec.Modify();
                             end else
                                 Error('The related Payment Series record was not found.');
                         end
@@ -138,6 +160,9 @@ page 50509 "PDC Transaction"
                                 PaymentSeriesRec."Cheque Status" := PaymentSeriesRec."Cheque Status"::Returned;
                                 PaymentSeriesRec."Payment Status" := PaymentSeriesRec."Payment Status"::Scheduled;
                                 PaymentSeriesRec."Deposit Status" := PaymentSeriesRec."Deposit Status"::"-";
+                                PaymentSeriesRec.Modify();
+
+
                             end else
                                 Error('The related Payment Series record was not found.');
                         end;
@@ -149,11 +174,9 @@ page 50509 "PDC Transaction"
                 field("Approval Status"; Rec."Approval Status")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
-                field("Contract ID"; Rec."Contract ID")
-                {
-                    ApplicationArea = All;
-                }
+
                 field(View; Rec.View)
                 {
                     ApplicationArea = All;
@@ -163,16 +186,18 @@ page 50509 "PDC Transaction"
                 {
                     ShowCaption = false;
                     Visible = Isvisible;
-                    field("Replacement PDC ID"; Rec."Replacement PDC ID")
-                    {
-                        ApplicationArea = All;
-                        // Visible = Isvisible;
-                    }
+                    // field("Replacement PDC ID"; Rec."Replacement PDC ID")
+                    // {
+                    //     ApplicationArea = All;
+
+                    //     // Visible = Isvisible;
+                    // }
 
                     field("Reason"; Rec."Reason")
                     {
                         ApplicationArea = All;
                         // Visible = Isvisible;
+                        Visible = false;
                     }
                 }
             }

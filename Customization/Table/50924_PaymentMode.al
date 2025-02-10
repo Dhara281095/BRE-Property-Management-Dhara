@@ -116,6 +116,7 @@ table 50924 "Payment Mode"
                 paymentSeriesRec: Record "Payment Mode2";
                 approvalPending: Boolean;
                 Isrejected: Boolean;
+                IsApproved: Boolean;
                 sendRejectionToLeaseTeam: Codeunit 50511;
             begin
                 if Rec."Approval Status" = Rec."Approval Status"::Approved then begin
@@ -128,6 +129,7 @@ table 50924 "Payment Mode"
                         until paymentGridRec.Next() = 0;
                     end;
                     Rec."On-hold" := Rec."On-hold"::"False";
+                    IsApproved := true;
                 end;
                 if Rec."Approval Status" = Rec."Approval Status"::Rejected then begin
                     paymentGridRec.SetRange("Contract ID", Rec."Contract ID");
