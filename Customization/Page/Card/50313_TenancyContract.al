@@ -351,6 +351,15 @@ page 50313 "Tenancy Contract Card"
                     Caption = 'Payment Mode';
                     Editable = false;
                 }
+                field("No of Installments"; rec."No of Installments")
+                {
+                    ApplicationArea = All;
+                    Caption = 'No of Installments';
+                    // Visible = false;
+                }
+            }
+            group("Security Deposit")
+            {
                 field("Security Deposit Amount"; Rec."Security Deposit Amount")
                 {
                     ApplicationArea = All;
@@ -361,14 +370,13 @@ page 50313 "Tenancy Contract Card"
                 {
                     ApplicationArea = All;
                     Editable = false;
+                    Caption = 'Security Amount Received';
                 }
-
-
-                field("No of Installments"; rec."No of Installments")
+                field("Security Amount Received"; Rec."Security Amount Received")
                 {
                     ApplicationArea = All;
-                    Caption = 'No of Installments';
-                    // Visible = false;
+                    Editable = false;
+                    Caption = 'Balance Amount';
                 }
             }
 
@@ -599,8 +607,8 @@ page 50313 "Tenancy Contract Card"
                             RentRecord."Secondary Item Type" := 'Rent';
                             RentRecord."VAT Amount" := Tenancycontract."Contract VAT Amount";
                             RentRecord."Amount Including VAT" := Tenancycontract."Contract Amount Including VAT";
-                            // RentRecord."VAT Amount" := Tenancycontract."Contract VAT Amount";
-                            // RentRecord."Amount Including VAT" := Tenancycontract."Rent Amount Including VAT";
+                            RentRecord."Number of Installments" := Tenancycontract."No of Installments";
+                            RentRecord."VAT %" := Tenancycontract."Contract VAT %";
 
                             // Handle rent calculation type assignment
                             if Tenancycontract."Single Rent Calculation" = Tenancycontract."Single Rent Calculation"::"Single Unit with lumpsum square feet rate" then
@@ -643,7 +651,7 @@ page 50313 "Tenancy Contract Card"
                                     Error('No data found in Single Unit with lumpsum square feet rate subpage for Contract ID %1.', Tenancycontract."Contract ID");
                             end
                             else if Tenancycontract."Single Rent Calculation" = Tenancycontract."Single Rent Calculation"::"Single Unit with square feet rate" then begin
-                                //SU_samesquare.SetRange("Proposal ID", Tenancycontract."Proposal ID");
+                                SU_samesquare.SetRange("Contract Id", Tenancycontract."Contract ID");
                                 if SU_samesquare.FindSet() then begin
                                     repeat
                                         if not RentSubpage.Get(RentRecord."RC ID", SU_samesquare.Year) then begin
@@ -748,13 +756,13 @@ page 50313 "Tenancy Contract Card"
                             // Error('No data found in Merged Unit with same square feet subpage for Proposal ID %1.', LeaseProposal."Proposal ID");
                         end;
                         RentSubpage.SetRange("RC ID", RentRecord."RC ID");
-                        RentSubpage.SetRange("Contract ID", RentRecord."Contract ID");
+                        // RentSubpage.SetRange("Contract ID", RentRecord."Contract ID");
                         RentSubpage.SetCurrentKey(Year);
                         if RentSubpage.FindLast() then begin
                             Lastyear := RentSubpage.Year;
                             Clear(RentSubpage);
                             RentSubpage.SetRange("RC ID", RentRecord."RC ID");
-                            RentSubpage.SetRange("Contract ID", RentRecord."Contract ID");
+                            // RentSubpage.SetRange("Contract ID", RentRecord."Contract ID");
                             if RentSubpage.FindSet() then
                                 repeat
                                     RentSubpage."Yearly No. of Installment" := RentRecord."Number of Installments" / Lastyear;
