@@ -62,6 +62,7 @@ page 50921 "Payment Schedule Card"
 
             group(TotalAmountCalculation)
             {
+                Caption = 'Total Amount Calculation';
                 field("Total Amount"; Rec."Total Amount")
                 {
                     Caption = 'Total Amount';

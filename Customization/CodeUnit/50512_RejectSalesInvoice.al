@@ -22,6 +22,8 @@ codeunit 50512 RejectSalesInvoice
         CompanyInfo: Record "Company Information";
         RecRef: RecordRef;
         UserPersonalizationRec: Record "User Personalization";
+        InvoiceLink: Text;
+
 
 
 
@@ -57,6 +59,8 @@ codeunit 50512 RejectSalesInvoice
                         TotalAmount += Round(SalesLine."Amount Including VAT");
                     until SalesLine.Next() = 0;
 
+                InvoiceLink := GETURL(ClientType::Current, COMPANYNAME, ObjectType::Page, PAGE::"Sales Invoice", Rec);
+
                 if CompanyInfo.Get() then begin
 
                     EmailMessage.Create(EmailAddress, 'Invoice Rejection Notification - ' + SalesHeader."No.",
@@ -71,6 +75,7 @@ codeunit 50512 RejectSalesInvoice
                          '<b>Total Amount:</b> ' + Format(TotalAmount) + '<br/>' +
                          '<b>Reason For Rejection:</b> ' + SalesHeader."Reason for Rejection" + '<br/>' +
                          '<p>Please review the details and update the invoice</p>' +
+                         '<p><a href="' + InvoiceLink + '" target="_blank">Click here to view the invoice</a></p>' +
                          '<p>Best regards,<br/>' + CompanyInfo.Name + '</p>' +
 
                         '</body>' +
