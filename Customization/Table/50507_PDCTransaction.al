@@ -1,7 +1,7 @@
 table 50507 "PDC Transaction"
 {
     DataClassification = ToBeClassified;
-    DataCaptionFields = SystemId, "PDC ID";
+    DataCaptionFields = "PDC ID";
     fields
     {
         field(50501; "PDC ID"; Code[20])
@@ -50,10 +50,10 @@ table 50507 "PDC Transaction"
         {
             DataClassification = ToBeClassified;
         }
-        field(50511; "Replacement PDC ID"; Code[20])
+        field(50511; "Old Cheque#"; Text[20])
         {
             DataClassification = ToBeClassified;
-            TableRelation = "PDC Transaction";
+            // TableRelation = "PDC Transaction";
         }
 
         field(50512; "Bank Name"; Text[20])
