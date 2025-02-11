@@ -23,12 +23,24 @@ table 50103 "Emirate"
             Caption = 'Country Code';
             TableRelation = Country."Country Code";
 
+            trigger OnValidate()
+            begin
+                if ("Country Code" <> '') and ("Emirate Name" = '') then
+                    Error('Please enter Emirate Name as well. Both fields are required.');
+            end;
+
             // This will store the ID of the Primary Classification for lookup
         }
         field(50103; "Emirate Name"; Text[100])
         {
             DataClassification = ToBeClassified;
             Caption = 'Emirate Name';
+
+            trigger OnValidate()
+            begin
+                if ("Emirate Name" <> '') and ("Country Code" = '') then
+                    Error('Please enter Country Code as well. Both fields are required.');
+            end;
         }
     }
 
@@ -73,6 +85,9 @@ table 50103 "Emirate"
     var
         EmirateRec: Record "Emirate";
     begin
+        if (Rec."Country Code" = '') or (Rec."Emirate Name" = '') then
+            Error('Both Country Code and Emirate Name are required. Please enter values for both fields.');
+
         // Check if 'Sl No.' is 0 (indicating it's a new record)
         if "Sl No." = 0 then begin
             // If there are existing records, find the last one and increment
@@ -83,4 +98,10 @@ table 50103 "Emirate"
         end;
     end;
     //-------------Record Insert--------------//
+
+    trigger OnModify()
+    begin
+        if (Rec."Country Code" = '') or (Rec."Emirate Name" = '') then
+            Error('Both Country Code and Emirate Name are required. Please enter values for both fields.');
+    end;
 }

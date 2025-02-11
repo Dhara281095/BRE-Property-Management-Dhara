@@ -47,21 +47,26 @@ page 50113 "Country Card"
     }
     trigger OnQueryClosePage(CloseAction: Action): Boolean
     var
-        IsEmpty: Boolean;
+        IsNewUnmodified: Boolean;
+        RecRef: RecordRef;
+        xRecRef: RecordRef;
     begin
-        IsEmpty := (Rec."Country Name" = '') and (Rec."Country Code" = '') and (Rec."ID" = 0);
+        // Get record references
+        RecRef.GetTable(Rec);
+        xRecRef.GetTable(xRec);
 
-        if CloseAction = Action::LookupCancel then
-            exit(true);
+        // Check if this is a new unmodified record by comparing current and previous state
+        IsNewUnmodified := (RecRef.Count = 0) or (Format(Rec) = Format(xRec));
 
-        if IsEmpty then
-            exit(true);
+        // If it's a new unmodified record and user is trying to close/cancel
+        if IsNewUnmodified and (CloseAction = ACTION::Cancel) then
+            exit(true); // Allow closing without validation
 
-        if xRec.IsEmpty and IsEmpty then
-            exit(true);
-
-        if not IsEmpty then
-            Rec.TestField("Country Name");
+        // For all other cases (modified records or OK action)
+        if CloseAction = ACTION::OK then begin
+            if not IsNewUnmodified then  // Only validate if the record has been modified
+                Rec.TestField("Country Name");
+        end;
 
         exit(true);
     end;
