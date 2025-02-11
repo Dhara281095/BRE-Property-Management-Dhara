@@ -50,6 +50,8 @@ page 50915 "Payment Schedule"
                     ApplicationArea = All;
                     Caption = 'Final Annual Amount';
                     Editable = true;
+                    ShowMandatory = true;
+                    NotBlank = true;
 
 
                 }
@@ -59,6 +61,8 @@ page 50915 "Payment Schedule"
                     ApplicationArea = All;
                     Caption = 'Yearly No. of Instalment';
                     Editable = true;
+                    ShowMandatory = true;
+                    NotBlank = true;
                     trigger OnValidate()
                     var
                         calculateinstallmentstotal: Codeunit CalculateNumberOfInstallments;

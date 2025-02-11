@@ -45,10 +45,10 @@ page 50707 paymentdata
                 {
                     Caption = 'Deposit Status';
                 }
-                field(dueDate; Format(Rec."Due Date", 0, '<Day,2>/<Month,2>/<Year4>'))
-                {
-                    Caption = 'Due Date';
-                }
+                // field(dueDate; Format(Rec."Due Date", 0, '<Day,2>/<Month,2>/<Year4>'))
+                // {
+                //     Caption = 'Due Date';
+                // }
                 field(dueDate2; Rec."Due Date")
                 {
                     Caption = 'Due Date';

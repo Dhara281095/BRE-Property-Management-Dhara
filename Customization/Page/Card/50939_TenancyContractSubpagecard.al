@@ -64,6 +64,8 @@ page 50939 "Tenancy Contract SubPage Card"
                     ApplicationArea = All;
                     Caption = 'Payment Type';
                     ToolTip = 'Enter the Payment Type.';
+                    ShowMandatory = true;
+                    NotBlank = true;
 
 
                 }

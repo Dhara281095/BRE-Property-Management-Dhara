@@ -295,7 +295,7 @@ page 50928 "Payment Mode Card2"
                 {
                     ApplicationArea = All;
                     Editable = false;// The ID is not editable since it's auto-incrementing
-                    Visible = true;
+                    Visible = false;
                 }
 
                 field("Approval Status"; Rec."Approval Status")
@@ -316,6 +316,21 @@ page 50928 "Payment Mode Card2"
                 field("Approve/Decline Status"; Rec."Approve/Decline Status")
                 {
                     ApplicationArea = All;
+                }
+
+
+                field("Tenant Name"; Rec."Tenant Name")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Visible = false;
+                }
+
+                field("Tenant Email"; Rec."Tenant Email")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Visible = false;
                 }
 
 
@@ -341,17 +356,7 @@ page 50928 "Payment Mode Card2"
                     Editable = false;
                 }
 
-                field("Tenant Name"; Rec."Tenant Name")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
-
-                field("Tenant Email"; Rec."Tenant Email")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
+              
 
             }
 

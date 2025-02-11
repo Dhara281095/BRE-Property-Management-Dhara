@@ -16,6 +16,8 @@ page 50927 "Payment Mode Card"
                 field("Contract ID"; Rec."Contract ID")
                 {
                     ApplicationArea = All;
+                    ShowMandatory = true;
+                    NotBlank = true;
                     //Editable = false; // The ID is not editable since it's auto-incrementing
                 }
 
