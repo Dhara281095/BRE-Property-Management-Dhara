@@ -274,6 +274,8 @@ table 50925 "Payment Mode2"
                 CurrApproved: Boolean;
                 CurrRejected: Boolean;
                 CurrAnyPending: Boolean;
+                sendRejectionToLeaseTeam: Codeunit 50511;
+                approvalflow: Codeunit 50510;
             begin
                 // Fetch the Parent Record (Main Payment Mode Card)
                 if paymentModeRec.Get(Rec."Contract ID") then begin
@@ -333,6 +335,7 @@ table 50925 "Payment Mode2"
                         paymentModeRec."Approval Status" := paymentModeRec."Approval Status"::Approved;
                         paymentModeRec."On-hold" := paymentModeRec."On-hold"::"False";
                         paymentModeRec.Modify();
+                        approvalflow.SendPaymentModeApprovalToFinanceManger(Format(paymentModeRec."Contract ID"), paymentModeRec."Tenant Id", paymentModeRec."Contract ID", false);
                     end
                     else if AnyPending or CurrAnyPending then begin
                         paymentModeRec."On-hold" := paymentModeRec."On-hold"::"True";
@@ -343,11 +346,13 @@ table 50925 "Payment Mode2"
                         paymentModeRec."Approval Status" := paymentModeRec."Approval Status"::Rejected;
                         paymentModeRec."On-hold" := paymentModeRec."On-hold"::"True";
                         paymentModeRec.Modify();
+                        sendRejectionToLeaseTeam.SendPaymentRejectionToLeaseManager(paymentModeRec."Contract ID", paymentModeRec."Tenant Id", paymentModeRec."Contract ID");
                     end
                     else if (AllApproved or CurrApproved) and (AnyRejected or CurrRejected) and (not AnyPending and not CurrAnyPending) then begin
                         paymentModeRec."Approval Status" := paymentModeRec."Approval Status"::"On-Hold";
                         paymentModeRec."On-hold" := paymentModeRec."On-hold"::"True";
                         paymentModeRec.Modify();
+                        sendRejectionToLeaseTeam.SendPaymentRejectionToLeaseManager(paymentModeRec."Contract ID", paymentModeRec."Tenant Id", paymentModeRec."Contract ID");
                     end;
                     paymentModeRec.Modify();
                 end;
