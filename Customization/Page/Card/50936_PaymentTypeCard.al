@@ -23,6 +23,8 @@ page 50936 "Payment Type Card"
                     ApplicationArea = All;
                     Caption = 'Payment Method';
                     ToolTip = 'Enter the Payment Method.';
+                    ShowMandatory = true;
+                    NotBlank = true;
                 }
             }
         }

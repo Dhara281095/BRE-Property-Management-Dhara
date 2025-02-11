@@ -70,34 +70,18 @@ page 50922 "Payment Schedule Card2"
                 {
                     ApplicationArea = All;
                     Editable = false;
+                    Visible = false;
                 }
 
-
-
-
-                // field("Proposal ID"; Rec."Proposal ID")
-                // {
-                //     ApplicationArea = All;
-                //     Editable = false;
-                //     Visible = false;
-                //     // Editable = false; // The ID is not editable since it's auto-incrementing
-
-
-                // }
 
                 field("Tenant ID"; Rec."Tenant ID")
                 {
                     ApplicationArea = All;
                     Editable = false; // The ID is not editable since it's auto-incrementing
                     Lookup = true;
-                    Visible = true;
+                    Visible = false;
 
                 }
-                // field("PS ID"; Rec."PS ID")
-                // {
-                //     ApplicationArea = All;
-                //     Editable = false;
-                // }
                 field("Contract ID"; Rec."Contract ID")
                 {
                     ApplicationArea = All;

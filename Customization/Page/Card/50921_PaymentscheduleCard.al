@@ -17,6 +17,8 @@ page 50921 "Payment Schedule Card"
                 {
                     ApplicationArea = All;
                     Editable = true; // The ID is not editable since it's auto-incrementing
+                    ShowMandatory = true;
+                    NotBlank = true;
                 }
 
                 //Caption = 'Primary Item Details';
