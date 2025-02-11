@@ -23,6 +23,8 @@ page 50905 "Category Card"
                     ApplicationArea = All;
                     Caption = 'Primary Item Type';
                     ToolTip = 'Select the associated Primary Item Type.';
+                    ShowMandatory = true;
+                    NotBlank = true;
 
                 }
                 field("Category Types"; Rec."Category Types")
@@ -30,6 +32,8 @@ page 50905 "Category Card"
                     ApplicationArea = All;
                     Caption = 'Category Types';
                     ToolTip = 'Enter the Category Types.';
+                    ShowMandatory = true;
+                    NotBlank = true;
                 }
             }
         }
