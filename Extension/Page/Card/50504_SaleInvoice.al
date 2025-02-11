@@ -19,13 +19,14 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                     begin
                         tenancyContract.SetRange("Contract ID", Rec."Contract ID");
                         if tenancyContract.FindFirst() then begin
-
+                            Rec."Tenant Name" := tenancyContract."Customer Name";
                             Rec."Property Name" := tenancyContract."Property Name";
                             Rec."Unit Name" := tenancyContract."Unit Name";
                             Rec."Contract Tenure" := tenancyContract."Contract Tenor";
                             Rec."Contract Period" := Format(tenancyContract."Contract Start Date") + 'To' + Format(tenancyContract."Contract End Date");
 
                         end else begin
+                            Rec."Tenant Name" := '';
                             rec."Property Name" := '';
                             Rec."Unit Name" := '';
                             Rec."Contract Tenure" := '';
@@ -81,11 +82,13 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 {
                     ApplicationArea = All;
                     Caption = 'Customer P.O';
+                    Editable = NotAccessFieldFM;
                 }
                 field("Customer P.O Date"; Rec."Customer P.O Date")
                 {
                     ApplicationArea = All;
                     Caption = 'Customer P.O Date';
+                    Editable = NotAccessFieldFM;
                 }
                 field("Contract Period"; Rec."Contract Period")
                 {
@@ -265,23 +268,39 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
     begin
 
         if UserPersonalization.Get(UserSecurityId()) then begin
-            // Assuming the role is stored in the "Profile ID" field as seen in the screenshot
+
             case UserPersonalization."Profile ID" of
                 'PROPERTY MANAGER':
+                    exit(false);
+                'LEASE_MANAGER':
                     exit(false);
                 'finance manager':
                     exit(true);
             end;
         end;
 
-        exit(false); // Default to not editable if the role is neither Property Manager nor Accounting Manager
+        exit(false);
     end;
 
-    // trigger OnOpenPage()
-    // var
-    // begin
-    //     approvaleditable := GetUserEditableStatus();
-    // end;
+    procedure NotAccessFieldFinanceManager(): Boolean
+    var
+        UserPersonalization1: Record "User Personalization";
+    begin
+
+        if UserPersonalization1.Get(UserSecurityId()) then begin
+
+            case UserPersonalization1."Profile ID" of
+                'PROPERTY MANAGER':
+                    exit(true);
+                'LEASE_MANAGER':
+                    exit(true);
+                'finance manager':
+                    exit(false);
+            end;
+        end;
+
+        exit(false);
+    end;
 
     trigger OnAfterGetRecord()
     var
@@ -293,6 +312,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
 
     begin
         approvaleditable := GetUserEditableStatus();
+        NotAccessFieldFM := NotAccessFieldFinanceManager();
         customer.SetRange("No.", Rec."Sell-to Customer No.");
         if customer.FindSet() then begin
             Rec."Sell-to Customer Name" := customer.Name;
@@ -344,6 +364,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
 
     var
         approvaleditable: Boolean;
+        NotAccessFieldFM: Boolean;
 
 }
 
