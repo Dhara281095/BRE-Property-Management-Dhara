@@ -105,6 +105,9 @@ report 50110 "Other Payment Details"
             column(Rent_A_Incl_VAT; "Rent Amount Including VAT")
             {
             }
+
+
+
         }
     }
     requestpage
