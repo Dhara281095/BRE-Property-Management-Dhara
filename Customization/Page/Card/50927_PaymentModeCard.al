@@ -232,6 +232,7 @@ page 50927 "Payment Mode Card"
 
     trigger OnModifyRecord(): Boolean
     begin
+        IsFieldEditable := (Rec."Approval Status" <> Rec."Approval Status"::Approved);
         //CurrPage."PaymentMode".Page.SetProposalID(Rec."Proposal ID");
         //CurrPage."Revenue".Page.SetStartEndDate(Rec."Lease Start Date", Rec."Lease End Date");
         CurrPage."PaymentMode".Page.SetTenantID(Rec."Tenant ID");

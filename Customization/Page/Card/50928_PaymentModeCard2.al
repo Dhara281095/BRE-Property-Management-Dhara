@@ -420,7 +420,7 @@ page 50928 "Payment Mode Card2"
                     if PaymentModeRec.FindSet() then begin
                         repeat
                             // Check for duplicate PDC Transaction record
-                            PrePDCTransRec.SetRange("Cheque Number", PaymentModeRec."Cheque Number");
+                            // PrePDCTransRec.SetRange("Cheque Number", PaymentModeRec."Cheque Number");
                             PrePDCTransRec.SetRange("Tenant Id", PaymentModeRec."Tenant Id");
                             PrePDCTransRec.SetRange("Contract ID", PaymentModeRec."Contract ID");
                             PrePDCTransRec.SetRange("payment Series", PaymentModeRec."Payment Series");
@@ -436,7 +436,7 @@ page 50928 "Payment Mode Card2"
                                 PDCTransRec."Contract ID" := PaymentModeRec."Contract ID";
                                 PDCTransRec."Cheque Status" := PDCTransRec."Cheque Status"::"Cheque Received";
                                 PDCTransRec."Approval Status" := PDCTransRec."Approval Status"::Pending;
-                                PDCTransRec.View := PaymentModeRec."View Document URL";
+                                PDCTransRec."View Document URL" := PaymentModeRec."View Document URL";
                                 PDCTransRec."payment Series" := PaymentModeRec."Payment Series";
                                 PDCTransRec.Insert(true);
                                 Clear(PDCTransRec);

@@ -90,6 +90,18 @@ table 50925 "Payment Mode2"
         {
             DataClassification = ToBeClassified;
             Caption = 'Cheque Number';
+
+            trigger OnValidate()
+            var
+                pdcTransRec: Record "PDC Transaction";
+            begin
+                pdcTransRec.SetRange("payment Series", Rec."Payment Series");
+                pdcTransRec.SetRange("Contract ID", Rec."Contract ID");
+                if pdcTransRec.FindSet() then begin
+                    pdcTransRec."Cheque Number" := Rec."Cheque Number";
+                    pdcTransRec.Modify();
+                end;
+            end;
         }
 
         field(50107; "Deposit Bank"; Code[100])
@@ -100,12 +112,19 @@ table 50925 "Payment Mode2"
             trigger OnValidate()
             var
                 BankAccountRec: Record "Bank Account";
+                pdcTransRec: Record "PDC Transaction";
             begin
                 // When a Deposit Bank is selected (i.e., a Bank Account No. is provided)
                 if "Deposit Bank" <> '' then begin
                     // Attempt to find the Bank Account using the No. from the Deposit Bank
                     if BankAccountRec.Get("Deposit Bank") then
                         "Deposit Bank" := BankAccountRec."Name"; // Populating the Name field from the Bank Account table
+                end;
+                pdcTransRec.SetRange("payment Series", Rec."Payment Series");
+                pdcTransRec.SetRange("Contract ID", Rec."Contract ID");
+                if pdcTransRec.FindSet() then begin
+                    pdcTransRec."Bank Name" := Rec."Deposit Bank";
+                    pdcTransRec.Modify();
                 end;
             end;
         }
@@ -150,6 +169,8 @@ table 50925 "Payment Mode2"
 
 
             trigger OnValidate()
+            var
+                pdcTransRec: Record "PDC Transaction";
             begin
                 if (Rec."Cheque Status" in [Rec."Cheque Status"::Cleared, Rec."Cheque Status"::Deposited, Rec."Cheque Status"::Returned]) then
                     Rec."Deposit Status" := Rec."Deposit Status"::"Y"
@@ -161,6 +182,13 @@ table 50925 "Payment Mode2"
                 if (Rec."Cheque Status" = Rec."Cheque Status"::Cleared) then
                     Rec."Payment Status" := Rec."Payment Status"::"Received";
 
+
+                pdcTransRec.SetRange("payment Series", Rec."Payment Series");
+                pdcTransRec.SetRange("Contract ID", Rec."Contract ID");
+                if pdcTransRec.FindSet() then begin
+                    pdcTransRec."Cheque Status" := Rec."Cheque Status";
+                    pdcTransRec.Modify();
+                end;
             end;
 
         }
@@ -215,6 +243,17 @@ table 50925 "Payment Mode2"
         {
             DataClassification = ToBeClassified;
             Caption = 'View Document URL';
+            trigger OnValidate()
+            var
+                pdcTransRec: Record "PDC Transaction";
+            begin
+                pdcTransRec.SetRange("payment Series", Rec."Payment Series");
+                pdcTransRec.SetRange("Contract ID", Rec."Contract ID");
+                if pdcTransRec.FindSet() then begin
+                    pdcTransRec."View Document URL" := Rec."View Document URL";
+                    pdcTransRec.Modify();
+                end;
+            end;
         }
 
 
@@ -270,6 +309,7 @@ table 50925 "Payment Mode2"
             var
                 paymentModeRec: Record "Payment Mode";
                 paymentGridRec: Record "Payment Mode2";
+                pdcTransRec: Record "PDC Transaction";
                 AllApproved: Boolean;
                 AnyPending: Boolean;
                 AnyRejected: Boolean;
@@ -279,6 +319,12 @@ table 50925 "Payment Mode2"
                 sendRejectionToLeaseTeam: Codeunit 50511;
                 approvalflow: Codeunit 50510;
             begin
+                pdcTransRec.SetRange("payment Series", Rec."Payment Series");
+                pdcTransRec.SetRange("Contract ID", Rec."Contract ID");
+                if pdcTransRec.FindSet() then begin
+                    pdcTransRec."Approval Status" := Rec."Approval Status";
+                    pdcTransRec.Modify();
+                end;
                 // Fetch the Parent Record (Main Payment Mode Card)
                 if paymentModeRec.Get(Rec."Contract ID") then begin
 

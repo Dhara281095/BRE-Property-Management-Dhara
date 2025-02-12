@@ -59,7 +59,7 @@ page 50508 "PDC Transactions"
                         CurrPage.UPDATE(false);
                     end;
                 }
-                field("Date To"; DateToFilter)
+                field("Due Date"; DateToFilter)
                 {
                     ApplicationArea = All;
                     Editable = true;
@@ -80,6 +80,8 @@ page 50508 "PDC Transactions"
                 field("PDC ID"; Rec."PDC ID") { }
                 field("payment Series"; Rec."payment Series") { }
                 field("Tenant Name"; Rec."Tenant Name Display") { }
+                field("Tenant Id"; Rec."Tenant Id") { }
+                field("Contract ID"; Rec."Contract ID") { }
                 field("Bank Name"; Rec."Bank Name") { }
                 field("Cheque Number"; Rec."Cheque Number") { }
                 field("Cheque Date"; Rec."Cheque Date") { }
