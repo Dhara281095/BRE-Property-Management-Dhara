@@ -332,6 +332,7 @@ table 50307 "Tenancy Contract"
                                 TCMergediffUnitRate."ID" := CRMergediffUnitRent."Proposal ID";
                                 TCMergediffUnitRate."MD_Line No." := LineNoCounter; // Ensure unique line number
                                 TCMergediffUnitRate."MD_Merged Unit ID" := CRMergediffUnitRent."MD_Merged Unit ID";
+                                TCMergediffUnitRate."MD_Unit ID" := CRMergediffUnitRent."MD_Unit ID";
                                 TCMergediffUnitRate.MD_Year := CRMergediffUnitRent.MD_Year;
                                 TCMergediffUnitRate."MD_Start Date" := CRMergediffUnitRent."MD_Start Date";
                                 TCMergediffUnitRate."MD_End Date" := CRMergediffUnitRent."MD_End Date";

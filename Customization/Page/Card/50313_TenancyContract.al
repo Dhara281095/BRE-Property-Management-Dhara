@@ -981,7 +981,7 @@ page 50313 "Tenancy Contract Card"
                 // ✅ Show for Normal Proposal if "Praposal Type Selected" = "Merge Unit"
                 part("Per Day Rent (Proposal)"; "TC PerDayRent for Revenue Card")
                 {
-                    SubPageLink = "Contract Renewal Id" = FIELD("Proposal ID"); // Link to Proposal ID
+                    SubPageLink = "Proposal Id" = FIELD("Proposal ID"); // Link to Proposal ID
                     ApplicationArea = All;
                     Visible = (Rec."Renewal Proposal ID" = 0) and
                   (Rec."Praposal Type Selected" = Rec."Praposal Type Selected"::"Merge Unit");
