@@ -10,7 +10,7 @@ report 50104 InvoiceTemplate
     ApplicationArea = All;
     Caption = 'InvoiceTemplate';
     UsageCategory = ReportsAndAnalysis;
-    DefaultRenderingLayout = "InvoiceTemplate.docx";
+    DefaultRenderingLayout = "SalesInvoiceTemplate.docx";
     dataset
     {
         dataitem(SalesHeader; "Sales Header")
@@ -195,12 +195,12 @@ report 50104 InvoiceTemplate
     }
     rendering
     {
-        layout("InvoiceTemplate.docx")
+        layout("SalesInvoiceTemplate.docx")
         {
             Type = Word;
-            LayoutFile = './InvoiceTemplate.docx';
-            Caption = 'InvoiceTemplate (Word)';
-            Summary = 'The InvoiceTemplate (Word) provides a simple layout that is also relatively easy for an end-user to modify.';
+            LayoutFile = './SalesInvoiceTemplate.docx';
+            Caption = 'SalesInvoiceTemplate (Word)';
+            Summary = 'The SalesInvoiceTemplate (Word) provides a simple layout that is also relatively easy for an end-user to modify.';
         }
     }
 
