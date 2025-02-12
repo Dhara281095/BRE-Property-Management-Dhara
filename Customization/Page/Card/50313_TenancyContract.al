@@ -592,6 +592,9 @@ page 50313 "Tenancy Contract Card"
                         MU_differentsquare: Record "TC Merge DifferentSq SubPage";
                         MU_lumpsum: Record "TC Merge LumAnnualAmount SP";
                         RentSubpage: Record "Rent Calculation Subpage";
+                        InstallmentAmount: Decimal;
+                        TotalCalculatedAmount: Decimal;
+                        LastInstallmentAmount: Decimal;
                         Lastyear: Integer;
                     begin
                         // Find the Tenancy Contract record
@@ -796,7 +799,13 @@ page 50313 "Tenancy Contract Card"
                                 if RentSubpage.FindSet() then
                                     repeat
                                         RentSubpage."Yearly No. of Installment" := RentRecord."Number of Installments" / Lastyear;
-                                        RentSubpage."Final Annual Amount" := RentRecord.Amount / RentRecord."Number of Installments";
+                                        // RentSubpage."Final Annual Amount" := RentRecord.Amount / RentRecord."Number of Installments";
+                                        InstallmentAmount := Round(RentRecord.Amount / Lastyear, 0.01);
+
+
+                                        TotalCalculatedAmount := InstallmentAmount * Lastyear;  // 1666.67*3 = 5000.01
+                                        LastInstallmentAmount := TotalCalculatedAmount - RentRecord.Amount; // 5000.01 - 5000 = 0.01
+                                        RentSubpage."Final Annual Amount" := InstallmentAmount - LastInstallmentAmount;
                                         // RentSubpage."VAT Amount" := RentRecord."VAT Amount" / RentRecord."Number of Installments";
                                         // RentSubpage."Amount Including VAT" := RentRecord."Amount Including VAT" / RentRecord."Number of Installments";
                                         RentSubpage.Modify(true);
