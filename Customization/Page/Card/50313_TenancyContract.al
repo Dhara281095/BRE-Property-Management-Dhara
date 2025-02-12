@@ -1063,7 +1063,7 @@ page 50313 "Tenancy Contract Card"
         CurrPage."Merge SameSqure Rent (Renewal)".Page.SetContractIDs(Rec."Contract ID");
         CurrPage."Merge SameSqure Rent (Proposal)".Page.SetContractIDs(Rec."Contract ID");
         UpdateFieldsEnable();
-        UpdateVisibility();
+
     end;
 
     trigger OnModifyRecord(): Boolean
@@ -1078,6 +1078,7 @@ page 50313 "Tenancy Contract Card"
         CurrPage."Single Unit lumpsum Rent (Proposal)".Page.SetContractIDs(Rec."Contract ID");
         CurrPage."Merge SameSqure Rent (Renewal)".Page.SetContractIDs(Rec."Contract ID");
         CurrPage."Merge SameSqure Rent (Proposal)".Page.SetContractIDs(Rec."Contract ID");
+        UpdateVisibility();
 
 
 
@@ -1095,6 +1096,7 @@ page 50313 "Tenancy Contract Card"
         CurrPage."Single Unit lumpsum Rent (Proposal)".Page.SetContractIDs(Rec."Contract ID");
         CurrPage."Merge SameSqure Rent (Renewal)".Page.SetContractIDs(Rec."Contract ID");
         CurrPage."Merge SameSqure Rent (Proposal)".Page.SetContractIDs(Rec."Contract ID");
+        UpdateVisibility();
 
     end;
 
