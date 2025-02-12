@@ -6,22 +6,7 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
         {
             DataClassification = ToBeClassified;
             Caption = 'Contract ID';
-            // trigger OnValidate()
-            // var
-            //     tenancyContract: Record "Tenancy Contract";
-            // begin
-            //     tenancyContract.SetRange("Contract ID", Rec."Contract ID");
-            //     if tenancyContract.FindFirst() then begin
-            //         "Property Name" := tenancyContract."Property Name";
-            //         "Unit Name" := tenancyContract."Unit Name";
-            //         "Contract Tenure" := tenancyContract."Contract Tenor";
-            //     end else begin
-            //         "Property Name" := '';
-            //         "Unit Name" := '';
-            //         "Contract Tenure" := '';
-            //     end;
 
-            // end;
 
         }
 

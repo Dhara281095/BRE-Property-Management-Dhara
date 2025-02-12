@@ -13,9 +13,6 @@ pageextension 50505 SalesInvoiceSubformExt extends "Sales Invoice Subform"
 
     }
 
-
-
-
     trigger OnAfterGetRecord()
     var
         vatpostingsetup: Record "VAT Posting Setup";
