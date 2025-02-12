@@ -12,7 +12,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                     Caption = 'Contract ID';
                     ApplicationArea = All;
                     Editable = true;
-                    //Editable = approvaleditable;
+
                     trigger OnValidate()
                     var
                         tenancyContract: Record "Tenancy Contract";
@@ -132,14 +132,14 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 var
                     FileURL: Text;
                 begin
-                    // Get the URL of the uploaded document
+
                     FileURL := Rec."View Document URL";
 
-                    // Check if the file URL is not empty
+
                     if FileURL = '' then
                         Error('No document is available to view.');
 
-                    // Open the file URL in the browser (new tab)
+
                     OpenFileInBrowser(FileURL);
                 end;
 
@@ -160,15 +160,10 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 trigger OnAction()
                 var
                     SalesInvoice: Record "Sales Header";
-                    SalesInvoiceReport: Report InvoiceTemplate; // Replace with your report name or ID
+                    SalesInvoiceReport: Report InvoiceTemplate;
                 begin
-                    // Commit the transaction to avoid conflicts
                     Commit();
-
-                    // Set a specific filter on the report
-                    SalesInvoice.SetRange("No.", Rec."No."); // Example: Apply filter on "No."
-
-                    // Apply the filtered record to the report and run it
+                    SalesInvoice.SetRange("No.", Rec."No.");
                     SalesInvoiceReport.SetTableView(SalesInvoice);
                     SalesInvoiceReport.Run();
                 end;
@@ -182,8 +177,6 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 ApplicationArea = All;
                 Caption = 'Resend For Approval';
                 Image = SendMail;
-
-
                 trigger OnAction()
                 var
                     ResendInvoiceMail: Codeunit ResendUpdateInvoiceFM;
@@ -216,14 +209,9 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
 
                 if not ConfigRecord.FindFirst() then
                     Error('Azure configuration is missing. Please set up the SAS URL in the Azure Configuration table.');
-                // Error('formate validate enter');
-                // Message('formate validate enter');
-                // Allowed file formats
                 ValidFormats.Add('.png');
                 ValidFormats.Add('.jpg');
                 ValidFormats.Add('.jpeg');
-                // Error('formate validate');
-                // Message('formate validate');
 
                 SASUrlBase := ConfigRecord."SAS URL";
                 FileExtension := '.pdf';
@@ -235,11 +223,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
 
                 TempBlob.CreateInStream(InStream);
                 FileName := 'Invoice_' + Rec."No." + FileExtension;
-                // FileName := 'SalesInvoice' + FileExtension;
                 SASUrlWithFileName := StrSubstNo('%1/%2?%3', CopyStr(SASUrlBase, 1, StrPos(SASUrlBase, '?') - 1), FileName, CopyStr(SASUrlBase, StrPos(SASUrlBase, '?') + 1));
-
-
-                // Call the upload function with the modified SAS URL
                 UploadResult := documentattachment.UploadDocumentToBlobStorage(SASUrlWithFileName, FileName, InStream);
                 Rec."View Invoice" := FileName;
                 Rec."View Document URL" := UploadResult;
@@ -249,13 +233,9 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
 
 
     }
-
-
-
-
     procedure OpenFileInBrowser(URL: Text)
     begin
-        // Use the Hyperlink method to open the file in the browser
+
         if URL <> '' then
             Hyperlink(URL)
         else
@@ -308,8 +288,6 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
         customer: Record Customer;
         salesline: Record "Sales Line";
         VATPostingSetup: Record "VAT Posting Setup";
-
-
     begin
         approvaleditable := GetUserEditableStatus();
         NotAccessFieldFM := NotAccessFieldFinanceManager();
@@ -340,9 +318,6 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 salesline.Modify();
             until salesline.Next() = 0;
 
-
-
-
         tenancyContract.SetRange("Contract ID", Rec."Contract ID");
         if tenancyContract.FindFirst() then begin
 
@@ -358,9 +333,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
             Rec."Contract Period" := '';
         end;
 
-
     end;
-
 
     var
         approvaleditable: Boolean;

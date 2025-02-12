@@ -55,8 +55,6 @@ page 50921 "Payment Schedule Card"
                 {
                     SubPageLink = "Contract ID" = FIELD("Contract ID"),
                   "Tenant ID" = FIELD("Tenant ID");
-                    //"Tenant Name" = FIELD("Tenant Name");
-                    //    "PS ID" = field("PS Id"); // Link to filter attachments for this owner only
                     ApplicationArea = All;
                 }
             }

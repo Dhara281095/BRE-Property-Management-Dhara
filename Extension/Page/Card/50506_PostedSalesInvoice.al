@@ -94,14 +94,9 @@ pageextension 50506 PostedSalesInvoiceHeader extends "Posted Sales Invoice"
                 var
                     FileURL: Text;
                 begin
-                    // Get the URL of the uploaded document
                     FileURL := Rec."View Document URL";
-
-                    // Check if the file URL is not empty
                     if FileURL = '' then
                         Error('No document is available to view.');
-
-                    // Open the file URL in the browser (new tab)
                     OpenFileInBrowser(FileURL);
                 end;
 
@@ -115,7 +110,7 @@ pageextension 50506 PostedSalesInvoiceHeader extends "Posted Sales Invoice"
     }
     procedure OpenFileInBrowser(URL: Text)
     begin
-        // Use the Hyperlink method to open the file in the browser
+
         if URL <> '' then
             Hyperlink(URL)
         else
