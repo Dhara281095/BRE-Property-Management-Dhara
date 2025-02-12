@@ -282,30 +282,39 @@ page 50315 "Lease Proposal Card"
                 {
                     ApplicationArea = All;
                     Caption = 'Frequency of payment';
+                    
                     trigger OnValidate()
                     var
                         NoOfInstallments: Integer;
+                        TotalMonths: Integer;
                     begin
+                        // Calculate total months based on duration
+                        if rec."Lease Duration" <> '' then begin
+                            TotalMonths := GetTotalMonths(rec."Lease Duration");
+                        end else begin
+                            TotalMonths := 0;
+                        end;
+
                         case rec."Payment Frequency" of
                             rec."Payment Frequency"::Monthly:
-                                NoOfInstallments := 12;
+                                NoOfInstallments := TotalMonths;    
                             rec."Payment Frequency"::Quarterly:
-                                NoOfInstallments := 4;
+                                NoOfInstallments := Round(TotalMonths / 3, 1, '>');
                             rec."Payment Frequency"::"Half-Yearly":
-                                NoOfInstallments := 2;
+                                NoOfInstallments := Round(TotalMonths / 6, 1, '>');
                             rec."Payment Frequency"::Yearly:
-                                NoOfInstallments := 1;
+                                NoOfInstallments := Round(TotalMonths / 12, 1, '>');
                             else
                                 NoOfInstallments := 0;
                         end;
-                        rec."No of Installments" := NoOfInstallments;
+                            rec."No of Installments" := NoOfInstallments;
                     end;
                 }
                 field("No of Installments"; rec."No of Installments")
                 {
                     ApplicationArea = All;
                     Caption = 'No of Installments';
-                    Visible = false;
+                    // Visible = false;
                 }
                 field("Payment Method"; rec."Payment Method")
                 {
@@ -949,6 +958,73 @@ page 50315 "Lease Proposal Card"
         exit(true);
     end;
 
+    local procedure GetTotalMonths(Duration: Text): Integer
+    var
+        Years: Integer;
+        YearPos: Integer;
+        YearStr: Text;
+    begin
+        YearPos := StrPos(Duration, 'year');
+        
+        if YearPos > 0 then begin
+            YearStr := CopyStr(Duration, 1, YearPos - 1);
+            Evaluate(Years, DelChr(YearStr, '<>')); // Remove spaces
+        end;
+        
+        // Convert years to months
+        exit(Years * 12);
+    end;
+
+
+    // Add this function to convert duration to months
+// local procedure GetTotalMonths(Duration: Text): Integer
+// var
+//     Years: Integer;
+//     Months: Integer;
+//     Days: Integer;
+//     YearPos: Integer;
+//     MonthPos: Integer;
+//     DayPos: Integer;
+//     TempStr: Text;
+// begin
+//     Years := 0;
+//     Months := 0;
+//     Days := 0;
+
+//     // Find positions
+//     YearPos := StrPos(Duration, 'year');
+//     MonthPos := StrPos(Duration, 'month');
+//     DayPos := StrPos(Duration, 'day');
+    
+//     // Extract years if exists
+//     if YearPos > 0 then begin
+//         TempStr := CopyStr(Duration, 1, YearPos - 1);
+//         Evaluate(Years, DelChr(TempStr, '<>'));
+//     end;
+    
+//     // Extract months if exists
+//     if MonthPos > 0 then begin
+//         if YearPos > 0 then
+//             TempStr := CopyStr(Duration, YearPos + 8, MonthPos - (YearPos + 8))
+//         else
+//             TempStr := CopyStr(Duration, 1, MonthPos - 1);
+//         Evaluate(Months, DelChr(TempStr, '<>'));
+//     end;
+    
+//     // Extract days if exists
+//     if DayPos > 0 then begin
+//         if MonthPos > 0 then
+//             TempStr := CopyStr(Duration, MonthPos + 9, DayPos - (MonthPos + 9))
+//         else if YearPos > 0 then
+//             TempStr := CopyStr(Duration, YearPos + 8, DayPos - (YearPos + 8))
+//         else
+//             TempStr := CopyStr(Duration, 1, DayPos - 1);
+//         Evaluate(Days, DelChr(TempStr, '<>'));
+//     end;
+    
+//     // Convert all to months and return total
+//     exit((Years * 12) + Months + Round(Days / 30, 1, '<'));
+// end;
    
 
 

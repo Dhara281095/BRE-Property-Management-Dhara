@@ -274,10 +274,10 @@ table 50308 "Lease Proposal Details"
             DataClassification = ToBeClassified;
         }
 
-        field(50121; "Payment Method"; Option)
+        field(50121; "Payment Method"; Text[100])
         {
-            OptionMembers = " ",Cash,"Bank Transfers","Credit Card",Cheque;
             DataClassification = ToBeClassified;
+            TableRelation = "Payment Type"."Payment Method";
         }
         // field(50122; "Grace Period"; Integer)
         // {
