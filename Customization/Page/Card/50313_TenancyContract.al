@@ -596,6 +596,8 @@ page 50313 "Tenancy Contract Card"
                         TotalCalculatedAmount: Decimal;
                         LastInstallmentAmount: Decimal;
                         Lastyear: Integer;
+                        InstallmentAmount2: Decimal;
+                        Year: Integer;
                     begin
                         // Find the Tenancy Contract record
                         Tenancycontract.SetRange("Contract ID", Rec."Contract ID");
@@ -605,11 +607,11 @@ page 50313 "Tenancy Contract Card"
                             RentRecord."Contract ID" := Tenancycontract."Contract ID";
                             RentRecord."Contract Start Date" := Tenancycontract."Contract Start Date";
                             RentRecord."Contract End Date" := Tenancycontract."Contract End Date";
-                            RentRecord."Amount" := Tenancycontract."Annual Rent Amount";
+                            RentRecord."Amount" := Round(Tenancycontract."Annual Rent Amount");
                             RentRecord."Tenant ID" := Tenancycontract."Tenant ID";
                             RentRecord."Secondary Item Type" := 'Rent';
-                            RentRecord."VAT Amount" := Tenancycontract."Contract VAT Amount";
-                            RentRecord."Amount Including VAT" := Tenancycontract."Contract Amount Including VAT";
+                            RentRecord."VAT Amount" := Round(Tenancycontract."Contract VAT Amount");
+                            RentRecord."Amount Including VAT" := Round(Tenancycontract."Contract Amount Including VAT");
                             RentRecord."Number of Installments" := Tenancycontract."No of Installments";
                             RentRecord."VAT %" := Tenancycontract."Contract VAT %";
 
@@ -798,14 +800,18 @@ page 50313 "Tenancy Contract Card"
                                 RentSubpage.SetRange("Contract ID", RentRecord."Contract ID");
                                 if RentSubpage.FindSet() then
                                     repeat
+                                        Year := RentSubpage.Year;
                                         RentSubpage."Yearly No. of Installment" := RentRecord."Number of Installments" / Lastyear;
-                                        // RentSubpage."Final Annual Amount" := RentRecord.Amount / RentRecord."Number of Installments";
-                                        InstallmentAmount := Round(RentRecord.Amount / Lastyear, 0.01);
-
-
+                                        InstallmentAmount := Round(RentRecord.Amount / Lastyear);
                                         TotalCalculatedAmount := InstallmentAmount * Lastyear;  // 1666.67*3 = 5000.01
                                         LastInstallmentAmount := TotalCalculatedAmount - RentRecord.Amount; // 5000.01 - 5000 = 0.01
-                                        RentSubpage."Final Annual Amount" := InstallmentAmount - LastInstallmentAmount;
+                                        InstallmentAmount2 := InstallmentAmount - LastInstallmentAmount;
+
+                                        if Year = Lastyear then begin
+                                            RentSubpage."Final Annual Amount" := InstallmentAmount2;
+                                        end else begin
+                                            RentSubpage."Final Annual Amount" := InstallmentAmount;
+                                        end;
                                         // RentSubpage."VAT Amount" := RentRecord."VAT Amount" / RentRecord."Number of Installments";
                                         // RentSubpage."Amount Including VAT" := RentRecord."Amount Including VAT" / RentRecord."Number of Installments";
                                         RentSubpage.Modify(true);

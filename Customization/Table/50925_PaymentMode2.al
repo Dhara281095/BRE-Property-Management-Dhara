@@ -124,10 +124,12 @@ table 50925 "Payment Mode2"
             trigger OnValidate()
             var
                 emailrec: Codeunit "Send PaymentMode Email";
+
             begin
                 // Check the status and call the appropriate email procedure
                 if Rec."Payment Status" = Rec."Payment Status"::Received then begin
                     emailrec.SendEmail(Rec); // Call for Received status
+
                 end
 
                 else if Rec."Payment Status" = Rec."Payment Status"::Cancelled then begin
