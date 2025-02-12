@@ -437,9 +437,8 @@ table 50318 "Contract Renewal"
             OptionMembers = Monthly,Quarterly,Yearly;
             DataClassification = ToBeClassified;
         }
-        field(50138; "Payment Method"; Option)
+        field(50138; "Payment Method"; Text[100])
         {
-            OptionMembers = Cash,"Bank Transfers","Credit Card",Cheque;
             DataClassification = ToBeClassified;
         }
 
