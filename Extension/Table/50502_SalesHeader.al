@@ -35,11 +35,13 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
             var
                 emailrecord: Codeunit SendInvoiceToTenant;
                 Rejectionmail: Codeunit RejectSalesInvoice;
+                ShowDialogBox: Codeunit ShowDialogboxRejctionInvoice;
             begin
                 if "Approval Status" = "Approval Status"::Approved then begin
                     emailrecord.SendInvoice(Rec); // Pass the current record if needed
                 end else
                     if "Approval Status" = "Approval Status"::Rejected then begin
+                        ShowDialogBox.DialogboxForRejection(Rec);
                         Rejectionmail.SendInvoiceToLeaseManager(Rec);
                     end;
             end;
