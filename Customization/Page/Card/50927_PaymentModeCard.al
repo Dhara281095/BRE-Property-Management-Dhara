@@ -19,7 +19,7 @@ page 50927 "Payment Mode Card"
 
                     ShowMandatory = true;
                     NotBlank = true;
-                    Editable = IsFieldEditable;
+                    // Editable = IsFieldEditable;
 
                     //Editable = false; // The ID is not editable since it's auto-incrementing
                 }
