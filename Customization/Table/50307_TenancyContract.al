@@ -330,6 +330,7 @@ table 50307 "Tenancy Contract"
                                 // Proceed with inserting the new record
                                 TCMergediffUnitRate.Init();
                                 TCMergediffUnitRate."ID" := CRMergediffUnitRent."Proposal ID";
+                                TCMergediffUnitRate."Contract Id" := "Contract ID";
                                 TCMergediffUnitRate."MD_Line No." := LineNoCounter; // Ensure unique line number
                                 TCMergediffUnitRate."MD_Merged Unit ID" := CRMergediffUnitRent."MD_Merged Unit ID";
                                 TCMergediffUnitRate."MD_Unit ID" := CRMergediffUnitRent."MD_Unit ID";
@@ -389,6 +390,7 @@ table 50307 "Tenancy Contract"
                                 // Proceed with inserting the new record
                                 TCMergediffUnitRate.Init();
                                 TCMergediffUnitRate."ID" := CRMergediffUnitRent."Proposal ID";
+                                TCMergediffUnitRate."Contract Id" := "Contract ID";
                                 TCMergediffUnitRate."MD_Line No." := LineNoCounter; // Ensure unique line number
                                 TCMergediffUnitRate."MD_Merged Unit ID" := CRMergediffUnitRent."MD_Merged Unit ID";
                                 TCMergediffUnitRate.MD_Year := CRMergediffUnitRent.MD_Year;
