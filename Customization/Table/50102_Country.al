@@ -10,6 +10,7 @@ table 50102 "Country"
             DataClassification = ToBeClassified;
             AutoIncrement = true; // Automatically increment the ID
             Editable = false; // Make it read-only for the user
+            NotBlank = false;
         }
         field(50101; "Sl No."; Integer)
         {
@@ -71,6 +72,9 @@ table 50102 "Country"
     var
         CountryRec: Record "Country";
     begin
+        if (Rec."Country Name" = '') then
+            Error('Country Name is required.');
+
         // Check if 'Sl No.' is 0 (indicating it's a new record)
         if "Sl No." = 0 then begin
             // If there are existing records, find the last one and increment
@@ -79,14 +83,13 @@ table 50102 "Country"
             else
                 "Sl No." := 1; // Start from 1 if no records exist
         end;
-        ValidateRecord();
     end;
     //-------------Record Insert--------------//
 
-    procedure ValidateRecord()
+    trigger OnModify()
     begin
-        TestField(Rec."Country Name");
-        // you can add the custom validation here also for other type of fields like email,contact
+        if (Rec."Country Name" = '') then
+            Error('Country Name is required.');
     end;
 
 }
