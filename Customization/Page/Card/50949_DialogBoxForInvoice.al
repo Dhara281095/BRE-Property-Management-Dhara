@@ -17,15 +17,22 @@ page 50949 DialogBoxForInvoiceRejection
 
     trigger OnQueryClosePage(CloseAction: Action): Boolean;
     begin
+        // Allow the dialog to close if the user clicks Cancel
+        if CloseAction = Action::Cancel then
+            exit(true);
 
-        reasonvalue := DelChr(reasonvalue, '=', ' ');
+        // Remove leading and trailing spaces
 
-        if reasonvalue = '' then begin
-            Message('Please enter a reason for rejection before proceeding.');
-            exit(false);
+
+        // Validate only when OK is clicked
+        if CloseAction = Action::OK then begin
+            if reasonvalue = '' then begin
+                Message('Please enter a reason for rejection before proceeding.');
+                exit(false); // Prevents closing the dialog
+            end;
         end;
 
-        exit(true);
+        exit(true); // Allows closing if validation passes or Cancel is clicked
     end;
 
     procedure GetReason(): Text;

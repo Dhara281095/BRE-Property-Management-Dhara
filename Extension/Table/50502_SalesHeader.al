@@ -42,7 +42,7 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
                 end else
                     if "Approval Status" = "Approval Status"::Rejected then begin
                         ShowDialogBox.DialogboxForRejection(Rec);
-                        Rejectionmail.SendInvoiceToLeaseManager(Rec);
+                        // Rejectionmail.SendInvoiceToLeaseManager(Rec);
                     end;
             end;
         }
