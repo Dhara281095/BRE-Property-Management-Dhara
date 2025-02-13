@@ -16,9 +16,9 @@ codeunit 50900 ShowDialogboxRejctionInvoice
                 ReasonForRejection := dialogpage.GetReason();
                 Rec."Reason for Rejection" := ReasonForRejection;
                 Rec.Modify();
-
+                Rejectionmail.SendInvoiceToLeaseManager(Rec);
             end else begin
-                Message('Please EnterReason');
+                // Message('Please Enter Reason');
             end;
         end;
 
