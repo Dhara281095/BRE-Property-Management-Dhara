@@ -31,6 +31,11 @@ page 50715 "Online Payment Request"
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field("Tenant Name"; Rec."Tenant Name")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
                 field("Contract ID"; Rec."Contract ID")
                 {
                     ApplicationArea = All;

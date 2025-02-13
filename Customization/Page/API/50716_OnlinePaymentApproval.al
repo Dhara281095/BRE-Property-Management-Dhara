@@ -71,6 +71,10 @@ page 50716 OnlinePaymentApproval
                 {
                     Caption = 'Tenant ID';
                 }
+                field("TenantName"; Rec."Tenant Name")
+                {
+                    Caption = 'Tenant Name';
+                }
                 field(totalAmount; Rec."Total Amount")
                 {
                     Caption = 'Amount with vat';
