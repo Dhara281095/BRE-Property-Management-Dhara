@@ -10,6 +10,8 @@ table 50103 "Emirate"
             DataClassification = ToBeClassified;
             AutoIncrement = true; // Automatically increment the ID
             Editable = false; // Make it read-only for the user
+            NotBlank = false;
+
         }
         field(50101; "Sl No."; Integer)
         {
@@ -23,32 +25,23 @@ table 50103 "Emirate"
             Caption = 'Country Code';
             TableRelation = Country."Country Code";
 
-            trigger OnValidate()
-            begin
-                if ("Country Code" <> '') and ("Emirate Name" = '') then
-                    Error('Please enter Emirate Name as well. Both fields are required.');
-            end;
-
             // This will store the ID of the Primary Classification for lookup
         }
         field(50103; "Emirate Name"; Text[100])
         {
             DataClassification = ToBeClassified;
             Caption = 'Emirate Name';
-
-            trigger OnValidate()
-            begin
-                if ("Emirate Name" <> '') and ("Country Code" = '') then
-                    Error('Please enter Country Code as well. Both fields are required.');
-            end;
         }
     }
 
     keys
     {
-        key(PK; "ID", "Emirate Name", "Country Code")
+        key(PK; "ID")
         {
             Clustered = true;
+        }
+        key("Country_Emirate"; "Country Code", "Emirate Name")
+        {
         }
     }
 
@@ -85,8 +78,11 @@ table 50103 "Emirate"
     var
         EmirateRec: Record "Emirate";
     begin
-        if (Rec."Country Code" = '') or (Rec."Emirate Name" = '') then
-            Error('Both Country Code and Emirate Name are required. Please enter values for both fields.');
+        if (Rec."Country Code" = '') then
+            Error('Country Code is required.');
+
+        if (Rec."Emirate Name" = '') then
+            Error('Emirate Name is required.');
 
         // Check if 'Sl No.' is 0 (indicating it's a new record)
         if "Sl No." = 0 then begin
@@ -101,7 +97,10 @@ table 50103 "Emirate"
 
     trigger OnModify()
     begin
-        if (Rec."Country Code" = '') or (Rec."Emirate Name" = '') then
-            Error('Both Country Code and Emirate Name are required. Please enter values for both fields.');
+        if (Rec."Country Code" = '') then
+            Error('Country Code is required.');
+
+        if (Rec."Emirate Name" = '') then
+            Error('Emirate Name is required.');
     end;
 }
