@@ -376,7 +376,7 @@ page 50313 "Tenancy Contract Card"
                 {
                     ApplicationArea = All;
                     Editable = false;
-                    Caption = 'Balance Amount';
+                    Caption = 'Security Amount Pending';
                 }
             }
 
@@ -1082,6 +1082,7 @@ page 50313 "Tenancy Contract Card"
         CurrPage."Merge Lum_AnnualAmount Rent (Proposal)".Page.SetContractIDs(Rec."Contract ID");
         CurrPage."Merge Lum_AnnualAmount Rent (Renewal)".Page.SetContractIDs(Rec."Contract ID");
         UpdateFieldsEnable();
+        UpdateVisibility();
 
     end;
 
