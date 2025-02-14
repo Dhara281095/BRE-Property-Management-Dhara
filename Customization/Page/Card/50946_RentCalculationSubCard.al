@@ -49,7 +49,7 @@ page 50946 "Rent Calculation SubCard"
                 {
                     ApplicationArea = All;
                     Caption = 'Final Annual Amount';
-                    Editable = true;
+                    Editable = false;
 
 
                 }
@@ -58,7 +58,7 @@ page 50946 "Rent Calculation SubCard"
                 {
                     ApplicationArea = All;
                     Caption = 'Yearly No. of Instalment';
-                    Editable = true;
+                    Editable = false;
                 }
 
                 field("Tenant ID"; Rec."Tenant ID")
