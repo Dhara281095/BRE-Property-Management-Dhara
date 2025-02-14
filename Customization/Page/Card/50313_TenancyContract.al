@@ -817,7 +817,7 @@ page 50313 "Tenancy Contract Card"
                                         RentSubpage.Modify(true);
                                     until RentSubpage.Next() = 0;
                             end;
-                            Message('New record has been created in Revenue Structure and subpage updated successfully.');
+                            Message('New record has been created in Rent Calculation and subpage updated successfully.');
                             // end else
                             //     Error('Tenancy Contract not found for Contract ID %1.', Rec."Contract ID");
                         end;
