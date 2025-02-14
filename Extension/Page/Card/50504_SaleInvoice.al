@@ -267,9 +267,9 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
 
             case UserPersonalization."Profile ID" of
                 'PROPERTY MANAGER':
-                    exit(true);
+                    exit(false);
                 'LEASE_MANAGER':
-                    exit(true);
+                    exit(false);
                 'finance manager':
                     exit(true);
             end;
