@@ -42,6 +42,11 @@ table 50703 "OnlinePaymentApproval"
             DataClassification = ToBeClassified;
             Caption = 'Total Amount';
         }
+        field(50121; "Payment transaction ID"; Text[300])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Payment transaction ID';
+        }
         field(50118; "Due Date"; Date)
         {
             DataClassification = ToBeClassified;

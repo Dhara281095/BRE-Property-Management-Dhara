@@ -47,6 +47,10 @@ page 50716 OnlinePaymentApproval
                 {
                     Caption = 'Payment Series';
                 }
+                field("PaymenttransactionID"; Rec."Payment transaction ID")
+                {
+                    Caption = 'Payment transaction ID';
+                }
                 field(systemCreatedAt; Rec.SystemCreatedAt)
                 {
                     Caption = 'SystemCreatedAt';
