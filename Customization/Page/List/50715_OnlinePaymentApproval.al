@@ -41,6 +41,11 @@ page 50715 "Online Payment Request"
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field("Payment transaction ID"; Rec."Payment transaction ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
                 field("Payment Series"; Rec."Payment Series")
                 {
                     ApplicationArea = All;
