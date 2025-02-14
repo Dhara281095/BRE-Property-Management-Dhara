@@ -378,6 +378,13 @@ page 50313 "Tenancy Contract Card"
                     Editable = false;
                     Caption = 'Security Amount Pending';
                 }
+
+                field("Security Balanced Amount"; Rec."Security Balanced Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Caption = 'Security Balanced Amount';
+                }
             }
 
             // Group for Grace Period Information

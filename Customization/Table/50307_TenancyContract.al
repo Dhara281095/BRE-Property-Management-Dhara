@@ -1475,6 +1475,13 @@ table 50307 "Tenancy Contract"
             Editable = false;
         }
 
+        field(50177; "Security Balanced Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Editable = false;
+        }
+
+
     }
 
     keys

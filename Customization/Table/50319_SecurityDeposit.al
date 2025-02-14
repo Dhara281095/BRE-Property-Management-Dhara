@@ -260,7 +260,7 @@ table 50319 "Security Deposit"
         // Save changes to the Tenancy Contract table
         TenancyContractRec.SetRange("Contract ID", "Contract ID");
         if TenancyContractRec.FindFirst() then begin
-            TenancyContractRec."Balance Amount" := "Balance Amount";
+            TenancyContractRec."Security Balanced Amount" := "Balance Amount";
             // TenancyContractRec."Security Amount Received" := "Adjusted amount"; // Update the Balance Amount
             TenancyContractRec.Modify(); // Save the record
         end;
@@ -268,6 +268,7 @@ table 50319 "Security Deposit"
         TenancyContractRec.SetRange("Contract ID", "New_Contract ID");
         if TenancyContractRec.FindFirst() then begin
             TenancyContractRec."Balance Amount" := "New_Balance Amount";
+            TenancyContractRec."Security Balanced Amount" := "New_Balance Amount";
             TenancyContractRec."Security Amount Received" := "Adjusted amount";  // Update the Balance Amount
             TenancyContractRec.Modify(); // Save the record
         end;
