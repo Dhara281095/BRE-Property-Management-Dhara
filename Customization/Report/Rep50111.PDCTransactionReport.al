@@ -9,14 +9,15 @@ report 50111 "PDC Transaction Report"
     DefaultLayout = Excel;
     dataset
     {
-        dataitem(PDCTransaction; "PDC Transaction")
+        dataitem(PDCTransaction; "Payment Mode2")
         {
+            DataItemTableView = where("Payment Mode" = const('Cheque'));
             column(Report_Period; CustomDateRangeText)
             {
             }
-            column(PDC_ID; "PDC ID")
-            {
-            }
+            // column(PDC_ID; "PDC ID")
+            // {
+            // }
             column(payment_Series; "payment Series")
             {
             }
@@ -26,25 +27,31 @@ report 50111 "PDC Transaction Report"
             column(Tenant_Id; "Tenant Id")
             {
             }
-            column(Tenant_Name; "Tenant Name Display")
+            column(Tenant_Name; "Tenant Name")
             {
             }
-            column(Bank_Name; "Bank Name")
-            {
-            }
+            // column(Bank_Name; "Bank Name")
+            // {
+            // }
             column(Cheque_Number; "Cheque Number")
             {
             }
-            column(Cheque_Date; "Cheque Date")
+            column(Cheque_Date; "Due Date")
             {
             }
             column(Amount; Amount)
+            {
+            }
+            column(Old_Cheque_; "Old Cheque #")
             {
             }
             column(Cheque_Status; "Cheque Status")
             {
             }
             column(Approval_Status; "Approval Status")
+            {
+            }
+            column(Payment_Status; "Payment Status")
             {
             }
             trigger OnAfterGetRecord()
@@ -58,14 +65,11 @@ report 50111 "PDC Transaction Report"
                     Format(CustomEndDate, 0, '<Day,2>/<Month,2>/<Year4>');
 
                 // Check if Contract Start Date or Contract End Date is in the specified range
-                StartDateIsInRange := ("Cheque Date" >= CustomStartDate) and ("Cheque Date" <= CustomEndDate);
-                EndDateIsInRange := ("Cheque Date" >= CustomStartDate) and ("Cheque Date" <= CustomEndDate);
+                StartDateIsInRange := ("Due Date" >= CustomStartDate) and ("Due Date" <= CustomEndDate);
+                EndDateIsInRange := ("Due Date" >= CustomStartDate) and ("Due Date" <= CustomEndDate);
 
                 if not (StartDateIsInRange or EndDateIsInRange) then
                     CurrReport.SKIP(); // Skip record if neither date is in range
-
-
-
             end;
         }
     }
