@@ -26,7 +26,7 @@ report 50111 "PDC Transaction Report"
             column(Tenant_Id; "Tenant Id")
             {
             }
-            column(Tenant_Name_Display; "Tenant Name Display")
+            column(Tenant_Name; "Tenant Name Display")
             {
             }
             column(Bank_Name; "Bank Name")
