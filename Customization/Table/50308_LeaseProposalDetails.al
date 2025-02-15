@@ -274,10 +274,10 @@ table 50308 "Lease Proposal Details"
             DataClassification = ToBeClassified;
         }
 
-        field(50121; "Payment Method"; Option)
+        field(50121; "Payment Method"; Text[100])
         {
-            OptionMembers = " ",Cash,"Bank Transfers","Credit Card",Cheque;
             DataClassification = ToBeClassified;
+            TableRelation = "Payment Type"."Payment Method";
         }
         // field(50122; "Grace Period"; Integer)
         // {
@@ -1415,6 +1415,58 @@ table 50308 "Lease Proposal Details"
 
 
     //-------------Calculate Lease Duration--------------//
+    // procedure CalculateLeaseDuration()
+    // var
+    //     LeaseStartDate: Date;
+    //     LeaseEndDate: Date;
+    //     Years: Integer;
+    //     Months: Integer;
+    //     Days: Integer;
+    //     DurationText: Text[50];
+    //     TempStartDate: Date;
+    // begin
+    //     LeaseStartDate := "Lease Start Date";
+    //     LeaseEndDate := "Lease End Date";
+
+    //     if (LeaseStartDate <> 0D) and (LeaseEndDate <> 0D) then begin
+    //         if LeaseEndDate >= LeaseStartDate then begin
+    //             TempStartDate := LeaseStartDate;
+
+    //             // Calculate the years
+    //             Years := 0;
+    //             while CALCDATE('<+1Y>', TempStartDate) <= LeaseEndDate do begin
+    //                 TempStartDate := CALCDATE('<+1Y>', TempStartDate);
+    //                 Years := Years + 1;
+    //             end;
+
+    //             // Calculate the months
+    //             Months := 0;
+    //             while CALCDATE('<+1M>', TempStartDate) <= LeaseEndDate do begin
+    //                 TempStartDate := CALCDATE('<+1M>', TempStartDate);
+    //                 Months := Months + 1;
+    //             end;
+
+    //             // Calculate the remaining days
+    //             Days := LeaseEndDate - TempStartDate + 1;
+
+    //             // Build the duration text
+    //             DurationText := '';
+    //             if Years > 0 then
+    //                 DurationText := Format(Years) + ' year(s) ';
+
+    //             if Months > 0 then
+    //                 DurationText := DurationText + Format(Months) + ' month(s) ';
+
+    //             if Days > 0 then
+    //                 DurationText := DurationText + Format(Days) + ' day(s)';
+
+    //             "Lease Duration" := DelChr(DurationText, '<>', ' '); // Remove leading and trailing spaces
+    //         end else
+    //             "Lease Duration" := ''; // Clear if the end date is before the start date
+    //     end else
+    //         "Lease Duration" := ''; // Clear if either date is not set
+    // end;
+
     procedure CalculateLeaseDuration()
     var
         LeaseStartDate: Date;
@@ -1424,30 +1476,42 @@ table 50308 "Lease Proposal Details"
         Days: Integer;
         DurationText: Text[50];
         TempStartDate: Date;
+        DaysDifference: Integer;
     begin
         LeaseStartDate := "Lease Start Date";
         LeaseEndDate := "Lease End Date";
 
         if (LeaseStartDate <> 0D) and (LeaseEndDate <> 0D) then begin
             if LeaseEndDate >= LeaseStartDate then begin
-                TempStartDate := LeaseStartDate;
+                // Calculate total days difference
+                DaysDifference := LeaseEndDate - LeaseStartDate + 1;
 
-                // Calculate the years
-                Years := 0;
-                while CALCDATE('<+1Y>', TempStartDate) <= LeaseEndDate do begin
-                    TempStartDate := CALCDATE('<+1Y>', TempStartDate);
-                    Years := Years + 1;
+                // If the difference is exactly 365 or 366 days (accounting for leap year)
+                if (DaysDifference = 365) or (DaysDifference = 366) then begin
+                    Years := 1;
+                    Months := 0;
+                    Days := 0;
+                end else begin
+                    TempStartDate := LeaseStartDate;
+
+                    // Calculate the years
+                    Years := 0;
+                    while (CALCDATE('<+1Y>', TempStartDate) <= LeaseEndDate) or
+                          (CALCDATE('<+1Y-1D>', TempStartDate) = LeaseEndDate) do begin
+                        TempStartDate := CALCDATE('<+1Y>', TempStartDate);
+                        Years := Years + 1;
+                    end;
+
+                    // Calculate the months
+                    Months := 0;
+                    while CALCDATE('<+1M>', TempStartDate) <= LeaseEndDate do begin
+                        TempStartDate := CALCDATE('<+1M>', TempStartDate);
+                        Months := Months + 1;
+                    end;
+
+                    // Calculate the remaining days
+                    Days := LeaseEndDate - TempStartDate + 1;
                 end;
-
-                // Calculate the months
-                Months := 0;
-                while CALCDATE('<+1M>', TempStartDate) <= LeaseEndDate do begin
-                    TempStartDate := CALCDATE('<+1M>', TempStartDate);
-                    Months := Months + 1;
-                end;
-
-                // Calculate the remaining days
-                Days := LeaseEndDate - TempStartDate + 1;
 
                 // Build the duration text
                 DurationText := '';
@@ -1460,11 +1524,11 @@ table 50308 "Lease Proposal Details"
                 if Days > 0 then
                     DurationText := DurationText + Format(Days) + ' day(s)';
 
-                "Lease Duration" := DelChr(DurationText, '<>', ' '); // Remove leading and trailing spaces
+                "Lease Duration" := DelChr(DurationText, '<>', ' ');
             end else
-                "Lease Duration" := ''; // Clear if the end date is before the start date
+                "Lease Duration" := '';
         end else
-            "Lease Duration" := ''; // Clear if either date is not set
+            "Lease Duration" := '';
     end;
     //-------------Calculate Lease Duration--------------//
 
@@ -1586,7 +1650,11 @@ table 50308 "Lease Proposal Details"
         docAttach: Page "Revenue Item Subpage Card";
     begin
         docAttach.SetProposalID(Rec."Proposal ID");
+
+        ValidateRecord();
     end;
+
+
 
     //-------------Record Insert--------------//
 
@@ -1611,6 +1679,22 @@ table 50308 "Lease Proposal Details"
     end;
 
     //-------------Leap year Counting--------------//
+
+
+
+    procedure ValidateRecord()
+    begin
+        TestField(Rec."Property ID");
+
+        // TestField(Rec."Lease Start Date");
+        // TestField(Rec."Lease End Date");
+        // TestField(Rec."Unit ID");
+        // TestField(Rec."Unit Name");
+        // TestField(Rec."Merge Unit ID");
+
+
+        // you can add the custom validation here also for other type of fields like email,contact
+    end;
 
 
 }

@@ -10,8 +10,8 @@ page 50718 DocumentAttachment
     ApplicationArea = All;
     Caption = 'documentAttachment';
     DelayedInsert = true;
-    EntityName = 'DocumentAttachment';
-    EntitySetName = 'DocumentAttachments';
+    EntityName = 'documentAttachment';
+    EntitySetName = 'documentAttachments';
     PageType = API;
     ODataKeyFields = SystemId;
     SourceTable = "Document Attachment";

@@ -17,6 +17,8 @@ page 50921 "Payment Schedule Card"
                 {
                     ApplicationArea = All;
                     Editable = true; // The ID is not editable since it's auto-incrementing
+                    ShowMandatory = true;
+                    NotBlank = true;
                 }
 
                 //Caption = 'Primary Item Details';
@@ -53,8 +55,6 @@ page 50921 "Payment Schedule Card"
                 {
                     SubPageLink = "Contract ID" = FIELD("Contract ID"),
                   "Tenant ID" = FIELD("Tenant ID");
-                    //"Tenant Name" = FIELD("Tenant Name");
-                    //    "PS ID" = field("PS Id"); // Link to filter attachments for this owner only
                     ApplicationArea = All;
                 }
             }
@@ -62,6 +62,7 @@ page 50921 "Payment Schedule Card"
 
             group(TotalAmountCalculation)
             {
+                Caption = 'Total Amount Calculation';
                 field("Total Amount"; Rec."Total Amount")
                 {
                     Caption = 'Total Amount';

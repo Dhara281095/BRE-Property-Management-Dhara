@@ -49,7 +49,7 @@ page 50946 "Rent Calculation SubCard"
                 {
                     ApplicationArea = All;
                     Caption = 'Final Annual Amount';
-                    Editable = true;
+                    Editable = false;
 
 
                 }
@@ -58,24 +58,8 @@ page 50946 "Rent Calculation SubCard"
                 {
                     ApplicationArea = All;
                     Caption = 'Yearly No. of Instalment';
-                    Editable = true;
-                    // trigger OnValidate()
-                    // var
-                    //     calculateinstallmentstotal: Codeunit CalculateNumberOfInstallments;
-                    // begin
-                    //     // CalculateTotals();
-                    //     calculateinstallmentstotal.CalculateInstallments(Rec);
-                    // end;
-
+                    Editable = false;
                 }
-
-                // field("Proposal ID"; Rec."Proposal ID")
-                // {
-                //     ApplicationArea = All;
-                //     Editable = false; // The ID is not editable since it's auto-incrementing
-                //     Lookup = true;
-                //     Visible = false;
-                // }
 
                 field("Tenant ID"; Rec."Tenant ID")
                 {
@@ -117,12 +101,6 @@ page 50946 "Rent Calculation SubCard"
                     Caption = 'Total Amount';
                     ToolTip = 'Enter the Total Amount.';
 
-
-                    // trigger OnValidate()
-                    // begin
-                    //     CalculateTotals();
-                    // end;
-
                 }
                 field("VAT Amount"; Rec."VAT Amount")
                 {
@@ -151,20 +129,6 @@ page 50946 "Rent Calculation SubCard"
 
 
 
-                // field("Total Installment"; Rec."Total Installment")
-                // {
-                //     ApplicationArea = All;
-                //     Caption = 'Total Installment';
-                //     ToolTip = 'Enter the Total Installment.';
-                //     Editable = false;
-
-
-                //     // trigger OnValidate()
-                //     // begin
-                //     //     CalculateTotals();
-                //     // end;
-
-                // }
 
 
                 field("Link"; Rec."Link")
@@ -271,14 +235,6 @@ page 50946 "Rent Calculation SubCard"
                                             InstallmentStructure."Installment End Date" := RevenueStructure."Period Start Date" + InstallmentNumber * ROUND(RevenueStructure."Number of Days" / RevenueStructure."Yearly No. of Installment", 1, '<');
                                         end;
 
-                                        // TotalCalculatedAmount := InstallmentAmount * RevenueStructure."Yearly No. of Installment";  // 1666.67*3 = 5000.01
-                                        // LastInstallmentAmount := TotalCalculatedAmount - RevenueStructure."Final Annual Amount"; // 5000.01 - 5000 = 0.01
-                                        // InstallmentAmount2 := InstallmentAmount - LastInstallmentAmount;
-
-
-
-
-
                                         InstallmentStructure.Modify();
                                     end else begin
                                         // Insert new record
@@ -328,14 +284,9 @@ page 50946 "Rent Calculation SubCard"
                                         IF InstallmentNumber = RevenueStructure."Yearly No. of Installment" THEN
                                             InstallmentStructure."Installment End Date" := RevenueStructure."Period End Date";
 
-
-
-
-                                        // InstallmentStructure."Installment Start Date" := StartDate + (InstallmentNumber - 1) * ROUND(RevenueStructure."Number of Days" / NumInstallments, 1, '<');
-                                        // InstallmentStructure."Installment End Date" := StartDate + InstallmentNumber * ROUND(RevenueStructure."Number of Days" / NumInstallments, 1, '<');
                                         InstallmentStructure."Due Date" := InstallmentStructure."Installment Start Date";
                                         InstallmentStructure.Insert();
-                                        //Clear(InstallmentStructure);
+
                                     end;
 
 
@@ -375,15 +326,6 @@ page 50946 "Rent Calculation SubCard"
 
                             until RevenueStructure.Next() = 0;
 
-
-
-                            // if InstallmentStructure.FindSet() then begin
-                            //     repeat
-                            //         if InstallmentStructure."Installment No." > RevenueStructure."Yearly No. of Installment" then
-                            //             InstallmentStructure.Delete();
-                            //     until InstallmentStructure.Next() = 0;
-                            // end;
-
                         end else
                             Error('No records found in the Revenue Structure.');
                     end;
@@ -400,20 +342,6 @@ page 50946 "Rent Calculation SubCard"
 
 
 
-
-    // local procedure CalcVATAndTotal()
-    // var
-    //     vatPer: Integer;
-    //     InstallmentStructure: Record "Revenue Structure Subpage1";
-    // begin
-    //     if InstallmentStructure."VAT %" = InstallmentStructure."VAT %"::"5" then
-    //         vatPer := 5
-    //     else
-    //         vatPer := 0;
-
-    //     InstallmentStructure."VAT Amount" := InstallmentStructure.Amount * (vatPer / 100);
-
-    // end;
 
 
     procedure SetContractID(pContractID: Integer)
@@ -436,8 +364,6 @@ page 50946 "Rent Calculation SubCard"
     begin
         Rec."Contract ID" := ContractID;
         Rec."Tenant ID" := tenantID;
-        // Rec."Proposal ID" := proposalID;
-        // RevenuestructureID := RevenuestructureRec."RS ID"; // Automatically generated ID
 
     end;
 

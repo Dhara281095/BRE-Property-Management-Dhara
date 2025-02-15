@@ -6,22 +6,7 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
         {
             DataClassification = ToBeClassified;
             Caption = 'Contract ID';
-            // trigger OnValidate()
-            // var
-            //     tenancyContract: Record "Tenancy Contract";
-            // begin
-            //     tenancyContract.SetRange("Contract ID", Rec."Contract ID");
-            //     if tenancyContract.FindFirst() then begin
-            //         "Property Name" := tenancyContract."Property Name";
-            //         "Unit Name" := tenancyContract."Unit Name";
-            //         "Contract Tenure" := tenancyContract."Contract Tenor";
-            //     end else begin
-            //         "Property Name" := '';
-            //         "Unit Name" := '';
-            //         "Contract Tenure" := '';
-            //     end;
 
-            // end;
 
         }
 
@@ -50,12 +35,14 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
             var
                 emailrecord: Codeunit SendInvoiceToTenant;
                 Rejectionmail: Codeunit RejectSalesInvoice;
+                ShowDialogBox: Codeunit ShowDialogboxRejctionInvoice;
             begin
                 if "Approval Status" = "Approval Status"::Approved then begin
                     emailrecord.SendInvoice(Rec); // Pass the current record if needed
                 end else
                     if "Approval Status" = "Approval Status"::Rejected then begin
-                        Rejectionmail.SendInvoiceToLeaseManager(Rec);
+                        ShowDialogBox.DialogboxForRejection(Rec);
+                        // Rejectionmail.SendInvoiceToLeaseManager(Rec);
                     end;
             end;
         }
@@ -83,6 +70,16 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
         {
             DataClassification = ToBeClassified;
             Caption = 'Reason for Rejection';
+        }
+        field(50111; "View Invoice"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'View Invoice';
+        }
+        field(50112; "View Document URL"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'View Document URL';
         }
     }
 

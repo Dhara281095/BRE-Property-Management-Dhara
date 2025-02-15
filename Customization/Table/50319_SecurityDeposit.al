@@ -144,7 +144,7 @@ table 50319 "Security Deposit"
         field(50112; "Adjusted amount"; Decimal)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Adjusted Amount';
+            Caption = 'Security Deposit Amount Pending';
             Editable = false; // Make it non-editable since it's auto-calculated
         }
 
@@ -157,11 +157,20 @@ table 50319 "Security Deposit"
         field(50176; "Balance Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
+            Caption = 'Available Security Deposit Amount';
         }
 
         field(50177; "New Security Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
+            Caption = 'Security Deposit Amount';
+
+        }
+
+        field(50178; "New_Balance Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Security Deposit Amount Received';
         }
     }
 
@@ -187,6 +196,7 @@ table 50319 "Security Deposit"
                 "New_Contract End Date" := TenancyContractRec."Contract End Date";
                 "New_Tenant Full Name" := TenancyContractRec."Customer Name";
                 "New Security Amount" := TenancyContractRec."Security Deposit Amount";
+                "New_Balance Amount" := TenancyContractRec."Balance Amount";
 
 
                 // Update the Narration field dynamically
@@ -211,12 +221,14 @@ table 50319 "Security Deposit"
                 Clear("New_Contract End Date");
                 Clear("New_Tenant Full Name");
                 Clear("New Security Amount");
+                Clear("New_Balance Amount");
 
             end else begin
                 Clear("Contract Start Date");
                 Clear("Contract End Date");
                 Clear("Tenant Full Name");
                 Clear("Security Deposit Amount");
+                Clear("Balance Amount");
 
             end;
 
@@ -236,21 +248,31 @@ table 50319 "Security Deposit"
 
         // Adjust the Balance Amount and Adjusted Amount based on conditions
         if "Balance Amount" > "New_Security Deposit Amount" then begin
-            "Adjusted amount" := 0; // Adjusted amount is set to 0
-            "Balance Amount" := "Balance Amount" - "New_Security Deposit Amount"; // Update the remaining balance
+            // "Adjusted amount" := 0; // Adjusted amount is set to 0
+            "Balance Amount" := "Balance Amount" - "New_Security Deposit Amount";
+            "New_Balance Amount" := "New_Security Deposit Amount";
+            "Adjusted amount" := "New Security Amount" - "New_Balance Amount"; // Update the remaining balance
         end else begin
-            "Adjusted amount" := "New_Security Deposit Amount" - "Balance Amount"; // Difference becomes Adjusted Amount
+            // Difference becomes Adjusted Amount
             "Balance Amount" := 0; // Balance is cleared
         end;
 
         // Save changes to the Tenancy Contract table
         TenancyContractRec.SetRange("Contract ID", "Contract ID");
         if TenancyContractRec.FindFirst() then begin
-            TenancyContractRec."Balance Amount" := "Balance Amount"; // Update the Balance Amount
+            TenancyContractRec."Security Balanced Amount" := "Balance Amount";
+            // TenancyContractRec."Security Amount Received" := "Adjusted amount"; // Update the Balance Amount
+            TenancyContractRec.Modify(); // Save the record
+        end;
+
+        TenancyContractRec.SetRange("Contract ID", "New_Contract ID");
+        if TenancyContractRec.FindFirst() then begin
+            TenancyContractRec."Balance Amount" := "New_Balance Amount";
+            TenancyContractRec."Security Balanced Amount" := "New_Balance Amount";
+            TenancyContractRec."Security Amount Received" := "Adjusted amount";  // Update the Balance Amount
             TenancyContractRec.Modify(); // Save the record
         end;
     end;
-
 
 
     //------------------- Update Adjust Amount With New and Old Contract -------------------//

@@ -22,6 +22,11 @@ table 50703 "OnlinePaymentApproval"
             DataClassification = ToBeClassified;
             Caption = 'Tenant ID';
         }
+        field(50119; "Tenant Name"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Tenant Name';
+        }
         field(50104; "Contract ID"; Integer)
         {
             DataClassification = ToBeClassified;
@@ -36,6 +41,11 @@ table 50703 "OnlinePaymentApproval"
         {
             DataClassification = ToBeClassified;
             Caption = 'Total Amount';
+        }
+        field(50121; "Payment transaction ID"; Text[300])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Payment transaction ID';
         }
         field(50118; "Due Date"; Date)
         {

@@ -31,7 +31,17 @@ page 50715 "Online Payment Request"
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field("Tenant Name"; Rec."Tenant Name")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
                 field("Contract ID"; Rec."Contract ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Payment transaction ID"; Rec."Payment transaction ID")
                 {
                     ApplicationArea = All;
                     Editable = false;
@@ -86,6 +96,7 @@ page 50715 "Online Payment Request"
                     SelectedRecs: Record "OnlinePaymentApproval";
                     ApproveCount: Integer;
                     ErrorCount: Integer;
+                    PaymentRec: Record "Payment Mode2";
                 begin
                     CurrPage.SetSelectionFilter(SelectedRecs);
 
@@ -102,6 +113,17 @@ page 50715 "Online Payment Request"
                             if SelectedRecs.Status = 'Pending' then begin
                                 SelectedRecs.Status := 'Received';
                                 SelectedRecs.Modify();
+
+                                PaymentRec.SetRange(PaymentRec."Contract ID", SelectedRecs."Contract ID");
+                                PaymentRec.SetRange(PaymentRec."Tenant ID", SelectedRecs."Tenant ID");
+                                PaymentRec.SetRange(PaymentRec."Payment Series", SelectedRecs."Payment Series");
+
+                                if PaymentRec.FindSet() then begin
+                                    // Update the status of OnlinePaymentApproval record
+                                    PaymentRec."Approve/Decline Status" := 'Received';
+                                    PaymentRec.Modify(true);
+                                end;
+
                                 ApproveCount += 1;
                             end else
                                 ErrorCount += 1;
@@ -128,6 +150,7 @@ page 50715 "Online Payment Request"
                     SelectedRecs: Record "OnlinePaymentApproval";
                     RejectCount: Integer;
                     ErrorCount: Integer;
+                    PaymentRec: Record "Payment Mode2";
                 begin
                     // Store selected records
                     CurrPage.SetSelectionFilter(SelectedRecs);
@@ -145,6 +168,17 @@ page 50715 "Online Payment Request"
                             if SelectedRecs.Status = 'Pending' then begin
                                 SelectedRecs.Status := 'Not Received'; // Set status to "Declined"
                                 SelectedRecs.Modify();
+
+                                PaymentRec.SetRange(PaymentRec."Contract ID", SelectedRecs."Contract ID");
+                                PaymentRec.SetRange(PaymentRec."Tenant ID", SelectedRecs."Tenant ID");
+                                PaymentRec.SetRange(PaymentRec."Payment Series", SelectedRecs."Payment Series");
+
+                                if PaymentRec.FindSet() then begin
+                                    // Update the status of OnlinePaymentApproval record
+                                    PaymentRec."Approve/Decline Status" := 'Not Received';
+                                    PaymentRec.Modify(true);
+                                end;
+
                                 RejectCount += 1;
                             end else
                                 ErrorCount += 1; // Count records that are not in "Pending" status

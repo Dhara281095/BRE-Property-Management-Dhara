@@ -94,7 +94,7 @@ table 50329 "TC Merge LumAnnualAmount SP"
         field(50116; "TotalFinalAmount"; Decimal)
         {
             FieldClass = FlowField;
-            CalcFormula = sum("CR Merge LumAnnualAmount SP"."ML_Final Annual Amount" where("Id" = field(ID)));
+            CalcFormula = sum("TC Merge LumAnnualAmount SP"."ML_Final Annual Amount" where("Id" = field(ID)));
 
 
         }
@@ -102,20 +102,20 @@ table 50329 "TC Merge LumAnnualAmount SP"
         {
 
             FieldClass = FlowField;
-            CalcFormula = sum("CR Merge LumAnnualAmount SP"."ML_Annual Amount" where("Id" = field("Id")));
+            CalcFormula = sum("TC Merge LumAnnualAmount SP"."ML_Annual Amount" where("Id" = field("Id")));
 
         }
         field(50118; "TotalRoundOff"; Decimal)
         {
             FieldClass = FlowField;
-            CalcFormula = sum("CR Merge LumAnnualAmount SP"."ML_Round off" where("Id" = field("Id")));
+            CalcFormula = sum("TC Merge LumAnnualAmount SP"."ML_Round off" where("Id" = field("Id")));
 
         }
 
         field(50119; "TotalFirstAnnualAmount"; Decimal)
         {
             FieldClass = FlowField;
-            CalcFormula = sum("CR Merge LumAnnualAmount SP"."ML_Final Annual Amount" where("Id" = field("Id"), ML_Year = const(1)));
+            CalcFormula = sum("TC Merge LumAnnualAmount SP"."ML_Final Annual Amount" where("Id" = field("Id"), ML_Year = const(1)));
         }
         field(50121; "Contract Id"; Integer)
         {

@@ -10,6 +10,8 @@ table 50103 "Emirate"
             DataClassification = ToBeClassified;
             AutoIncrement = true; // Automatically increment the ID
             Editable = false; // Make it read-only for the user
+            NotBlank = false;
+
         }
         field(50101; "Sl No."; Integer)
         {
@@ -34,9 +36,12 @@ table 50103 "Emirate"
 
     keys
     {
-        key(PK; "ID", "Emirate Name", "Country Code")
+        key(PK; "ID")
         {
             Clustered = true;
+        }
+        key("Country_Emirate"; "Country Code", "Emirate Name")
+        {
         }
     }
 
@@ -73,6 +78,12 @@ table 50103 "Emirate"
     var
         EmirateRec: Record "Emirate";
     begin
+        if (Rec."Country Code" = '') then
+            Error('Country Code is required.');
+
+        if (Rec."Emirate Name" = '') then
+            Error('Emirate Name is required.');
+
         // Check if 'Sl No.' is 0 (indicating it's a new record)
         if "Sl No." = 0 then begin
             // If there are existing records, find the last one and increment
@@ -83,4 +94,13 @@ table 50103 "Emirate"
         end;
     end;
     //-------------Record Insert--------------//
+
+    trigger OnModify()
+    begin
+        if (Rec."Country Code" = '') then
+            Error('Country Code is required.');
+
+        if (Rec."Emirate Name" = '') then
+            Error('Emirate Name is required.');
+    end;
 }

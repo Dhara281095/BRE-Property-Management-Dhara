@@ -26,6 +26,14 @@ page 50717 postedSalesInvoice
                 {
                     Caption = 'Allow Line Disc.';
                 }
+                field("ViewDocumentURL"; Rec."View Document URL")
+                {
+                    Caption = 'View Document URL';
+                }
+                field("ViewInvoice"; Rec."View Invoice")
+                {
+                    Caption = 'View Invoice';
+                }
                 field(altGenBusPostingGroup; Rec."Alt. Gen. Bus Posting Group")
                 {
                     Caption = 'Alternative Gen. Bus. Posting Group';

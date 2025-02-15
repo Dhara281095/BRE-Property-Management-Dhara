@@ -26,6 +26,8 @@ page 50930 "Revenue Recognition Card"
                     ApplicationArea = All;
                     // Editable = false; // The ID is not editable since it's auto-incrementing
                     Lookup = true;
+                    ShowMandatory = true;
+                    NotBlank = true;
 
                 }
 

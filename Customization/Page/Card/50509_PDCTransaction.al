@@ -22,36 +22,86 @@ page 50509 "PDC Transaction"
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field("Contract ID"; Rec."Contract ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
                 field("Tenant Name"; Rec."Tenant Id")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
                 field("Tenant"; Rec."Tenant Name Display")
                 {
                     ApplicationArea = All;
+                    Editable = false;
 
-                }
-
-                field("Bank Name"; Rec."Bank Name")
-                {
-                    ApplicationArea = All;
                 }
                 field("Cheque Number"; Rec."Cheque Number")
                 {
                     ApplicationArea = All;
+                    Editable = IsFieldEditable;
+                    trigger OnValidate()
+                    var
+                        PaymentSeriesRec: Record "Payment Mode2";
+                    begin
+                        PaymentSeriesRec.SetRange("Contract ID", Rec."Contract ID");
+                        PaymentSeriesRec.SetRange("Payment Series", Rec."payment Series");
+                        if PaymentSeriesRec.FindSet() then begin
+                            PaymentSeriesRec."Cheque Number" := Rec."Cheque Number";
+                            PaymentSeriesRec.Modify();
+                        end;
+                    end;
                 }
+                field("Bank Name"; Rec."Bank Name")
+                {
+                    ApplicationArea = All;
+                    Editable = IsFieldEditable;
+                    trigger OnValidate()
+                    var
+                        PaymentSeriesRec: Record "Payment Mode2";
+                    begin
+                        PaymentSeriesRec.SetRange("Contract ID", Rec."Contract ID");
+                        PaymentSeriesRec.SetRange("Payment Series", Rec."payment Series");
+                        if PaymentSeriesRec.FindSet() then begin
+                            PaymentSeriesRec."Deposit Bank" := Rec."Bank Name";
+                            PaymentSeriesRec.Modify();
+                        end;
+                    end;
+                }
+
                 field("Cheque Date"; Rec."Cheque Date")
                 {
                     ApplicationArea = All;
+                    Editable = false;
+
                 }
                 field(Amount; Rec.Amount)
                 {
                     ApplicationArea = All;
+                    Editable = IsFieldEditable;
+                    // trigger OnValidate()
+                    // var
+                    //     PaymentSeriesRec: Record "Payment Mode2";
+                    // begin
+                    //     PaymentSeriesRec.SetRange("Contract ID", Rec."Contract ID");
+                    //     PaymentSeriesRec.SetRange("Payment Series", Rec."payment Series");
+                    //     if PaymentSeriesRec.FindSet() then begin
+                    //         PaymentSeriesRec."Amount Including VAT" := Rec.Amount;
+                    //         PaymentSeriesRec.Modify();
+                    //     end;
+                    // end;
+                }
+                field("Old Cheque#"; Rec."Old Cheque#")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
                 }
                 field(Status; Rec."Cheque Status")
                 {
                     ApplicationArea = All;
-                    Editable = IsLeaseManager;
+                    Editable = IsLeaseManager AND IsFieldEditable;
                     trigger OnValidate()
                     var
                         PaymentSeriesRec: Record "Payment Mode2";
@@ -117,7 +167,13 @@ page 50509 "PDC Transaction"
                                 PaymentSeriesRec."Cheque Status" := PaymentSeriesRec."Cheque Status"::"Replaced & Received";
                                 PaymentSeriesRec."Payment Status" := PaymentSeriesRec."Payment Status"::Scheduled;
                                 PaymentSeriesRec."Deposit Status" := PaymentSeriesRec."Deposit Status"::"-";
+                                // PaymentSeriesRec.Modify();
+                                PaymentSeriesRec."Old Cheque #" := PaymentSeriesRec."Cheque Number";
+                                PaymentSeriesRec."Cheque Number" := '';
                                 PaymentSeriesRec.Modify();
+                                Rec."Old Cheque#" := Rec."Cheque Number";
+                                Rec."Cheque Number" := '';
+                                Rec.Modify();
                             end else
                                 Error('The related Payment Series record was not found.');
                         end
@@ -128,6 +184,13 @@ page 50509 "PDC Transaction"
                                 PaymentSeriesRec."Cheque Status" := PaymentSeriesRec."Cheque Status"::Retrieved;
                                 PaymentSeriesRec."Payment Status" := PaymentSeriesRec."Payment Status"::Scheduled;
                                 PaymentSeriesRec."Deposit Status" := PaymentSeriesRec."Deposit Status"::"-";
+                                // PaymentSeriesRec.Modify();
+                                PaymentSeriesRec."Old Cheque #" := PaymentSeriesRec."Cheque Number";
+                                PaymentSeriesRec."Cheque Number" := '';
+                                PaymentSeriesRec.Modify();
+                                Rec."Old Cheque#" := Rec."Cheque Number";
+                                Rec."Cheque Number" := '';
+                                Rec.Modify();
                             end else
                                 Error('The related Payment Series record was not found.');
                         end
@@ -138,6 +201,9 @@ page 50509 "PDC Transaction"
                                 PaymentSeriesRec."Cheque Status" := PaymentSeriesRec."Cheque Status"::Returned;
                                 PaymentSeriesRec."Payment Status" := PaymentSeriesRec."Payment Status"::Scheduled;
                                 PaymentSeriesRec."Deposit Status" := PaymentSeriesRec."Deposit Status"::"-";
+                                PaymentSeriesRec.Modify();
+
+
                             end else
                                 Error('The related Payment Series record was not found.');
                         end;
@@ -149,30 +215,49 @@ page 50509 "PDC Transaction"
                 field("Approval Status"; Rec."Approval Status")
                 {
                     ApplicationArea = All;
+                    Editable = false;
+                    Visible = true;
                 }
-                field("Contract ID"; Rec."Contract ID")
-                {
-                    ApplicationArea = All;
-                }
+
                 field(View; Rec.View)
                 {
                     ApplicationArea = All;
+                    Editable = false;
+                    DrillDown = true;
+
+                    trigger OnDrillDown()
+                    var
+                        FileURL: Text;
+                    begin
+
+                        FileURL := Rec."View Document URL";
+                        // Check if the file URL is not empty
+                        if FileURL = '' then
+                            Error('No document is available to view.');
+
+                        // Open the file URL in the browser (new tab)
+                        OpenFileInBrowser(FileURL);
+
+                    end;
+
                 }
 
                 group(HideFields)
                 {
                     ShowCaption = false;
                     Visible = Isvisible;
-                    field("Replacement PDC ID"; Rec."Replacement PDC ID")
-                    {
-                        ApplicationArea = All;
-                        // Visible = Isvisible;
-                    }
+                    // field("Replacement PDC ID"; Rec."Replacement PDC ID")
+                    // {
+                    //     ApplicationArea = All;
+
+                    //     // Visible = Isvisible;
+                    // }
 
                     field("Reason"; Rec."Reason")
                     {
                         ApplicationArea = All;
                         // Visible = Isvisible;
+                        Visible = false;
                     }
                 }
             }
@@ -203,6 +288,12 @@ page 50509 "PDC Transaction"
         myInt: Integer;
         IsLeaseManager: Boolean;
         Isvisible: Boolean;
+        IsFieldEditable: Boolean;
+
+    trigger OnAfterGetRecord()
+    begin
+        IsFieldEditable := (Rec."Approval Status" <> Rec."Approval Status"::Approved)
+    end;
 
     trigger OnOpenPage()
     var
@@ -216,8 +307,15 @@ page 50509 "PDC Transaction"
             if PermissionSet."Profile ID" = 'LEASE_MANAGER' then
                 IsLeaseManager := true;
         end;
+    end;
 
-
+    procedure OpenFileInBrowser(URL: Text)
+    begin
+        // Use the Hyperlink method to open the file in the browser
+        if URL <> '' then
+            Hyperlink(URL)
+        else
+            Error('The file URL is invalid.');
     end;
 
 
