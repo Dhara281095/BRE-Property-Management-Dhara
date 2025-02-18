@@ -97,6 +97,8 @@ page 50715 "Online Payment Request"
                     ApproveCount: Integer;
                     ErrorCount: Integer;
                     PaymentRec: Record "Payment Mode2";
+                    PaymentStatus: Enum "Payment Status";
+                    PaymentScheduleRec: Record "Payment Schedule2";
                 begin
                     CurrPage.SetSelectionFilter(SelectedRecs);
 
@@ -121,7 +123,21 @@ page 50715 "Online Payment Request"
                                 if PaymentRec.FindSet() then begin
                                     // Update the status of OnlinePaymentApproval record
                                     PaymentRec."Approve/Decline Status" := 'Received';
+                                    PaymentRec."Payment Status" := PaymentStatus::Received;
                                     PaymentRec.Modify(true);
+                                end;
+
+                                PaymentScheduleRec.SetRange(PaymentScheduleRec."Contract ID", PaymentRec."Contract ID");
+                                PaymentScheduleRec.SetRange(PaymentScheduleRec."Tenant ID", PaymentRec."Tenant ID");
+                                PaymentScheduleRec.SetRange(PaymentScheduleRec."Payment Series", PaymentRec."Payment Series");
+
+                                // Loop through the Payment Schedule records to find matching Payment Series
+                                if PaymentScheduleRec.FindSet() then begin
+                                    repeat
+                                        // Update Payment Schedule status to "Received" for the matching Payment Series
+                                        PaymentScheduleRec."Payment Status" := 'Received';
+                                        PaymentScheduleRec.Modify; // Save the updated record
+                                    until PaymentScheduleRec.Next() = 0; // Continue until all matching records are processed
                                 end;
 
                                 ApproveCount += 1;
