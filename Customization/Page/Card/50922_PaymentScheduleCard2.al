@@ -71,7 +71,7 @@ page 50922 "Payment Schedule Card2"
                 {
                     ApplicationArea = All;
                     Editable = false;
-                    Visible = false;
+                    Visible = true;
                     Caption = 'Payment Series';
                 }
                 field("Tenant Name"; Rec."Tenant Name")
@@ -105,6 +105,11 @@ page 50922 "Payment Schedule Card2"
                     Caption = 'Invoiced';
                     Editable = InvoicedField;
 
+                }
+
+                field("Payment Status"; Rec."Payment Status")
+                {
+                    ApplicationArea = All;
                 }
 
             }
