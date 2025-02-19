@@ -9,6 +9,7 @@ codeunit 50106 GenerateConsolidatedInvoices
         todaydate: Date;
     begin
         todaydate := 20251129D;
+        // todaydate := 20281128D;
         paymentScheudle2.SetRange("Due Date", todaydate);
 
         if paymentScheudle2.FindSet() then
@@ -16,7 +17,7 @@ codeunit 50106 GenerateConsolidatedInvoices
                 if paymentScheudle2.Invoiced = false then begin
                     //   SalesHeader.SetRange("Sell-to Customer No.", paymentScheudle2."Tenant ID");
                     SalesHeader.SetRange("Contract ID", paymentScheudle2."Contract ID");
-                    // SalesHeader.SetRange("Due Date", paymentScheudle2."Due Date");
+                    SalesHeader.SetRange("Due Date", paymentScheudle2."Due Date");
                     SalesHeader.SetRange("Document Type", Enum::"Sales Document Type"::Invoice);
                     if SalesHeader.FindSet() then begin
 
@@ -28,6 +29,7 @@ codeunit 50106 GenerateConsolidatedInvoices
                     end;
                     paymentScheudle2.Invoiced := true;
                     paymentScheudle2.Modify();
+
                 end;
             until paymentScheudle2.Next() = 0;
     end;
