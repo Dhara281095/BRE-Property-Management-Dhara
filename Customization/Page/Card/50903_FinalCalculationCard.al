@@ -95,6 +95,25 @@ page 50903 "Final Calculation Card"
                     Editable = false;
                 }
             }
+
+            group("Final Revenue Calculation")
+            {
+                part("FinalRevenueCalculation"; "Final Revenue Calculation Grid")
+                {
+                    SubPageLink = "Contract ID" = FIELD("Contract ID");
+                    ApplicationArea = All;
+
+
+                }
+            }
+            group("Billing Calculation")
+            {
+                part("BillingCalculation"; "Final Billing Calculation")
+                {
+                    SubPageLink = "Contract ID" = FIELD("Contract ID");
+                    ApplicationArea = All;
+                }
+            }
         }
     }
 
