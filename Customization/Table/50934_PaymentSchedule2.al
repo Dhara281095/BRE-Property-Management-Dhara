@@ -39,6 +39,8 @@ table 50934 "Payment Schedule2"
             DataClassification = ToBeClassified;
             Caption = 'Amount Including VAT';
 
+
+
         }
 
         field(50104; "Installment Start Date"; Date)
@@ -113,6 +115,13 @@ table 50934 "Payment Schedule2"
         field(50916; "Payment Status"; Text[100])
         {
             Caption = 'Payment Status';
+
+            trigger OnValidate()
+            begin
+
+                UpdateBalanceAmountOnPaymentReceived();
+
+            end;
         }
         // field(50916; "Tenant Name"; Text[100])
         // {
@@ -129,6 +138,45 @@ table 50934 "Payment Schedule2"
 
 
     }
+
+
+
+    local procedure UpdateBalanceAmountOnPaymentReceived()
+    var
+        PaymentScheduleRec: Record "Payment Schedule2";
+        TenancyContractRec: Record "Tenancy Contract";
+    begin
+        // Filter records where 'Secondary Item Type' is 'Security Deposit Amount' and 'Payment Status' is 'Received'
+        PaymentScheduleRec.SetRange("Secondary Item Type", 'Security Deposit Amount');
+        PaymentScheduleRec.SetRange("Payment Status", 'Received');
+
+        if PaymentScheduleRec.FindSet() then begin
+            repeat
+                // Filter Tenancy Contract records based on Contract ID
+                TenancyContractRec.SetRange("Contract ID", PaymentScheduleRec."Contract ID");
+
+                if TenancyContractRec.FindSet() then begin
+                    repeat
+                        // If Balance Amount has a value, update it
+                        if TenancyContractRec."Balance Amount" <> 0 then begin
+                            TenancyContractRec."Balance Amount" += PaymentScheduleRec."Amount Including VAT";
+                            TenancyContractRec."Security Balanced Amount" += PaymentScheduleRec."Amount Including VAT";
+                        end
+                        else begin
+                            // If Balance Amount is 0, set it to Amount Including VAT
+                            TenancyContractRec."Balance Amount" := PaymentScheduleRec."Amount Including VAT";
+                            TenancyContractRec."Security Balanced Amount" := PaymentScheduleRec."Amount Including VAT";
+                        end;
+
+                        // Modify the record to save changes
+                        TenancyContractRec.Modify();
+                    until TenancyContractRec.Next() = 0;
+                end;
+            until PaymentScheduleRec.Next() = 0;
+        end;
+    end;
+
+
 
 
 }

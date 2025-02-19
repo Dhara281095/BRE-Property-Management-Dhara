@@ -23,7 +23,7 @@ page 50715 "Online Payment Request"
                 field(Status; Rec.Status)
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
 
                 field("Tenant ID"; Rec."Tenant ID")
