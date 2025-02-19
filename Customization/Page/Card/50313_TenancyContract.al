@@ -590,6 +590,57 @@ page 50313 "Tenancy Contract Card"
                     end;
                 }
 
+
+                field("Final Calculation"; rec."Final Calculation")
+
+                {
+
+                    ApplicationArea = All;
+
+                    DrillDown = true;
+
+                    // Show or hide based on status
+
+                    //Visible = Status = Status::Approved; // This will show the field only if status is "Approved"
+
+
+
+                    trigger OnDrillDown()
+                    var
+                        TenancyRecord: Record "Tenancy Contract"; // Replace with the actual table name
+                        FinalCalculation: Record "Final Calculation";
+                        InstallmentStructure: Record "Revenue Structure Subpage1"; // Second Tabl
+                    begin
+                        // if Rec."Payment Type" = Rec."Payment Type"::Installment then begin
+                        FinalCalculation.SetRange("Contract ID", Rec."Contract ID");
+                        FinalCalculation.SetRange("Tenant ID", Rec."Tenant ID");
+
+                        if FinalCalculation.FindSet() then begin
+                            FinalCalculation."Contract ID" := Rec."Contract ID";
+                            FinalCalculation."Tenant ID" := Rec."Tenant ID";
+                            FinalCalculation."Contract Start Date" := Rec."Contract Start Date";
+                            FinalCalculation."Contract End Date" := Rec."Contract End Date";
+                            FinalCalculation."Unit Type" := Rec."Unit Type";
+                            FinalCalculation."Contract Amount" := Rec."Annual Rent Amount";
+                            FinalCalculation.Modify();
+                        end else begin
+                            FinalCalculation.Init();
+                            FinalCalculation."Contract ID" := Rec."Contract ID";
+                            FinalCalculation."Tenant ID" := Rec."Tenant ID";
+                            FinalCalculation."Unit Type" := Rec."Unit Type";
+                            FinalCalculation."Contract Start Date" := Rec."Contract Start Date";
+                            FinalCalculation."Contract End Date" := Rec."Contract End Date";
+                            FinalCalculation."Contract Amount" := Rec."Annual Rent Amount";
+                            // FinalCalculation."Original Contract Tenure" := ;
+                            FinalCalculation.Insert();
+                        end;
+
+                    end;
+
+                    // end;
+
+                }
+
                 field("Update Data"; Rec."Update Data")
                 {
                     ApplicationArea = All;

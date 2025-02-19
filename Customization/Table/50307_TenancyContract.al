@@ -1452,6 +1452,15 @@ table 50307 "Tenancy Contract"
 
         }
 
+        field(50178; "Final Calculation"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Final Calculation';
+            InitValue = 'Final Calculation';
+            Editable = false;
+
+        }
+
         field(50173; "Contract VAT %"; Option)
         {
             OptionMembers = "0%","5%";
