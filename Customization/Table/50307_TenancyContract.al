@@ -126,6 +126,7 @@ table 50307 "Tenancy Contract"
                     "Annual Rent Amount" := LeaseProposalRec."Annual Rent Amount";
                     "Rent Amount" := LeaseProposalRec."Rent Amount";
                     "Security Deposit Amount" := LeaseProposalRec."Security Deposit Amount";
+                    "Security Amount Received" := LeaseProposalRec."Security Deposit Amount";
                     "Unit Number" := LeaseProposalRec."Unit Number";
                     "Makani Number" := LeaseProposalRec."Makani Number";
                     Emirate := LeaseProposalRec.Emirate;
@@ -140,7 +141,7 @@ table 50307 "Tenancy Contract"
                     "Single Unit Name" := LeaseProposalRec."Single Unit Name";
                     "Market Rate per Sq. Ft." := LeaseProposalRec."Market Rate per Sq. Ft.";
                     "Facilities/Amenities" := LeaseProposalRec."Facilities/Amenities";
-                    "Balance Amount" := LeaseProposalRec."Security Deposit Amount";
+
                     "Unit Number" := LeaseProposalRec."Unit Number";
                     "Single Rent Calculation" := LeaseProposalRec."Single Rent Calculation";
                     "Merge Rent Calculation" := LeaseProposalRec."Merge Rent Calculation";
@@ -164,6 +165,7 @@ table 50307 "Tenancy Contract"
                     "Property Type" := '';
                     "Property Name" := '';
                     "Unit Number" := '';
+
                 end;
 
                 if "Single Rent Calculation" = "Single Rent Calculation"::"Single Unit with square feet rate" then begin
@@ -1047,7 +1049,7 @@ table 50307 "Tenancy Contract"
                     "DEWA Number" := LeaseProposalRec."DEWA Number";
                     "Property Size" := LeaseProposalRec."Property Size";
                     "No of Installments" := LeaseProposalRec."No of Installments";
-                    "Balance Amount" := LeaseProposalRec."Security Deposit Amount";
+
                     "Single Rent Calculation" := LeaseProposalRec."Single Rent Calculation";
                     "Merge Rent Calculation" := LeaseProposalRec."Merge Rent Calculation";
                     "Praposal Type Selected" := LeaseProposalRec."Praposal Type Selected";

@@ -363,27 +363,37 @@ page 50313 "Tenancy Contract Card"
                 field("Security Deposit Amount"; Rec."Security Deposit Amount")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
 
                 field("Balance Amount"; Rec."Balance Amount")
                 {
                     ApplicationArea = All;
-                    Editable = false;
-                    Caption = 'Security Amount Received';
+                    Editable = true;
+                    Caption = 'Security Deposit Amount Received';
+
+                    trigger OnValidate()
+                    begin
+                        UpdateSecurityAmountReceived();
+                    end;
                 }
                 field("Security Amount Received"; Rec."Security Amount Received")
                 {
                     ApplicationArea = All;
-                    Editable = false;
-                    Caption = 'Security Amount Pending';
+                    Editable = true;
+                    Caption = 'Security Deposit Amount Pending';
+
+                    trigger OnValidate()
+                    begin
+                        UpdateSecurityAmountReceived();
+                    end;
                 }
 
                 field("Security Balanced Amount"; Rec."Security Balanced Amount")
                 {
                     ApplicationArea = All;
-                    Editable = false;
-                    Caption = 'Security Balanced Amount';
+                    Editable = true;
+                    Caption = 'Security Deposit Amount Balance';
                 }
             }
 
@@ -1090,6 +1100,7 @@ page 50313 "Tenancy Contract Card"
         CurrPage."Merge Lum_AnnualAmount Rent (Renewal)".Page.SetContractIDs(Rec."Contract ID");
         UpdateFieldsEnable();
         UpdateVisibility();
+        UpdateSecurityAmountReceived();
 
     end;
 
@@ -1110,6 +1121,7 @@ page 50313 "Tenancy Contract Card"
         CurrPage."Merge Lum_AnnualAmount Rent (Proposal)".Page.SetContractIDs(Rec."Contract ID");
         CurrPage."Merge Lum_AnnualAmount Rent (Renewal)".Page.SetContractIDs(Rec."Contract ID");
         UpdateVisibility();
+        UpdateSecurityAmountReceived();
 
 
 
@@ -1173,6 +1185,14 @@ page 50313 "Tenancy Contract Card"
         ShowBusinessReasonFields2 := (Rec."Merge Rent Calculation" = Rec."Merge Rent Calculation"::"Merged Unit with lumpsum annual amount");
         ShowLegalReasonFields3 := (Rec."Single Rent Calculation" = Rec."Single Rent Calculation"::"Single Unit with lumpsum square feet rate");
         ShowLegalReasonFields4 := (Rec."Praposal Type Selected" = Rec."Praposal Type Selected"::"Merge Unit");
+    end;
+
+    local procedure UpdateSecurityAmountReceived()
+    begin
+        if Rec."Security Deposit Amount" = Rec."Balance Amount" then
+            Rec."Security Amount Received" := 0
+        else
+            Rec."Security Amount Received" := Rec."Security Deposit Amount" - Rec."Balance Amount";
     end;
 
 
