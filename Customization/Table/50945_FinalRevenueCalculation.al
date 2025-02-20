@@ -75,6 +75,21 @@ table 50945 "Final Revenue Calculation Grid"
             DataClassification = ToBeClassified;
             AutoIncrement = true;
         }
+        field(13; "Actual Contract Tenure"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Actual Contract Tenure';
+        }
+        field(14; "Per Day Rent"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Per Day Rent';
+        }
+        field(15; "Revised VAT %"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Revised VAT %';
+        }
     }
 
     keys

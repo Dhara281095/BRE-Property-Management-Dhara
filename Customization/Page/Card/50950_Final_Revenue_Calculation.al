@@ -81,7 +81,90 @@ page 50950 "Final Revenue Calculation Grid"
                     Caption = 'Difference Amount Incl.';
                     ToolTip = 'Specifies the difference in amount including VAT';
                 }
+                field("Actual Contract Tenure"; Rec."Actual Contract Tenure")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Actual Contract Tenure';
+                    Editable = false;
+
+                }
+                field("Per Day Rent"; Rec."Per Day Rent")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Per Day Rent';
+                    Editable = false;
+                }
+                field("Revised VAT %"; Rec."Revised VAT %")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Reviseed VAT %';
+                    Editable = false;
+                }
             }
         }
     }
+
+    trigger OnAfterGetRecord()
+    var
+    begin
+        OneTimePaymentTypeRevisedRecalculatedAmount();
+        GetRentAmountFromRentCalculation();
+    end;
+
+    procedure OneTimePaymentTypeRevisedRecalculatedAmount()
+    var
+        TenancyContractsubpage: Record "Tenancy Contract Subpage";
+        FinalRevenueCalculation: Record "Final Revenue Calculation Grid";
+    begin
+        TenancyContractsubpage.SetRange(ContractID, Rec."Contract ID");
+        TenancyContractsubpage.SetRange("Payment Type", 1);
+        TenancyContractsubpage.SetRange("Secondary Item Type", Rec."Revenue Description");
+        if TenancyContractsubpage.FindSet() then
+            repeat
+                Rec."Revised Amount" := TenancyContractsubpage.Amount;
+                Rec."Revised VAT" := Round(TenancyContractsubpage.Amount *
+                                                       TenancyContractsubpage."VAT %" / 100,
+                                                       0.01);
+                Rec."Revised Amount Incl." := TenancyContractsubpage."Amount Including VAT";
+                Rec.Modify();
+            //  Clear(FinalRevenueCalculation);
+            until TenancyContractsubpage.Next() = 0;
+
+    end;
+
+    procedure GetRentAmountFromRentCalculation()
+    var
+        RentCalculation: Record "Rent Calculation Subpage";
+        Totalamount: Decimal;
+        RentCalculation1: Record "Rent Calculation Subpage";
+        TotalVATAmount: Decimal;
+        FinalReviseAmount: Decimal;
+
+    begin
+        Totalamount := 0;
+        RentCalculation.Reset();
+        RentCalculation.SetRange("Contract ID", Rec."Contract ID");
+
+        if RentCalculation.FindSet() then begin
+            repeat
+                // Sum up Final Annual Amount values
+                TotalAmount += RentCalculation."Final Annual Amount";
+                TotalVATAmount += RentCalculation."VAT Amount"
+            until RentCalculation.Next() = 0;
+        end;
+        RentCalculation1.SetRange("Contract ID", Rec."Contract ID");
+        RentCalculation1.SetRange("Secondary Item Type", Rec."Revenue Description");
+        if RentCalculation1.FindSet() then
+            repeat
+                FinalReviseAmount := Rec."Actual Contract Tenure" * Rec."Per Day Rent"; // 3rd year 365 days - termination 71 days = 294 so calculate 294 * per day rent 122.67 = FinalReviseAmount variable 
+                Rec."Revised Amount" := Totalamount - FinalReviseAmount;
+                Rec."Revised VAT %" := 5;
+                TotalVATAmount := Rec."Revised Amount" - (Rec."Revised Amount" / (1 + (Rec."Revised VAT %" / 100)));
+                TotalVATAmount := Round(TotalVATAmount, 0.01);
+
+                Rec."Revised VAT" := TotalVATAmount;
+                Rec."Revised Amount Incl." := Rec."Revised Amount" + Rec."Revised VAT";
+                Rec.Modify();
+            until RentCalculation1.Next() = 0;
+    end;
 }
