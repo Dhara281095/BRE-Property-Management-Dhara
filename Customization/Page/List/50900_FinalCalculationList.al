@@ -41,7 +41,7 @@ page 50900 "Final Calculation List"
                     ApplicationArea = All;
                 }
 
-                field("Initmation Date"; Rec."Initmation Date")
+                field("Initmation Date"; Rec."Intimation Date")
                 {
                     ApplicationArea = All;
                 }

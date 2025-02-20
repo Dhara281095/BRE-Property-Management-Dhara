@@ -8,7 +8,13 @@ table 50901 "Final Calculation"
         {
             DataClassification = ToBeClassified;
             Caption = 'Contract ID';
-            TableRelation = "Tenancy Contract"."Contract ID";
+
+
+        }
+        field(50113; "ContractYear(Termination Date)"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Contract Year On Termination Date';
 
         }
 
@@ -16,69 +22,69 @@ table 50901 "Final Calculation"
         {
             DataClassification = ToBeClassified;
             AutoIncrement = true; // Automatically increment the ID
-            Editable = false; // Make it read-only for the user
+                                  // Make it read-only for the user
         }
 
         field(50104; "Contract Start Date"; Date)
         {
             DataClassification = ToBeClassified;
             Caption = 'Contract Start Date';
-            Editable = false;
+
         }
 
         field(50105; "Contract End Date"; Date)
         {
             DataClassification = ToBeClassified;
             Caption = 'Contract End Date';
-            Editable = false;
+
         }
 
         field(50102; "Unit Type"; Text[100])
         {
             DataClassification = ToBeClassified;
             Caption = 'Unit Type';
-            Editable = false;
+
         }
 
         field(50103; "Contract Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Contract Amount';
-            Editable = false;
+
         }
 
         field(50109; "Tenant ID"; Code[20])
         {
             DataClassification = ToBeClassified;
             Caption = 'Tenant ID';
-            Editable = false;
+
             TableRelation = "Lease Proposal Details"."Tenant ID";
         }
-        field(50106; "Initmation Date"; Date)
+        field(50106; "Intimation Date"; Date)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Initmation Date';
-            Editable = false;
+            Caption = 'Intimation Date';
+
         }
         field(50107; "Termination Date"; Date)
         {
             DataClassification = ToBeClassified;
             Caption = 'Termination Date';
-            Editable = false;
+
         }
 
         field(50110; "Original Contract Tenure"; Integer)
         {
             DataClassification = ToBeClassified;
             Caption = 'Original Contract Tenure';
-            Editable = false;
+
         }
 
         field(50111; "Actual Contract Tenure"; Integer)
         {
             DataClassification = ToBeClassified;
             Caption = 'Actual Contract Tenure';
-            Editable = false;
+
         }
 
     }
