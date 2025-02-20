@@ -4,7 +4,7 @@ page 50123 "Revenue Allocation SubGrid"
     ApplicationArea = All;
     // UsageCategory = Administration;
     SourceTable = "Revenue Allocation SubGrid";
-    Caption = 'Revenue Allocation Report';
+    Caption = 'Revenue Allocation Master data';
 
     layout
     {

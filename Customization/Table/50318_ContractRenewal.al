@@ -1183,6 +1183,8 @@ table 50318 "Contract Renewal"
     }
 
     //-------------Calculate Lease Duration---------------------//
+
+
     procedure CalculateLeaseDuration()
     var
         LeaseStartDate: Date;
@@ -1191,32 +1193,46 @@ table 50318 "Contract Renewal"
         Months: Integer;
         Days: Integer;
         DurationText: Text[50];
+        TempStartDate: Date;
+        DaysDifference: Integer;
     begin
         LeaseStartDate := "Contract Start Date";
         LeaseEndDate := "Contract End Date";
 
         if (LeaseStartDate <> 0D) and (LeaseEndDate <> 0D) then begin
             if LeaseEndDate >= LeaseStartDate then begin
-                // Calculate years, months, and days
-                Years := Date2DMY(LeaseEndDate, 3) - Date2DMY(LeaseStartDate, 3);
-                Months := Date2DMY(LeaseEndDate, 2) - Date2DMY(LeaseStartDate, 2);
-                Days := Date2DMY(LeaseEndDate, 1) - Date2DMY(LeaseStartDate, 1);
+                // Calculate total days difference
+                DaysDifference := LeaseEndDate - LeaseStartDate + 1;
 
-                // Adjust for negative months
-                if Months < 0 then begin
-                    Years := Years - 1;
-                    Months := Months + 12;
-                end;
+                // If the difference is exactly 365 or 366 days (accounting for leap year)
+                if (DaysDifference = 365) or (DaysDifference = 366) then begin
+                    Years := 1;
+                    Months := 0;
+                    Days := 0;
+                end else begin
+                    TempStartDate := LeaseStartDate;
 
-                // Adjust for negative days
-                if Days < 0 then begin
-                    Months := Months - 1;
-                    Days := Days + (Date2DMY(CALCDATE('<+1M>', LeaseStartDate), 1) - Date2DMY(LeaseStartDate, 1));
+                    // Calculate the years
+                    Years := 0;
+                    while (CALCDATE('<+1Y>', TempStartDate) <= LeaseEndDate) or
+                          (CALCDATE('<+1Y-1D>', TempStartDate) = LeaseEndDate) do begin
+                        TempStartDate := CALCDATE('<+1Y>', TempStartDate);
+                        Years := Years + 1;
+                    end;
+
+                    // Calculate the months
+                    Months := 0;
+                    while CALCDATE('<+1M>', TempStartDate) <= LeaseEndDate do begin
+                        TempStartDate := CALCDATE('<+1M>', TempStartDate);
+                        Months := Months + 1;
+                    end;
+
+                    // Calculate the remaining days
+                    Days := LeaseEndDate - TempStartDate + 1;
                 end;
 
                 // Build the duration text
                 DurationText := '';
-
                 if Years > 0 then
                     DurationText := Format(Years) + ' year(s) ';
 
@@ -1226,12 +1242,62 @@ table 50318 "Contract Renewal"
                 if Days > 0 then
                     DurationText := DurationText + Format(Days) + ' day(s)';
 
-                "Contract Tenor" := DelChr(DurationText, '<>', ' '); // Remove leading and trailing spaces
+                "Contract Tenor" := DelChr(DurationText, '<>', ' ');
             end else
-                "Contract Tenor" := ''; // Clear if the end date is before the start date
+                "Contract Tenor" := '';
         end else
-            "Contract Tenor" := ''; // Clear if either date is not set
+            "Contract Tenor" := '';
     end;
+
+    // procedure CalculateLeaseDuration()
+    // var
+    //     LeaseStartDate: Date;
+    //     LeaseEndDate: Date;
+    //     Years: Integer;
+    //     Months: Integer;
+    //     Days: Integer;
+    //     DurationText: Text[50];
+    // begin
+    //     LeaseStartDate := "Contract Start Date";
+    //     LeaseEndDate := "Contract End Date";
+
+    //     if (LeaseStartDate <> 0D) and (LeaseEndDate <> 0D) then begin
+    //         if LeaseEndDate >= LeaseStartDate then begin
+    //             // Calculate years, months, and days
+    //             Years := Date2DMY(LeaseEndDate, 3) - Date2DMY(LeaseStartDate, 3);
+    //             Months := Date2DMY(LeaseEndDate, 2) - Date2DMY(LeaseStartDate, 2);
+    //             Days := Date2DMY(LeaseEndDate, 1) - Date2DMY(LeaseStartDate, 1);
+
+    //             // Adjust for negative months
+    //             if Months < 0 then begin
+    //                 Years := Years - 1;
+    //                 Months := Months + 12;
+    //             end;
+
+    //             // Adjust for negative days
+    //             if Days < 0 then begin
+    //                 Months := Months - 1;
+    //                 Days := Days + (Date2DMY(CALCDATE('<+1M>', LeaseStartDate), 1) - Date2DMY(LeaseStartDate, 1));
+    //             end;
+
+    //             // Build the duration text
+    //             DurationText := '';
+
+    //             if Years > 0 then
+    //                 DurationText := Format(Years) + ' year(s) ';
+
+    //             if Months > 0 then
+    //                 DurationText := DurationText + Format(Months) + ' month(s) ';
+
+    //             if Days > 0 then
+    //                 DurationText := DurationText + Format(Days) + ' day(s)';
+
+    //             "Contract Tenor" := DelChr(DurationText, '<>', ' '); // Remove leading and trailing spaces
+    //         end else
+    //             "Contract Tenor" := ''; // Clear if the end date is before the start date
+    //     end else
+    //         "Contract Tenor" := ''; // Clear if either date is not set
+    // end;
 
     //-------------Calculate Lease Duration---------------------//
 
