@@ -92,8 +92,13 @@ page 50903 "Final Calculation Card"
                             Rec.Modify();
 
                         end;
+                        // CurrPage.Update();
+
                         GetContractTerminationYear();
+
                         Fetchperdayrent();
+                        PopulateRevenueCalculationGrid();
+                        GetDataTenancyContract();
                     end;
                 }
                 field("ContractYear(Termination Date)"; Rec."ContractYear(Termination Date)")
@@ -177,13 +182,13 @@ page 50903 "Final Calculation Card"
     }
 
 
-    trigger OnAfterGetRecord()
-    var
-    begin
-        PopulateRevenueCalculationGrid();
-        GetDataTenancyContract();
+    // trigger OnAfterGetRecord()
+    // var
+    // begin
+    //     PopulateRevenueCalculationGrid();
+    //     GetDataTenancyContract();
 
-    end;
+    // end;
 
 
     //////////////////  START Final Revenue Calculation Grid ////////////////////
@@ -212,6 +217,8 @@ page 50903 "Final Calculation Card"
                 FinalRevCalcGrid."Original Amount" := RentCalc."Amount";
                 FinalRevCalcGrid."Original VAT" := RentCalc."VAT Amount";
                 FinalRevCalcGrid."Original Amount Incl." := RentCalc."Amount Including VAT";
+                FinalRevCalcGrid."Actual Contract Tenure" := Rec."Actual Contract Tenure";
+                FinalRevCalcGrid."Per Day Rent" := Rec."Per Day Rent";
                 FinalRevCalcGrid.Insert();
                 Clear(FinalRevCalcGrid);
             until RentCalc.Next() = 0;
@@ -236,11 +243,11 @@ page 50903 "Final Calculation Card"
                 FinalRevCalcGrid1."Original Amount" := TenancyContractLine1.Amount;
 
                 // Calculate VAT amount based on percentage
-                FinalRevCalcGrid1."Original VAT" := Round(TenancyContractLine1.Amount *
-                                                   TenancyContractLine1."VAT %" / 100,
-                                                   0.01);
+                FinalRevCalcGrid1."Original VAT" := TenancyContractLine1."VAT Amount";
 
                 FinalRevCalcGrid1."Original Amount Incl." := TenancyContractLine1."Amount Including VAT";
+                FinalRevCalcGrid1."Actual Contract Tenure" := Rec."Actual Contract Tenure";
+                FinalRevCalcGrid1."Per Day Rent" := Rec."Per Day Rent";
                 FinalRevCalcGrid1.Insert();
                 Clear(FinalRevCalcGrid1);
             until TenancyContractLine1.Next() = 0;
@@ -266,11 +273,12 @@ page 50903 "Final Calculation Card"
     begin
 
         FinalCalculation.SetRange("FC ID", Rec."FC ID");
+        FinalCalculation.SetRange("Contract ID", Rec."Contract ID");
         if FinalCalculation.FindFirst() then begin
             // Set Contract start and end dates
             ContractStartDate := FinalCalculation."Contract Start Date"; // 1st January 2022
             ContractEndDate := FinalCalculation."Contract End Date"; // 31st December 2026
-            UserEnteredDate := FinalCalculation."Termination Date";
+            UserEnteredDate := Rec."Termination Date";
 
             // Extract the year from the user entered date and contract start date
             StartYear := Date2DMY(ContractStartDate, 3); // 3 = year
@@ -278,8 +286,8 @@ page 50903 "Final Calculation Card"
 
             // Calculate year number based on difference between user entered year and start year
             YearNumber := UserYear - StartYear + 1;
-            FinalCalculation."ContractYear(Termination Date)" := YearNumber;
-            FinalCalculation.Modify();
+            Rec."ContractYear(Termination Date)" := YearNumber;
+            Rec.Modify();
 
         end;
     end;
