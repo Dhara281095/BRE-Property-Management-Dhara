@@ -1447,7 +1447,7 @@ table 50307 "Tenancy Contract"
         field(50172; "Update Data"; Text[100])
         {
             DataClassification = ToBeClassified;
-            Caption = 'Update Data';
+            Caption = 'Rent Calculation';
             InitValue = 'Update Data';
 
         }

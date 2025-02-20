@@ -82,15 +82,18 @@ page 50903 "Final Calculation Card"
 
                     begin
                         FinalCalculation.SetRange("FC ID", Rec."FC ID");
+                        FinalCalculation.SetRange("Contract ID", Rec."Contract ID");
                         if FinalCalculation.FindFirst() then begin
-                            TerminateDate := FinalCalculation."Termination Date";
-                            StartDate := FinalCalculation."Contract Start Date";
+
+                            StartDate := Rec."Contract Start Date";
+                            TerminateDate := Rec."Termination Date";
                             DaysCal := TerminateDate - StartDate + 1;
-                            FinalCalculation."Actual Contract Tenure" := DaysCal;
-                            FinalCalculation.Modify(true);
+                            Rec."Actual Contract Tenure" := DaysCal;
+                            Rec.Modify();
 
                         end;
                         GetContractTerminationYear();
+                        Fetchperdayrent();
                     end;
                 }
                 field("ContractYear(Termination Date)"; Rec."ContractYear(Termination Date)")
@@ -99,8 +102,6 @@ page 50903 "Final Calculation Card"
                     Caption = 'Contract Year On Termination Date';
                     ToolTip = 'Enter the ContractYear(Termination Date).';
                     Editable = false;
-
-
 
                 }
 
@@ -125,6 +126,22 @@ page 50903 "Final Calculation Card"
                     ApplicationArea = All;
                     Caption = 'Actual Contract Tenure';
                     ToolTip = 'Enter the Actual Contract Tenure.';
+                    Editable = false;
+                }
+
+                field("Total No. Of Days"; Rec."Total No. Of Days")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total No. Of Days(Termination Year)';
+                    ToolTip = 'Enter the Total No. Of Days.';
+                    Editable = false;
+                }
+
+                field("Per Day Rent"; Rec."Per Day Rent")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Per Day Rent(Termination Year)';
+                    ToolTip = 'Enter the Per Day Rent.';
                     Editable = false;
                 }
             }
@@ -160,6 +177,77 @@ page 50903 "Final Calculation Card"
     }
 
 
+    trigger OnAfterGetRecord()
+    var
+    begin
+        PopulateRevenueCalculationGrid();
+        GetDataTenancyContract();
+
+    end;
+
+
+    //////////////////  START Final Revenue Calculation Grid ////////////////////
+    procedure PopulateRevenueCalculationGrid()
+    var
+        FinalCalcHeader: Record "Final Calculation";
+        FinalRevCalcGrid: Record "Final Revenue Calculation Grid";
+        RentCalc: Record "Rent Calculation";
+        TenancyContractLine: Record "Tenancy Contract Subpage";
+    begin
+        // Clear existing lines in Final Revenue Calculation Grid for this contract
+        FinalRevCalcGrid.SetRange("Contract ID", Rec."Contract ID");
+        if FinalRevCalcGrid.FindSet() then begin
+            FinalRevCalcGrid.DeleteAll();
+        end;
+
+
+        // Step 1: Get main rent amount from Rent Calculation table
+        // RentCalc.Reset();
+        RentCalc.SetRange("Contract ID", Rec."Contract ID");
+        if RentCalc.FindSet() then begin
+            repeat
+                FinalRevCalcGrid.Init();
+                FinalRevCalcGrid."Contract ID" := RentCalc."Contract ID";
+                FinalRevCalcGrid."Revenue Description" := RentCalc."Secondary Item Type";
+                FinalRevCalcGrid."Original Amount" := RentCalc."Amount";
+                FinalRevCalcGrid."Original VAT" := RentCalc."VAT Amount";
+                FinalRevCalcGrid."Original Amount Incl." := RentCalc."Amount Including VAT";
+                FinalRevCalcGrid.Insert();
+                Clear(FinalRevCalcGrid);
+            until RentCalc.Next() = 0;
+        end;
+
+    end;
+
+    procedure GetDataTenancyContract()
+    var
+        FinalRevCalcGrid1: Record "Final Revenue Calculation Grid";
+        TenancyContractLine1: Record "Tenancy Contract Subpage";
+        FinalCalcHeader1: Record "Final Calculation";
+    begin
+
+        // TenancyContractLine.Reset();
+        TenancyContractLine1.SetRange("ContractID", Rec."Contract ID");
+        if TenancyContractLine1.FindSet() then begin
+            repeat
+                FinalRevCalcGrid1.Init();
+                FinalRevCalcGrid1."Contract ID" := Rec."Contract ID";
+                FinalRevCalcGrid1."Revenue Description" := TenancyContractLine1."Secondary Item Type";
+                FinalRevCalcGrid1."Original Amount" := TenancyContractLine1.Amount;
+
+                // Calculate VAT amount based on percentage
+                FinalRevCalcGrid1."Original VAT" := Round(TenancyContractLine1.Amount *
+                                                   TenancyContractLine1."VAT %" / 100,
+                                                   0.01);
+
+                FinalRevCalcGrid1."Original Amount Incl." := TenancyContractLine1."Amount Including VAT";
+                FinalRevCalcGrid1.Insert();
+                Clear(FinalRevCalcGrid1);
+            until TenancyContractLine1.Next() = 0;
+        end;
+
+    end;
+
 
     procedure GetContractTerminationYear()
     var
@@ -171,7 +259,10 @@ page 50903 "Final Calculation Card"
         StartYear: Integer;
         UserYear: Integer;
         FinalCalculation: Record "Final Calculation";
+        RentCalculation: Record "Rent Calculation";
+        RentCalculationSub: Record "Rent Calculation Subpage";
         UserEnteredDate: Date;
+        Perdayrent: Decimal;
     begin
 
         FinalCalculation.SetRange("FC ID", Rec."FC ID");
@@ -188,14 +279,22 @@ page 50903 "Final Calculation Card"
             // Calculate year number based on difference between user entered year and start year
             YearNumber := UserYear - StartYear + 1;
             FinalCalculation."ContractYear(Termination Date)" := YearNumber;
+            FinalCalculation.Modify();
 
-            // // Check if the entered date is within the contract period
-            // if (UserEnteredDate >= ContractStartDate) and (UserEnteredDate <= ContractEndDate) then
-            //     exit(YearNumber);
-
-            // // Return -1 if the date is outside the contract range
-            // exit(-1);
         end;
     end;
 
+    procedure Fetchperdayrent()
+    var
+        RentCalculation1: Record "Rent Calculation Subpage";
+    begin
+        RentCalculation1.SetRange("Contract ID", Rec."Contract ID");
+        RentCalculation1.SetRange("Year", Rec."ContractYear(Termination Date)");
+
+        if RentCalculation1.FindSet() then
+            repeat
+                Rec."Per Day Rent" := RentCalculation1."Per Day Rent";
+                Rec.Modify();
+            until RentCalculation1.Next() = 0;
+    end;
 }
