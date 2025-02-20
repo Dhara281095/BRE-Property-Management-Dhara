@@ -86,6 +86,13 @@ page 50946 "Rent Calculation SubCard"
                     Editable = false;
                 }
 
+                field("Per Day Rent"; Rec."Per Day Rent")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Per Day Rent';
+                    ToolTip = 'Enter the Per Day Rent.';
+                }
+
 
 
             }

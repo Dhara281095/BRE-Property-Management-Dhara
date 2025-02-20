@@ -87,6 +87,21 @@ table 50901 "Final Calculation"
 
         }
 
+        field(50114; "Total No. Of Days"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Total No. Of Days(Termination Year)';
+
+        }
+
+
+        field(50115; "Per Day Rent"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Per Day Rent(Termination Year)';
+
+        }
+
     }
 
 
@@ -112,32 +127,44 @@ table 50901 "Final Calculation"
     trigger OnDelete()
     var
     begin
-        deletepaymentschedule();
-        deleterevenuestructuresubpag1();
+        deletefinalrevenuecalculation();
+        deletebillingcaculation();
+        PendingreceivablePayable();
+
     end;
 
-    procedure deletepaymentschedule()
+    procedure deletefinalrevenuecalculation()
     var
-        paymentschedule: Record "Revenue Structure Subpage";
+        finalrevenuecalculation: Record "Final Revenue Calculation Grid";
 
     begin
-        paymentschedule.SetRange("Contract Id", Rec."Contract ID");
-        //  paymentschedule.SetRange("FC ID", Rec."FC ID");
-        if paymentschedule.FindSet() then begin
-            paymentschedule.DeleteAll();
+        finalrevenuecalculation.SetRange("Contract Id", Rec."Contract ID");
+        //  finalrevenuecalculation.SetRange("FC ID", Rec."FC ID");
+        if finalrevenuecalculation.FindSet() then begin
+            finalrevenuecalculation.DeleteAll();
         end
 
     end;
 
-    procedure deleterevenuestructuresubpag1()
+    procedure deletebillingcaculation()
     var
-        revenuestructuresubpage1: Record "Revenue Structure Subpage1";
+        billingcalculation: Record "Final Billing Calculation Grid";
     begin
-        revenuestructuresubpage1.SetRange("Contract ID", Rec."Contract ID");
-        // revenuestructuresubpage1.SetRange("FC ID", Rec."FC ID");
-        if revenuestructuresubpage1.FindSet() then begin
-            revenuestructuresubpage1.DeleteAll();
+        billingcalculation.SetRange("Contract ID", rec."Contract ID");
+        if billingcalculation.FindSet() then begin
+            billingcalculation.DeleteAll();
         end;
+    end;
+
+    procedure PendingreceivablePayable()
+    var
+        pendingRecevieable: Record "Pending Receviable Grid";
+    begin
+        pendingRecevieable.SetRange("Contract ID", Rec."Contract ID");
+        if pendingRecevieable.FindSet() then begin
+            pendingRecevieable.DeleteAll();
+        end;
+
     end;
 
     //-----------------Delete record also delete subgrid -----------------//

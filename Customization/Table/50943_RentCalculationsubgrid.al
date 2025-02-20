@@ -161,6 +161,13 @@ table 50943 "Rent Calculation Subpage"
 
         }
 
+        field(50118; "Per Day Rent"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Per Day Rent';
+
+        }
+
 
 
 
