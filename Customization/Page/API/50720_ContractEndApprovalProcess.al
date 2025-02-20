@@ -76,6 +76,10 @@ page 50720 ContractEndApprovalProcess
                 {
                     Caption = 'Tenant Name';
                 }
+                field(Remark; Rec.Remark)
+                {
+                    Caption = 'Tenant Name';
+                }
             }
         }
     }

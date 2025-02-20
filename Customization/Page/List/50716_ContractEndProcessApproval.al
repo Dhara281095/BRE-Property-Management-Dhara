@@ -61,6 +61,11 @@ page 50719 "Contract End Process Approval"
                     ApplicationArea = All;
                     Editable = true;
                 }
+                field(Remark; Rec.Remark)
+                {
+                    ApplicationArea = All;
+                    Editable = true;
+                }
 
             }
         }
