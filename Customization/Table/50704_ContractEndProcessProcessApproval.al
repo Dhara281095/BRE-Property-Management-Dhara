@@ -54,10 +54,16 @@ table 50704 "ContractEndProcessApproval"
             Caption = 'Requested Date';
             // Editable = false;
         }
-        field(50109; "Description"; Date)
+        field(50109; "Description"; Text[400])
         {
             DataClassification = ToBeClassified;
-            Caption = 'Description';
+            Caption = 'Tenant Notes';
+            //Editable = false;
+        }
+        field(50110; "Remark"; Text[400])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Remark';
             //Editable = false;
         }
 
