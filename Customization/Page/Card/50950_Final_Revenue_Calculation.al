@@ -127,6 +127,7 @@ page 50950 "Final Revenue Calculation Grid"
     begin
         OneTimePaymentTypeRevisedRecalculatedAmount();
         GetRentAmountFromRentCalculation();
+        DifferenceAmountCalculation();
     end;
 
     procedure OneTimePaymentTypeRevisedRecalculatedAmount()
@@ -179,7 +180,7 @@ page 50950 "Final Revenue Calculation Grid"
                 FinalReviseAmount := Totalamount - Rec."Annual Rent Amount TermiYear";
                 calculateteminationamount := Rec."Per Day Rent" * Rec."Total No. Of Days"; // 3rd year 365 days - termination 71 days = 294 so calculate 294 * per day rent 122.67 = FinalReviseAmount variable 
                 Rec."Revised Amount" := FinalReviseAmount + calculateteminationamount;
-                Rec."Revised VAT %" := 5;
+                Rec."Revised VAT %" := RentCalculation1."VAT %";
                 TotalVATAmount := Rec."Revised Amount" - (Rec."Revised Amount" / (1 + (Rec."Revised VAT %" / 100)));
                 TotalVATAmount := Round(TotalVATAmount, 0.01);
 
@@ -187,5 +188,17 @@ page 50950 "Final Revenue Calculation Grid"
                 Rec."Revised Amount Incl." := Rec."Revised Amount" + Rec."Revised VAT";
                 Rec.Modify();
             until RentCalculation1.Next() = 0;
+    end;
+
+    procedure DifferenceAmountCalculation()
+    var
+
+    begin
+
+        Rec."Difference Amount" := Rec."Original Amount" - Rec."Revised Amount";
+        Rec."Difference VAT" := Rec."Original VAT" - Rec."Revised VAT";
+        Rec."Difference Amount Incl." := Rec."Original Amount Incl." - Rec."Revised Amount Incl.";
+        Rec.Modify();
+
     end;
 }
