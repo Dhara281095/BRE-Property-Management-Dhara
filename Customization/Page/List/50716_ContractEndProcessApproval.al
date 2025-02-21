@@ -25,7 +25,11 @@ page 50719 "Contract End Process Approval"
                     ApplicationArea = All;
                     Editable = false;
                 }
-
+                field("Request Type"; Rec."Request Type")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
                 field("Tenant ID"; Rec."Tenant ID")
                 {
                     ApplicationArea = All;
