@@ -147,6 +147,12 @@ pageextension 50104 "MyRoleCenterExtension" extends "Business Manager Role Cente
                     ApplicationArea = Basic, Suite;
                     RunObject = Page "Security Deposit List";
                 }
+                action(AdjustSecurityDeposit)
+                {
+                    Caption = 'Adjust Security Deposit';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page Adjustment_Security_Deposit;
+                }
 
             }
         }
