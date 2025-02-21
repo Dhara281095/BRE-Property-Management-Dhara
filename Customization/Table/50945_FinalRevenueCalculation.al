@@ -90,6 +90,23 @@ table 50945 "Final Revenue Calculation Grid"
             DataClassification = ToBeClassified;
             Caption = 'Revised VAT %';
         }
+        field(16; "ContractYear(Termination Date)"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Contract Year On Termination Date';
+
+        }
+        field(17; "Annual Rent Amount TermiYear"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Annual Rent Amount of Termination Year';
+        }
+        field(18; "Total No. Of Days"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Total No. Of Days(Termination Year)';
+
+        }
     }
 
     keys
