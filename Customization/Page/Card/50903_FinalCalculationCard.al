@@ -194,47 +194,47 @@ page 50903 "Final Calculation Card"
                 }
             }
 
-            group("All Payment Charges")
+            // group("All Payment Charges")
+            // {
+            group("Rent-Calculation")
             {
-                group("Rent-Calculation")
+                part("Rent Calculation"; "Rent Calculation SubCard")
                 {
-                    part("Rent Calculation"; "Rent Calculation SubCard")
-                    {
-                        SubPageLink = "Contract ID" = FIELD("Contract ID"); // Link to filter attachments for this owner only
-                        ApplicationArea = All;
-                        // Visible = isVisible;
-                    }
-                }
-                group("Revenue-structure")
-                {
-
-                    part("Revenues"; "Tenancy Contract SubPage Card")
-                    {
-                        SubPageLink = ContractID = FIELD("Contract ID"); // Link to filter attachments for this owner only
-                        ApplicationArea = All;
-                        // Visible = isVisible;
-                    }
-                }
-                group("Revenue structure - Yearly break-down")
-                {
-                    part("Revenue Structure"; "Payment Schedule")
-                    {
-                        SubPageLink = "Contract ID" = FIELD("Contract ID"); // Link to filter attachments for this owner only
-                        ApplicationArea = All;
-                        // Visible = isVisible;
-                    }
-                }
-                group("Payment Details")
-                {
-
-                    part("PaymentSchedule"; "Payment Schedule Card2")
-                    {
-                        SubPageLink = "Contract ID" = FIELD("Contract ID"),
-                  "Tenant ID" = FIELD("Tenant ID");
-                        ApplicationArea = All;
-                    }
+                    SubPageLink = "Contract ID" = FIELD("Contract ID"); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    // Visible = isVisible;
                 }
             }
+            group("Revenue-structure")
+            {
+
+                part("Revenues"; "Tenancy Contract SubPage Card")
+                {
+                    SubPageLink = ContractID = FIELD("Contract ID"); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    // Visible = isVisible;
+                }
+            }
+            group("Revenue structure - Yearly break-down")
+            {
+                part("Revenue Structure"; "Payment Schedule")
+                {
+                    SubPageLink = "Contract ID" = FIELD("Contract ID"); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    // Visible = isVisible;
+                }
+            }
+            group("Payment Details")
+            {
+
+                part("PaymentSchedule"; "Payment Schedule Card2")
+                {
+                    SubPageLink = "Contract ID" = FIELD("Contract ID"),
+                  "Tenant ID" = FIELD("Tenant ID");
+                    ApplicationArea = All;
+                }
+            }
+            // }
         }
     }
 
