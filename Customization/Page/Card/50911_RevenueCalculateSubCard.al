@@ -1,0 +1,119 @@
+page 50911 "Revenue Calculate Sub Card"
+{
+    PageType = ListPart;
+    ApplicationArea = All;
+    DeleteAllowed = true;
+    // UsageCategory = Administration;
+    SourceTable = "Revenue Calculate Sub";
+
+
+    layout
+    {
+        area(Content)
+        {
+            repeater(Group)
+
+            {
+                field("Tenant ID"; Rec."Tenant ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false; // The ID is not editable since it's auto-incrementing
+                    Visible = false;
+                }
+
+                field("RS ID"; Rec."RS ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false; // The ID is not editable since it's auto-incrementing
+                    Visible = false;
+                }
+
+                field("Contract ID"; Rec."Contract ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false; // The ID is not editable since it's auto-incrementing
+                    Visible = false;
+                }
+
+                field("Secondary Item Type"; Rec."Secondary Item Type")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Secondary Item Type';
+                    ToolTip = 'Enter the Secondary Item Type.';
+                    Visible = true;
+                }
+
+                field("Amount"; Rec."Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = false; // The ID is not editable since it's auto-incrementing
+                    Visible = true;
+                }
+
+                field("Contract Start Date"; Rec."Contract Start Date")
+                {
+                    ApplicationArea = All;
+                    Editable = false; // The ID is not editable since it's auto-incrementing
+                    Visible = true;
+                }
+
+                field("Contract End Date"; Rec."Contract End Date")
+                {
+                    ApplicationArea = All;
+                    Editable = false; // The ID is not editable since it's auto-incrementing
+                    Visible = true;
+                }
+
+
+            }
+
+        }
+
+    }
+
+
+    procedure SetContractID(pContractID: Integer)
+    begin
+        ContractID := pContractID;
+    end;
+
+    procedure SetProposalID(pProposalID: Integer)
+    begin
+        proposalID := pProposalID;
+    end;
+
+    procedure SetTenantID(pTenantID: Code[20])
+    begin
+        tenantID := pTenantID;
+    end;
+
+
+    trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    begin
+        Rec."Contract ID" := ContractID;
+        Rec."Tenant ID" := tenantID;
+        // Rec."Proposal ID" := proposalID;
+        // RevenuestructureID := RevenuestructureRec."RS ID"; // Automatically generated ID
+
+    end;
+
+    var
+        ContractID: Integer;
+        proposalID: Integer;
+        tenantID: Code[20];
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
