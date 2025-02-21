@@ -114,6 +114,13 @@ page 50922 "Payment Schedule Card2"
                 {
                     ApplicationArea = All;
 
+                    trigger OnValidate()
+                    begin
+
+                        UpdateBalanceAmountOnPaymentReceived();
+
+                    end;
+
 
 
 
@@ -126,38 +133,6 @@ page 50922 "Payment Schedule Card2"
     }
 
 
-    // procedure UpdateBalanceAmountOnPaymentReceived()
-    // var
-    //     PaymentScheduleRec: Record "Payment Schedule2";
-    //     TenancyContractRec: Record "Tenancy Contract";
-    // begin
-    //     // Filter records where 'Secondary Item Type' is 'Security Deposit Amount' and 'Payment Status' is 'Received'
-    //     PaymentScheduleRec.SetRange("Secondary Item Type", 'Security Deposit Amount');
-    //     PaymentScheduleRec.SetRange("Payment Status", 'Received');
-
-    //     if PaymentScheduleRec.FindSet() then begin
-    //         repeat
-    //             // Filter Tenancy Contract records based on Contract ID
-    //             TenancyContractRec.SetRange("Contract ID", PaymentScheduleRec."Contract ID");
-
-    //             if TenancyContractRec.FindSet() then begin
-    //                 repeat
-    //                     // If Balance Amount has a value, update it
-    //                     if TenancyContractRec."Balance Amount" <> 0 then begin
-    //                         TenancyContractRec."Balance Amount" += PaymentScheduleRec."Amount Including VAT";
-    //                     end
-    //                     else begin
-    //                         // If Balance Amount is 0, set it to Amount Including VAT
-    //                         TenancyContractRec."Balance Amount" := PaymentScheduleRec."Amount Including VAT";
-    //                     end;
-
-    //                     // Modify the record to save changes
-    //                     TenancyContractRec.Modify();
-    //                 until TenancyContractRec.Next() = 0;
-    //             end;
-    //         until PaymentScheduleRec.Next() = 0;
-    //     end;
-    // end;
 
 
 
@@ -186,12 +161,54 @@ page 50922 "Payment Schedule Card2"
     var
     begin
         InvoicedField := NotAccessInvoicedFieldFinanceManager();
+        // UpdateBalanceAmountOnPaymentReceived();
+
 
     end;
 
     var
         InvoicedField: Boolean;
+
+
+
+    local procedure UpdateBalanceAmountOnPaymentReceived()
+    var
+        PaymentScheduleRec: Record "Payment Schedule2";
+        TenancyContractRec: Record "Tenancy Contract";
+    begin
+        // Filter records where 'Secondary Item Type' is 'Security Deposit Amount' and 'Payment Status' is 'Received'
+        PaymentScheduleRec.SetRange("Secondary Item Type", 'Security Deposit Amount');
+        PaymentScheduleRec.SetRange("Payment Status", 'Received');
+
+        if PaymentScheduleRec.FindSet() then begin
+            repeat
+                // Filter Tenancy Contract records based on Contract ID
+                TenancyContractRec.SetRange("Contract ID", PaymentScheduleRec."Contract ID");
+
+                if TenancyContractRec.FindSet() then begin
+                    repeat
+                        // If Balance Amount has a value, update it
+                        if TenancyContractRec."Balance Amount" <> 0 then begin
+                            TenancyContractRec."Balance Amount" += PaymentScheduleRec."Amount Including VAT";
+                            // TenancyContractRec."Security Balanced Amount" += PaymentScheduleRec."Amount Including VAT";
+                        end
+                        else begin
+                            // If Balance Amount is 0, set it to Amount Including VAT
+                            TenancyContractRec."Balance Amount" := PaymentScheduleRec."Amount Including VAT";
+                            // TenancyContractRec."Security Balanced Amount" := PaymentScheduleRec."Amount Including VAT";
+                        end;
+
+                        // Modify the record to save changes
+                        TenancyContractRec.Modify();
+                    until TenancyContractRec.Next() = 0;
+                end;
+            until PaymentScheduleRec.Next() = 0;
+        end;
+    end;
+
 }
+
+
 
 
 

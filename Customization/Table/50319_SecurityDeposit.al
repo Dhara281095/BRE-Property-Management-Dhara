@@ -197,6 +197,7 @@ table 50319 "Security Deposit"
                 "New_Tenant Full Name" := TenancyContractRec."Customer Name";
                 "New Security Amount" := TenancyContractRec."Security Deposit Amount";
                 "New_Balance Amount" := TenancyContractRec."Balance Amount";
+                "Adjusted amount" := TenancyContractRec."Security Amount Received"; // Update the remaining balance
 
 
                 // Update the Narration field dynamically
@@ -208,12 +209,12 @@ table 50319 "Security Deposit"
                 "Contract End Date" := TenancyContractRec."Contract End Date";
                 // "Tenant Full Name" := TenancyContractRec."Customer Name";
                 "Security Deposit Amount" := TenancyContractRec."Security Deposit Amount";
-                "Balance Amount" := TenancyContractRec."Balance Amount";
+                "Balance Amount" := TenancyContractRec."Security Balanced Amount";
             end;
 
 
             // Recalculate Adjusted Amount
-            UpdateAdjustedAmount();
+            // UpdateAdjustedAmount();
         end else begin
             // Clear fields if no record is found
             if IsNewContract then begin
@@ -233,7 +234,7 @@ table 50319 "Security Deposit"
             end;
 
             // Clear Adjusted Amount
-            UpdateAdjustedAmount();
+            // UpdateAdjustedAmount();
         end;
     end;
 
@@ -250,8 +251,14 @@ table 50319 "Security Deposit"
         if "Balance Amount" > "New_Security Deposit Amount" then begin
             // "Adjusted amount" := 0; // Adjusted amount is set to 0
             "Balance Amount" := "Balance Amount" - "New_Security Deposit Amount";
-            "New_Balance Amount" := "New_Security Deposit Amount";
-            "Adjusted amount" := "New Security Amount" - "New_Balance Amount"; // Update the remaining balance
+            // "New_Balance Amount" := "New_Security Deposit Amount";
+            // "Adjusted amount" := "New Security Amount" - "New_Balance Amount"; // Update the remaining balance
+
+
+            "New_Balance Amount" += "New_Security Deposit Amount";
+
+            // Calculate "Adjusted amount" based on the new balance
+            "Adjusted amount" := "New Security Amount" - "New_Balance Amount";
         end else begin
             // Difference becomes Adjusted Amount
             "Balance Amount" := 0; // Balance is cleared
