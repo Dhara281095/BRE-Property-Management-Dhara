@@ -268,33 +268,31 @@ page 50903 "Final Calculation Card"
         FinalCalculation: Record "Final Calculation";
         RentCalculation: Record "Rent Calculation";
         RentCalculationSub: Record "Rent Calculation Subpage";
-        UserEnteredDate: Date;
+        Terminationdate: Date;
         Perdayrent: Decimal;
+
     begin
 
-        FinalCalculation.SetRange("FC ID", Rec."FC ID");
-        FinalCalculation.SetRange("Contract ID", Rec."Contract ID");
-        if FinalCalculation.FindFirst() then begin
-            // Set Contract start and end dates
-            ContractStartDate := FinalCalculation."Contract Start Date"; // 1st January 2022
-            ContractEndDate := FinalCalculation."Contract End Date"; // 31st December 2026
-            UserEnteredDate := Rec."Termination Date";
 
-            // Extract the year from the user entered date and contract start date
-            StartYear := Date2DMY(ContractStartDate, 3); // 3 = year
-            UserYear := Date2DMY(UserEnteredDate, 3); // 3 = year
+        UserYear := 0;
+        Terminationdate := Rec."Termination Date";
+        RentCalculationSub.SetRange("Contract ID", Rec."Contract ID");
+        if RentCalculationSub.FindSet() then begin
+            repeat
 
-            // Calculate year number based on difference between user entered year and start year
-            YearNumber := UserYear - StartYear + 1;
-            Rec."ContractYear(Termination Date)" := YearNumber;
-            Rec.Modify();
 
+                if (Terminationdate >= RentCalculationSub."Period Start Date") and (Terminationdate <= RentCalculationSub."Period End Date") then
+                    UserYear := RentCalculationSub.Year;
+            until (RentCalculationSub.Next() = 0) or (UserYear <> 0);
         end;
+        Rec."ContractYear(Termination Date)" := UserYear;
+        Rec.Modify();
     end;
 
     procedure Fetchperdayrent()
     var
         RentCalculation1: Record "Rent Calculation Subpage";
+        DifferenceDays: Integer;
     begin
         RentCalculation1.SetRange("Contract ID", Rec."Contract ID");
         RentCalculation1.SetRange("Year", Rec."ContractYear(Termination Date)");
@@ -302,6 +300,8 @@ page 50903 "Final Calculation Card"
         if RentCalculation1.FindSet() then
             repeat
                 Rec."Per Day Rent" := RentCalculation1."Per Day Rent";
+                DifferenceDays := Rec."Termination Date" - RentCalculation1."Period Start Date";
+                Rec."Total No. Of Days" := DifferenceDays + 1;
                 Rec.Modify();
             until RentCalculation1.Next() = 0;
     end;
