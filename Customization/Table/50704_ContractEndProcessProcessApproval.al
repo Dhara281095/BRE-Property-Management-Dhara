@@ -18,6 +18,12 @@ table 50704 "ContractEndProcessApproval"
             Caption = 'Status';
             //Editable = false;
         }
+        field(50111; "Request Type"; Text[200])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Request Type';
+            //Editable = false;
+        }
         field(50103; "Contract Id"; Integer)
         {
             DataClassification = ToBeClassified;
@@ -63,7 +69,7 @@ table 50704 "ContractEndProcessApproval"
         field(50110; "Remark"; Text[400])
         {
             DataClassification = ToBeClassified;
-            Caption = 'Remark';
+            Caption = 'Remarks';
             //Editable = false;
         }
 
