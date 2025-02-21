@@ -49,8 +49,8 @@ page 50908 "Secondary Item Card"
                     ApplicationArea = All;
                     Caption = 'VAT Type';
                     ToolTip = 'Enter the VAT Type.';
-                    ShowMandatory = true;
-                    NotBlank = true;
+                    // ShowMandatory = true;
+                    // NotBlank = true;
                 }
 
                 field("VAT %"; Rec."VAT %")
