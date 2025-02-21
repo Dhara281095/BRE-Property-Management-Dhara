@@ -669,52 +669,6 @@ page 50313 "Tenancy Contract Card"
                         Year: Integer;
                     begin
                         // Find the Tenancy Contract record
-                        // Tenancycontract.SetRange("Contract ID", Rec."Contract ID");
-                        // Tenancycontract.SetRange("Tenant ID", Rec."Tenant ID");
-                        // if Tenancycontract.FindFirst() then begin
-                        //     RentRecord."Contract ID" := Tenancycontract."Contract ID";
-                        //     RentRecord."Contract Start Date" := Tenancycontract."Contract Start Date";
-                        //     RentRecord."Contract End Date" := Tenancycontract."Contract End Date";
-                        //     RentRecord."Amount" := Round(Tenancycontract."Annual Rent Amount");
-                        //     RentRecord."Tenant ID" := Tenancycontract."Tenant ID";
-                        //     RentRecord."Secondary Item Type" := 'Rent';
-                        //     RentRecord."VAT Amount" := Round(Tenancycontract."Contract VAT Amount");
-                        //     RentRecord."Amount Including VAT" := Round(Tenancycontract."Contract Amount Including VAT");
-                        //     RentRecord."Number of Installments" := Tenancycontract."No of Installments";
-                        //     RentRecord."VAT %" := Tenancycontract."Contract VAT %";
-                        //     RentRecord.Modify();
-                        //     Message('Record Modifyed Successfully');
-                        // end else begin
-                        //     // Initialize and insert new record with data from Tenancy Contract
-                        //     RentRecord.Init();
-                        //     RentRecord."Contract ID" := Tenancycontract."Contract ID";
-                        //     RentRecord."Contract Start Date" := Tenancycontract."Contract Start Date";
-                        //     RentRecord."Contract End Date" := Tenancycontract."Contract End Date";
-                        //     RentRecord."Amount" := Round(Tenancycontract."Annual Rent Amount");
-                        //     RentRecord."Tenant ID" := Tenancycontract."Tenant ID";
-                        //     RentRecord."Secondary Item Type" := 'Rent';
-                        //     RentRecord."VAT Amount" := Round(Tenancycontract."Contract VAT Amount");
-                        //     RentRecord."Amount Including VAT" := Round(Tenancycontract."Contract Amount Including VAT");
-                        //     RentRecord."Number of Installments" := Tenancycontract."No of Installments";
-                        //     RentRecord."VAT %" := Tenancycontract."Contract VAT %";
-
-                        //     // Handle rent calculation type assignment
-                        //     if Tenancycontract."Single Rent Calculation" = Tenancycontract."Single Rent Calculation"::"Single Unit with lumpsum square feet rate" then
-                        //         RentRecord."Rent Calculation Type" := Format(Tenancycontract."Single Rent Calculation")
-                        //     else if Tenancycontract."Single Rent Calculation" = Tenancycontract."Single Rent Calculation"::"Single Unit with square feet rate" then
-                        //         RentRecord."Rent Calculation Type" := Format(Tenancycontract."Single Rent Calculation")
-                        //     else if Tenancycontract."Merge Rent Calculation" = Tenancycontract."Merge Rent Calculation"::"Merged Unit with differential square feet rate" then
-                        //         RentRecord."Rent Calculation Type" := Format(Tenancycontract."Merge Rent Calculation")
-                        //     else if Tenancycontract."Merge Rent Calculation" = Tenancycontract."Merge Rent Calculation"::"Merged Unit with lumpsum annual amount" then
-                        //         RentRecord."Rent Calculation Type" := Format(Tenancycontract."Merge Rent Calculation")
-                        //     else if Tenancycontract."Merge Rent Calculation" = Tenancycontract."Merge Rent Calculation"::"Merged Unit with same square feet" then
-                        //         RentRecord."Rent Calculation Type" := Format(Tenancycontract."Merge Rent Calculation")
-                        //     else
-                        //         Error('No valid Rent Calculation Type found in Tenancy Contract.');
-
-                        //     RentRecord.Insert();
-
-                        // Find the Tenancy Contract record
                         Tenancycontract.SetRange("Contract ID", Rec."Contract ID");
                         Tenancycontract.SetRange("Tenant ID", Rec."Tenant ID");
                         if Tenancycontract.FindFirst() then begin
@@ -737,6 +691,7 @@ page 50313 "Tenancy Contract Card"
                                 // If Rent Calculation exists, modify it
                                 RentRecord.Modify();
                                 Message('Record Modified Successfully');
+                                exit;
                             end else begin
                                 // If Rent Calculation doesn't exist, insert a new one
                                 RentRecord.Init();
@@ -767,12 +722,7 @@ page 50313 "Tenancy Contract Card"
 
                                 // Insert the new Rent Calculation record
                                 RentRecord.Insert();
-                                Message('Record Inserted Successfully');
                             end;
-                            // end else begin
-                            //     Error('No Tenancy Contract record found for the specified Contract ID and Tenant ID.');
-                            // end;
-
                             // Update data in Revenue Structure Subpage for Single Rent Calculation
                             if Tenancycontract."Single Rent Calculation" = Tenancycontract."Single Rent Calculation"::"Single Unit with lumpsum square feet rate" then begin
                                 SU_lumpsum.SetRange("Contract Id", Tenancycontract."Contract Id");
@@ -792,15 +742,9 @@ page 50313 "Tenancy Contract Card"
                                             RentSubpage."Period End Date" := SU_lumpsum."SL_End Date";
                                             RentSubpage."Number of Days" := SU_lumpsum."SL_Number of Days";
                                             RentSubpage."Per Day Rent" := SU_lumpsum."SL_Per Day Rent";
-
-
                                             RentSubpage.Insert();
                                             Clear(RentSubpage);
-
-
-                                        end //else
-                                            // Message('Skipping duplicate record for RC ID=%1, Year=%2.',
-                                            //         RentRecord."RC ID", SU_lumpsum.SL_Year);
+                                        end
                                     until SU_lumpsum.Next() = 0;
                                 end else
                                     Error('No data found in Single Unit with lumpsum square feet rate subpage for Contract ID %1.', Tenancycontract."Contract ID");
@@ -823,12 +767,9 @@ page 50313 "Tenancy Contract Card"
                                             RentSubpage."Period End Date" := SU_samesquare."End Date";
                                             RentSubpage."Number of Days" := SU_samesquare."Number of Days";
                                             RentSubpage."Per Day Rent" := SU_samesquare."Per Day Rent";
-
                                             RentSubpage.Insert();
                                             Clear(RentSubpage);
-                                        end //else
-                                            //Message('Skipping duplicate record for RC ID=%1, Year=%2.',
-                                            //             RentRecord."RC ID", SU_samesquare.Year);
+                                        end
                                     until SU_samesquare.Next() = 0;
                                 end else
                                     Error('No data found in Single Unit with square feet rate subpage for Contract ID %1.', Tenancycontract."Contract ID");
@@ -869,20 +810,14 @@ page 50313 "Tenancy Contract Card"
                                                     RentSubpage."Per Day Rent" := MU_differentsquare."MD_Per Day Rent";
                                                     RentSubpage.Insert();
                                                     Clear(RentSubpage);
-                                                end // else
-                                                    // Message('Skipping duplicate record for RC ID=%1, Year=%2.',
-                                                    //         RentRecord."RC ID", MU_differentsquare.MD_Year);
+                                                end
                                             until MU_differentsquare.Next() = 0;
-
-                                            // Message('Revenue data successfully updated for Unit Name: %1.', SingleUnitName);
                                         end else
                                             Error('No data found for Unit Name: %1 in Contract ID: %2.', SingleUnitName, Tenancycontract."Contract ID");
                                     end;
                                 end else
                                     Error('Tenancy Contract not found for Contract ID: %1.', Rec."Contract ID");
                             end
-
-
                             else if Tenancycontract."Merge Rent Calculation" = Tenancycontract."Merge Rent Calculation"::"Merged Unit with lumpsum annual amount" then begin
                                 MU_lumpsum.SetRange("Contract ID", Tenancycontract."Contract ID");
                                 if MU_lumpsum.FindSet() then begin
@@ -903,9 +838,7 @@ page 50313 "Tenancy Contract Card"
                                             RentSubpage."Per Day Rent" := MU_lumpsum."ML_Per Day Rent";
                                             RentSubpage.Insert();
                                             Clear(RentSubpage);
-                                        end // else
-                                            // Message('Skipping duplicate record for RC ID=%1, Year=%2.',
-                                            //         RentRecord."RC ID", MU_lumpsum.ML_Year);
+                                        end
                                     until MU_lumpsum.Next() = 0;
                                 end else
                                     Error('No data found in Merged Unit with lumpsum annual amount subpage for Contract ID %1.', Tenancycontract."Contract ID");
@@ -930,9 +863,7 @@ page 50313 "Tenancy Contract Card"
                                             RentSubpage."Per Day Rent" := MU_samesquare."MS_Per Day Rent";
                                             RentSubpage.Insert();
                                             Clear(RentSubpage);
-                                        end // else
-                                            // Message('Skipping duplicate record for RC ID=%1, Year=%2.',
-                                            //         RentRecord."RC ID", MU_samesquare.MS_Year);
+                                        end
                                     until MU_samesquare.Next() = 0;
                                 end else
                                     Error('No data found in Merged Unit with same square feet subpage for Contract ID %1.', Tenancycontract."Contract ID");
@@ -959,29 +890,17 @@ page 50313 "Tenancy Contract Card"
                                         end else begin
                                             RentSubpage."Final Annual Amount" := InstallmentAmount;
                                         end;
-                                        // RentSubpage."VAT Amount" := RentRecord."VAT Amount" / RentRecord."Number of Installments";
-                                        // RentSubpage."Amount Including VAT" := RentRecord."Amount Including VAT" / RentRecord."Number of Installments";
+
                                         RentSubpage.Modify(true);
                                     until RentSubpage.Next() = 0;
                             end;
                             Message('New record has been created in Rent Calculation and subpage updated successfully.');
-                            // end else
-                            //     Error('Tenancy Contract not found for Contract ID %1.', Rec."Contract ID");
                         end;
                     end;
 
                 }
 
-
-
-
             }
-
-
-
-
-
-
 
 
 
