@@ -102,6 +102,12 @@ table 50901 "Final Calculation"
 
         }
 
+        field(50116; "Annual Rent Amount TermiYear"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Annual Rent Amount of Termination Year';
+        }
+
     }
 
 

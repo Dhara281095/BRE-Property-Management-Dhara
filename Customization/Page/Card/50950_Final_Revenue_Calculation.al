@@ -100,6 +100,24 @@ page 50950 "Final Revenue Calculation Grid"
                     Caption = 'Reviseed VAT %';
                     Editable = false;
                 }
+                field("ContractYear(Termination Date)"; Rec."ContractYear(Termination Date)")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Contract Year On Termination Date';
+                }
+                field("Annual Rent Amount TermiYear"; Rec."Annual Rent Amount TermiYear")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Annual Rent Amount of Termination Year';
+                    Editable = false;
+                }
+                field("Total No. Of Days"; Rec."Total No. Of Days")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total No. Of Days(Termination Year)';
+                    ToolTip = 'Enter the Total No. Of Days.';
+                    Editable = false;
+                }
             }
         }
     }
@@ -138,12 +156,14 @@ page 50950 "Final Revenue Calculation Grid"
         Totalamount: Decimal;
         RentCalculation1: Record "Rent Calculation Subpage";
         TotalVATAmount: Decimal;
+        calculateteminationamount: Decimal;
         FinalReviseAmount: Decimal;
 
     begin
         Totalamount := 0;
         RentCalculation.Reset();
         RentCalculation.SetRange("Contract ID", Rec."Contract ID");
+        RentCalculation.SetFilter(Year, '1..%1', Rec."ContractYear(Termination Date)");
 
         if RentCalculation.FindSet() then begin
             repeat
@@ -156,8 +176,9 @@ page 50950 "Final Revenue Calculation Grid"
         RentCalculation1.SetRange("Secondary Item Type", Rec."Revenue Description");
         if RentCalculation1.FindSet() then
             repeat
-                FinalReviseAmount := Rec."Actual Contract Tenure" * Rec."Per Day Rent"; // 3rd year 365 days - termination 71 days = 294 so calculate 294 * per day rent 122.67 = FinalReviseAmount variable 
-                Rec."Revised Amount" := Totalamount - FinalReviseAmount;
+                FinalReviseAmount := Totalamount - Rec."Annual Rent Amount TermiYear";
+                calculateteminationamount := Rec."Per Day Rent" * Rec."Total No. Of Days"; // 3rd year 365 days - termination 71 days = 294 so calculate 294 * per day rent 122.67 = FinalReviseAmount variable 
+                Rec."Revised Amount" := FinalReviseAmount + calculateteminationamount;
                 Rec."Revised VAT %" := 5;
                 TotalVATAmount := Rec."Revised Amount" - (Rec."Revised Amount" / (1 + (Rec."Revised VAT %" / 100)));
                 TotalVATAmount := Round(TotalVATAmount, 0.01);
