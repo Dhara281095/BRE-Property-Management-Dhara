@@ -54,6 +54,14 @@ table 50904 "Rent Calculate Sub"
 
         }
 
+        field(50105; "Per Day Rent"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Per Day Rent';
+            Editable = false;
+
+        }
+
         field(50106; "Entry No."; Integer)
         {
             DataClassification = ToBeClassified;

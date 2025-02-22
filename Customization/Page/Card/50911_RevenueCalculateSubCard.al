@@ -40,28 +40,36 @@ page 50911 "Revenue Calculate Sub Card"
                     ApplicationArea = All;
                     Caption = 'Secondary Item Type';
                     ToolTip = 'Enter the Secondary Item Type.';
-                    Visible = true;
                 }
 
                 field("Amount"; Rec."Amount")
                 {
                     ApplicationArea = All;
                     Editable = false; // The ID is not editable since it's auto-incrementing
-                    Visible = true;
                 }
 
-                field("Contract Start Date"; Rec."Contract Start Date")
+                field("VAT Amount"; Rec."VAT Amount")
                 {
                     ApplicationArea = All;
                     Editable = false; // The ID is not editable since it's auto-incrementing
-                    Visible = true;
                 }
 
-                field("Contract End Date"; Rec."Contract End Date")
+                field("Amount Including VAT"; Rec."Amount Including VAT")
                 {
                     ApplicationArea = All;
                     Editable = false; // The ID is not editable since it's auto-incrementing
-                    Visible = true;
+                }
+
+                field("Installment Start Date"; Rec."Installment Start Date")
+                {
+                    ApplicationArea = All;
+                    Editable = false; // The ID is not editable since it's auto-incrementing
+                }
+
+                field("Installment End Date"; Rec."Installment End Date")
+                {
+                    ApplicationArea = All;
+                    Editable = false; // The ID is not editable since it's auto-incrementing
                 }
 
 

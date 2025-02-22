@@ -99,6 +99,9 @@ page 50903 "Final Calculation Card"
                         Fetchperdayrent();
                         PopulateRevenueCalculationGrid();
                         GetDataTenancyContract();
+                        RentCalculate();
+                        RevenueCalculateOneTime();
+                        RevenueCalculate();
                     end;
                 }
                 field("ContractYear(Termination Date)"; Rec."ContractYear(Termination Date)")
@@ -194,11 +197,11 @@ page 50903 "Final Calculation Card"
                 }
             }
 
-            // group("All Payment Charges")
-            // {
+
             group("Rent-Calculation")
             {
-                part("Rent Calculation"; "Rent Calculation SubCard")
+
+                part("Rent Calculation"; "Rent Calculate Sub Card")
                 {
                     SubPageLink = "Contract ID" = FIELD("Contract ID"); // Link to filter attachments for this owner only
                     ApplicationArea = All;
@@ -217,7 +220,8 @@ page 50903 "Final Calculation Card"
             }
             group("Revenue structure - Yearly break-down")
             {
-                part("Revenue Structure"; "Payment Schedule")
+
+                part("Revenue Structure"; "Revenue Calculate Sub Card")
                 {
                     SubPageLink = "Contract ID" = FIELD("Contract ID"); // Link to filter attachments for this owner only
                     ApplicationArea = All;
@@ -234,18 +238,8 @@ page 50903 "Final Calculation Card"
                     ApplicationArea = All;
                 }
             }
-            // }
         }
     }
-
-
-    // trigger OnAfterGetRecord()
-    // var
-    // begin
-    //     PopulateRevenueCalculationGrid();
-    //     GetDataTenancyContract();
-
-    // end;
 
 
     //////////////////  START Final Revenue Calculation Grid ////////////////////
@@ -261,7 +255,6 @@ page 50903 "Final Calculation Card"
         if FinalRevCalcGrid.FindSet() then begin
             FinalRevCalcGrid.DeleteAll();
         end;
-
 
         // Step 1: Get main rent amount from Rent Calculation table
         // RentCalc.Reset();
@@ -285,6 +278,7 @@ page 50903 "Final Calculation Card"
         end;
 
     end;
+
 
     procedure GetDataTenancyContract()
     var
@@ -315,7 +309,6 @@ page 50903 "Final Calculation Card"
                 Clear(FinalRevCalcGrid1);
             until TenancyContractLine1.Next() = 0;
         end;
-
     end;
 
 
@@ -335,8 +328,6 @@ page 50903 "Final Calculation Card"
         Perdayrent: Decimal;
 
     begin
-
-
         UserYear := 0;
         Terminationdate := Rec."Termination Date";
         RentCalculationSub.SetRange("Contract ID", Rec."Contract ID");
@@ -368,6 +359,94 @@ page 50903 "Final Calculation Card"
                 Rec."Annual Rent Amount TermiYear" := RentCalculation1."Final Annual Amount";
                 Rec.Modify();
             until RentCalculation1.Next() = 0;
+    end;
+
+
+
+    procedure RentCalculate()
+    var
+        RentCalculation: Record "Rent Calculation Subpage";
+        RentCalculate: Record "Rent Calculate Sub";
+    begin
+
+        // TenancyContractLine.Reset();
+        RentCalculation.SetRange("Contract ID", Rec."Contract ID");
+        RentCalculation.SetRange("Tenant ID", Rec."Tenant ID");
+        if RentCalculation.FindSet() then begin
+            repeat
+                RentCalculate.Init();
+                RentCalculate."Contract ID" := Rec."Contract ID";
+                RentCalculate."Tenant ID" := Rec."Tenant ID";
+                // Calculate VAT amount based on percentage
+                RentCalculate."Year" := RentCalculation."Year";
+                RentCalculate."Period Start Date" := RentCalculation."Period Start Date";
+                RentCalculate."Period End Date" := RentCalculation."Period End Date";
+                RentCalculate."Number Of Days" := RentCalculation."Number Of Days";
+                RentCalculate."Final Annual Amount" := RentCalculation."Final Annual Amount";
+                RentCalculate."Per Day Rent" := RentCalculation."Per Day Rent";
+                RentCalculate.Insert();
+                Clear(RentCalculate);
+            until RentCalculation.Next() = 0;
+        end;
+
+    end;
+
+
+
+
+    procedure RevenueCalculateOneTime()
+    var
+        RevenueSubpage: Record "Tenancy Contract Subpage";
+        //PaymentSchedule2: Record "Payment Schedule2";
+        RevenueCalculate: Record "Revenue Calculate Sub";
+
+    begin
+        RevenueSubpage.SetRange("ContractID", Rec."Contract ID");
+        RevenueSubpage.SetRange("TenantID", Rec."Tenant ID");
+
+        RevenueSubpage.SetRange("Payment Type", 1);
+        if RevenueSubpage.FindSet() then
+            repeat
+                RevenueCalculate.Init();
+                RevenueCalculate."Contract ID" := RevenueSubpage."ContractID";
+                RevenueCalculate."Tenant ID" := RevenueSubpage."TenantId";
+                RevenueCalculate."Secondary Item Type" := RevenueSubpage."Secondary Item Type";
+                RevenueCalculate.Amount := RevenueSubpage.Amount;
+                RevenueCalculate."VAT Amount" := RevenueSubpage."VAT Amount";
+                RevenueCalculate."Amount Including VAT" := RevenueSubpage."Amount Including VAT";
+                RevenueCalculate."Installment Start Date" := RevenueSubpage."Start Date";
+                RevenueCalculate."Installment End Date" := RevenueSubpage."End Date";
+                RevenueCalculate.Insert();
+                Clear(RevenueCalculate);
+            until RevenueSubpage.Next() = 0;
+    end;
+
+    procedure RevenueCalculate()
+    var
+        RevenueCalculation: Record "Revenue Structure Subpage";
+        RevenueCalculate: Record "Revenue Calculate Sub";
+    begin
+
+        // TenancyContractLine.Reset();
+        RevenueCalculation.SetRange("Contract ID", Rec."Contract ID");
+        RevenueCalculation.SetRange("Tenant ID", Rec."Tenant ID");
+        if RevenueCalculation.FindSet() then begin
+            repeat
+                RevenueCalculate.Init();
+                RevenueCalculate."Contract ID" := Rec."Contract ID";
+                RevenueCalculate."Tenant ID" := Rec."Tenant ID";
+                // Calculate VAT amount based on percentage
+                RevenueCalculate."Secondary Item Type" := RevenueCalculation."Secondary Item Type";
+                RevenueCalculate."Amount" := RevenueCalculation."Final Annual Amount";
+                RevenueCalculate."VAT Amount" := RevenueCalculation."VAT Amount";
+                RevenueCalculate."Amount Including VAT" := RevenueCalculation."Amount Including VAT";
+                RevenueCalculate."Installment Start Date" := RevenueCalculation."Period Start Date";
+                RevenueCalculate."Installment End Date" := RevenueCalculation."Period End Date";
+                RevenueCalculate.Insert();
+                Clear(RevenueCalculate);
+            until RevenueCalculation.Next() = 0;
+        end;
+
     end;
 
     trigger OnAfterGetRecord()
