@@ -251,13 +251,12 @@ table 50319 "Security Deposit"
         if "Balance Amount" > "New_Security Deposit Amount" then begin
             // "Adjusted amount" := 0; // Adjusted amount is set to 0
             "Balance Amount" := "Balance Amount" - "New_Security Deposit Amount";
+
             // "New_Balance Amount" := "New_Security Deposit Amount";
             // "Adjusted amount" := "New Security Amount" - "New_Balance Amount"; // Update the remaining balance
 
-
+            //last added code //
             "New_Balance Amount" += "New_Security Deposit Amount";
-
-            // Calculate "Adjusted amount" based on the new balance
             "Adjusted amount" := "New Security Amount" - "New_Balance Amount";
         end else begin
             // Difference becomes Adjusted Amount

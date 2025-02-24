@@ -140,25 +140,26 @@ table 50925 "Payment Mode2"
             //OptionMembers = "Scheduled","Due","Received","Overdue","Cancelled";
             Caption = 'Payment Status';
 
-            trigger OnValidate()
-            var
-                emailrec: Codeunit "Send PaymentMode Email";
 
-            begin
-                // Check the status and call the appropriate email procedure
-                if Rec."Payment Status" = Rec."Payment Status"::Received then begin
-                    emailrec.SendEmail(Rec); // Call for Received status
+            //     trigger OnValidate()
+            //     var
+            //         emailrec: Codeunit "Send PaymentMode Email";
 
-                end
+            //     begin
+            //         // Check the status and call the appropriate email procedure
+            //         if Rec."Payment Status" = Rec."Payment Status"::Received then begin
+            //             emailrec.SendEmail(Rec); // Call for Received status
 
-                else if Rec."Payment Status" = Rec."Payment Status"::Cancelled then begin
-                    emailrec.SendEmailCancelled(Rec); // Call for Cancelled status
-                end
+            //         end
 
-                else if Rec."Payment Status" = Rec."Payment Status"::Overdue then begin
-                    emailrec.SendEmailOverdue(Rec); // Call for Overdue status
-                end;
-            end;
+            //         else if Rec."Payment Status" = Rec."Payment Status"::Cancelled then begin
+            //             emailrec.SendEmailCancelled(Rec); // Call for Cancelled status
+            //         end
+
+            //         else if Rec."Payment Status" = Rec."Payment Status"::Overdue then begin
+            //             emailrec.SendEmailOverdue(Rec); // Call for Overdue status
+            //         end;
+            //     end;
         }
 
 
@@ -481,9 +482,17 @@ table 50925 "Payment Mode2"
     end;
 
     trigger OnModify()
+    var
+        emailrec: Codeunit "Send PaymentMode Email";
     begin
-
+        if Rec."Payment Status" = Rec."Payment Status"::Received then
+            emailrec.SendEmail(Rec)
+        else if Rec."Payment Status" = Rec."Payment Status"::Cancelled then
+            emailrec.SendEmailCancelled(Rec)
+        else if Rec."Payment Status" = Rec."Payment Status"::Overdue then
+            emailrec.SendEmailOverdue(Rec);
     end;
+
 
     trigger OnDelete()
     begin
