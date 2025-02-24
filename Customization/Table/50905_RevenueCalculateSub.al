@@ -32,17 +32,31 @@ table 50905 "Revenue Calculate Sub"
             Editable = false;
         }
 
-        field(50104; "Contract Start Date"; Date)
+        field(50104; "Installment Start Date"; Date)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Contract Start Date';
+            Caption = 'Installment Start Date';
             Editable = false;
         }
 
-        field(50105; "Contract End Date"; Date)
+        field(50105; "Installment End Date"; Date)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Contract End Date';
+            Caption = 'Installment End Date';
+            Editable = false;
+        }
+
+        field(50106; "VAT Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'VAT Amount';
+            Editable = false;
+        }
+
+        field(50107; "Amount Including VAT"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Amount Including VAT';
             Editable = false;
         }
 
