@@ -100,6 +100,7 @@ page 50903 "Final Calculation Card"
                         PopulateRevenueCalculationGrid();
                         GetDataTenancyContract();
                         RentCalculate();
+                        OtherPaymentCalculate();
                         RevenueCalculateOneTime();
                         RevenueCalculate();
                     end;
@@ -158,6 +159,13 @@ page 50903 "Final Calculation Card"
                     Caption = 'Annual Rent Amount of Termination Year';
                     Editable = false;
                 }
+
+                field("Status"; Rec.Status)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Status';
+                    Editable = false;
+                }
             }
 
             group("Final Revenue Calculation")
@@ -211,9 +219,9 @@ page 50903 "Final Calculation Card"
             group("Revenue-structure")
             {
 
-                part("Revenues"; "Tenancy Contract SubPage Card")
+                part("Other Payment"; "OtherPayment Calculate SubCard")
                 {
-                    SubPageLink = ContractID = FIELD("Contract ID"); // Link to filter attachments for this owner only
+                    SubPageLink = "Contract ID" = FIELD("Contract ID"); // Link to filter attachments for this owner only
                     ApplicationArea = All;
                     // Visible = isVisible;
                 }
@@ -237,6 +245,25 @@ page 50903 "Final Calculation Card"
                   "Tenant ID" = FIELD("Tenant ID");
                     ApplicationArea = All;
                 }
+            }
+        }
+    }
+
+    actions
+    {
+        area(processing)
+        {
+            action(FinalCalculation)
+            {
+                ApplicationArea = All;
+                Caption = 'Final Calculation';
+                Image = NewDocument;
+                trigger OnAction()
+                var
+
+                begin
+
+                end;
             }
         }
     }
@@ -268,9 +295,9 @@ page 50903 "Final Calculation Card"
                 FinalRevCalcGrid."Original VAT" := RentCalc."VAT Amount";
                 FinalRevCalcGrid."Original Amount Incl." := RentCalc."Amount Including VAT";
                 FinalRevCalcGrid."Actual Contract Tenure" := Rec."Actual Contract Tenure";
-                FinalRevCalcGrid."Per Day Rent" := Rec."Per Day Rent";
+                // FinalRevCalcGrid."Per Day Rent" := Rec."Per Day Rent";
                 FinalRevCalcGrid."ContractYear(Termination Date)" := Rec."ContractYear(Termination Date)";
-                FinalRevCalcGrid."Annual Rent Amount TermiYear" := Rec."Annual Rent Amount TermiYear";
+                // FinalRevCalcGrid."Annual Rent Amount TermiYear" := Rec."Annual Rent Amount TermiYear";
                 FinalRevCalcGrid."Total No. Of Days" := Rec."Total No. Of Days";
                 FinalRevCalcGrid.Insert();
                 Clear(FinalRevCalcGrid);
@@ -284,7 +311,7 @@ page 50903 "Final Calculation Card"
     var
         FinalRevCalcGrid1: Record "Final Revenue Calculation Grid";
         TenancyContractLine1: Record "Tenancy Contract Subpage";
-        FinalCalcHeader1: Record "Final Calculation";
+
     begin
 
         // TenancyContractLine.Reset();
@@ -301,9 +328,9 @@ page 50903 "Final Calculation Card"
 
                 FinalRevCalcGrid1."Original Amount Incl." := TenancyContractLine1."Amount Including VAT";
                 FinalRevCalcGrid1."Actual Contract Tenure" := Rec."Actual Contract Tenure";
-                FinalRevCalcGrid1."Per Day Rent" := Rec."Per Day Rent";
+                //   FinalRevCalcGrid1."Per Day Rent" := Rec."Per Day Rent";
                 FinalRevCalcGrid1."ContractYear(Termination Date)" := Rec."ContractYear(Termination Date)";
-                FinalRevCalcGrid1."Annual Rent Amount TermiYear" := Rec."Annual Rent Amount TermiYear";
+                //  FinalRevCalcGrid1."Annual Rent Amount TermiYear" := Rec."Annual Rent Amount TermiYear";
                 FinalRevCalcGrid1."Total No. Of Days" := Rec."Total No. Of Days";
                 FinalRevCalcGrid1.Insert();
                 Clear(FinalRevCalcGrid1);
@@ -369,6 +396,12 @@ page 50903 "Final Calculation Card"
         RentCalculate: Record "Rent Calculate Sub";
     begin
 
+
+        RentCalculation.SetRange("Contract ID", Rec."Contract ID");
+        if RentCalculation.FindSet() then begin
+            RentCalculation.DeleteAll();
+        end;
+
         // TenancyContractLine.Reset();
         RentCalculation.SetRange("Contract ID", Rec."Contract ID");
         RentCalculation.SetRange("Tenant ID", Rec."Tenant ID");
@@ -401,6 +434,12 @@ page 50903 "Final Calculation Card"
         RevenueCalculate: Record "Revenue Calculate Sub";
 
     begin
+
+        RevenueSubpage.SetRange("ContractID", Rec."Contract ID");
+        if RevenueSubpage.FindSet() then begin
+            RevenueSubpage.DeleteAll();
+        end;
+
         RevenueSubpage.SetRange("ContractID", Rec."Contract ID");
         RevenueSubpage.SetRange("TenantID", Rec."Tenant ID");
 
@@ -427,6 +466,11 @@ page 50903 "Final Calculation Card"
         RevenueCalculate: Record "Revenue Calculate Sub";
     begin
 
+        RevenueCalculation.SetRange("Contract ID", Rec."Contract ID");
+        if RevenueCalculation.FindSet() then begin
+            RevenueCalculation.DeleteAll();
+        end;
+
         // TenancyContractLine.Reset();
         RevenueCalculation.SetRange("Contract ID", Rec."Contract ID");
         RevenueCalculation.SetRange("Tenant ID", Rec."Tenant ID");
@@ -449,6 +493,40 @@ page 50903 "Final Calculation Card"
 
     end;
 
+    procedure OtherPaymentCalculate()
+    var
+        OtherPaymentCalculation: Record "Tenancy Contract Subpage";
+        OtherPaymentCalculate: Record "Other Payment Calculate Sub";
+
+    begin
+
+        OtherPaymentCalculation.SetRange("ContractID", Rec."Contract ID");
+        if OtherPaymentCalculation.FindSet() then begin
+            OtherPaymentCalculation.DeleteAll();
+        end;
+
+        // TenancyContractLine.Reset();
+        OtherPaymentCalculation.SetRange("ContractID", Rec."Contract ID");
+        OtherPaymentCalculation.SetRange("TenantID", Rec."Tenant ID");
+        if OtherPaymentCalculate.FindSet() then begin
+            repeat
+                OtherPaymentCalculate.Init();
+                OtherPaymentCalculate."Contract ID" := Rec."Contract ID";
+                OtherPaymentCalculate."Tenant ID" := Rec."Tenant ID";
+                OtherPaymentCalculate."Secondary Item Type" := OtherPaymentCalculation."Secondary Item Type";
+                OtherPaymentCalculate."Amount" := OtherPaymentCalculation."Amount";
+                OtherPaymentCalculate."VAT Amount" := OtherPaymentCalculation."VAT Amount";
+                OtherPaymentCalculate."Amount Including VAT" := OtherPaymentCalculation."Amount Including VAT";
+                OtherPaymentCalculate."Start Date" := OtherPaymentCalculation."Start Date";
+                OtherPaymentCalculate."End Date" := OtherPaymentCalculation."End Date";
+                OtherPaymentCalculate.Insert();
+                Clear(OtherPaymentCalculate);
+            until OtherPaymentCalculate.Next() = 0;
+        end;
+
+    end;
+
+
     trigger OnAfterGetRecord()
     begin
         CurrPage."Additional Charges".Page.SetTenantID(Rec."Tenant ID");
@@ -470,4 +548,7 @@ page 50903 "Final Calculation Card"
         CurrPage."Additional Charges".Page.SetContractID(Rec."Contract ID");
         CurrPage."Additional Charges".Page.SetStartEndDate(Rec."Contract Start Date", Rec."Contract End Date");
     end;
+
+
+
 }

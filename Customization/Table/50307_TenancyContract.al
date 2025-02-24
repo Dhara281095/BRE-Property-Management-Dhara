@@ -1459,6 +1459,7 @@ table 50307 "Tenancy Contract"
             InitValue = 'Final Calculation';
             Editable = false;
 
+
         }
 
         field(50173; "Contract VAT %"; Option)
@@ -1491,6 +1492,75 @@ table 50307 "Tenancy Contract"
             DataClassification = ToBeClassified;
             Editable = false;
         }
+
+        field(50179; "Termination Of Contract"; Option)
+        {
+            OptionMembers = " ","Regular Termination","Early Termination","Suspension Of Termination";
+            Editable = true;
+        }
+
+        // field(50190; "Termination Type"; Option)
+        // {
+        //     // DataClassification = ToBeClassified;
+        //     OptionMembers = " ","Standard","Early","Suspension";
+        // }
+
+        field(50180; "Termination Date"; Date)
+        {
+            DataClassification = ToBeClassified;
+        }
+
+        // field(50181; "Security Deposit Amount"; Decimal)
+        // {
+        //     DataClassification = ToBeClassified;
+        // }
+
+        field(50181; "Unpaid Rent Due"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+        }
+
+        field(50182; "Penalty Charges"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+        }
+
+        field(50183; "Damage Charges"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+        }
+
+        field(50184; "Service Charges Due"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+        }
+
+        field(50185; "Final Refundable Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+        }
+
+        field(50186; "Approval Required"; Boolean)
+        {
+            DataClassification = ToBeClassified;
+        }
+
+        field(50187; "Approval Stauts"; Enum "Approval Status Enum")
+        {
+            DataClassification = ToBeClassified;
+            // OptionMembers = " ","Pending","Approved","Rejected";
+        }
+        field(50188; "Approved By"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+
+        }
+
+        field(50189; "Final Settlement Date"; Date)
+        {
+            DataClassification = ToBeClassified;
+        }
+
 
 
     }

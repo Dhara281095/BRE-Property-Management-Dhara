@@ -589,57 +589,75 @@ page 50313 "Tenancy Contract Card"
                         Page.Run(Page::"SuspendReasonList", SuspendedReasonRec);
                     end;
                 }
-
-
-                field("Final Calculation"; rec."Final Calculation")
+                field("Termination Of Contract"; rec."Termination Of Contract")
                 {
                     ApplicationArea = All;
-                    DrillDown = true;
-                    // Show or hide based on status
-                    //Visible = Status = Status::Approved; // This will show the field only if status is "Approved"
 
-                    trigger OnDrillDown()
-                    var
-                        TenancyRecord: Record "Tenancy Contract"; // Replace with the actual table name
-                        FinalCalculation: Record "Final Calculation";
-                        InstallmentStructure: Record "Revenue Structure Subpage1"; // Second Table
-                        StartDate: Date;
-                        EndDate: Date;
-                        DaysDiff: Integer;
-                        DaysCal: Integer;
-                        TerminateDate: Date;
-
+                    trigger OnValidate()
                     begin
-                        FinalCalculation.SetRange("Contract ID", Rec."Contract ID");
-                        FinalCalculation.SetRange("Tenant ID", Rec."Tenant ID");
 
-                        if FinalCalculation.FindSet() then begin
-                            FinalCalculation."Contract ID" := Rec."Contract ID";
-                            FinalCalculation."Tenant ID" := Rec."Tenant ID";
-                            FinalCalculation."Contract Start Date" := Rec."Contract Start Date";
-                            FinalCalculation."Contract End Date" := Rec."Contract End Date";
-                            FinalCalculation."Unit Type" := Rec."Usage Type";
-                            FinalCalculation."Contract Amount" := Rec."Annual Rent Amount";
-                            FinalCalculation.Modify();
-                            Message('Record Modifyed Successfully');
-                        end else begin
-                            FinalCalculation.Init();
-                            FinalCalculation."Contract ID" := Rec."Contract ID";
-                            FinalCalculation."Tenant ID" := Rec."Tenant ID";
-                            FinalCalculation."Unit Type" := Rec."Usage Type";
-                            FinalCalculation."Contract Start Date" := Rec."Contract Start Date";
-                            FinalCalculation."Contract End Date" := Rec."Contract End Date";
-                            FinalCalculation."Contract Amount" := Rec."Annual Rent Amount";
-                            FinalCalculation.Insert();
-                            Message('Record Created Successfully');
-                        end;
+                        if Rec."Termination Of Contract" = Rec."Termination Of Contract"::" " then
+                            IsVisible := false  // Link should be visible
+                        else
+                            IsVisible := true; // Link should be hidde
 
-                        StartDate := Rec."Contract Start Date";
-                        EndDate := Rec."Contract End Date";
-                        DaysDiff := EndDate - StartDate + 1;
-                        FinalCalculation."Original Contract Tenure" := DaysDiff;
-                        FinalCalculation.Modify(true);
                     end;
+                }
+
+                group(FinalCalculation)
+                {
+                    Visible = IsVisible;
+                    ShowCaption = false;
+                    field("Final Calculation"; rec."Final Calculation")
+                    {
+                        ApplicationArea = All;
+                        DrillDown = true;
+                        // Show or hide based on status
+                        //Visible = Status = Status::Approved; // This will show the field only if status is "Approved"
+
+                        trigger OnDrillDown()
+                        var
+                            TenancyRecord: Record "Tenancy Contract"; // Replace with the actual table name
+                            FinalCalculation: Record "Final Calculation";
+                            InstallmentStructure: Record "Revenue Structure Subpage1"; // Second Table
+                            StartDate: Date;
+                            EndDate: Date;
+                            DaysDiff: Integer;
+                            DaysCal: Integer;
+                            TerminateDate: Date;
+
+                        begin
+                            FinalCalculation.SetRange("Contract ID", Rec."Contract ID");
+                            FinalCalculation.SetRange("Tenant ID", Rec."Tenant ID");
+
+                            if FinalCalculation.FindSet() then begin
+                                FinalCalculation."Contract ID" := Rec."Contract ID";
+                                FinalCalculation."Tenant ID" := Rec."Tenant ID";
+                                FinalCalculation."Contract Start Date" := Rec."Contract Start Date";
+                                FinalCalculation."Contract End Date" := Rec."Contract End Date";
+                                FinalCalculation."Unit Type" := Rec."Usage Type";
+                                FinalCalculation."Contract Amount" := Rec."Annual Rent Amount";
+                                FinalCalculation.Modify();
+                                Message('Record Modifyed Successfully');
+                            end else begin
+                                FinalCalculation.Init();
+                                FinalCalculation."Contract ID" := Rec."Contract ID";
+                                FinalCalculation."Tenant ID" := Rec."Tenant ID";
+                                FinalCalculation."Unit Type" := Rec."Usage Type";
+                                FinalCalculation."Contract Start Date" := Rec."Contract Start Date";
+                                FinalCalculation."Contract End Date" := Rec."Contract End Date";
+                                FinalCalculation."Contract Amount" := Rec."Annual Rent Amount";
+                                FinalCalculation.Insert();
+                                Message('Record Created Successfully');
+                            end;
+
+                            StartDate := Rec."Contract Start Date";
+                            EndDate := Rec."Contract End Date";
+                            DaysDiff := EndDate - StartDate + 1;
+                            FinalCalculation."Original Contract Tenure" := DaysDiff;
+                            FinalCalculation.Modify(true);
+                        end;
+                    }
                 }
 
                 field("Update Data"; Rec."Update Data")
@@ -1151,6 +1169,11 @@ page 50313 "Tenancy Contract Card"
         UpdateVisibility();
         UpdateSecurityAmountReceived();
 
+        if Rec."Termination Of Contract" = Rec."Termination Of Contract"::" " then
+            IsVisible := false  // Link should be visible
+        else
+            IsVisible := true; // Link should be hidde
+
     end;
 
     trigger OnModifyRecord(): Boolean
@@ -1198,6 +1221,7 @@ page 50313 "Tenancy Contract Card"
 
 
 
+
     local procedure UpdateFieldsEnable()
     begin
         ProposalIDEnabled := Rec."Contract Type" = Rec."Contract Type"::"New Contract";
@@ -1217,7 +1241,7 @@ page 50313 "Tenancy Contract Card"
         ShowLegalReasonFields4: Boolean;
 
         ShowLegalReasonFields5: Boolean;
-
+        IsVisible: Boolean;
 
     // trigger OnAfterge
     // begin
