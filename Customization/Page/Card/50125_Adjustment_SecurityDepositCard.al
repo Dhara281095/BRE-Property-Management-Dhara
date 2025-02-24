@@ -95,6 +95,52 @@ page 50125 "Adjustment Security Deposit"
                     UpdatePropagation = Both;
                 }
             }
+
+        }
+    }
+    actions
+    {
+        area(Processing)
+        {
+            action(Post)
+            {
+                ApplicationArea = All;
+                Caption = 'Post Entry';
+                Image = PostDocument;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+
+                trigger OnAction()
+                var
+                    SecurityDepositEntry: Record "Security Deposit Entry";
+                begin
+                    // Validate required fields
+                    if Rec."Contract ID" = 0 then
+                        Error('Contract ID must be specified');
+
+                    if (Rec."Security Amount Status" = Rec."Security Amount Status"::" ") then
+                        Error('Please select Security Amount Status');
+
+                    if Rec.Amount = 0 then
+                        Error('Amount must be specified');
+
+                    // Create new entry
+                    SecurityDepositEntry.Init();
+                    SecurityDepositEntry."Security Deposit ID" := Rec.ID;
+                    SecurityDepositEntry."Contract ID" := Rec."Contract ID";
+                    SecurityDepositEntry."Security Deposit" := Rec."Security Deposit";
+                    SecurityDepositEntry."Start Date" := Rec."Contract Start Date";
+                    SecurityDepositEntry."End Date" := Rec."Contract End Date";
+                    SecurityDepositEntry.Status := Rec.Status; // Set initial status as Open
+                    SecurityDepositEntry.Insert(true);
+
+                    Message('Entry posted successfully!');
+
+                    // Open the entries list
+                    // Page.Run(Page::"Security Deposit Entries");
+                end;
+            }
         }
     }
     var
