@@ -73,6 +73,44 @@ table 50111 "Adjustment Security Deposit"
             DataClassification = ToBeClassified;
             OptionCaption = ' ,Adjust Installment,Termination Charges,All Charges'; // Empty option
             OptionMembers = " ","Adjust Installment","Termination Charges","All Charges";
+
+
+            trigger OnValidate()
+            var
+                TermChargesGrid: Record "Additional Charges Sub"; // Your actual grid table name
+                TotalAmount: Decimal;
+                TotalVATAmount: Decimal;
+                TotalAmountInclVAT: Decimal;
+            begin
+                if Rec."Security Amount Status" = Rec."Security Amount Status"::"Termination Charges" then begin
+                    // Check if Contract ID is selected
+                    if Rec."Contract ID" = 0 then
+                        Error('Please select a Contract ID first');
+
+                    // Clear previous values
+                    Clear(TotalAmount);
+                    Clear(TotalVATAmount);
+                    Clear(TotalAmountInclVAT);
+
+                    // Get the termination charges grid data for this contract
+                    TermChargesGrid.Reset();
+                    TermChargesGrid.SetRange("Contract ID", Rec."Contract ID");
+
+                    if TermChargesGrid.FindSet() then begin
+                        repeat
+                            // Sum up the amounts from grid
+                            TotalAmount += TermChargesGrid.Amount;
+                            TotalVATAmount += TermChargesGrid."VAT Amount";
+                            TotalAmountInclVAT += TermChargesGrid."Amount Including VAT";
+                        until TermChargesGrid.Next() = 0;
+
+                        // Set the totals
+                        Rec.Amount := TotalAmount;
+                        Rec."VAT Amount" := TotalVATAmount;
+                        Rec."Amount Including VAT" := TotalAmountInclVAT;
+                    end;
+                end;
+            end;
         }
 
         field(50107; "Payment Series"; Text[250])
@@ -159,4 +197,6 @@ table 50111 "Adjustment Security Deposit"
             Clustered = true;
         }
     }
+
+
 }

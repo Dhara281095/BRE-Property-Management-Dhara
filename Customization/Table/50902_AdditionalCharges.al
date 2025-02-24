@@ -8,7 +8,7 @@ table 50902 "Additional Charges Sub"
         field(50100; "Contract ID"; Integer)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Proposal ID';
+            Caption = 'Contract ID';
         }
 
         field(50101; "Secondary Item Type"; Text[100])
