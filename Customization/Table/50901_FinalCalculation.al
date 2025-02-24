@@ -108,6 +108,12 @@ table 50901 "Final Calculation"
             Caption = 'Annual Rent Amount of Termination Year';
         }
 
+        field(50117; Status; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Status';
+        }
+
     }
 
 
