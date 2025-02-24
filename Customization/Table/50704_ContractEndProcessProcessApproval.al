@@ -30,7 +30,7 @@ table 50704 "ContractEndProcessApproval"
             Caption = 'Contract Id';
             //Editable = false;
         }
-        field(50104; "Tenant Id"; Integer)
+        field(50104; "Tenant Id"; Text[50])
         {
             DataClassification = ToBeClassified;
             Caption = 'Tenant Id';
