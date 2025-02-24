@@ -105,7 +105,17 @@ page 50509 "PDC Transaction"
                     trigger OnValidate()
                     var
                         PaymentSeriesRec: Record "Payment Mode2";
+                        oldStatus: Enum "PDC Status Type Enum";
+
                     begin
+
+                        oldStatus := xRec."Cheque Status";
+
+                        if (oldStatus = oldStatus::Deposited) and (Rec."Cheque Status" = Rec."Cheque Status"::Retrieved) then begin
+                            Error('You cannot change the status from "Deposited" to "Retrieved".');
+                            Rec."Cheque Status" := oldStatus;
+                            exit;
+                        end;
                         // Check if the Cheque Status is set to 'Cleared'
                         if Rec."Cheque Status" = Rec."Cheque Status"::Cleared then begin
                             // Ensure the related Payment Series record exists
@@ -289,6 +299,7 @@ page 50509 "PDC Transaction"
         IsLeaseManager: Boolean;
         Isvisible: Boolean;
         IsFieldEditable: Boolean;
+        IsFinanceManager: Boolean;
 
     trigger OnAfterGetRecord()
     begin
@@ -301,11 +312,17 @@ page 50509 "PDC Transaction"
     begin
         // Check if the current user has the 'LEASE_MANAGER' permission set
         IsLeaseManager := false;
+        IsFinanceManager := false;
         PermissionSet.SetRange("User ID", UserId());
         // PermissionSet.SetRange("Profile ID", 'LEASE_MANAGER');
         if PermissionSet.FindSet() then begin
-            if PermissionSet."Profile ID" = 'LEASE_MANAGER' then
+            if PermissionSet."Profile ID" = 'LEASE_MANAGER' then begin
                 IsLeaseManager := true;
+            end
+            else if PermissionSet."Profile ID" = 'FINANCE MANAGER' then begin
+                IsFinanceManager := true;
+            end;
+
         end;
     end;
 
