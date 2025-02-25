@@ -99,6 +99,8 @@ page 50903 "Final Calculation Card"
                         Fetchperdayrent();
                         PopulateRevenueCalculationGrid();
                         GetDataTenancyContract();
+                        BillingCalcGridRentCalc();
+                        BillingCalcridTenancyContractSubpge();
                         RentCalculate();
                         OtherPaymentCalculate();
                         RevenueCalculateOneTime();
@@ -571,6 +573,55 @@ page 50903 "Final Calculation Card"
         CurrPage."Additional Charges".Page.SetStartEndDate(Rec."Contract Start Date", Rec."Contract End Date");
     end;
 
+    procedure BillingCalcGridRentCalc()
+    var
 
+        BillinCalcGrid: Record "Final Billing Calculation Grid";
+        RentCalc1: Record "Rent Calculation";
+
+    begin
+        // Clear existing lines in Final Revenue Calculation Grid for this contract
+        BillinCalcGrid.SetRange("Contract ID", Rec."Contract ID");
+        if BillinCalcGrid.FindSet() then begin
+            BillinCalcGrid.DeleteAll();
+        end;
+
+        // Step 1: Get main rent amount from Rent Calculation table
+        // RentCalc.Reset();
+        RentCalc1.SetRange("Contract ID", Rec."Contract ID");
+        if RentCalc1.FindSet() then begin
+            repeat
+                BillinCalcGrid.Init();
+                BillinCalcGrid."Contract ID" := RentCalc1."Contract ID";
+                BillinCalcGrid."RevenueDescription" := RentCalc1."Secondary Item Type";
+
+                BillinCalcGrid.Insert();
+                Clear(BillinCalcGrid);
+            until RentCalc1.Next() = 0;
+        end;
+
+    end;
+
+
+    procedure BillingCalcridTenancyContractSubpge()
+    var
+        BillingCalc1: Record "Final Billing Calculation Grid";
+        TenancyContractLine2: Record "Tenancy Contract Subpage";
+
+    begin
+
+        // TenancyContractLine.Reset();
+        TenancyContractLine2.SetRange("ContractID", Rec."Contract ID");
+        if TenancyContractLine2.FindSet() then begin
+            repeat
+                BillingCalc1.Init();
+                BillingCalc1."Contract ID" := Rec."Contract ID";
+                BillingCalc1."RevenueDescription" := TenancyContractLine2."Secondary Item Type";
+
+                BillingCalc1.Insert();
+                Clear(BillingCalc1);
+            until TenancyContractLine2.Next() = 0;
+        end;
+    end;
 
 }

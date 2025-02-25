@@ -73,6 +73,7 @@ table 50946 "Final Billing Calculation Grid"
         {
             Caption = 'Entry No';
             DataClassification = ToBeClassified;
+            AutoIncrement = true;
         }
     }
 

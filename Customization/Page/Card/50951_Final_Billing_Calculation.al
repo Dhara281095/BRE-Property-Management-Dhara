@@ -29,4 +29,25 @@ page 50951 "Final Billing Calculation"
             }
         }
     }
+    trigger OnAfterGetRecord()
+    var
+    begin
+        FetchDataFromRevenueCalcGrid();
+    end;
+
+    procedure FetchDataFromRevenueCalcGrid()
+    var
+        RevenueGrid: Record "Final Revenue Calculation Grid";
+    begin
+        RevenueGrid.SetRange("Contract ID", Rec."Contract ID");
+        RevenueGrid.SetRange("Revenue Description", Rec.RevenueDescription);
+        if RevenueGrid.FindSet() then
+            repeat
+                Rec.RevisedAmount := RevenueGrid."Revised Amount";
+                Rec.RevisedVAT := RevenueGrid."Revised VAT";
+                Rec.RevisedAmountInclVAT := RevenueGrid."Revised Amount Incl.";
+                Rec.Modify();
+            until RevenueGrid.Next() = 0;
+
+    end;
 }
