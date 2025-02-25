@@ -111,11 +111,73 @@ page 50509 "PDC Transaction"
 
                         oldStatus := xRec."Cheque Status";
 
-                        if (oldStatus = oldStatus::Deposited) and (Rec."Cheque Status" = Rec."Cheque Status"::Retrieved) then begin
-                            Error('You cannot change the status from "Deposited" to "Retrieved".');
-                            Rec."Cheque Status" := oldStatus;
-                            exit;
+                        // if (oldStatus = oldStatus::Deposited) then begin
+                        //     if (Rec."Cheque Status" = Rec."Cheque Status"::Retrieved) or (Rec."Cheque Status" = Rec."Cheque Status"::"Cheque Received") then begin
+                        //         Error('You cannot change the status.');
+                        //         Rec."Cheque Status" := oldStatus;
+                        //         exit;
+                        //     end
+                        // end;
+
+                        case oldStatus of
+                            // oldStatus::"Cheque Received":
+                            //No restricted transitions for "Cheque Received";
+
+                            oldStatus::Cleared:
+                                Error('Cheque status cannot be changed once it is Cleared.');
+                            oldStatus::Deposited:
+                                if (Rec."Cheque Status" = Rec."Cheque Status"::"Cheque Received") OR (Rec."Cheque Status" = Rec."Cheque Status"::Retrieved) OR
+                                    (Rec."Cheque Status" = Rec."Cheque Status"::"Replaced & Received") then begin
+                                    Error('Cannot change Deposited status to %1.', Rec."Cheque Status");
+                                    Rec."Cheque Status" := oldStatus;
+                                    exit;
+                                end;
+
+                            oldStatus::"Due cheque not deposited":
+                                if (Rec."Cheque Status" = Rec."Cheque Status"::Cleared) OR (Rec."Cheque Status" = Rec."Cheque Status"::Returned) OR
+                                (Rec."Cheque Status" = Rec."Cheque Status"::"Replaced & Received") then begin
+                                    Error('Cannot change Due, Cheque Not Deposited status to %1.', Rec."Cheque Status");
+                                    Rec."Cheque Status" := oldStatus;
+                                    exit;
+                                end;
+                            oldStatus::Retrieved:
+                                if (Rec."Cheque Status" = Rec."Cheque Status"::Cleared) OR
+                                   (Rec."Cheque Status" = Rec."Cheque Status"::Deposited) OR
+                                   (Rec."Cheque Status" = Rec."Cheque Status"::Returned) OR
+                                   (Rec."Cheque Status" = Rec."Cheque Status"::Deferred) then begin
+                                    Error('Cannot change Retrieved status to %1.', Rec."Cheque Status");
+                                    Rec."Cheque Status" := oldStatus;
+                                    exit;
+                                end;
+
+                            oldStatus::Returned:
+                                if (Rec."Cheque Status" = Rec."Cheque Status"::Cleared) OR
+                                   (Rec."Cheque Status" = Rec."Cheque Status"::Deposited) OR
+                                   (Rec."Cheque Status" = Rec."Cheque Status"::Retrieved) then begin
+
+                                    Error('Cannot change Returned status to %1.', Rec."Cheque Status");
+                                    Rec."Cheque Status" := oldStatus;
+                                    exit;
+                                end;
+
+                            oldStatus::"Replaced & Received":
+                                if Rec."Cheque Status" = Rec."Cheque Status"::Cleared then begin
+                                    Error('Cannot change Replaced & Received status to Cleared.');
+                                    Rec."Cheque Status" := oldStatus;
+                                    exit;
+                                end;
+
+                            oldStatus::Deferred:
+                                if (Rec."Cheque Status" = Rec."Cheque Status"::Cleared) OR
+                                   (Rec."Cheque Status" = Rec."Cheque Status"::Retrieved) OR
+                                   (Rec."Cheque Status" = Rec."Cheque Status"::Returned) OR
+                                   (Rec."Cheque Status" = Rec."Cheque Status"::"Replaced & Received") then begin
+                                    Error('Cannot change Deferred status to %1.', Rec."Cheque Status");
+                                    Rec."Cheque Status" := oldStatus;
+                                    exit;
+                                end;
                         end;
+
                         // Check if the Cheque Status is set to 'Cleared'
                         if Rec."Cheque Status" = Rec."Cheque Status"::Cleared then begin
                             // Ensure the related Payment Series record exists
