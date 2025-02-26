@@ -119,6 +119,14 @@ table 50902 "Additional Charges Sub"
             Caption = 'Tenant ID';
         }
 
+        field(50115; "Total Amount"; Decimal)
+        {
+            // DataClassification = ToBeClassified;
+            Caption = 'Total Amount';
+            FieldClass = FlowField;
+            CalcFormula = sum("Additional Charges Sub"."Amount Including VAT" where("Contract ID" = field("Contract ID"), "Tenant ID" = field("Tenant ID")));
+        }
+
     }
 
     keys

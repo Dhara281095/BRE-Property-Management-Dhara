@@ -82,9 +82,15 @@ page 50906 "Additional Charges Sub Card"
                     Lookup = true;
                     Visible = false;
                 }
+            }
 
-
-
+            group(TotalAmount)
+            {
+                field("Total Amount"; Rec."Total Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
             }
         }
     }
