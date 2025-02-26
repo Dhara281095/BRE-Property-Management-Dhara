@@ -27,4 +27,39 @@ page 50952 "Pending Recevieable Grid"
             }
         }
     }
+
+    trigger OnAfterGetRecord()
+    var
+    begin
+        FetchDataFromRevenueCalcGrid();
+        DifferenceAmountCalculation();
+    end;
+
+    procedure FetchDataFromRevenueCalcGrid()
+    var
+        RevenueGrid: Record "Final Revenue Calculation Grid";
+    begin
+        RevenueGrid.SetRange("Contract ID", Rec."Contract ID");
+        RevenueGrid.SetRange("Revenue Description", Rec.RevenueDescription);
+        if RevenueGrid.FindSet() then
+            repeat
+                Rec.RevisedAmount := RevenueGrid."Revised Amount";
+                Rec.RevisedVAT := RevenueGrid."Revised VAT";
+                Rec.RevisedAmountInclVAT := RevenueGrid."Revised Amount Incl.";
+                Rec.Modify();
+            until RevenueGrid.Next() = 0;
+
+    end;
+
+    procedure DifferenceAmountCalculation()
+    var
+
+    begin
+
+        Rec."DifferenceAmount" := Rec.RevisedAmount - Rec.ReceiptsAmount;
+        Rec."DifferenceVAT" := Rec.RevisedVAT - Rec.ReceiptsVAT;
+        Rec.DifferenceAmountInclVAT := Rec.RevisedAmountInclVAT - Rec.ReceiptsAmountInclVAT;
+        Rec.Modify();
+
+    end;
 }

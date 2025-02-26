@@ -33,6 +33,7 @@ page 50951 "Final Billing Calculation"
     var
     begin
         FetchDataFromRevenueCalcGrid();
+        DifferenceAmountCalculation();
     end;
 
     procedure FetchDataFromRevenueCalcGrid()
@@ -48,6 +49,18 @@ page 50951 "Final Billing Calculation"
                 Rec.RevisedAmountInclVAT := RevenueGrid."Revised Amount Incl.";
                 Rec.Modify();
             until RevenueGrid.Next() = 0;
+
+    end;
+
+    procedure DifferenceAmountCalculation()
+    var
+
+    begin
+
+        Rec."DifferenceAmount" := Rec.InvoicedAmount - Rec.RevisedAmount;
+        Rec."DifferenceVAT" := Rec.InvoicedVAT - Rec.RevisedVAT;
+        Rec.DifferenceAmountInclVAT := Rec.InvoicedAmountInclVAT - Rec.RevisedAmountInclVAT;
+        Rec.Modify();
 
     end;
 }
