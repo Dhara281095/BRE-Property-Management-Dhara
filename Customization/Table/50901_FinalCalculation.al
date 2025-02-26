@@ -114,6 +114,23 @@ table 50901 "Final Calculation"
             OptionMembers = Pending,Approved;
         }
 
+        field(50118; "Security Deposit"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Security Deposit';
+        }
+        field(50119; "Adjustment Security Deposit"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Adjustment Security Deposit';
+        }
+        field(50120; "Net Balance"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Net Balance';
+        }
+
+
     }
 
 

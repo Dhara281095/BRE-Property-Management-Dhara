@@ -250,6 +250,46 @@ page 50903 "Final Calculation Card"
                     ApplicationArea = All;
                 }
             }
+
+            group("Adjust Security Deposit")
+            {
+                group("Carry Forward the Security Deposit From")
+                {
+                    field("ContractID"; Rec."Contract ID")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                        trigger OnValidate()
+                        begin
+                            FetchSecurityDepositInfo();
+                        end;
+                    }
+                    field("Security Deposit"; Rec."Security Deposit")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                    }
+                    field("Adjustment Security Deposit"; Rec."Adjustment Security Deposit")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                    }
+                    field("Net Balance"; Rec."Net Balance")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                    }
+                }
+                group("Carry Forward the Security Deposit To")
+                {
+                    part("Carry Forward"; "Carry Forward Grid")
+                    {
+                        SubPageLink = "Contract ID" = FIELD("Contract ID"); // Link to filter attachments for this owner only
+                        ApplicationArea = All;
+                        // Visible = isVisible;
+                    }
+                }
+            }
         }
     }
 
@@ -545,6 +585,25 @@ page 50903 "Final Calculation Card"
     end;
 
 
+    procedure FetchSecurityDepositInfo()
+    var
+        ContractRec: Record "Tenancy Contract";
+    begin
+        if Rec."Contract ID" <> 0 then begin
+            ContractRec.Reset();
+            ContractRec.SetRange("Contract ID", Rec."Contract ID");
+
+            if ContractRec.FindFirst() then begin
+                // Update the fields without showing messages (this is automatic)
+                Rec."Security Deposit" := ContractRec."Security Deposit Amount";
+                Rec."Adjustment Security Deposit" := ContractRec."Security Balanced Amount";
+                Rec."Net Balance" := ContractRec."Security Deposit Amount" - ContractRec."Security Balanced Amount";
+                Rec.Modify(false);  // false means don't trigger validation
+            end;
+        end;
+    end;
+
+
 
 
     trigger OnAfterGetRecord()
@@ -552,6 +611,7 @@ page 50903 "Final Calculation Card"
         CurrPage."Additional Charges".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."Additional Charges".Page.SetContractID(Rec."Contract ID");
         CurrPage."Additional Charges".Page.SetStartEndDate(Rec."Contract Start Date", Rec."Contract End Date");
+        FetchSecurityDepositInfo();
     end;
 
 
@@ -661,6 +721,10 @@ page 50903 "Final Calculation Card"
 
     begin
 
+        RecvieableCalcGrid1.SetRange("Contract ID", Rec."Contract ID");
+        if RecvieableCalcGrid1.FindSet() then begin
+            RecvieableCalcGrid1.DeleteAll();
+        end;
         // TenancyContractLine.Reset();
         TenancyContractLine3.SetRange("ContractID", Rec."Contract ID");
         if TenancyContractLine3.FindSet() then begin
