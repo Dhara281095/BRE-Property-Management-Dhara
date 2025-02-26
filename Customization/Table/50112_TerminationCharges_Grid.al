@@ -6,7 +6,7 @@ table 50112 "Termination Charges Sub"
         field(50100; "Contract ID"; Integer)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Proposal ID';
+            Caption = 'Contract ID';
             Editable = false;
         }
         field(50101; "Secondary Item Type"; Text[100])

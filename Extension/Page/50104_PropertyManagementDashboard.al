@@ -137,7 +137,7 @@ pageextension 50104 "MyRoleCenterExtension" extends "Business Manager Role Cente
                 }
                 action(ConytractRenewal)
                 {
-                    Caption = 'Conytract Renewal';
+                    Caption = 'Contract Renewal';
                     ApplicationArea = Basic, Suite;
                     RunObject = Page "Contract Renewal List";
                 }
@@ -152,6 +152,12 @@ pageextension 50104 "MyRoleCenterExtension" extends "Business Manager Role Cente
                     Caption = 'Adjust Security Deposit';
                     ApplicationArea = Basic, Suite;
                     RunObject = Page Adjustment_Security_Deposit;
+                }
+                action(FinalCalculation)
+                {
+                    Caption = 'Final Calculation';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Final Calculation List";
                 }
 
             }

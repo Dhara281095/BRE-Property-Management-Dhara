@@ -625,7 +625,6 @@ page 50313 "Tenancy Contract Card"
                             DaysDiff: Integer;
                             DaysCal: Integer;
                             TerminateDate: Date;
-
                         begin
                             FinalCalculation.SetRange("Contract ID", Rec."Contract ID");
                             FinalCalculation.SetRange("Tenant ID", Rec."Tenant ID");
@@ -637,6 +636,10 @@ page 50313 "Tenancy Contract Card"
                                 FinalCalculation."Contract End Date" := Rec."Contract End Date";
                                 FinalCalculation."Unit Type" := Rec."Usage Type";
                                 FinalCalculation."Contract Amount" := Rec."Annual Rent Amount";
+                                // Add security deposit information
+                                FinalCalculation."Security Deposit" := Rec."Security Deposit Amount";
+                                FinalCalculation."Adjustment Security Deposit" := Rec."Security Balanced Amount";
+                                FinalCalculation."Net Balance" := Rec."Security Deposit Amount" - Rec."Security Balanced Amount";
                                 FinalCalculation.Modify();
                                 Message('Record Modifyed Successfully');
                             end else begin
@@ -647,6 +650,10 @@ page 50313 "Tenancy Contract Card"
                                 FinalCalculation."Contract Start Date" := Rec."Contract Start Date";
                                 FinalCalculation."Contract End Date" := Rec."Contract End Date";
                                 FinalCalculation."Contract Amount" := Rec."Annual Rent Amount";
+                                // Add security deposit information
+                                FinalCalculation."Security Deposit" := Rec."Security Deposit Amount";
+                                FinalCalculation."Adjustment Security Deposit" := Rec."Security Balanced Amount";
+                                FinalCalculation."Net Balance" := Rec."Security Deposit Amount" - Rec."Security Balanced Amount";
                                 FinalCalculation.Insert();
                                 Message('Record Created Successfully');
                             end;
@@ -919,9 +926,6 @@ page 50313 "Tenancy Contract Card"
                 }
 
             }
-
-
-
             group("Lease Unit Details")
             {
                 Caption = 'Unit Details';
@@ -1071,10 +1075,6 @@ page 50313 "Tenancy Contract Card"
                   (Rec."Praposal Type Selected" = Rec."Praposal Type Selected"::"Merge Unit");
                 }
             }
-
-
-
-
             group("Other Payments")
             {
                 part("Revenues"; "Tenancy Contract SubPage Card")
@@ -1084,8 +1084,6 @@ page 50313 "Tenancy Contract Card"
                     // Visible = isVisible;
                 }
             }
-
-
         }
     }
     actions
@@ -1118,6 +1116,7 @@ page 50313 "Tenancy Contract Card"
 
         }
     }
+
     procedure OpenFileInBrowser(URL: Text)
     begin
         // Use the Hyperlink method to open the file in the browser
