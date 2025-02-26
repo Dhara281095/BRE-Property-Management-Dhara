@@ -61,6 +61,13 @@ table 50907 "Other Payment Calculate Sub"
             Editable = false;
         }
 
+        field(50110; "Entry No."; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Entry No.';
+            Editable = false;
+            AutoIncrement = true;
+        }
 
 
 
@@ -69,7 +76,7 @@ table 50907 "Other Payment Calculate Sub"
 
     keys
     {
-        key(PK; "Contract ID")
+        key(PK; "Contract ID", "Entry No.")
         {
             Clustered = true;
         }
