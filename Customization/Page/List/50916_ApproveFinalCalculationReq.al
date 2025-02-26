@@ -68,46 +68,76 @@ page 50916 "Approval FinalCalculation List"
 
     actions
     {
-        area(processing)
+        area(Processing)
         {
             action(Approve)
             {
-                Caption = 'Approve';
                 ApplicationArea = All;
+                Caption = 'Approve Entry';
                 Image = Approve;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                Visible = IsFinanceManager;
+
 
                 trigger OnAction()
                 var
-                    SelectedRecs: Record "ContractEndProcessApproval";
-                    ApproveCount: Integer;
-                    ErrorCount: Integer;
+                    AdjustSecurityDeposit: Record "Final Calculation";
                 begin
-                    CurrPage.SetSelectionFilter(SelectedRecs);
+                    if Rec.Status = Rec.Status::Approved then
+                        Error('This entry is already approved');
 
-                    if SelectedRecs.IsEmpty() then begin
-                        Message('No records selected for approval.');
-                        exit;
+                    if Confirm('Do you want to approve this entry?') then begin
+                        // Update entry status
+                        Rec.Status := Rec.Status::Approved;
+                        Rec.Modify();
+
+                        // Update main record status
+                        if AdjustSecurityDeposit.Get(Rec."ID") then begin
+                            AdjustSecurityDeposit.Status := AdjustSecurityDeposit.Status::Approved;
+                            AdjustSecurityDeposit.Modify();
+                        end;
+
+                        Message('Entry has been approved successfully!');
                     end;
-
-                    ApproveCount := 0;
-                    ErrorCount := 0;
-
-                    if SelectedRecs.FindSet() then
-                        repeat
-                            if SelectedRecs.Status = 'Pending' then begin
-                                SelectedRecs.Status := 'Approve';
-                                SelectedRecs.Modify();
-                                ApproveCount += 1;
-                            end else
-                                ErrorCount += 1;
-                        until SelectedRecs.Next() = 0;
-
-                    Commit();
-                    CurrPage.Update(false);
-
-                    Message('%1 record(s) approved. %2 record(s) were not in "Pending" status.', ApproveCount, ErrorCount);
                 end;
             }
         }
     }
+
+
+    trigger OnOpenPage()
+    var
+
+    begin
+        // Check if the current user has the 'LEASE_MANAGER' permission set
+
+        IsFinanceManager := VisibleApproveAction();
+    end;
+
+    procedure VisibleApproveAction(): Boolean
+    var
+        UserPersonalization: Record "User Personalization";
+    begin
+
+        if UserPersonalization.Get(UserSecurityId()) then begin
+
+            case UserPersonalization."Profile ID" of
+                'PROPERTY MANAGER':
+                    exit(false);
+                'LEASE_MANAGER':
+                    exit(false);
+                'finance manager':
+                    exit(true);
+            end;
+        end;
+
+        exit(false);
+    end;
+
+    var
+        IsFinanceManager: Boolean;
+        IsFieldEditable: Boolean;
+
 }

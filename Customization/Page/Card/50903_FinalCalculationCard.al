@@ -101,6 +101,8 @@ page 50903 "Final Calculation Card"
                         GetDataTenancyContract();
                         BillingCalcGridRentCalc();
                         BillingCalcridTenancyContractSubpge();
+                        ReciveableCalcGridRentCalc();
+                        ReciveableCalcridTenancyContractSubpge();
                         RentCalculate();
                         OtherPaymentCalculate();
                         RevenueCalculateOneTime();
@@ -450,6 +452,36 @@ page 50903 "Final Calculation Card"
 
 
 
+    procedure OtherPaymentCalculate()
+    var
+        TenancyContractSub: Record "Tenancy Contract Subpage";
+        OtherPaymentCalculateSub: Record "Other Payment Calculate Sub";
+
+    begin
+        OtherPaymentCalculateSub.SetRange("Contract ID", Rec."Contract ID");
+        if OtherPaymentCalculateSub.FindSet() then begin
+            OtherPaymentCalculateSub.DeleteAll();
+        end;
+
+        TenancyContractSub.SetRange("ContractID", Rec."Contract ID");
+        if TenancyContractSub.FindSet() then begin
+            repeat
+                OtherPaymentCalculateSub.Init();
+                OtherPaymentCalculateSub."Contract ID" := Rec."Contract ID";
+                OtherPaymentCalculateSub."Tenant ID" := Rec."Tenant ID";
+                OtherPaymentCalculateSub."Secondary Item Type" := TenancyContractSub."Secondary Item Type";
+                OtherPaymentCalculateSub."Amount" := TenancyContractSub."Amount";
+                OtherPaymentCalculateSub."VAT Amount" := TenancyContractSub."VAT Amount";
+                OtherPaymentCalculateSub."Amount Including VAT" := TenancyContractSub."Amount Including VAT";
+                OtherPaymentCalculateSub."Start Date" := TenancyContractSub."Start Date";
+                OtherPaymentCalculateSub."End Date" := TenancyContractSub."End Date";
+                OtherPaymentCalculateSub.Insert();
+                Clear(OtherPaymentCalculateSub);
+            until TenancyContractSub.Next() = 0;
+        end;
+
+    end;
+
 
     procedure RevenueCalculateOneTime()
     var
@@ -486,69 +518,33 @@ page 50903 "Final Calculation Card"
 
     procedure RevenueCalculate()
     var
-        RevenueStructureSubpage: Record "Revenue Structure Subpage";
+        RevenueStructureSub: Record "Revenue Structure Subpage";
         RevenueCalculateSub: Record "Revenue Calculate Sub";
     begin
 
-        RevenueCalculateSub.SetRange("Contract ID", Rec."Contract ID");
-        if RevenueCalculateSub.FindSet() then begin
-            RevenueCalculateSub.DeleteAll();
-        end;
-
         // TenancyContractLine.Reset();
-        RevenueStructureSubpage.SetRange("Contract ID", Rec."Contract ID");
-        RevenueStructureSubpage.SetRange("Tenant ID", Rec."Tenant ID");
-        if RevenueStructureSubpage.FindSet() then begin
+        RevenueStructureSub.SetRange("Contract ID", Rec."Contract ID");
+        RevenueStructureSub.SetRange("Tenant ID", Rec."Tenant ID");
+        if RevenueStructureSub.FindSet() then begin
             repeat
                 RevenueCalculateSub.Init();
                 RevenueCalculateSub."Contract ID" := Rec."Contract ID";
                 RevenueCalculateSub."Tenant ID" := Rec."Tenant ID";
                 // Calculate VAT amount based on percentage
-                RevenueCalculateSub."Secondary Item Type" := RevenueStructureSubpage."Secondary Item Type";
-                RevenueCalculateSub."Amount" := RevenueStructureSubpage."Final Annual Amount";
-                RevenueCalculateSub."VAT Amount" := RevenueStructureSubpage."VAT Amount";
-                RevenueCalculateSub."Amount Including VAT" := RevenueStructureSubpage."Amount Including VAT";
-                RevenueCalculateSub."Installment Start Date" := RevenueStructureSubpage."Period Start Date";
-                RevenueCalculateSub."Installment End Date" := RevenueStructureSubpage."Period End Date";
+                RevenueCalculateSub."Secondary Item Type" := RevenueStructureSub."Secondary Item Type";
+                RevenueCalculateSub."Amount" := RevenueStructureSub."Final Annual Amount";
+                RevenueCalculateSub."VAT Amount" := RevenueStructureSub."VAT Amount";
+                RevenueCalculateSub."Amount Including VAT" := RevenueStructureSub."Amount Including VAT";
+                RevenueCalculateSub."Installment Start Date" := RevenueStructureSub."Period Start Date";
+                RevenueCalculateSub."Installment End Date" := RevenueStructureSub."Period End Date";
                 RevenueCalculateSub.Insert();
                 Clear(RevenueCalculateSub);
-            until RevenueStructureSubpage.Next() = 0;
+            until RevenueStructureSub.Next() = 0;
         end;
 
     end;
 
-    procedure OtherPaymentCalculate()
-    var
-        TenancyContractSub: Record "Tenancy Contract Subpage";
-        OtherPaymentCalculate: Record "Other Payment Calculate Sub";
 
-    begin
-
-        OtherPaymentCalculate.SetRange("Contract ID", Rec."Contract ID");
-        if OtherPaymentCalculate.FindSet() then begin
-            OtherPaymentCalculate.DeleteAll();
-        end;
-
-        // TenancyContractLine.Reset();
-        TenancyContractSub.SetRange("ContractID", Rec."Contract ID");
-        TenancyContractSub.SetRange("TenantID", Rec."Tenant ID");
-        if OtherPaymentCalculate.FindSet() then begin
-            repeat
-                OtherPaymentCalculate.Init();
-                OtherPaymentCalculate."Contract ID" := Rec."Contract ID";
-                OtherPaymentCalculate."Tenant ID" := Rec."Tenant ID";
-                OtherPaymentCalculate."Secondary Item Type" := TenancyContractSub."Secondary Item Type";
-                OtherPaymentCalculate."Amount" := TenancyContractSub."Amount";
-                OtherPaymentCalculate."VAT Amount" := TenancyContractSub."VAT Amount";
-                OtherPaymentCalculate."Amount Including VAT" := TenancyContractSub."Amount Including VAT";
-                OtherPaymentCalculate."Start Date" := TenancyContractSub."Start Date";
-                OtherPaymentCalculate."End Date" := TenancyContractSub."End Date";
-                OtherPaymentCalculate.Insert();
-                Clear(OtherPaymentCalculate);
-            until OtherPaymentCalculate.Next() = 0;
-        end;
-
-    end;
 
 
     trigger OnAfterGetRecord()
@@ -623,5 +619,62 @@ page 50903 "Final Calculation Card"
             until TenancyContractLine2.Next() = 0;
         end;
     end;
+
+
+
+    /////// START POPULATED DATA IN PENDING RECIVEABLE //////////////////////
+
+    procedure ReciveableCalcGridRentCalc()
+    var
+
+        RecvieableCalcGrid: Record "Pending Receviable Grid";
+        RentCalc2: Record "Rent Calculation";
+
+    begin
+        // Clear existing lines in Final Revenue Calculation Grid for this contract
+        RecvieableCalcGrid.SetRange("Contract ID", Rec."Contract ID");
+        if RecvieableCalcGrid.FindSet() then begin
+            RecvieableCalcGrid.DeleteAll();
+        end;
+
+        // Step 1: Get main rent amount from Rent Calculation table
+        // RentCalc.Reset();
+        RentCalc2.SetRange("Contract ID", Rec."Contract ID");
+        if RentCalc2.FindSet() then begin
+            repeat
+                RecvieableCalcGrid.Init();
+                RecvieableCalcGrid."Contract ID" := RentCalc2."Contract ID";
+                RecvieableCalcGrid."RevenueDescription" := RentCalc2."Secondary Item Type";
+
+                RecvieableCalcGrid.Insert();
+                Clear(RecvieableCalcGrid);
+            until RentCalc2.Next() = 0;
+        end;
+
+    end;
+
+
+    procedure ReciveableCalcridTenancyContractSubpge()
+    var
+        RecvieableCalcGrid1: Record "Pending Receviable Grid";
+        TenancyContractLine3: Record "Tenancy Contract Subpage";
+
+    begin
+
+        // TenancyContractLine.Reset();
+        TenancyContractLine3.SetRange("ContractID", Rec."Contract ID");
+        if TenancyContractLine3.FindSet() then begin
+            repeat
+                RecvieableCalcGrid1.Init();
+                RecvieableCalcGrid1."Contract ID" := Rec."Contract ID";
+                RecvieableCalcGrid1."RevenueDescription" := TenancyContractLine3."Secondary Item Type";
+
+                RecvieableCalcGrid1.Insert();
+                Clear(RecvieableCalcGrid1);
+            until TenancyContractLine3.Next() = 0;
+        end;
+    end;
+
+    ////////////////// END /////////////////////////
 
 }

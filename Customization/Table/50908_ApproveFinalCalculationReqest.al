@@ -13,10 +13,10 @@ table 50908 "Approval Final Calculation"
             AutoIncrement = true;
 
         }
-        field(50102; "Status"; Text[100])
+        field(50102; Status; Option)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Status';
+            OptionMembers = Pending,Approved;
         }
 
         field(50107; "Tenant ID"; Code[50])
