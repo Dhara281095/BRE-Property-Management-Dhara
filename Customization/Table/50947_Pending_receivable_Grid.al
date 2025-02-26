@@ -64,6 +64,7 @@ table 50947 "Pending Receviable Grid"
         {
             Caption = 'Entry No';
             DataClassification = ToBeClassified;
+            AutoIncrement = true;
         }
     }
 
