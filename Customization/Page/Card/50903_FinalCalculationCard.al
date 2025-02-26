@@ -12,21 +12,16 @@ page 50903 "Final Calculation Card"
         {
             group("Contract Details")
             {
-
-
                 field("Contract ID"; Rec."Contract ID")
                 {
                     ApplicationArea = All;
                     Editable = false; // The ID is not editable since it's auto-incrementing
-
                 }
-
                 field("FC ID"; Rec."FC ID")
                 {
                     ApplicationArea = All;
                     Editable = false; // The ID is not editable since it's auto-incrementing
                 }
-
                 field("Contract Start Date"; Rec."Contract Start Date")
                 {
                     ApplicationArea = All;
@@ -41,7 +36,6 @@ page 50903 "Final Calculation Card"
                     ToolTip = 'Enter the Contract End Date.';
                     Editable = false;
                 }
-
                 field("Unit Type"; Rec."Unit Type")
                 {
                     ApplicationArea = All;
@@ -56,17 +50,12 @@ page 50903 "Final Calculation Card"
                     ToolTip = 'Enter the Contract Amount.';
                     Editable = false;
                 }
-
-
                 field("Intimation Date"; Rec."Intimation Date")
                 {
                     ApplicationArea = All;
                     Caption = 'Intimation Date';
                     ToolTip = 'Enter the Initmation Date.';
-
                 }
-
-
                 field("Termination Date"; Rec."Termination Date")
                 {
                     ApplicationArea = All;
@@ -115,7 +104,6 @@ page 50903 "Final Calculation Card"
                     Caption = 'Contract Year On Termination Date';
                     ToolTip = 'Enter the ContractYear(Termination Date).';
                     Editable = false;
-
                 }
 
                 field("Tenant ID"; Rec."Tenant ID")
@@ -124,7 +112,6 @@ page 50903 "Final Calculation Card"
                     Caption = 'Tenant ID';
                     Lookup = true;
                     Editable = false;
-
                 }
                 field("Original Contract Tenure"; Rec."Original Contract Tenure")
                 {
@@ -141,7 +128,6 @@ page 50903 "Final Calculation Card"
                     ToolTip = 'Enter the Actual Contract Tenure.';
                     Editable = false;
                 }
-
                 field("Total No. Of Days"; Rec."Total No. Of Days")
                 {
                     ApplicationArea = All;
@@ -149,7 +135,6 @@ page 50903 "Final Calculation Card"
                     ToolTip = 'Enter the Total No. Of Days.';
                     Editable = false;
                 }
-
                 field("Per Day Rent"; Rec."Per Day Rent")
                 {
                     ApplicationArea = All;
@@ -163,7 +148,6 @@ page 50903 "Final Calculation Card"
                     Caption = 'Annual Rent Amount of Termination Year';
                     Editable = false;
                 }
-
                 field("Status"; Rec.Status)
                 {
                     ApplicationArea = All;
@@ -178,8 +162,6 @@ page 50903 "Final Calculation Card"
                 {
                     SubPageLink = "Contract ID" = FIELD("Contract ID");
                     ApplicationArea = All;
-
-
                 }
             }
             group("Billing Calculation")
@@ -208,11 +190,8 @@ page 50903 "Final Calculation Card"
                     // Visible = isVisible;
                 }
             }
-
-
             group("Rent-Calculation")
             {
-
                 part("Rent Calculation"; "Rent Calculate Sub Card")
                 {
                     SubPageLink = "Contract ID" = FIELD("Contract ID"); // Link to filter attachments for this owner only
@@ -222,7 +201,6 @@ page 50903 "Final Calculation Card"
             }
             group("Revenue-structure")
             {
-
                 part("Other Payment"; "OtherPayment Calculate SubCard")
                 {
                     SubPageLink = "Contract ID" = FIELD("Contract ID"); // Link to filter attachments for this owner only
@@ -232,7 +210,6 @@ page 50903 "Final Calculation Card"
             }
             group("Revenue structure - Yearly break-down")
             {
-
                 part("Revenue Structure"; "Revenue Calculate Sub Card")
                 {
                     SubPageLink = "Contract ID" = FIELD("Contract ID"); // Link to filter attachments for this owner only
@@ -242,7 +219,6 @@ page 50903 "Final Calculation Card"
             }
             group("Payment Details")
             {
-
                 part("PaymentSchedule"; "Payment Schedule Card2")
                 {
                     SubPageLink = "Contract ID" = FIELD("Contract ID"),
@@ -250,7 +226,6 @@ page 50903 "Final Calculation Card"
                     ApplicationArea = All;
                 }
             }
-
             group("Adjust Security Deposit")
             {
                 group("Carry Forward the Security Deposit From")
@@ -287,6 +262,59 @@ page 50903 "Final Calculation Card"
                         SubPageLink = "Contract ID" = FIELD("Contract ID"); // Link to filter attachments for this owner only
                         ApplicationArea = All;
                         // Visible = isVisible;
+                    }
+                }
+                group("Refundable Deposits")
+                {
+                    field("NetBalance"; Rec."Net Balance")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Security Deposit';
+                        Editable = false;
+                    }
+                    field("Chiller Deposit"; Rec."Chiller Deposit")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                    }
+                    field("Other Deposit"; Rec."Other Deposit")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                    }
+                    field("Total Net Balance"; Rec."Net Balance")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Total Refundable Deposit';
+                        Editable = false;
+                    }
+                }
+                group(Summary)
+                {
+                    field("Total Claim"; Rec."Total Claim")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                    }
+                    field("Total Refund"; Rec."Total Refund")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                    }
+                    field("Summery Net Balance"; Rec."Summery Net Balance")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                    }
+                    field("Amount Refundable"; Rec."Amount Refundable")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                    }
+                    field("Net Receivable From The Tenant"; Rec."Net Receivable From The Tenant")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
                     }
                 }
             }
@@ -333,7 +361,6 @@ page 50903 "Final Calculation Card"
             }
         }
     }
-
 
     //////////////////  START Final Revenue Calculation Grid ////////////////////
     procedure PopulateRevenueCalculationGrid()
@@ -404,7 +431,6 @@ page 50903 "Final Calculation Card"
         end;
     end;
 
-
     procedure GetContractTerminationYear()
     var
         ContractStartDate: Date;
@@ -454,8 +480,6 @@ page 50903 "Final Calculation Card"
             until RentCalculation1.Next() = 0;
     end;
 
-
-
     procedure RentCalculate()
     var
         RentCalculationSub: Record "Rent Calculation Subpage";
@@ -490,8 +514,6 @@ page 50903 "Final Calculation Card"
 
     end;
 
-
-
     procedure OtherPaymentCalculate()
     var
         TenancyContractSub: Record "Tenancy Contract Subpage";
@@ -521,7 +543,6 @@ page 50903 "Final Calculation Card"
         end;
 
     end;
-
 
     procedure RevenueCalculateOneTime()
     var
@@ -584,7 +605,7 @@ page 50903 "Final Calculation Card"
 
     end;
 
-
+    //----------------------------------Fetch Security Deposit-------------------------------//
     procedure FetchSecurityDepositInfo()
     var
         ContractRec: Record "Tenancy Contract";
@@ -603,8 +624,33 @@ page 50903 "Final Calculation Card"
         end;
     end;
 
+    //-----------------------------------Fetch total claim---------------------------------//
 
+    // Add this procedure to calculate the total from the Additional Charges grid
+    procedure UpdateTotalClaim()
+    var
+        AdditionalCharges: Record "Additional Charges Sub";
+        TotalAmount: Decimal;
+    begin
+        AdditionalCharges.Reset();
+        AdditionalCharges.SetRange("Contract ID", Rec."Contract ID");
 
+        if AdditionalCharges.FindSet() then begin
+            repeat
+                TotalAmount += AdditionalCharges."Amount Including VAT";
+            until AdditionalCharges.Next() = 0;
+        end;
+
+        Rec."Total Claim" := TotalAmount;
+        Rec.Modify(false);
+        CurrPage.Update(false);
+    end;
+
+    // Also add a method that the subpage can call when its data changes
+    procedure UpdateTotalsFromSubpage()
+    begin
+        UpdateTotalClaim();
+    end;
 
     trigger OnAfterGetRecord()
     begin
@@ -612,14 +658,15 @@ page 50903 "Final Calculation Card"
         CurrPage."Additional Charges".Page.SetContractID(Rec."Contract ID");
         CurrPage."Additional Charges".Page.SetStartEndDate(Rec."Contract Start Date", Rec."Contract End Date");
         FetchSecurityDepositInfo();
+        UpdateTotalClaim(); // Add this line to calculate the total
     end;
-
 
     trigger OnModifyRecord(): Boolean
     begin
         CurrPage."Additional Charges".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."Additional Charges".Page.SetContractID(Rec."Contract ID");
         CurrPage."Additional Charges".Page.SetStartEndDate(Rec."Contract Start Date", Rec."Contract End Date");
+        UpdateTotalClaim(); // Add this line to calculate the total
     end;
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
@@ -721,10 +768,7 @@ page 50903 "Final Calculation Card"
 
     begin
 
-        RecvieableCalcGrid1.SetRange("Contract ID", Rec."Contract ID");
-        if RecvieableCalcGrid1.FindSet() then begin
-            RecvieableCalcGrid1.DeleteAll();
-        end;
+
         // TenancyContractLine.Reset();
         TenancyContractLine3.SetRange("ContractID", Rec."Contract ID");
         if TenancyContractLine3.FindSet() then begin

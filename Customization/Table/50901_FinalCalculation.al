@@ -129,6 +129,47 @@ table 50901 "Final Calculation"
             DataClassification = ToBeClassified;
             Caption = 'Net Balance';
         }
+        field(50121; "Chiller Deposit"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Chiller Deposit';
+        }
+        field(50122; "Other Deposit"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Other Deposit';
+        }
+        field(50124; "Total Refundable Deposit"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(50125; "Total Claim"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Total Claim';
+            // FieldClass = FlowField;
+            // CalcFormula = sum("Additional Charges Sub"."Amount Including VAT" where("Contract ID" = field("Contract ID"), "Tenant ID" = field("Tenant ID")));
+        }
+        field(50126; "Total Refund"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Total Refund';
+        }
+        field(50127; "Summery Net Balance"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Net Balance';
+        }
+        field(50128; "Amount Refundable"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Amount Refundable To The Tenant';
+        }
+        field(50129; "Net Receivable From The Tenant"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Net Receivable From The Tenant';
+        }
 
 
     }
