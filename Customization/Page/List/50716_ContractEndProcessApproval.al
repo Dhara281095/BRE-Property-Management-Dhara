@@ -90,6 +90,7 @@ page 50719 "Contract End Process Approval"
                     SelectedRecs: Record "ContractEndProcessApproval";
                     ApproveCount: Integer;
                     ErrorCount: Integer;
+                    TenancyContract: Record "Tenancy Contract";
                 begin
                     CurrPage.SetSelectionFilter(SelectedRecs);
 
@@ -106,6 +107,12 @@ page 50719 "Contract End Process Approval"
                             if SelectedRecs.Status = 'Pending' then begin
                                 SelectedRecs.Status := 'Approve';
                                 SelectedRecs.Modify();
+
+                                TenancyContract.SetRange("Contract ID", Rec."Contract ID");
+                                if TenancyContract.findset() then
+                                    TenancyContract.Status := Rec."Request Type";  // Update status based on Request Type
+                                TenancyContract.Modify();  // Modify the existing TenancyContract
+
                                 ApproveCount += 1;
                             end else
                                 ErrorCount += 1;
