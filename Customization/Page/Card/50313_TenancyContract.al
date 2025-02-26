@@ -604,6 +604,23 @@ page 50313 "Tenancy Contract Card"
                     end;
                 }
 
+
+                field("Status"; Rec."Status")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Visible = IsVisible; // Show the Status field only when it is not blank
+
+                    trigger OnValidate()
+                    begin
+                        if Rec."Status" = '' then
+                            IsVisible := false  // Hide all fields when status is blank
+                        else
+                            IsVisible := true;  // Show fields when status is not blank
+                    end;
+
+                }
+
                 group(FinalCalculation)
                 {
                     Visible = IsVisible;
@@ -1172,6 +1189,11 @@ page 50313 "Tenancy Contract Card"
             IsVisible := false  // Link should be visible
         else
             IsVisible := true; // Link should be hidde
+
+        if Rec."Status" = '' then
+            IsVisible := false  // Hide all fields when status is blank
+        else
+            IsVisible := true;  // Show fields when status is not blank
 
     end;
 
