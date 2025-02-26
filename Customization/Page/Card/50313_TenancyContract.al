@@ -617,6 +617,10 @@ page 50313 "Tenancy Contract Card"
                             IsVisible := false  // Hide all fields when status is blank
                         else
                             IsVisible := true;  // Show fields when status is not blank
+
+                        if Rec.Status = 'End Contract' then
+                            Rec."Termination Of Contract" := Rec."Termination Of Contract"::"Regular Termination";
+                        Rec.Modify();
                     end;
 
                 }
@@ -1194,6 +1198,10 @@ page 50313 "Tenancy Contract Card"
             IsVisible := false  // Hide all fields when status is blank
         else
             IsVisible := true;  // Show fields when status is not blank
+
+        if Rec.Status = 'End Contract' then
+            Rec."Termination Of Contract" := Rec."Termination Of Contract"::"Regular Termination";
+        Rec.Modify();
 
     end;
 
