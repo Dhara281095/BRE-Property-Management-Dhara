@@ -232,6 +232,14 @@ tableextension 50102 ItemExtension extends Item
             // end;
         }
 
+        field(50126; "Primary Classification Type"; Text[100])
+        {
+            Caption = 'Primary Classification Type';
+            DataClassification = ToBeClassified;
+            TableRelation = "Primary Classification"."Classification Name";
+
+        }
+
         // field(50126; "Merged Property ID"; Code[20])
         // {
         //     DataClassification = ToBeClassified;

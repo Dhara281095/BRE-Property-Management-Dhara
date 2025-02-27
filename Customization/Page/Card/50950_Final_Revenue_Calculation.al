@@ -20,6 +20,7 @@ page 50950 "Final Revenue Calculation Grid"
                 {
                     ApplicationArea = All;
                     Caption = 'Contract ID';
+                    Editable = false;
                 }
                 field("Entry No."; Rec."Entry No.")
                 {
@@ -32,54 +33,63 @@ page 50950 "Final Revenue Calculation Grid"
                     ApplicationArea = All;
                     Caption = 'Original Amount';
                     ToolTip = 'Specifies the original amount';
+                    Editable = false;
                 }
                 field("Original VAT"; Rec."Original VAT")
                 {
                     ApplicationArea = All;
                     Caption = 'Original VAT';
                     ToolTip = 'Specifies the original VAT amount';
+                    Editable = false;
                 }
                 field("Original Amount Incl."; Rec."Original Amount Incl.")
                 {
                     ApplicationArea = All;
                     Caption = 'Original Amount Incl.';
                     ToolTip = 'Specifies the original amount including VAT';
+                    Editable = false;
                 }
                 field("Revised Amount"; Rec."Revised Amount")
                 {
                     ApplicationArea = All;
                     Caption = 'Revised Amount';
                     ToolTip = 'Specifies the revised amount after recalculation';
+                    Editable = false;
                 }
                 field("Revised VAT"; Rec."Revised VAT")
                 {
                     ApplicationArea = All;
                     Caption = 'Revised VAT';
                     ToolTip = 'Specifies the revised VAT amount';
+                    Editable = false;
                 }
                 field("Revised Amount Incl."; Rec."Revised Amount Incl.")
                 {
                     ApplicationArea = All;
                     Caption = 'Revised Amount Incl.';
                     ToolTip = 'Specifies the revised amount including VAT';
+                    Editable = false;
                 }
                 field("Difference Amount"; Rec."Difference Amount")
                 {
                     ApplicationArea = All;
                     Caption = 'Difference Amount';
                     ToolTip = 'Specifies the difference in amount';
+                    Editable = false;
                 }
                 field("Difference VAT"; Rec."Difference VAT")
                 {
                     ApplicationArea = All;
                     Caption = 'Difference VAT';
                     ToolTip = 'Specifies the difference in VAT';
+                    Editable = false;
                 }
                 field("Difference Amount Incl."; Rec."Difference Amount Incl.")
                 {
                     ApplicationArea = All;
                     Caption = 'Difference Amount Incl.';
                     ToolTip = 'Specifies the difference in amount including VAT';
+                    Editable = false;
                 }
                 field("Actual Contract Tenure"; Rec."Actual Contract Tenure")
                 {

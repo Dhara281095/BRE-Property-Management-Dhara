@@ -140,6 +140,12 @@ table 50944 "Rent Calculation Subpage2"
             DecimalPlaces = 0 : 0;
         }
 
+        field(50117; "Primary Classification"; Text[100])
+        {
+            Caption = 'Primary Classification';
+            DataClassification = ToBeClassified;
+        }
+
 
     }
 

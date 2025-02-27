@@ -97,6 +97,11 @@ table 50942 "Rent Calculation"
             Caption = 'VAT %';
             Editable = false;
         }
+        field(50912; "Property Classification"; Text[100])
+        {
+            Caption = 'Property Classification';
+            DataClassification = ToBeClassified;
+        }
 
 
 

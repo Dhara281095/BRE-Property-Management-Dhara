@@ -101,6 +101,12 @@ page 50947 "Rent Calculation SubCard2"
                     ToolTip = 'Enter the VAT %.';
                     Editable = false;
                 }
+                field("Primary Classification"; Rec."Primary Classification")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Primary Classification';
+                    Editable = false;
+                }
 
 
             }
