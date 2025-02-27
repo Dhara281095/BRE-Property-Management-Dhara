@@ -8,6 +8,7 @@ pageextension 50507 "PostedSalesInvoiceLine" extends "Posted Sales Invoice Subfo
             {
                 ApplicationArea = All;
                 Caption = 'Contract ID';
+                Editable = false;
             }
         }
     }

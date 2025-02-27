@@ -116,6 +116,11 @@ table 50920 "Payment Schedule"
             Caption = 'Tenant Name';
 
         }
+        field(50914; "Property Classification"; Text[100])
+        {
+            Caption = 'Property Classification';
+            DataClassification = ToBeClassified;
+        }
 
 
     }
