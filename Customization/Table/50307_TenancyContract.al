@@ -1495,7 +1495,7 @@ table 50307 "Tenancy Contract"
 
         field(50179; "Termination Of Contract"; Option)
         {
-            OptionMembers = " ","Regular Termination","Early Termination","Suspension Of Termination";
+            OptionMembers = " ","Regular Termination","Early Termination","Suspension to Termination";
             Editable = true;
         }
 
@@ -1561,14 +1561,19 @@ table 50307 "Tenancy Contract"
             DataClassification = ToBeClassified;
         }
 
-        field(50191; "Status"; Text[100])
+        // field(50191; "Status"; Text[100])
+        // {
+        //     DataClassification = ToBeClassified;
+        //     // OptionMembers = " ","End Contract","Renewal Contract";
+        // }
+
+        field(50192; "Link"; Integer)
         {
             DataClassification = ToBeClassified;
-            // OptionMembers = " ","End Contract","Renewal Contract";
+            Caption = 'Revenue Calculation Link';
+            Editable = false;
+
         }
-
-
-
     }
 
     keys

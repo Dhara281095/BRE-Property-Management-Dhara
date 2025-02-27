@@ -108,10 +108,10 @@ page 50719 "Contract End Process Approval"
                                 SelectedRecs.Status := 'Approve';
                                 SelectedRecs.Modify();
 
-                                TenancyContract.SetRange("Contract ID", Rec."Contract ID");
-                                if TenancyContract.findset() then
-                                    TenancyContract.Status := Rec."Request Type";  // Update status based on Request Type
-                                TenancyContract.Modify();  // Modify the existing TenancyContract
+                                // TenancyContract.SetRange("Contract ID", Rec."Contract ID");
+                                // if TenancyContract.findset() then
+                                //     TenancyContract.Status := Rec."Request Type";  // Update status based on Request Type
+                                // TenancyContract.Modify();  // Modify the existing TenancyContract
 
                                 ApproveCount += 1;
                             end else

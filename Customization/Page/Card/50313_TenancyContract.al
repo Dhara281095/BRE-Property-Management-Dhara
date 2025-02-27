@@ -560,6 +560,16 @@ page 50313 "Tenancy Contract Card"
                 {
                     ApplicationArea = All;
                     Editable = true;
+
+                    trigger OnValidate()
+                    begin
+                        // Check if the contract status is either "Terminated" or "Renewed"
+                        if (Rec."Tenant Contract Status" = Rec."Tenant Contract Status"::"Terminated") or
+                           (Rec."Tenant Contract Status" = Rec."Tenant Contract Status"::"Contract Renewed") then
+                            IsVisible := true  // Link should be visible
+                        else
+                            IsVisible := false; // Link should be hidden
+                    end;
                 }
 
                 field("Renewal Contract Status"; rec."Renewal Contract Status")
@@ -589,41 +599,41 @@ page 50313 "Tenancy Contract Card"
                         Page.Run(Page::"SuspendReasonList", SuspendedReasonRec);
                     end;
                 }
-                field("Termination Of Contract"; rec."Termination Of Contract")
-                {
-                    ApplicationArea = All;
+                // field("Termination Of Contract"; rec."Termination Of Contract")
+                // {
+                //     ApplicationArea = All;
 
-                    trigger OnValidate()
-                    begin
+                //     trigger OnValidate()
+                //     begin
 
-                        if Rec."Termination Of Contract" = Rec."Termination Of Contract"::" " then
-                            IsVisible := false  // Link should be visible
-                        else
-                            IsVisible := true; // Link should be hidde
+                //         if Rec."Termination Of Contract" = Rec."Termination Of Contract"::" " then
+                //             IsVisible := false  // Link should be visible
+                //         else
+                //             IsVisible := true; // Link should be hidde
 
-                    end;
-                }
+                //     end;
+                // }
 
 
-                field("Status"; Rec."Status")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                    Visible = IsVisible; // Show the Status field only when it is not blank
+                // field("Status"; Rec."Status")
+                // {
+                //     ApplicationArea = All;
+                //     Editable = false;
+                //     Visible = IsVisible; // Show the Status field only when it is not blank
 
-                    trigger OnValidate()
-                    begin
-                        if Rec."Status" = '' then
-                            IsVisible := false  // Hide all fields when status is blank
-                        else
-                            IsVisible := true;  // Show fields when status is not blank
+                //     trigger OnValidate()
+                //     begin
+                //         if Rec."Status" = '' then
+                //             IsVisible := false  // Hide all fields when status is blank
+                //         else
+                //             IsVisible := true;  // Show fields when status is not blank
 
-                        if Rec.Status = 'End Contract' then
-                            Rec."Termination Of Contract" := Rec."Termination Of Contract"::"Regular Termination";
-                        Rec.Modify();
-                    end;
+                //         if Rec.Status = 'End Contract' then
+                //             Rec."Termination Of Contract" := Rec."Termination Of Contract"::"Regular Termination";
+                //         Rec.Modify();
+                //     end;
 
-                }
+                // }
 
                 group(FinalCalculation)
                 {
@@ -646,6 +656,7 @@ page 50313 "Tenancy Contract Card"
                             DaysDiff: Integer;
                             DaysCal: Integer;
                             TerminateDate: Date;
+                            FinalCalculationid: Integer;
                         begin
                             FinalCalculation.SetRange("Contract ID", Rec."Contract ID");
                             FinalCalculation.SetRange("Tenant ID", Rec."Tenant ID");
@@ -684,7 +695,50 @@ page 50313 "Tenancy Contract Card"
                             DaysDiff := EndDate - StartDate + 1;
                             FinalCalculation."Original Contract Tenure" := DaysDiff;
                             FinalCalculation.Modify(true);
+
+
+
+                            FinalCalculation.SetRange("Contract ID", Rec."Contract ID");
+                            FinalCalculation.SetRange("Tenant ID", Rec."Tenant ID");
+
+                            if FinalCalculation.FindSet() then begin
+                                // If found, get the latest RS ID
+                                FinalCalculationid := FinalCalculation."FC ID";
+                                // end else begin
+                                //     // If no record is found, create a new Revenue Structure record
+                                //     FinalCalculation.Init();
+                                //     FinalCalculation.Insert(true);
+                                //     //FinalCalculation.Modify(true);  // Insert the new record and generate the RS ID
+
+                                //     // Get the newly created RS ID
+                                //     FinalCalculationid := FinalCalculation."FC ID";
+                            end;
+
+                            Rec."Link" := FinalCalculationid;
                         end;
+                    }
+
+
+
+                    field("Link"; Rec."Link")
+                    {
+                        ApplicationArea = All;
+                        Caption = 'Revenue Structure Link';
+                        DrillDown = true;
+
+
+                        trigger OnDrillDown()
+                        var
+                            FinalCalculation: Record "Final Calculation";
+                            FinalCalculationid: Integer;
+                        begin
+                            // Navigate to the Revenue Structure Card page
+                            if FinalCalculation.Get(Rec."Link") then
+                                PAGE.RUN(PAGE::"Final Calculation Card", FinalCalculation)
+                            else
+                                Message('The related Revenue Structure does not exist.')
+                        end;
+
                     }
                 }
 
@@ -1194,14 +1248,22 @@ page 50313 "Tenancy Contract Card"
         else
             IsVisible := true; // Link should be hidde
 
-        if Rec."Status" = '' then
-            IsVisible := false  // Hide all fields when status is blank
-        else
-            IsVisible := true;  // Show fields when status is not blank
 
-        if Rec.Status = 'End Contract' then
-            Rec."Termination Of Contract" := Rec."Termination Of Contract"::"Regular Termination";
-        Rec.Modify();
+        // Check if the contract status is either "Terminated" or "Renewed"
+        if (Rec."Tenant Contract Status" = Rec."Tenant Contract Status"::"Terminated") or
+           (Rec."Tenant Contract Status" = Rec."Tenant Contract Status"::"Contract Renewed") then
+            IsVisible := true  // Link should be visible
+        else
+            IsVisible := false; // Link should be hidden
+
+        // if Rec."Status" = '' then
+        //     IsVisible := false  // Hide all fields when status is blank
+        // else
+        //     IsVisible := true;  // Show fields when status is not blank
+
+        // if Rec.Status = 'End Contract' then
+        //     Rec."Termination Of Contract" := Rec."Termination Of Contract"::"Regular Termination";
+        // Rec.Modify();
 
     end;
 
