@@ -320,6 +320,7 @@ page 50928 "Payment Mode Card2"
                 {
                     ApplicationArea = All;
                     Editable = IsApproved;
+                    Visible = false;
                 }
 
 
