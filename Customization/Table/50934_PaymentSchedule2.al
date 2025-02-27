@@ -116,7 +116,12 @@ table 50934 "Payment Schedule2"
         {
             Caption = 'Payment Status';
 
-           
+
+        }
+        field(50917; "Property Classification"; Text[100])
+        {
+            Caption = 'Property Classification';
+            DataClassification = ToBeClassified;
         }
         // field(50916; "Tenant Name"; Text[100])
         // {
