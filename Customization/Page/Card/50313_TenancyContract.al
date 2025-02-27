@@ -651,6 +651,8 @@ page 50313 "Tenancy Contract Card"
                             TenancyRecord: Record "Tenancy Contract"; // Replace with the actual table name
                             FinalCalculation: Record "Final Calculation";
                             InstallmentStructure: Record "Revenue Structure Subpage1"; // Second Table
+                            CarryForwardGrid: Record "Carry Forward Grid";
+                            SecurityDeposit: Record "Security Deposit";
                             StartDate: Date;
                             EndDate: Date;
                             DaysDiff: Integer;
@@ -696,8 +698,6 @@ page 50313 "Tenancy Contract Card"
                             FinalCalculation."Original Contract Tenure" := DaysDiff;
                             FinalCalculation.Modify(true);
 
-
-
                             FinalCalculation.SetRange("Contract ID", Rec."Contract ID");
                             FinalCalculation.SetRange("Tenant ID", Rec."Tenant ID");
 
@@ -713,8 +713,50 @@ page 50313 "Tenancy Contract Card"
                                 // Get the newly created RS ID
                                 FinalCalculationid := FinalCalculation."FC ID";
                             end;
-
                             Rec."Link" := FinalCalculationid;
+
+                            // Handle carry forward grid for security deposits
+                            SecurityDeposit.Reset();
+                            SecurityDeposit.SetRange("Contract ID", Rec."Contract ID");
+
+                            if SecurityDeposit.FindSet() then begin
+                                repeat
+                                    // Check if a Carry Forward Grid record already exists
+                                    CarryForwardGrid.Reset();
+                                    CarryForwardGrid.SetRange("Contract ID", SecurityDeposit."Contract ID");
+                                    CarryForwardGrid.SetRange("New Contract ID", SecurityDeposit."New_Contract ID");
+                                    CarryForwardGrid.SetRange("Total Amount", SecurityDeposit."New_Security Deposit Amount"); // Additional Check
+
+                                    if not CarryForwardGrid.FindFirst() then begin
+                                        // Create new record only if it doesn't exist
+                                        CarryForwardGrid.Init();
+                                        // Get the next available Entry No.
+                                        CarryForwardGrid."Entry No." := GetNextEntryNo();
+                                        CarryForwardGrid."Contract ID" := SecurityDeposit."Contract ID";
+                                        CarryForwardGrid."New Contract ID" := SecurityDeposit."New_Contract ID";
+                                        CarryForwardGrid."Total Amount" := SecurityDeposit."New_Security Deposit Amount";
+                                        CarryForwardGrid.Insert();
+                                    end else begin
+                                        // Update existing record
+                                        CarryForwardGrid."Total Amount" := SecurityDeposit."New_Security Deposit Amount";
+                                        CarryForwardGrid.Modify();
+                                    end;
+                                until SecurityDeposit.Next() = 0;
+                            end else begin
+                                // If no Security Deposit records exist, create a basic Carry Forward Grid record
+                                CarryForwardGrid.Reset();
+                                CarryForwardGrid.SetRange("Contract ID", Rec."Contract ID");
+
+                                if not CarryForwardGrid.FindFirst() then begin
+                                    CarryForwardGrid.Init();
+                                    // Get the next available Entry No.
+                                    CarryForwardGrid."Entry No." := GetNextEntryNo();
+                                    CarryForwardGrid."Contract ID" := Rec."Contract ID";
+                                    // You'll need to determine the New Contract ID from elsewhere
+                                    CarryForwardGrid."Total Amount" := Rec."Security Deposit Amount";
+                                    CarryForwardGrid.Insert();
+                                end;
+                            end;
                         end;
                     }
 
@@ -1190,6 +1232,17 @@ page 50313 "Tenancy Contract Card"
 
         }
     }
+
+    local procedure GetNextEntryNo(): Integer
+    var
+        CarryForwardGrid: Record "Carry Forward Grid";
+    begin
+        CarryForwardGrid.Reset();
+        if CarryForwardGrid.FindLast() then
+            exit(CarryForwardGrid."Entry No." + 1)
+        else
+            exit(1);
+    end;
 
     procedure OpenFileInBrowser(URL: Text)
     begin
