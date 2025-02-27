@@ -258,7 +258,7 @@ page 50939 "Tenancy Contract SubPage Card"
                 field("Link"; Rec."Link")
                 {
                     ApplicationArea = All;
-                    Caption = 'Link';
+                    Caption = 'Revenue Structure Link';
                     DrillDown = true;
 
 
