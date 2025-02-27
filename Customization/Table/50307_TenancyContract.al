@@ -1570,7 +1570,7 @@ table 50307 "Tenancy Contract"
         field(50192; "Link"; Integer)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Revenue Calculation Link';
+            Caption = 'Final Calculation Link';
             Editable = false;
 
         }
