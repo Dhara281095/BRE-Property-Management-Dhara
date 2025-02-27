@@ -27,6 +27,63 @@ page 50951 "Final Billing Calculation"
                 field(DifferenceVAT; Rec.DifferenceVAT) { Caption = 'Difference VAT'; ApplicationArea = All; }
                 field(DifferenceAmountInclVAT; Rec.DifferenceAmountInclVAT) { Caption = 'Difference Amount Incl. VAT'; ApplicationArea = All; }
             }
+            group(" ")
+            {
+                field("Total Invoiced Amount"; Rec."Total Invoiced Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Caption = 'Total Invoiced Amount';
+                }
+                field("Total Invoiced VAT"; Rec."Total Invoiced VAT")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Caption = 'Total Invoiced VAT';
+                }
+                field("Total Invoiced AmountIncl. VAT"; Rec."Total Invoiced AmountIncl. VAT")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Caption = 'Total Invoiced Amount Incl. VAT';
+                }
+                field("Total Revised Amount"; Rec."Total Revised Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Caption = 'Total Revised Amount';
+                }
+                field("Total Revised VAT"; Rec."Total Revised VAT")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Caption = 'Total Revised VAT';
+                }
+                field("Total Revised AmountIncl. VAT"; Rec."Total Revised AmountIncl. VAT")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Caption = 'Total Revised AmountIncl. VAT';
+                }
+                field("Total Differnece Amount"; Rec."Total Differnece Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Caption = 'Total Differnece Amount';
+                }
+                field("Total Difference VAT"; Rec."Total Difference VAT")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Caption = 'Total Difference VAT';
+                }
+                field("Total DifferenceAmountIncl.VAT"; Rec."Total DifferenceAmountIncl.VAT")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Caption = 'Total Difference Amount Incl. VAT';
+                }
+            }
         }
     }
     trigger OnAfterGetRecord()

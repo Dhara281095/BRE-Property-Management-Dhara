@@ -156,31 +156,34 @@ page 50903 "Final Calculation Card"
                 }
             }
 
-            group("Final Revenue Calculation")
+            // group("Final Revenue Calculation")
+            // {
+            //     part("FinalRevenueCalculation"; "Final Revenue Calculation Grid")
+            //     {
+            //         SubPageLink = "Contract ID" = FIELD("Contract ID");
+            //         ApplicationArea = All;
+            //     }
+            // }
+            part("FinalRevenueCalculation"; "Final Revenue Calculation Grid")
             {
-                part("FinalRevenueCalculation"; "Final Revenue Calculation Grid")
-                {
-                    SubPageLink = "Contract ID" = FIELD("Contract ID");
-                    ApplicationArea = All;
-                }
-            }
-            group("Billing Calculation")
-            {
-                part("BillingCalculation"; "Final Billing Calculation")
-                {
-                    SubPageLink = "Contract ID" = FIELD("Contract ID");
-                    ApplicationArea = All;
-                }
+                SubPageLink = "Contract ID" = FIELD("Contract ID");
+                ApplicationArea = All;
             }
 
-            group("Pending receivable/Payable")
+            part("BillingCalculation"; "Final Billing Calculation")
             {
-                part("Pendingreceivable/Payable"; "Pending Recevieable Grid")
-                {
-                    SubPageLink = "Contract ID" = FIELD("Contract ID");
-                    ApplicationArea = All;
-                }
+                SubPageLink = "Contract ID" = FIELD("Contract ID");
+                ApplicationArea = All;
             }
+
+
+
+            part("Pendingreceivable/Payable"; "Pending Recevieable Grid")
+            {
+                SubPageLink = "Contract ID" = FIELD("Contract ID");
+                ApplicationArea = All;
+            }
+
             group("Termination Additional Charges")
             {
                 part("Additional Charges"; "Additional Charges Sub Card")
