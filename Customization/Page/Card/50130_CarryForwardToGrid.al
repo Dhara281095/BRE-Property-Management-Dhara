@@ -16,6 +16,10 @@ page 50130 "Carry Forward Grid"
                 {
                     ApplicationArea = All;
                 }
+                field("New Contract ID"; Rec."New Contract ID")
+                {
+                    ApplicationArea = All;
+                }
                 field("Security Deposit"; Rec."Security Deposit")
                 {
                     ApplicationArea = All;
