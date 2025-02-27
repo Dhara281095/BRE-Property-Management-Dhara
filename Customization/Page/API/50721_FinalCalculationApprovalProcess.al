@@ -2,7 +2,7 @@ namespace BREPropertyManagemenMeghatMaster.BREPropertyManagemenMeghatMaster;
 
 page 50721 FinalCalculationApproval
 {
-    APIGroup = 'payment';
+    APIGroup = 'Finance';
     APIPublisher = 'RealeststeDev';
     APIVersion = 'v2.0';
     ApplicationArea = All;
