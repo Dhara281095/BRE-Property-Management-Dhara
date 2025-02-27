@@ -815,6 +815,7 @@ page 50313 "Tenancy Contract Card"
                         if Tenancycontract.FindFirst() then begin
                             // Set fields for RentCalculation record
                             RentRecord."Contract ID" := Tenancycontract."Contract ID";
+                            RentRecord."Property Classification" := Tenancycontract."Property Classification";
                             RentRecord."Contract Start Date" := Tenancycontract."Contract Start Date";
                             RentRecord."Contract End Date" := Tenancycontract."Contract End Date";
                             RentRecord."Amount" := Round(Tenancycontract."Annual Rent Amount");
@@ -837,6 +838,7 @@ page 50313 "Tenancy Contract Card"
                                 // If Rent Calculation doesn't exist, insert a new one
                                 RentRecord.Init();
                                 RentRecord."Contract ID" := Tenancycontract."Contract ID";
+                                RentRecord."Property Classification" := Tenancycontract."Property Classification";
                                 RentRecord."Contract Start Date" := Tenancycontract."Contract Start Date";
                                 RentRecord."Contract End Date" := Tenancycontract."Contract End Date";
                                 RentRecord."Amount" := Round(Tenancycontract."Annual Rent Amount");
@@ -876,6 +878,7 @@ page 50313 "Tenancy Contract Card"
                                             RentSubpage."Tenant Id" := RentRecord."Tenant ID";
                                             RentSubpage."Secondary Item Type" := RentRecord."Secondary Item Type";
                                             RentSubpage."VAT %" := RentRecord."VAT %";
+                                            RentSubpage."Propety Classification" := RentRecord."Property Classification";
                                             RentSubpage."VAT Amount" := RentRecord."VAT Amount";
                                             RentSubpage."Amount Including VAT" := RentRecord."Amount Including VAT";
                                             RentSubpage.Year := SU_lumpsum.SL_Year;
@@ -902,6 +905,7 @@ page 50313 "Tenancy Contract Card"
                                             RentSubpage."Secondary Item Type" := RentRecord."Secondary Item Type";
                                             RentSubpage."VAT %" := RentRecord."VAT %";
                                             RentSubpage."VAT Amount" := RentRecord."VAT Amount";
+                                            RentSubpage."Propety Classification" := RentRecord."Property Classification";
                                             RentSubpage."Amount Including VAT" := RentRecord."Amount Including VAT";
                                             RentSubpage.Year := SU_samesquare.Year;
                                             RentSubpage."Period Start Date" := SU_samesquare."Start Date";
@@ -942,6 +946,7 @@ page 50313 "Tenancy Contract Card"
                                                     RentSubpage."Tenant Id" := RentRecord."Tenant ID";
                                                     RentSubpage."Secondary Item Type" := RentRecord."Secondary Item Type";
                                                     RentSubpage."VAT %" := RentRecord."VAT %";
+                                                    RentSubpage."Propety Classification" := RentRecord."Property Classification";
                                                     RentSubpage."VAT Amount" := RentRecord."VAT Amount";
                                                     RentSubpage."Amount Including VAT" := RentRecord."Amount Including VAT";
                                                     RentSubpage.Year := MU_differentsquare.MD_Year;
@@ -970,6 +975,7 @@ page 50313 "Tenancy Contract Card"
                                             RentSubpage."Tenant Id" := RentRecord."Tenant ID";
                                             RentSubpage."Secondary Item Type" := RentRecord."Secondary Item Type";
                                             RentSubpage."VAT %" := RentRecord."VAT %";
+                                            RentSubpage."Propety Classification" := RentRecord."Property Classification";
                                             RentSubpage."VAT Amount" := RentRecord."VAT Amount";
                                             RentSubpage."Amount Including VAT" := RentRecord."Amount Including VAT";
                                             RentSubpage.Year := MU_lumpsum.ML_Year;
@@ -996,6 +1002,7 @@ page 50313 "Tenancy Contract Card"
                                             RentSubpage."Secondary Item Type" := RentRecord."Secondary Item Type";
                                             RentSubpage."VAT %" := RentRecord."VAT %";
                                             RentSubpage."VAT Amount" := RentRecord."VAT Amount";
+                                            RentSubpage."Propety Classification" := RentRecord."Property Classification";
                                             RentSubpage."Amount Including VAT" := RentRecord."Amount Including VAT";
                                             RentSubpage.Year := MU_samesquare.MS_Year;
                                             RentSubpage."Period Start Date" := MU_samesquare."MS_Start Date";
