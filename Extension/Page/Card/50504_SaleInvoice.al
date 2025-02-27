@@ -323,16 +323,16 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
 
         end;
 
-        salesline.SetRange("Document No.", Rec."No.");
-        if salesline.FindSet() then
-            repeat
+        // salesline.SetRange("Document No.", Rec."No.");
+        // if salesline.FindSet() then
+        //     repeat
 
-                salesline."Gen. Bus. Posting Group" := Rec."Gen. Bus. Posting Group";
-                salesline."Customer Price Group" := Rec."Customer Price Group";
-                salesline."VAT Bus. Posting Group" := Rec."VAT Bus. Posting Group";
+        //         salesline."Gen. Bus. Posting Group" := Rec."Gen. Bus. Posting Group";
+        //         salesline."Customer Price Group" := Rec."Customer Price Group";
+        //         salesline."VAT Bus. Posting Group" := Rec."VAT Bus. Posting Group";
 
-                salesline.Modify();
-            until salesline.Next() = 0;
+        //         salesline.Modify();
+        //     until salesline.Next() = 0;
 
         tenancyContract.SetRange("Contract ID", Rec."Contract ID");
         if tenancyContract.FindFirst() then begin

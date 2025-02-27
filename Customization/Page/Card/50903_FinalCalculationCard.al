@@ -356,7 +356,7 @@ page 50903 "Final Calculation Card"
                     SecurityDepositEntry."Termination Date" := Rec."Termination Date";
                     SecurityDepositEntry.Insert(true);
 
-                    Message('Entry posted successfully!');
+                    Message('Approval Request Send successfully!');
 
                     // Open the entries list
                     // Page.Run(Page::"Security Deposit Entries");

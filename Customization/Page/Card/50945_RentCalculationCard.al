@@ -107,7 +107,11 @@ page 50945 "Rent Calculation Card"
                     Editable = false;
                 }
 
-
+                field("Property Classification"; Rec."Property Classification")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
 
 
             }

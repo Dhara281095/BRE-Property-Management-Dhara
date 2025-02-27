@@ -200,11 +200,13 @@ table 50920 "Payment Schedule"
                 PaymentSchedule."Secondary Item Type" := RentCalculationSubpage."Secondary Item Type";
                 PaymentSchedule.Amount := RentCalculationSubpage.Amount;
                 PaymentSchedule."VAT Amount" := RentCalculationSubpage."VAT Amount";
+                PaymentSchedule."Property Classification" := RentCalculationSubpage."Primary Classification";
                 PaymentSchedule."Installment Start Date" := RentCalculationSubpage."Installment Start Date";
                 PaymentSchedule."Installment End Date" := RentCalculationSubpage."Installment End Date";
                 PaymentSchedule."Installment No." := RentCalculationSubpage."Installment No.";
                 PaymentSchedule."Amount Including VAT" := RentCalculationSubpage."Amount Including VAT";
                 PaymentSchedule."Due Date" := RentCalculationSubpage."Due Date";
+
                 PaymentSchedule.Insert();
                 Clear(PaymentSchedule);
             until RentCalculationSubpage.Next() = 0;

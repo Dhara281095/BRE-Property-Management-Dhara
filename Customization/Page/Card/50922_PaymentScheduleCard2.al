@@ -74,7 +74,7 @@ page 50922 "Payment Schedule Card2"
                 {
                     ApplicationArea = All;
                     Editable = false;
-                    Visible = true;
+                    Visible = false;
                     Caption = 'Payment Series';
                 }
                 field("Tenant Name"; Rec."Tenant Name")
@@ -113,7 +113,7 @@ page 50922 "Payment Schedule Card2"
                 field("Payment Status"; Rec."Payment Status")
                 {
                     ApplicationArea = All;
-
+                    Visible = false;
                     trigger OnValidate()
                     begin
 
@@ -124,6 +124,12 @@ page 50922 "Payment Schedule Card2"
 
 
 
+                }
+                field("Property Classification"; Rec."Property Classification")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Property Classification';
+                    Editable = false;
                 }
 
             }

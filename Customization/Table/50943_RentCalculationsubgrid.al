@@ -168,7 +168,11 @@ table 50943 "Rent Calculation Subpage"
 
         }
 
-
+        field(50119; "Propety Classification"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Proeprty Classifcation';
+        }
 
 
     }

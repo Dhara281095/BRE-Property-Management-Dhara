@@ -92,7 +92,12 @@ page 50946 "Rent Calculation SubCard"
                     Caption = 'Per Day Rent';
                     ToolTip = 'Enter the Per Day Rent.';
                 }
-
+                field("Propety Classification"; Rec."Propety Classification")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Caption = 'Property Classification';
+                }
 
 
             }
@@ -250,7 +255,7 @@ page 50946 "Rent Calculation SubCard"
                                         // InstallmentStructure."Proposal ID" := RevenueStructure."Proposal ID";
                                         InstallmentStructure."Tenant ID" := RevenueStructure."Tenant ID";
                                         InstallmentStructure."Contract ID" := RevenueStructure."Contract ID";
-
+                                        InstallmentStructure."Primary Classification" := RevenueStructure."Propety Classification";
                                         // InstallmentStructure."VAT Amount" := VATAmount2;
                                         InstallmentStructure."VAT %" := VATPer;
                                         InstallmentStructure."Secondary Item Type" := RevenueStructure."Secondary Item Type";
