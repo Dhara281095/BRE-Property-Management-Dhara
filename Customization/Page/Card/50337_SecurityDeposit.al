@@ -126,21 +126,21 @@ page 50337 "Security Deposit Card"
     }
 
 
-    actions
-    {
-        area(processing)
-        {
-            action(Save)
-            {
-                ApplicationArea = All;
-                Caption = 'Save';
-                trigger OnAction()
-                begin
-                    // Save logic, if needed
-                end;
-            }
-        }
-    }
+    // actions
+    // {
+    //     area(processing)
+    //     {
+    //         action(Save)
+    //         {
+    //             ApplicationArea = All;
+    //             Caption = 'Save';
+    //             trigger OnAction()
+    //             begin
+    //                 // Save logic, if needed
+    //             end;
+    //         }
+    //     }
+    // }
 
 
 

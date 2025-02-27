@@ -36,11 +36,11 @@ table 50103 "Emirate"
 
     keys
     {
-        key(PK; "ID")
+        key(PK; "ID", "Emirate Name")
         {
             Clustered = true;
         }
-        key("Country_Emirate"; "Country Code", "Emirate Name")
+        key("Country_Emirate"; "Country Code")
         {
         }
     }
@@ -78,11 +78,7 @@ table 50103 "Emirate"
     var
         EmirateRec: Record "Emirate";
     begin
-        if (Rec."Country Code" = '') then
-            Error('Country Code is required.');
 
-        if (Rec."Emirate Name" = '') then
-            Error('Emirate Name is required.');
 
         // Check if 'Sl No.' is 0 (indicating it's a new record)
         if "Sl No." = 0 then begin
@@ -95,12 +91,5 @@ table 50103 "Emirate"
     end;
     //-------------Record Insert--------------//
 
-    trigger OnModify()
-    begin
-        if (Rec."Country Code" = '') then
-            Error('Country Code is required.');
 
-        if (Rec."Emirate Name" = '') then
-            Error('Emirate Name is required.');
-    end;
 }

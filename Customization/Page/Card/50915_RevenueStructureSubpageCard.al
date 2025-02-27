@@ -113,7 +113,7 @@ page 50915 "Payment Schedule"
 
 
 
-            group(Group2)
+            group(" ")
             {
                 field("Total Amount"; Rec."Total Amount")
                 {
