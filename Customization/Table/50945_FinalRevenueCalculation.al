@@ -107,6 +107,77 @@ table 50945 "Final Revenue Calculation Grid"
             Caption = 'Total No. Of Days(Termination Year)';
 
         }
+        field(19; "Total Original Amount"; Decimal)
+        {
+            Caption = 'Total Original Amount';
+            FieldClass = FlowField;
+            Editable = false;
+            CalcFormula = sum("Final Revenue Calculation Grid"."Original Amount" where("Contract ID" = field("Contract ID")));
+        }
+        field(20; "Total Original VAT"; Decimal)
+        {
+            Caption = 'Total Original VAT';
+            FieldClass = FlowField;
+            CalcFormula = sum("Final Revenue Calculation Grid"."Original VAT" where("Contract ID" = field("Contract ID")));
+
+        }
+        field(21; "Total Orgininal AmountIncl.VAT"; Decimal)
+        {
+            Caption = 'Total Orgininal Amount Incl. VAT';
+            FieldClass = FlowField;
+            DecimalPlaces = 2 : 2;
+            CalcFormula = sum("Final Revenue Calculation Grid"."Original Amount Incl." where("Contract ID" = field("Contract ID")));
+        }
+
+        field(22; "Total Revised Amount"; Decimal)
+        {
+            Caption = 'Total Revised Amount';
+            FieldClass = FlowField;
+            DecimalPlaces = 2 : 2;
+            CalcFormula = sum("Final Revenue Calculation Grid"."Revised Amount" where("Contract ID" = field("Contract ID")));
+        }
+        field(23; "Total Revised VAT"; Decimal)
+        {
+            Caption = 'Total Revised VAT';
+            FieldClass = FlowField;
+            DecimalPlaces = 2 : 2;
+            CalcFormula = sum("Final Revenue Calculation Grid"."Revised VAT" where("Contract ID" = field("Contract ID")));
+
+        }
+        field(24; "Total Revised AmountIncl.VAT"; Decimal)
+        {
+            Caption = 'Total Revised Amount Incl. VAT';
+            FieldClass = FlowField;
+            DecimalPlaces = 2 : 2;
+            CalcFormula = sum("Final Revenue Calculation Grid"."Revised Amount Incl." where("Contract ID" = field("Contract ID")));
+        }
+        field(25; "Total Difference Amount"; Decimal)
+        {
+            Caption = 'Total Difference Amount';
+            FieldClass = FlowField;
+            DecimalPlaces = 2 : 2;
+            CalcFormula = sum("Final Revenue Calculation Grid"."Difference Amount" where("Contract ID" = field("Contract ID")));
+        }
+        field(26; "Total Difference VAT"; Decimal)
+        {
+            Caption = 'Total Difference VAT';
+            FieldClass = FlowField;
+            DecimalPlaces = 2 : 2;
+            CalcFormula = sum("Final Revenue Calculation Grid"."Difference VAT" where("Contract ID" = field("Contract ID")));
+
+        }
+        field(27; "Total DifferenceAmountIncl.VAT"; Decimal)
+        {
+            Caption = 'Total Difference Amount Incl. VAT"';
+            FieldClass = FlowField;
+            DecimalPlaces = 2 : 2;
+            CalcFormula = sum("Final Revenue Calculation Grid"."Difference Amount Incl." where("Contract ID" = field("Contract ID")));
+
+        }
+
+
+
+
     }
 
     keys

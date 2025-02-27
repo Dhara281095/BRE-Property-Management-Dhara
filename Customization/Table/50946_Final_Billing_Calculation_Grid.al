@@ -75,6 +75,69 @@ table 50946 "Final Billing Calculation Grid"
             DataClassification = ToBeClassified;
             AutoIncrement = true;
         }
+        field(13; "Total Invoiced Amount"; Decimal)
+        {
+            Caption = 'Total Invoiced Amount';
+            FieldClass = FlowField;
+            CalcFormula = sum("Final Billing Calculation Grid"."InvoicedAmount" where("Contract ID" = field("Contract ID")));
+
+        }
+        field(14; "Total Invoiced VAT"; Decimal)
+        {
+            Caption = 'Total Invoiced VAT';
+            FieldClass = FlowField;
+            CalcFormula = sum("Final Billing Calculation Grid"."InvoicedVAT" where("Contract ID" = field("Contract ID")));
+
+        }
+        field(15; "Total Invoiced AmountIncl. VAT"; Decimal)
+        {
+            Caption = 'Total Invoiced Amount';
+            FieldClass = FlowField;
+            CalcFormula = sum("Final Billing Calculation Grid"."InvoicedAmountInclVAT" where("Contract ID" = field("Contract ID")));
+
+        }
+        field(16; "Total Revised Amount"; Decimal)
+        {
+            Caption = 'Total Revised Amount';
+            FieldClass = FlowField;
+            CalcFormula = sum("Final Billing Calculation Grid"."RevisedAmount" where("Contract ID" = field("Contract ID")));
+
+        }
+        field(17; "Total Revised VAT"; Decimal)
+        {
+            Caption = 'Total Invoiced Amount';
+            FieldClass = FlowField;
+            CalcFormula = sum("Final Billing Calculation Grid"."RevisedVAT" where("Contract ID" = field("Contract ID")));
+
+        }
+        field(18; "Total Revised AmountIncl. VAT"; Decimal)
+        {
+            Caption = 'Total Revised Amount Incl. VAT';
+            FieldClass = FlowField;
+            CalcFormula = sum("Final Billing Calculation Grid"."RevisedAmountInclVAT" where("Contract ID" = field("Contract ID")));
+
+        }
+        field(19; "Total Differnece Amount"; Decimal)
+        {
+            Caption = 'Total Difference Amount';
+            FieldClass = FlowField;
+            CalcFormula = sum("Final Billing Calculation Grid"."DifferenceAmount" where("Contract ID" = field("Contract ID")));
+
+        }
+        field(20; "Total Difference VAT"; Decimal)
+        {
+            Caption = 'Total Invoiced Amount';
+            FieldClass = FlowField;
+            CalcFormula = sum("Final Billing Calculation Grid"."DifferenceVAT" where("Contract ID" = field("Contract ID")));
+
+        }
+        field(21; "Total DifferenceAmountIncl.VAT"; Decimal)
+        {
+            Caption = 'Total Difference Amount Incl. VAT';
+            FieldClass = FlowField;
+            CalcFormula = sum("Final Billing Calculation Grid"."DifferenceAmountInclVAT" where("Contract ID" = field("Contract ID")));
+
+        }
     }
 
     keys

@@ -118,6 +118,68 @@ page 50950 "Final Revenue Calculation Grid"
                     ToolTip = 'Enter the Total No. Of Days.';
                     Editable = false;
                 }
+
+            }
+            group(" ")
+            {
+                field("Total Original Amount"; Rec."Total Original Amount")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Original Amount';
+                    Editable = false;
+                }
+                field("Total Original VAT"; Rec."Total Original VAT")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Original VAT';
+                    Editable = false;
+                }
+
+                field("Total Orgininal AmountIncl.VAT"; Rec."Total Orgininal AmountIncl.VAT")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Orgininal Amount Incl. VAT';
+                    Editable = false;
+
+                }
+                field("Total Revised Amount"; Rec."Total Revised Amount")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Revised Amount';
+                    Editable = false;
+
+                }
+                field("Total Revised VAT"; Rec."Total Revised VAT")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Revised VAT';
+                    Editable = false;
+
+                }
+                field("Total Revised AmountIncl.VAT"; Rec."Total Revised AmountIncl.VAT")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Revised Amount Incl. VAT';
+                    Editable = false;
+                }
+                field("Total Difference Amount"; Rec."Total Difference Amount")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Difference Amount';
+                    Editable = false;
+                }
+                field("Total Difference VAT"; Rec."Total Difference VAT")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Differnece VAT';
+                    Editable = false;
+                }
+                field("Total DifferenceAmountIncl.VAT"; Rec."Total DifferenceAmountIncl.VAT")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Difference Amount Incl. VAT';
+                    Editable = false;
+                }
             }
         }
     }
