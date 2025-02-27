@@ -26,6 +26,12 @@ page 50951 "Final Billing Calculation"
                 field(DifferenceAmount; Rec.DifferenceAmount) { Caption = 'Difference Amount'; ApplicationArea = All; }
                 field(DifferenceVAT; Rec.DifferenceVAT) { Caption = 'Difference VAT'; ApplicationArea = All; }
                 field(DifferenceAmountInclVAT; Rec.DifferenceAmountInclVAT) { Caption = 'Difference Amount Incl. VAT'; ApplicationArea = All; }
+                field("Termination Date"; Rec."Termination Date")
+                {
+                    Caption = 'Termination Date';
+                    ApplicationArea = All;
+                    Editable = false;
+                }
             }
             group(" ")
             {

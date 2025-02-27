@@ -138,6 +138,11 @@ table 50946 "Final Billing Calculation Grid"
             CalcFormula = sum("Final Billing Calculation Grid"."DifferenceAmountInclVAT" where("Contract ID" = field("Contract ID")));
 
         }
+        field(22; "Termination Date"; Date)
+        {
+            Caption = 'Termination Date';
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys
