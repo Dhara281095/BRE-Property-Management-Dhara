@@ -12,7 +12,7 @@ page 50721 FinalCalculationApproval
     EntitySetName = 'finalcalculationapprovals';
     PageType = API;
     ODataKeyFields = SystemId;
-    SourceTable = FinalCalculationApproval;
+    SourceTable = "Approval Final Calculation";
 
     layout
     {

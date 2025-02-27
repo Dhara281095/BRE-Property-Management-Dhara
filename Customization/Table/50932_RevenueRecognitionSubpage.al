@@ -14,10 +14,10 @@ table 50932 "Revenue Recognition Subpage"
 
         }
 
-        field(50100; "Proposal ID"; Integer)
+        field(50100; "Contract ID"; Integer)
         {
             DataClassification = ToBeClassified;
-            TableRelation = "Lease Proposal Details"."Proposal ID";
+            TableRelation = "Tenancy Contract"."Contract ID";
             Editable = false;
 
         }
@@ -25,7 +25,7 @@ table 50932 "Revenue Recognition Subpage"
         {
             DataClassification = ToBeClassified;
             Caption = 'Tenant Id';
-            TableRelation = "Lease Proposal Details"."Tenant ID";
+            TableRelation = "Tenancy Contract"."Tenant ID";
             Editable = false; // Make it read-only for the user
 
         }
@@ -76,7 +76,7 @@ table 50932 "Revenue Recognition Subpage"
             Editable = false;
 
             FieldClass = FlowField;
-            CalcFormula = sum("Revenue Recognition Subpage"."RR - Method 1 (Day)" where("Proposal ID" = field("Proposal ID")));
+            CalcFormula = sum("Revenue Recognition Subpage"."RR - Method 1 (Day)" where("Contract ID" = field("Contract ID")));
 
         }
 
@@ -87,7 +87,7 @@ table 50932 "Revenue Recognition Subpage"
             Editable = false;
             FieldClass = FlowField;
 
-            CalcFormula = sum("Revenue Recognition Subpage"."RR - Method 2 (Month)" where("Proposal ID" = field("Proposal ID")));
+            CalcFormula = sum("Revenue Recognition Subpage"."RR - Method 2 (Month)" where("Contract ID" = field("Contract ID")));
 
         }
 
