@@ -66,6 +66,12 @@ table 50947 "Pending Receviable Grid"
             DataClassification = ToBeClassified;
             AutoIncrement = true;
         }
+        field(13; "Termination Date"; Date)
+        {
+            Caption = 'Termination Date';
+            DataClassification = ToBeClassified;
+
+        }
     }
 
     keys

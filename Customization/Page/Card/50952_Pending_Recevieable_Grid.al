@@ -24,6 +24,11 @@ page 50952 "Pending Recevieable Grid"
                 field(DifferenceAmount; Rec.DifferenceAmount) { ApplicationArea = All; Caption = 'Difference Amount'; }
                 field(DifferenceVAT; Rec.DifferenceVAT) { ApplicationArea = All; Caption = 'Difference VAT'; }
                 field(DifferenceAmountInclVAT; Rec.DifferenceAmountInclVAT) { ApplicationArea = All; Caption = 'Difference Amount Incl. VAT'; }
+                field("Termination Date"; Rec."Termination Date")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Termination Date';
+                }
             }
         }
     }

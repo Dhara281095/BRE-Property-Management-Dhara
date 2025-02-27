@@ -700,7 +700,7 @@ page 50903 "Final Calculation Card"
                 BillinCalcGrid.Init();
                 BillinCalcGrid."Contract ID" := RentCalc1."Contract ID";
                 BillinCalcGrid."RevenueDescription" := RentCalc1."Secondary Item Type";
-
+                BillinCalcGrid."Termination Date" := Rec."Termination Date";
                 BillinCalcGrid.Insert();
                 Clear(BillinCalcGrid);
             until RentCalc1.Next() = 0;
@@ -723,7 +723,7 @@ page 50903 "Final Calculation Card"
                 BillingCalc1.Init();
                 BillingCalc1."Contract ID" := Rec."Contract ID";
                 BillingCalc1."RevenueDescription" := TenancyContractLine2."Secondary Item Type";
-
+                BillingCalc1."Termination Date" := Rec."Termination Date";
                 BillingCalc1.Insert();
                 Clear(BillingCalc1);
             until TenancyContractLine2.Next() = 0;
@@ -755,7 +755,7 @@ page 50903 "Final Calculation Card"
                 RecvieableCalcGrid.Init();
                 RecvieableCalcGrid."Contract ID" := RentCalc2."Contract ID";
                 RecvieableCalcGrid."RevenueDescription" := RentCalc2."Secondary Item Type";
-
+                RecvieableCalcGrid."Termination Date" := Rec."Termination Date";
                 RecvieableCalcGrid.Insert();
                 Clear(RecvieableCalcGrid);
             until RentCalc2.Next() = 0;
@@ -779,7 +779,7 @@ page 50903 "Final Calculation Card"
                 RecvieableCalcGrid1.Init();
                 RecvieableCalcGrid1."Contract ID" := Rec."Contract ID";
                 RecvieableCalcGrid1."RevenueDescription" := TenancyContractLine3."Secondary Item Type";
-
+                RecvieableCalcGrid1."Termination Date" := Rec."Termination Date";
                 RecvieableCalcGrid1.Insert();
                 Clear(RecvieableCalcGrid1);
             until TenancyContractLine3.Next() = 0;
