@@ -704,14 +704,14 @@ page 50313 "Tenancy Contract Card"
                             if FinalCalculation.FindSet() then begin
                                 // If found, get the latest RS ID
                                 FinalCalculationid := FinalCalculation."FC ID";
-                                // end else begin
-                                //     // If no record is found, create a new Revenue Structure record
-                                //     FinalCalculation.Init();
-                                //     FinalCalculation.Insert(true);
-                                //     //FinalCalculation.Modify(true);  // Insert the new record and generate the RS ID
+                            end else begin
+                                // If no record is found, create a new Revenue Structure record
+                                FinalCalculation.Init();
+                                FinalCalculation.Insert(true);
+                                FinalCalculation.Modify(true);  // Insert the new record and generate the RS ID
 
-                                //     // Get the newly created RS ID
-                                //     FinalCalculationid := FinalCalculation."FC ID";
+                                // Get the newly created RS ID
+                                FinalCalculationid := FinalCalculation."FC ID";
                             end;
 
                             Rec."Link" := FinalCalculationid;
@@ -723,7 +723,6 @@ page 50313 "Tenancy Contract Card"
                     field("Link"; Rec."Link")
                     {
                         ApplicationArea = All;
-                        Caption = 'Revenue Structure Link';
                         DrillDown = true;
 
 
