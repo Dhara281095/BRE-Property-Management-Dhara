@@ -27,6 +27,11 @@ table 50114 "Carry Forward Grid"
             AutoIncrement = true;
             Editable = false;
         }
+        field(50104; "New Contract ID"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Editable = false;
+        }
     }
     keys
     {
