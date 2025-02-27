@@ -200,6 +200,10 @@ table 50901 "Final Calculation"
         deletefinalrevenuecalculation();
         deletebillingcaculation();
         PendingreceivablePayable();
+        TerminationAdditionalCharges();
+        RentCalculationGrid();
+        RevenueStructureGrid();
+        RevenueStructureyearlyBrokdownGrid();
 
     end;
 
@@ -236,6 +240,51 @@ table 50901 "Final Calculation"
         end;
 
     end;
+
+    procedure TerminationAdditionalCharges()
+    var
+        TerminationAdditional: Record "Additional Charges Sub";
+    begin
+        TerminationAdditional.SetRange("Contract ID", Rec."Contract ID");
+        if TerminationAdditional.FindSet() then begin
+            TerminationAdditional.DeleteAll();
+        end;
+    end;
+
+    procedure RentCalculationGrid()
+    var
+        RentCalculation: Record "Rent Calculate Sub";
+    begin
+        RentCalculation.SetRange("Contract ID", Rec."Contract ID");
+        if RentCalculation.FindSet() then begin
+            RentCalculation.DeleteAll();
+        end;
+
+    end;
+
+    procedure RevenueStructureGrid()
+    var
+        RevenueStructureyearlyBrokdown: Record "Other Payment Calculate Sub";
+    begin
+        RevenueStructureyearlyBrokdown.SetRange("Contract ID", Rec."Contract ID");
+        if RevenueStructureyearlyBrokdown.FindSet() then begin
+            RevenueStructureyearlyBrokdown.DeleteAll();
+        end;
+
+    end;
+
+    procedure RevenueStructureyearlyBrokdownGrid()
+    var
+        RevenueStructure: Record "Revenue Calculate Sub";
+    begin
+        RevenueStructure.SetRange("Contract ID", Rec."Contract ID");
+        if RevenueStructure.FindSet() then begin
+            RevenueStructure.DeleteAll();
+        end;
+
+    end;
+
+
 
     //-----------------Delete record also delete subgrid -----------------//
 
