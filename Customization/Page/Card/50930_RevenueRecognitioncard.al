@@ -21,7 +21,7 @@ page 50930 "Revenue Recognition Card"
 
 
                 //Caption = 'Primary Item Details';
-                field("Proposal ID"; Rec."Proposal ID")
+                field("Contract ID"; Rec."Contract ID")
                 {
                     ApplicationArea = All;
                     // Editable = false; // The ID is not editable since it's auto-incrementing
@@ -68,7 +68,7 @@ page 50930 "Revenue Recognition Card"
             {
                 part("RevenueRecognition"; "Revenue Recognition Card2")
                 {
-                    SubPageLink = "Proposal ID" = FIELD("Proposal ID"),
+                    SubPageLink = "Contract ID" = FIELD("Contract ID"),
                       "Tenant ID" = FIELD("Tenant ID"); // Link to filter attachments for this owner only
                     ApplicationArea = All;
 
