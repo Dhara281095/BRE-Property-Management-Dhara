@@ -100,7 +100,7 @@ page 50946 "Rent Calculation SubCard"
 
 
 
-            group(Group2)
+            group(" ")
             {
                 field("Total Amount"; Rec."Total Amount")
                 {
