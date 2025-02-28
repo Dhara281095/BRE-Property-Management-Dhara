@@ -67,6 +67,28 @@ table 50905 "Revenue Calculate Sub"
             Editable = false;
         }
 
+
+        field(50110; "Total Amount"; Decimal)
+        {
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = sum("Revenue Calculate Sub"."Amount" where("Contract ID" = field("Contract ID"), "Tenant ID" = field("Tenant ID")));
+        }
+
+        field(50111; "Total VAT Amount"; Decimal)
+        {
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = sum("Revenue Calculate Sub"."VAT Amount" where("Contract ID" = field("Contract ID"), "Tenant ID" = field("Tenant ID")));
+        }
+
+        field(50113; "Total Amount Including VAT"; Decimal)
+        {
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = sum("Revenue Calculate Sub"."Amount Including VAT" where("Contract ID" = field("Contract ID"), "Tenant ID" = field("Tenant ID")));
+        }
+
     }
 
 
