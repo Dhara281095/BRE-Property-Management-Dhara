@@ -73,6 +73,20 @@ page 50910 "Rent Calculate Sub Card"
                 }
 
             }
+            group(" ")
+            {
+
+                field("Total Number of Days"; Rec."Total Number of Days")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Total Final Annual Amount"; Rec."Total Final Annual Amount")
+                {
+                    ApplicationArea = All;
+                }
+
+            }
 
         }
 

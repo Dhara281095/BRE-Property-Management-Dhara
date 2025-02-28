@@ -89,6 +89,22 @@ table 50904 "Rent Calculate Sub"
 
         }
 
+        field(50118; "Total Number of Days"; Integer)
+        {
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = sum("Rent Calculate Sub"."Number of Days" where("Contract ID" = field("Contract ID"), "Tenant ID" = field("Tenant ID")));
+        }
+
+
+        field(50119; "Total Final Annual Amount"; Decimal)
+        {
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = sum("Rent Calculate Sub"."Final Annual Amount" where("Contract ID" = field("Contract ID"), "Tenant ID" = field("Tenant ID")));
+        }
+
+
 
 
 

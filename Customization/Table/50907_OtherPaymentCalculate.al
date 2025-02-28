@@ -69,6 +69,27 @@ table 50907 "Other Payment Calculate Sub"
             AutoIncrement = true;
         }
 
+        field(50111; "Total Amount"; Decimal)
+        {
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = sum("Other Payment Calculate Sub"."Amount" where("Contract ID" = field("Contract ID"), "Tenant ID" = field("Tenant ID")));
+        }
+
+        field(50116; "Total VAT Amount"; Decimal)
+        {
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = sum("Other Payment Calculate Sub"."VAT Amount" where("Contract ID" = field("Contract ID"), "Tenant ID" = field("Tenant ID")));
+        }
+
+        field(50113; "Total Amount Including VAT"; Decimal)
+        {
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = sum("Other Payment Calculate Sub"."Amount Including VAT" where("Contract ID" = field("Contract ID"), "Tenant ID" = field("Tenant ID")));
+        }
+
 
 
 

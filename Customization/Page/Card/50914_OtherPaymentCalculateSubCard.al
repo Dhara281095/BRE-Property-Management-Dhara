@@ -68,6 +68,26 @@ page 50914 "OtherPayment Calculate SubCard"
 
             }
 
+            group(" ")
+            {
+
+                field("Total Amount"; Rec."Total Amount")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Total VAT Amount"; Rec."Total VAT Amount")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Total Amount Including VAT"; Rec."Total Amount Including VAT")
+                {
+                    ApplicationArea = All;
+                }
+
+            }
+
         }
 
     }

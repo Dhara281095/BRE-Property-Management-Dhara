@@ -75,6 +75,26 @@ page 50911 "Revenue Calculate Sub Card"
 
             }
 
+            group(" ")
+            {
+
+                field("Total Amount"; Rec."Total Amount")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Total VAT Amount"; Rec."Total VAT Amount")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Total Amount Including VAT"; Rec."Total Amount Including VAT")
+                {
+                    ApplicationArea = All;
+                }
+
+            }
+
         }
 
     }
