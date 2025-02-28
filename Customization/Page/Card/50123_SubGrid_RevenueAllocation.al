@@ -107,6 +107,11 @@ page 50123 "Revenue Allocation SubGrid"
                     ApplicationArea = All;
                     Caption = 'Posting Period';
                 }
+                field("Final Annual Amount"; Rec."Final Annual Amount")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Final Annual Amount';
+                }
                 field("No Of Days"; Rec."No Of Days")
                 {
                     ApplicationArea = All;

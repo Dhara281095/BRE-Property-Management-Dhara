@@ -738,10 +738,12 @@ page 50313 "Tenancy Contract Card"
                                         CarryForwardGrid."Contract ID" := SecurityDeposit."Contract ID";
                                         CarryForwardGrid."New Contract ID" := SecurityDeposit."New_Contract ID";
                                         CarryForwardGrid."Total Amount" := SecurityDeposit."New_Security Deposit Amount";
+                                        CarryForwardGrid."Security Deposit" := 'Security Deposit';
                                         CarryForwardGrid.Insert();
                                     end else begin
                                         // Update existing record
                                         CarryForwardGrid."Total Amount" := SecurityDeposit."New_Security Deposit Amount";
+                                        CarryForwardGrid."Security Deposit" := 'Security Deposit';
                                         CarryForwardGrid.Modify();
                                     end;
                                 until SecurityDeposit.Next() = 0;
@@ -757,6 +759,7 @@ page 50313 "Tenancy Contract Card"
                                     CarryForwardGrid."Contract ID" := Rec."Contract ID";
                                     // You'll need to determine the New Contract ID from elsewhere
                                     CarryForwardGrid."Total Amount" := Rec."Security Deposit Amount";
+                                    CarryForwardGrid."Security Deposit" := 'Security Deposit';
                                     CarryForwardGrid.Insert();
                                 end;
                             end;

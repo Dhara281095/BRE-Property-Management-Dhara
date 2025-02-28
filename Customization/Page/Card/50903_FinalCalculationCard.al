@@ -631,30 +631,30 @@ page 50903 "Final Calculation Card"
     //-----------------------------------Fetch total claim---------------------------------//
 
     // Add this procedure to calculate the total from the Additional Charges grid
-    procedure UpdateTotalClaim()
-    var
-        AdditionalCharges: Record "Additional Charges Sub";
-        TotalAmount: Decimal;
-    begin
-        AdditionalCharges.Reset();
-        AdditionalCharges.SetRange("Contract ID", Rec."Contract ID");
+    // procedure UpdateTotalClaim()
+    // var
+    //     AdditionalCharges: Record "Additional Charges Sub";
+    //     TotalAmount: Decimal;
+    // begin
+    //     AdditionalCharges.Reset();
+    //     AdditionalCharges.SetRange("Contract ID", Rec."Contract ID");
 
-        if AdditionalCharges.FindSet() then begin
-            repeat
-                TotalAmount += AdditionalCharges."Amount Including VAT";
-            until AdditionalCharges.Next() = 0;
-        end;
+    //     if AdditionalCharges.FindSet() then begin
+    //         repeat
+    //             TotalAmount += AdditionalCharges."Amount Including VAT";
+    //         until AdditionalCharges.Next() = 0;
+    //     end;
 
-        Rec."Total Claim" := TotalAmount;
-        Rec.Modify(false);
-        CurrPage.Update(false);
-    end;
+    //     Rec."Total Claim" := TotalAmount;
+    //     Rec.Modify(false);
+    //     CurrPage.Update(false);
+    // end;
 
     // Also add a method that the subpage can call when its data changes
-    procedure UpdateTotalsFromSubpage()
-    begin
-        UpdateTotalClaim();
-    end;
+    // procedure UpdateTotalsFromSubpage()
+    // begin
+    //     UpdateTotalClaim();
+    // end;
 
     trigger OnAfterGetRecord()
     begin
@@ -662,7 +662,7 @@ page 50903 "Final Calculation Card"
         CurrPage."Additional Charges".Page.SetContractID(Rec."Contract ID");
         CurrPage."Additional Charges".Page.SetStartEndDate(Rec."Contract Start Date", Rec."Contract End Date");
         FetchSecurityDepositInfo();
-        UpdateTotalClaim(); // Add this line to calculate the total
+        // UpdateTotalClaim(); // Add this line to calculate the total
     end;
 
     trigger OnModifyRecord(): Boolean
@@ -670,7 +670,7 @@ page 50903 "Final Calculation Card"
         CurrPage."Additional Charges".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."Additional Charges".Page.SetContractID(Rec."Contract ID");
         CurrPage."Additional Charges".Page.SetStartEndDate(Rec."Contract Start Date", Rec."Contract End Date");
-        UpdateTotalClaim(); // Add this line to calculate the total
+        // UpdateTotalClaim(); // Add this line to calculate the total
     end;
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
