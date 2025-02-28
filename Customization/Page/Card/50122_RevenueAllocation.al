@@ -229,6 +229,8 @@ page 50122 "Revenue Allocation Card"
         FilteredContractRec."Annual Amount" := ContractRec."Rent Amount";
         FilteredContractRec."Total Value" := CalculatedDays * FilteredContractRec."Per Day Rent";
         FilteredContractRec."Owner Share" := CalculatedDays * FilteredContractRec."Per Day Rent";
+        // Add this line to store the Final Annual Amount
+        FilteredContractRec."Final Annual Amount" := TotalAnnualAmount;
         FilteredContractRec."Posting Month" := MonthNo - 1;
         FilteredContractRec."Posting Year" := FinancialYear;
         FilteredContractRec."Posting Period" := Format(FilteredContractRec."Posting Month") +

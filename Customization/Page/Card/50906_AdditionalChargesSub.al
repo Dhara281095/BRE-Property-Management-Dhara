@@ -125,21 +125,21 @@ page 50906 "Additional Charges Sub Card"
         Rec."End Date" := endDate;
 
         // Add this call to update totals
-        CurrPage.UPDATE;
-        UpdateParentPage();
-        exit(true);
+        // CurrPage.UPDATE;
+        // UpdateParentPage();
+        // exit(true);
     end;
 
     // Add this procedure to call back to the parent page
-    procedure UpdateParentPage()
-    var
-        FinalCalculationCard: Page "Final Calculation Card";
-    begin
-        CurrPage.UPDATE;
-        if CurrPage.EDITABLE then begin
-            FinalCalculationCard.UpdateTotalsFromSubpage();
-        end;
-    end;
+    // procedure UpdateParentPage()
+    // var
+    //     FinalCalculationCard: Page "Final Calculation Card";
+    // begin
+    //     CurrPage.UPDATE;
+    //     if CurrPage.EDITABLE then begin
+    //         FinalCalculationCard.UpdateTotalsFromSubpage();
+    //     end;
+    // end;
 
 
     var
