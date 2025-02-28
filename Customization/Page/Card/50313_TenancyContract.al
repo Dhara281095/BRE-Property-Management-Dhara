@@ -556,21 +556,7 @@ page 50313 "Tenancy Contract Card"
                     ApplicationArea = All;
                     Editable = true;
                 }
-                field("Tenant Contract Status"; rec."Tenant Contract Status")
-                {
-                    ApplicationArea = All;
-                    Editable = true;
 
-                    trigger OnValidate()
-                    begin
-                        // Check if the contract status is either "Terminated" or "Renewed"
-                        if (Rec."Tenant Contract Status" = Rec."Tenant Contract Status"::"Terminated") or
-                           (Rec."Tenant Contract Status" = Rec."Tenant Contract Status"::"Contract Renewed") then
-                            IsVisible := true  // Link should be visible
-                        else
-                            IsVisible := false; // Link should be hidden
-                    end;
-                }
 
                 field("Renewal Contract Status"; rec."Renewal Contract Status")
                 {
@@ -597,6 +583,23 @@ page 50313 "Tenancy Contract Card"
                         // Filter the Suspended Reason List page by the current Contract ID
                         SuspendedReasonRec.SetRange("Contract ID", Rec."Contract ID");
                         Page.Run(Page::"SuspendReasonList", SuspendedReasonRec);
+                    end;
+                }
+
+
+                field("Tenant Contract Status"; rec."Tenant Contract Status")
+                {
+                    ApplicationArea = All;
+                    Editable = true;
+
+                    trigger OnValidate()
+                    begin
+                        // Check if the contract status is either "Terminated" or "Renewed"
+                        if (Rec."Tenant Contract Status" = Rec."Tenant Contract Status"::"Terminated") or
+                           (Rec."Tenant Contract Status" = Rec."Tenant Contract Status"::"Contract Renewed") then
+                            IsVisible := true  // Link should be visible
+                        else
+                            IsVisible := false; // Link should be hidden
                     end;
                 }
                 // field("Termination Of Contract"; rec."Termination Of Contract")

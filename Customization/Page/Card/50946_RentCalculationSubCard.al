@@ -248,6 +248,7 @@ page 50946 "Rent Calculation SubCard"
                                         end;
 
                                         InstallmentStructure.Modify();
+                                        Message('Date Update Successfully!');
                                     end else begin
                                         // Insert new record
                                         InstallmentStructure.Init();
@@ -337,7 +338,7 @@ page 50946 "Rent Calculation SubCard"
 
 
                             until RevenueStructure.Next() = 0;
-
+                            Message('Date Create Successfully!');
                         end else
                             Error('No records found in the Revenue Structure.');
                     end;

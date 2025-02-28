@@ -3,7 +3,7 @@ page 50927 "Payment Mode Card"
     PageType = Card;
     SourceTable = "Payment Mode";
     ApplicationArea = All;
-    Caption = 'Payment Mode Card';
+    Caption = 'Payment Details Card';
     // UsageCategory = Administration;
 
     layout

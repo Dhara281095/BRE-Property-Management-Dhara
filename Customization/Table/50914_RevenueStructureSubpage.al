@@ -126,7 +126,7 @@ table 50914 "Revenue Structure Subpage"
         field(50113; "VAT Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Update Data';
+            Caption = 'VAT Amount';
 
         }
 
@@ -134,14 +134,14 @@ table 50914 "Revenue Structure Subpage"
         field(50114; "Amount Including VAT"; Decimal)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Update Data';
+            Caption = 'Amount Including VAT';
 
         }
 
         field(50115; "Secondary Item Type"; Text[100])
         {
             DataClassification = ToBeClassified;
-            Caption = 'Update Data';
+            Caption = 'Secondary Item Type';
 
 
         }

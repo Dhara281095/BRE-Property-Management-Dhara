@@ -3,7 +3,7 @@ page 50928 "Payment Mode Card2"
     PageType = ListPart;
     SourceTable = "Payment Mode2";
     ApplicationArea = All;
-    Caption = 'Payment Mode Card2';
+    Caption = 'Payment Details';
 
     layout
     {

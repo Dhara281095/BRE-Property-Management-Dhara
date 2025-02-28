@@ -284,6 +284,7 @@ page 50915 "Payment Schedule"
 
 
                                         InstallmentStructure.Modify();
+                                        Message('Date Update Successfully!');
                                     end else begin
                                         // Insert new record
                                         InstallmentStructure.Init();
@@ -387,6 +388,7 @@ page 50915 "Payment Schedule"
                             //             InstallmentStructure.Delete();
                             //     until InstallmentStructure.Next() = 0;
                             // end;
+                            Message('Date Create Successfully!');
 
                         end else
                             Error('No records found in the Revenue Structure.');
