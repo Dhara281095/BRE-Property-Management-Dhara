@@ -120,10 +120,16 @@ table 50512 "Security Deposite Ledger"
         myInt: Integer;
 
     trigger OnInsert()
+
+    var
+        NoSeriesMgt: Codeunit "No. Series";
     begin
         "Transaction Date" := CurrentDateTime;
         "Total Deductions" := "Unpaid Rent Deduction" + "Damage Charges Deduction" + "Penalty Deduction" + "Service Charges Deduction" + "Other Deductions";
         "Refundable Amount" := "Initial Deposit Amount" - "Total Deductions";
+        if "Ledger ID" = '' then begin
+            "Ledger ID" := NoSeriesMgt.GetNextNo('S-DEPOSITLEDGER', Today(), true);
+        end;
 
     end;
 
