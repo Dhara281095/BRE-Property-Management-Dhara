@@ -354,6 +354,7 @@ page 50903 "Final Calculation Card"
                     SecurityDepositEntry."Contract Start Date" := Rec."Contract Start Date";
                     SecurityDepositEntry."Contract End Date" := Rec."Contract End Date";
                     SecurityDepositEntry."Termination Date" := Rec."Termination Date";
+                    SecurityDepositEntry."Contract Amount" := Rec."Contract Amount";
                     SecurityDepositEntry.Insert(true);
 
                     Message('Approval Request Send successfully!');
