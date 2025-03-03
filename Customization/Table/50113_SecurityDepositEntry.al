@@ -40,6 +40,10 @@ table 50113 "Security Deposit Entry"
         {
             DataClassification = CustomerContent;
         }
+        field(50108; "Main Security Deposit"; Decimal)
+        {
+            DataClassification = CustomerContent;
+        }
     }
     keys
     {

@@ -26,6 +26,12 @@ page 50125 "Adjustment Security Deposit"
                     end;
                 }
 
+                field("Main Security Deposit"; Rec."Main Security Deposit")
+                {
+                    ApplicationArea = All;
+                    Lookup = true;
+                    Visible = false;
+                }
                 field("Security Deposit"; Rec."Security Deposit")
                 {
                     ApplicationArea = All;
@@ -129,6 +135,7 @@ page 50125 "Adjustment Security Deposit"
                     SecurityDepositEntry.Init();
                     SecurityDepositEntry."Security Deposit ID" := Rec.ID;
                     SecurityDepositEntry."Contract ID" := Rec."Contract ID";
+                    SecurityDepositEntry."Main Security Deposit" := Rec."Main Security Deposit";
                     SecurityDepositEntry."Security Deposit" := Rec."Security Deposit";
                     SecurityDepositEntry."Start Date" := Rec."Contract Start Date";
                     SecurityDepositEntry."End Date" := Rec."Contract End Date";
