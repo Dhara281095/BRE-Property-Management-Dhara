@@ -563,13 +563,13 @@ table 50307 "Tenancy Contract"
         {
             DataClassification = ToBeClassified;
             Caption = 'Contract Date';
-            NotBlank = true;
-            // trigger OnValidate()
-            // var
-            //     emailrec: Codeunit "Send Contract Email";
-            // begin
-            //     emailrec.SendEmail(Rec);
-            // end;
+            // NotBlank = true;
+            trigger OnValidate()
+            var
+            begin
+                TenancyContractSubpage();
+                //  TenancyContractSubpage2();
+            end;
         }
 
         field(50117; "Contract Start Date"; Date)
@@ -1606,7 +1606,7 @@ table 50307 "Tenancy Contract"
 
     begin
 
-        TenancyContractSubpage.SetRange("ContractID", Rec."Contract ID");
+        TenancyContractSubpage.SetRange("ProposalID", Rec."Property ID");
         if TenancyContractSubpage.FindSet() then begin
             TenancyContractSubpage.DeleteAll();
         end;
@@ -1619,6 +1619,7 @@ table 50307 "Tenancy Contract"
 
                 TenancyContractSubpage.Init();
                 // TenancyContractSubpage."PS ID" := Rec."PS Id";
+                TenancyContractSubpage.ProposalID := Format(RevenueSubpage.ProposalID);
                 TenancyContractSubpage."ContractID" := Rec."Contract ID";
                 TenancyContractSubpage."TenantID" := rec."Tenant Id";
                 TenancyContractSubpage."Secondary Item Type" := RevenueSubpage."Secondary Item Type";
@@ -1657,6 +1658,7 @@ table 50307 "Tenancy Contract"
 
                 TenancyContractSubpage2.Init();
                 // TenancyContractSubpage2."PS ID" := Rec."PS Id";
+                // TenancyContractSubpage2.ProposalID := RevenueSubpage.p;
                 TenancyContractSubpage2."ContractID" := Rec."Contract ID";
                 TenancyContractSubpage2."TenantID" := rec."Tenant Id";
                 TenancyContractSubpage2."Secondary Item Type" := RevenueSubpage."Secondary Item Type";
@@ -1803,4 +1805,22 @@ table 50307 "Tenancy Contract"
     end;
 
     //-------------Leap year Counting--------------//
+
+
+
+    trigger OnDelete()
+    begin
+        Deletegriddata();
+    end;
+
+    procedure Deletegriddata()
+    var
+        otherpayments: Record "Tenancy Contract Subpage";
+    begin
+        otherpayments.SetRange(ContractID, Rec."Contract ID");
+        if otherpayments.FindSet()
+        then
+            otherpayments.DeleteAll();
+
+    end;
 }

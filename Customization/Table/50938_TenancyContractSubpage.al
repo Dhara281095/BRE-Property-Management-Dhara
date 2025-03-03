@@ -153,7 +153,7 @@ table 50938 "Tenancy Contract Subpage"
             Caption = 'Tenant ID';
         }
 
-        field(50115; "ProposalID"; Integer)
+        field(50115; "ProposalID"; Code[20])
         {
             DataClassification = ToBeClassified;
             Caption = 'Proposal ID';
