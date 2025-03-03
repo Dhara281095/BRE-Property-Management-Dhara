@@ -237,10 +237,10 @@ page 50903 "Final Calculation Card"
                     {
                         ApplicationArea = All;
                         Editable = false;
-                        trigger OnValidate()
-                        begin
-                            FetchSecurityDepositInfo();
-                        end;
+                        // trigger OnValidate()
+                        // begin
+                        //     FetchSecurityDepositInfo();
+                        // end;
                     }
                     field("Security Deposit"; Rec."Security Deposit")
                     {
@@ -610,23 +610,23 @@ page 50903 "Final Calculation Card"
     end;
 
     //----------------------------------Fetch Security Deposit-------------------------------//
-    procedure FetchSecurityDepositInfo()
-    var
-        ContractRec: Record "Tenancy Contract";
-    begin
-        if Rec."Contract ID" <> 0 then begin
-            ContractRec.Reset();
-            ContractRec.SetRange("Contract ID", Rec."Contract ID");
+    // procedure FetchSecurityDepositInfo()
+    // var
+    //     ContractRec: Record "Tenancy Contract";
+    // begin
+    //     if Rec."Contract ID" <> 0 then begin
+    //         ContractRec.Reset();
+    //         ContractRec.SetRange("Contract ID", Rec."Contract ID");
 
-            if ContractRec.FindFirst() then begin
-                // Update the fields without showing messages (this is automatic)
-                Rec."Security Deposit" := ContractRec."Security Deposit Amount";
-                Rec."Adjustment Security Deposit" := ContractRec."Security Balanced Amount";
-                Rec."Net Balance" := ContractRec."Security Deposit Amount" - ContractRec."Security Balanced Amount";
-                Rec.Modify(false);  // false means don't trigger validation
-            end;
-        end;
-    end;
+    //         if ContractRec.FindFirst() then begin
+    //             // Update the fields without showing messages (this is automatic)
+    //             Rec."Security Deposit" := ContractRec."Security Deposit Amount";
+    //             Rec."Adjustment Security Deposit" := ContractRec."Security Balanced Amount";
+    //             Rec."Net Balance" := ContractRec."Security Deposit Amount" - ContractRec."Security Balanced Amount";
+    //             Rec.Modify(false);  // false means don't trigger validation
+    //         end;
+    //     end;
+    // end;
 
     //-----------------------------------Fetch total claim---------------------------------//
 
@@ -661,7 +661,7 @@ page 50903 "Final Calculation Card"
         CurrPage."Additional Charges".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."Additional Charges".Page.SetContractID(Rec."Contract ID");
         CurrPage."Additional Charges".Page.SetStartEndDate(Rec."Contract Start Date", Rec."Contract End Date");
-        FetchSecurityDepositInfo();
+        // FetchSecurityDepositInfo();
         // UpdateTotalClaim(); // Add this line to calculate the total
     end;
 

@@ -33,6 +33,7 @@ table 50111 "Adjustment Security Deposit"
                 // If contract is not used, then proceed with existing logic
                 ContractRec.SetRange("Contract ID", "Contract ID");
                 if ContractRec.FindSet() then begin
+                    Rec."Main Security Deposit" := ContractRec."Security Deposit Amount";
                     Rec."Security Deposit" := ContractRec."Security Balanced Amount";
                     Rec."Contract Start Date" := ContractRec."Contract Start Date";
                     Rec."Contract End Date" := ContractRec."Contract End Date";
@@ -187,6 +188,12 @@ table 50111 "Adjustment Security Deposit"
         {
             DataClassification = ToBeClassified;
             Caption = 'Due Date';
+        }
+        field(50112; "Main Security Deposit"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Main Security Deposit';
+            Editable = false;
         }
     }
 
