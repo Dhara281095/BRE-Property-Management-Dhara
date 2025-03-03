@@ -1886,6 +1886,14 @@ page 50313 "Tenancy Contract Card"
     end;
 
 
-
+    trigger OnOpenPage()
+    var
+        TenancyContractSubpage: Record "Tenancy Contract Subpage";
+    begin
+        TenancyContractSubpage.SetRange(ContractID, 0);
+        if TenancyContractSubpage.FindSet() then begin
+            TenancyContractSubpage.DeleteAll();
+        end;
+    end;
 
 }
