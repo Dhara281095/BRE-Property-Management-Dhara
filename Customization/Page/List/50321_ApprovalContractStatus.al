@@ -96,6 +96,7 @@ page 50321 "Approval Contract Status List"
                 Caption = 'Approve';
                 ApplicationArea = All;
                 Image = Approve;
+                Visible = IsPropertyManager; // Button visible only for Property Manager
 
                 trigger OnAction()
                 var
@@ -117,6 +118,7 @@ page 50321 "Approval Contract Status List"
                 Caption = 'Reject';
                 ApplicationArea = All;
                 Image = Reject;
+                Visible = IsPropertyManager; // Button visible only for Property Manager
 
                 trigger OnAction()
                 var
@@ -168,6 +170,7 @@ page 50321 "Approval Contract Status List"
                 ApplicationArea = All;
                 Image = OpenRecord;
 
+
                 trigger OnAction()
                 var
                     RenewalContractRec: Record "Contract Renewal"; // Replace with the correct table name for the Renewal Contract
@@ -189,4 +192,28 @@ page 50321 "Approval Contract Status List"
             }
         }
     }
+
+    trigger OnOpenPage()
+    begin
+        IsPropertyManager := CheckUserRole();
+    end;
+
+    procedure CheckUserRole(): Boolean
+    var
+        UserPersonalization: Record "User Personalization";
+    begin
+        if UserPersonalization.Get(UserSecurityId()) then begin
+            case UserPersonalization."Profile ID" of
+                'PROPERTY MANAGER':
+                    exit(true);  // Only property managers can approve/reject
+                else
+                    exit(false);
+            end;
+        end;
+        exit(false);
+    end;
+
+    var
+        IsPropertyManager: Boolean;
 }
+
