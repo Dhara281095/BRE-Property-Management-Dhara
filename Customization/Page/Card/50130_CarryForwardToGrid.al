@@ -15,6 +15,7 @@ page 50130 "Carry Forward Grid"
                 field("Contract ID"; Rec."Contract ID")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
                 field("New Contract ID"; Rec."New Contract ID")
                 {

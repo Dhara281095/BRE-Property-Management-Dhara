@@ -1428,6 +1428,7 @@ table 50307 "Tenancy Contract"
         {
             DataClassification = ToBeClassified;
             Caption = 'Single Unit Rent Calculation Type';
+            Editable = false;
             OptionMembers = " ","Single Unit with square feet rate","Single Unit with lumpsum square feet rate";
 
         }

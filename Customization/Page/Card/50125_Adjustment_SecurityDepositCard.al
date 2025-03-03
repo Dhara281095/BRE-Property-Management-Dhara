@@ -218,6 +218,14 @@ page 50125 "Adjustment Security Deposit"
                 begin
                     ShowAdjustInstallment := false;
                     ShowTerminationCharges := true;
+
+                    // Clear Adjust Installment fields
+                    Rec."Payment Series" := '';
+                    Rec.Amount := 0;
+                    Rec."VAT Amount" := 0;
+                    Rec."Amount Including VAT" := 0;
+                    Rec."Due Date" := 0D;
+                    Rec.Modify(false);
                 end;
             Rec."Security Amount Status"::"All Charges":  // NEW CASE for "All Charges"
                 begin
@@ -227,6 +235,14 @@ page 50125 "Adjustment Security Deposit"
             else begin
                 ShowAdjustInstallment := false;
                 ShowTerminationCharges := false;
+
+                // Clear Adjust Installment fields
+                Rec."Payment Series" := '';
+                Rec.Amount := 0;
+                Rec."VAT Amount" := 0;
+                Rec."Amount Including VAT" := 0;
+                Rec."Due Date" := 0D;
+                Rec.Modify(false);
             end;
         end;
     end;
