@@ -44,11 +44,11 @@ pageextension 50101 Items extends "Item Card"
         }
         modify(InventoryGrp)
         {
-            Visible = true;
+            Visible = false;
         }
         modify("Costs & Posting")
         {
-            Visible = true;
+            Visible = false;
         }
         modify("Prices & Sales")
         {
