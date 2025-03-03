@@ -47,15 +47,15 @@ table 50920 "Payment Schedule"
         field(50102; "Contract ID"; Integer)
         {
             DataClassification = ToBeClassified;
-            TableRelation = "Tenancy Contract"."Contract ID";
+            TableRelation = "Tenancy Contract"."Contract ID" WHERE("Tenant Contract Status" = CONST(Active));
             // AutoIncrement = true;
             Caption = 'Contract ID';
+
             trigger OnValidate()
             var
                 leaserec: Record "Tenancy Contract";
 
             begin
-
                 leaserec.SetRange("Contract ID", Rec."Contract ID");
                 if leaserec.FindFirst() then begin
                     //"Proposal ID" := leaserec."Proposal ID";
