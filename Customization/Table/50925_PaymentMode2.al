@@ -94,7 +94,14 @@ table 50925 "Payment Mode2"
             trigger OnValidate()
             var
                 pdcTransRec: Record "PDC Transaction";
+                paymentGridRec: Record "Payment Mode2";
             begin
+                paymentGridRec.SetRange("Cheque Number", Rec."Cheque Number");
+                paymentGridRec.SetFilter("Entry No.", '<>%1', Rec."Entry No.");
+                if paymentGridRec.FindFirst() then
+                    Error('This cheque number has already been used.');
+
+
                 pdcTransRec.SetRange("payment Series", Rec."Payment Series");
                 pdcTransRec.SetRange("Contract ID", Rec."Contract ID");
                 if pdcTransRec.FindSet() then begin
@@ -323,8 +330,10 @@ table 50925 "Payment Mode2"
                 pdcTransRec.SetRange("payment Series", Rec."Payment Series");
                 pdcTransRec.SetRange("Contract ID", Rec."Contract ID");
                 if pdcTransRec.FindSet() then begin
-                    pdcTransRec."Approval Status" := Rec."Approval Status";
-                    pdcTransRec.Modify();
+                    repeat
+                        pdcTransRec."Approval Status" := Rec."Approval Status";
+                        pdcTransRec.Modify();
+                    until pdcTransRec.Next() = 0;
                 end;
                 // Fetch the Parent Record (Main Payment Mode Card)
                 if paymentModeRec.Get(Rec."Contract ID") then begin
@@ -478,7 +487,10 @@ table 50925 "Payment Mode2"
 
     trigger OnInsert()
     begin
-
+        if Rec."Payment Mode" = 'Cheque' then begin
+            if DelChr(Rec."Cheque Number", '=', ' ') = '' then
+                Error('Cheque Number cannot be blank when Payment Mode is Cheque.');
+        end;
     end;
 
     trigger OnModify()

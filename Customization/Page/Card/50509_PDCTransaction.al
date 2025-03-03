@@ -101,7 +101,7 @@ page 50509 "PDC Transaction"
                 field(Status; Rec."Cheque Status")
                 {
                     ApplicationArea = All;
-                    Editable = IsLeaseManager AND IsFieldEditable;
+                    Editable = IsLeaseManager;
                     trigger OnValidate()
                     var
                         PaymentSeriesRec: Record "Payment Mode2";
