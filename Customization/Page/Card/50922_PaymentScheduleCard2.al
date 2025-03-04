@@ -99,7 +99,7 @@ page 50922 "Payment Schedule Card2"
                 {
                     ApplicationArea = All;
                     Editable = false;
-                    Visible = true;
+                    Visible = false;
                     Caption = 'Contract ID';
                 }
                 field(Invoiced; Rec.Invoiced)
@@ -130,6 +130,7 @@ page 50922 "Payment Schedule Card2"
                     ApplicationArea = All;
                     Caption = 'Property Classification';
                     Editable = false;
+                    Visible = false;
                 }
 
             }

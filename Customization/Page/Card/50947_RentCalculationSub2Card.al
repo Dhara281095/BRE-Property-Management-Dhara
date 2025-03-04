@@ -18,17 +18,20 @@ page 50947 "Rent Calculation SubCard2"
                     ApplicationArea = All;
                     Caption = 'Year';
                     ToolTip = 'Enter the Year.';
+                    Editable = false;
                 }
                 field("Installment No."; Rec."Installment No.")
                 {
                     ApplicationArea = All;
                     Caption = 'Instalment No.';
+                    Editable = false;
                 }
 
                 field("Installment Start Date"; Rec."Installment Start Date")
                 {
                     ApplicationArea = All;
                     Caption = 'Instalment Start Date';
+                    Editable = false;
 
 
                 }
@@ -37,18 +40,21 @@ page 50947 "Rent Calculation SubCard2"
                 {
                     ApplicationArea = All;
                     Caption = 'Instalment End Date';
+                    Editable = false;
                 }
 
                 field("Due Date"; Rec."Due Date")
                 {
                     ApplicationArea = All;
                     Caption = 'Due Date';
+                    Editable = false;
                 }
 
                 field("Amount"; Rec."Amount")
                 {
                     ApplicationArea = All;
                     Caption = 'Amount';
+                    Editable = false;
 
                 }
 
@@ -56,7 +62,7 @@ page 50947 "Rent Calculation SubCard2"
                 {
                     ApplicationArea = All;
                     Caption = 'VAT Amount';
-                    Visible = true;
+                    Visible = false;
                     Editable = false;
 
                 }
@@ -65,7 +71,8 @@ page 50947 "Rent Calculation SubCard2"
                 {
                     ApplicationArea = All;
                     Caption = 'Amount Including VAT';
-                    Visible = true;
+                    Visible = false;
+                    Editable = false;
 
                 }
 
@@ -74,6 +81,7 @@ page 50947 "Rent Calculation SubCard2"
                     ApplicationArea = All;
                     Caption = 'Secondary Item Type';
                     Visible = false;
+                    Editable = false;
 
                 }
 
@@ -100,12 +108,14 @@ page 50947 "Rent Calculation SubCard2"
                     Caption = 'VAT %';
                     ToolTip = 'Enter the VAT %.';
                     Editable = false;
+                    Visible = false;
                 }
                 field("Primary Classification"; Rec."Primary Classification")
                 {
                     ApplicationArea = All;
                     Caption = 'Primary Classification';
                     Editable = false;
+                    Visible = false;
                 }
 
 
