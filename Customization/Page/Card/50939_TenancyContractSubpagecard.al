@@ -316,7 +316,7 @@ page 50939 "Tenancy Contract SubPage Card"
     begin
         Rec.ContractID := ContractID;
         Rec.TenantID := tenantID;
-        Rec.ProposalID := Format(proposalID);
+        Rec.ProposalID := (proposalID);
 
     end;
 

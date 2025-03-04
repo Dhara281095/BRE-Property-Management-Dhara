@@ -188,7 +188,7 @@ table 50307 "Tenancy Contract"
                         repeat
                             TCSingleUnitRent.Init();
                             TCSingleUnitRent."ID" := "Proposal ID"; // Ensure Proposal ID is stored in target ID field
-                            TCSingleUnitRent."Contract Id" := "Contract ID";
+                            TCSingleUnitRent."Contract Id" := Rec."Contract ID";
                             TCSingleUnitRent."Line No." := LineNoCounter; // Ensure unique line number
                             TCSingleUnitRent."Unit ID" := CRSingleUnitRent."Unit ID";
                             TCSingleUnitRent.Year := CRSingleUnitRent.Year;
@@ -229,7 +229,7 @@ table 50307 "Tenancy Contract"
                             TCLumpsumUnitRate.Init();
 
                             TCLumpsumUnitRate."ID" := CRLumpsumUnitRent."Proposal ID";
-                            TCLumpsumUnitRate."Contract Id" := "Contract ID";
+                            TCLumpsumUnitRate."Contract Id" := Rec."Contract ID";
                             TCLumpsumUnitRate."SL_Line No." := LineNoCounter; // Ensure unique line number
                             TCLumpsumUnitRate."SL_Unit ID" := CRLumpsumUnitRent."SL_Unit ID";
                             TCLumpsumUnitRate.SL_Year := CRLumpsumUnitRent.SL_Year;
@@ -276,7 +276,7 @@ table 50307 "Tenancy Contract"
                         repeat
                             TCMergeUnitRate.Init();
                             TCMergeUnitRate."ID" := CRMergeUnitRent."Proposal ID";
-                            TCMergeUnitRate."Contract Id" := "Contract ID";
+                            TCMergeUnitRate."Contract Id" := Rec."Contract ID";
                             TCMergeUnitRate."MS_Line No." := LineNoCounter; // Ensure unique line number
                             TCMergeUnitRate."MS_Merged Unit ID" := CRMergeUnitRent."MS_Merged Unit ID";
                             TCMergeUnitRate.MS_Year := CRMergeUnitRent.MS_Year;
@@ -333,7 +333,7 @@ table 50307 "Tenancy Contract"
                                 // Proceed with inserting the new record
                                 TCMergediffUnitRate.Init();
                                 TCMergediffUnitRate."ID" := CRMergediffUnitRent."Proposal ID";
-                                TCMergediffUnitRate."Contract Id" := "Contract ID";
+                                TCMergediffUnitRate."Contract Id" := Rec."Contract ID";
                                 TCMergediffUnitRate."MD_Line No." := LineNoCounter; // Ensure unique line number
                                 TCMergediffUnitRate."MD_Merged Unit ID" := CRMergediffUnitRent."MD_Merged Unit ID";
                                 TCMergediffUnitRate."MD_Unit ID" := CRMergediffUnitRent."MD_Unit ID";
@@ -393,7 +393,7 @@ table 50307 "Tenancy Contract"
                                 // Proceed with inserting the new record
                                 TCMergediffUnitRate.Init();
                                 TCMergediffUnitRate."ID" := CRMergediffUnitRent."Proposal ID";
-                                TCMergediffUnitRate."Contract Id" := "Contract ID";
+                                TCMergediffUnitRate."Contract Id" := Rec."Contract ID";
                                 TCMergediffUnitRate."MD_Line No." := LineNoCounter; // Ensure unique line number
                                 TCMergediffUnitRate."MD_Merged Unit ID" := CRMergediffUnitRent."MD_Merged Unit ID";
                                 TCMergediffUnitRate.MD_Year := CRMergediffUnitRent.MD_Year;
@@ -441,7 +441,7 @@ table 50307 "Tenancy Contract"
                         repeat
                             TCMergeLumpsumUnitRate.Init();
                             TCMergeLumpsumUnitRate."ID" := CRMergeLumpsumUnitRent."Proposal ID";
-                            TCMergeLumpsumUnitRate."Contract Id" := "Contract ID";
+                            TCMergeLumpsumUnitRate."Contract Id" := Rec."Contract ID";
                             TCMergeLumpsumUnitRate."ML_Line No." := LineNoCounter; // Ensure unique line number
                             TCMergeLumpsumUnitRate."ML_Merged Unit ID" := CRMergeLumpsumUnitRent."ML_Merged Unit ID";
                             TCMergeLumpsumUnitRate.ML_Year := CRMergeLumpsumUnitRent.ML_Year;
@@ -1606,7 +1606,7 @@ table 50307 "Tenancy Contract"
 
     begin
 
-        TenancyContractSubpage.SetRange("ProposalID", Rec."Property ID");
+        TenancyContractSubpage.SetRange("ProposalID", Rec."Proposal ID");
         if TenancyContractSubpage.FindSet() then begin
             TenancyContractSubpage.DeleteAll();
         end;
@@ -1619,7 +1619,7 @@ table 50307 "Tenancy Contract"
 
                 TenancyContractSubpage.Init();
                 // TenancyContractSubpage."PS ID" := Rec."PS Id";
-                TenancyContractSubpage.ProposalID := Format(RevenueSubpage.ProposalID);
+                TenancyContractSubpage.ProposalID := RevenueSubpage.ProposalID;
                 TenancyContractSubpage."ContractID" := Rec."Contract ID";
                 TenancyContractSubpage."TenantID" := rec."Tenant Id";
                 TenancyContractSubpage."Secondary Item Type" := RevenueSubpage."Secondary Item Type";
