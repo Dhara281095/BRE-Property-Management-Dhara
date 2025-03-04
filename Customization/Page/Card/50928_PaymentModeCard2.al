@@ -422,7 +422,8 @@ page 50928 "Payment Mode Card2"
                     paymentRec.SetRange("Tenant Id", Rec."Tenant Id");
                     if paymentRec.FindSet() then begin
                         paymentRec."Approval Status" := paymentRec."Approval Status"::Pending;
-
+                        paymentRec."On-hold" := paymentRec."On-hold"::"True";
+                        paymentRec.Modify();
                     end;
 
                     // Insert records into PDC Transaction for Payment Modes with "Cheque"

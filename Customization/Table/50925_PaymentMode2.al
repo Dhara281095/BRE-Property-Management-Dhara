@@ -84,6 +84,14 @@ table 50925 "Payment Mode2"
         {
             Caption = 'Payment Mode';
             TableRelation = "Payment Type"."Payment Method";
+
+            trigger OnValidate()
+            begin
+                if Rec."Payment Mode" = 'Cheque' then begin
+                    Rec."Cheque Status" := Rec."Cheque Status"::"Cheque Received";
+                    Rec.Modify();
+                end;
+            end;
         }
 
         field(50106; "Cheque Number"; Text[100])
@@ -497,6 +505,7 @@ table 50925 "Payment Mode2"
     var
         emailrec: Codeunit "Send PaymentMode Email";
     begin
+
         if Rec."Payment Status" = Rec."Payment Status"::Received then
             emailrec.SendEmail(Rec)
         else if Rec."Payment Status" = Rec."Payment Status"::Cancelled then
