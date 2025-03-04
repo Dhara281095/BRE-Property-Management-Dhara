@@ -347,6 +347,7 @@ table 50924 "Payment Mode"
         i: Integer; // Declare the variable 'i' for the loop
         SortedDueDateList: List of [Date]; // List for sorted due dates
         TempDate: Date;
+        PaymentStatus: Enum "Payment Status";
     begin
         // Initialize totals
         TotalAmount := 0;
@@ -422,6 +423,8 @@ table 50924 "Payment Mode"
                 MergedRecord."VAT Amount" := TotalVAT;
                 MergedRecord."Amount Including VAT" := GrandTotal;
                 MergedRecord."Due Date" := MinDueDate;
+                MergedRecord."Payment Status" := PaymentStatus::Scheduled;
+
 
                 //Message('Inserting record with Payment Series: %1', NewPaymentCode);
 

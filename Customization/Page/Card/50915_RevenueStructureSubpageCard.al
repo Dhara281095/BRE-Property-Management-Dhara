@@ -134,6 +134,7 @@ page 50915 "Payment Schedule"
                     Caption = 'VAT Amount';
                     ToolTip = 'Enter the VAT Amount.';
                     Visible = false;
+                    Editable = false;
                 }
 
                 field("Amount Including VAT"; Rec."Amount Including VAT")
@@ -142,6 +143,7 @@ page 50915 "Payment Schedule"
                     Caption = 'Amount Including VAT';
                     ToolTip = 'Enter the Amount Including VAT.';
                     Visible = false;
+                    Editable = false;
                 }
 
                 field("Secondary Item Type"; Rec."Secondary Item Type")
@@ -150,6 +152,7 @@ page 50915 "Payment Schedule"
                     Caption = 'Secondary Item Type';
                     ToolTip = 'Enter the Secondary Item Type.';
                     Visible = false;
+                    Editable = false;
                 }
 
 

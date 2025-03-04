@@ -42,16 +42,12 @@ table 50943 "Rent Calculation Subpage"
             Editable = false;
 
 
-
         }
 
         field(50104; "Final Annual Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Final Annual Amount';
-            Editable = true;
-
-
         }
 
 
@@ -59,7 +55,6 @@ table 50943 "Rent Calculation Subpage"
         {
             DataClassification = ToBeClassified;
             Caption = 'Yearly No. of Instalment';
-            Editable = true;
 
         }
 
@@ -126,7 +121,6 @@ table 50943 "Rent Calculation Subpage"
         field(50113; "VAT Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Update Data';
 
         }
 
@@ -134,14 +128,12 @@ table 50943 "Rent Calculation Subpage"
         field(50114; "Amount Including VAT"; Decimal)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Update Data';
-
         }
 
         field(50115; "Secondary Item Type"; Text[100])
         {
             DataClassification = ToBeClassified;
-            Caption = 'Update Data';
+            
 
 
         }

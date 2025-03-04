@@ -21,18 +21,20 @@ page 50946 "Rent Calculation SubCard"
                     ApplicationArea = All;
                     Caption = 'Year';
                     ToolTip = 'Enter the Year.';
+                    Editable = false;
                 }
                 field("Period Start Date"; Rec."Period Start Date")
                 {
                     ApplicationArea = All;
                     Caption = 'Start Date';
+                    Editable = false;
                 }
 
                 field("Period End Date"; Rec."Period End Date")
                 {
                     ApplicationArea = All;
                     Caption = 'End Date';
-
+                    Editable = false;
 
                 }
 
@@ -40,7 +42,7 @@ page 50946 "Rent Calculation SubCard"
                 {
                     ApplicationArea = All;
                     Caption = 'Number of Days';
-
+                    Editable = false;
 
 
                 }
@@ -84,6 +86,7 @@ page 50946 "Rent Calculation SubCard"
                     Caption = 'VAT %';
                     ToolTip = 'Enter the VAT %.';
                     Editable = false;
+                    Visible = false;
                 }
 
                 field("Per Day Rent"; Rec."Per Day Rent")
@@ -91,12 +94,14 @@ page 50946 "Rent Calculation SubCard"
                     ApplicationArea = All;
                     Caption = 'Per Day Rent';
                     ToolTip = 'Enter the Per Day Rent.';
+                    Editable = false;
                 }
                 field("Propety Classification"; Rec."Propety Classification")
                 {
                     ApplicationArea = All;
                     Editable = false;
                     Caption = 'Property Classification';
+                    Visible = false;
                 }
 
 
@@ -112,6 +117,7 @@ page 50946 "Rent Calculation SubCard"
                     ApplicationArea = All;
                     Caption = 'Total Amount';
                     ToolTip = 'Enter the Total Amount.';
+                    Editable = false;
 
                 }
                 field("VAT Amount"; Rec."VAT Amount")
@@ -120,6 +126,7 @@ page 50946 "Rent Calculation SubCard"
                     Caption = 'VAT Amount';
                     ToolTip = 'Enter the VAT Amount.';
                     Visible = false;
+                    Editable = false;
                 }
 
                 field("Amount Including VAT"; Rec."Amount Including VAT")
@@ -128,6 +135,7 @@ page 50946 "Rent Calculation SubCard"
                     Caption = 'Amount Including VAT';
                     ToolTip = 'Enter the Amount Including VAT.';
                     Visible = false;
+                    Editable = false;
                 }
 
                 field("Secondary Item Type"; Rec."Secondary Item Type")
@@ -136,6 +144,7 @@ page 50946 "Rent Calculation SubCard"
                     Caption = 'Secondary Item Type';
                     ToolTip = 'Enter the Secondary Item Type.';
                     Visible = false;
+                    Editable = false;
                 }
 
 
