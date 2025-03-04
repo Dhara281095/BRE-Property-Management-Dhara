@@ -506,7 +506,7 @@ table 50307 "Tenancy Contract"
                         LineNoCounter += 1; // Increment line number
                     until CRPerDayRevenewUnitRate.Next() = 0;
                 end else begin
-                    Message('No existing records found for ID: %1 in CR Per Day Rent for Revenue.', "Proposal ID");
+                    // Message('No existing records found for ID: %1 in CR Per Day Rent for Revenue.', "Proposal ID");
                 end;
 
             end;
