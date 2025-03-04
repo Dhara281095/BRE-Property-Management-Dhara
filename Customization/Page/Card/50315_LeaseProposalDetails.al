@@ -703,9 +703,9 @@ page 50315 "Lease Proposal Card"
                 }
             }
 
-            group(" ")  // Add a separate group for clarity
+            group("Proposal Status")  // Add a separate group for clarity
             {
-                field("Proposal Status"; Rec."Proposal Status")
+                field("ProposalStatus"; Rec."Proposal Status")
                 {
                     ApplicationArea = All;
                 }
