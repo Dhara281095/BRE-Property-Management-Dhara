@@ -569,22 +569,22 @@ page 50313 "Tenancy Contract Card"
                 {
                     ApplicationArea = All;
                 }
-                field("Suspended Reason list"; Rec."Suspended Reason list")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Click to open the Suspended Reason List.';
-                    Style = Strong; // Makes the field look like a hyperlink
-                    StyleExpr = true;
+                // field("Suspended Reason list"; Rec."Suspended Reason list")
+                // {
+                //     ApplicationArea = All;
+                //     ToolTip = 'Click to open the Suspended Reason List.';
+                //     Style = Strong; // Makes the field look like a hyperlink
+                //     StyleExpr = true;
 
-                    trigger OnAssistEdit()
-                    var
-                        SuspendedReasonRec: Record "SuspendReasonTable";
-                    begin
-                        // Filter the Suspended Reason List page by the current Contract ID
-                        SuspendedReasonRec.SetRange("Contract ID", Rec."Contract ID");
-                        Page.Run(Page::"SuspendReasonList", SuspendedReasonRec);
-                    end;
-                }
+                //     trigger OnAssistEdit()
+                //     var
+                //         SuspendedReasonRec: Record "SuspendReasonTable";
+                //     begin
+                //         // Filter the Suspended Reason List page by the current Contract ID
+                //         SuspendedReasonRec.SetRange("Contract ID", Rec."Contract ID");
+                //         Page.Run(Page::"SuspendReasonList", SuspendedReasonRec);
+                //     end;
+                // }
 
 
                 // field("Tenant Contract Status"; rec."Tenant Contract Status")
@@ -1668,6 +1668,23 @@ page 50313 "Tenancy Contract Card"
                                 Message('The related Revenue Structure does not exist.')
                         end;
 
+                    }
+
+                    field("Suspended Reason list"; Rec."Suspended Reason list")
+                    {
+                        ApplicationArea = All;
+                        ToolTip = 'Click to open the Suspended Reason List.';
+                        Style = Strong; // Makes the field look like a hyperlink
+                        StyleExpr = true;
+
+                        trigger OnAssistEdit()
+                        var
+                            SuspendedReasonRec: Record "SuspendReasonTable";
+                        begin
+                            // Filter the Suspended Reason List page by the current Contract ID
+                            SuspendedReasonRec.SetRange("Contract ID", Rec."Contract ID");
+                            Page.Run(Page::"SuspendReasonList", SuspendedReasonRec);
+                        end;
                     }
                 }
 
