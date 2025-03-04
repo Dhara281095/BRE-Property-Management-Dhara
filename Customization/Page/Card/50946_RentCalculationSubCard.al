@@ -21,18 +21,20 @@ page 50946 "Rent Calculation SubCard"
                     ApplicationArea = All;
                     Caption = 'Year';
                     ToolTip = 'Enter the Year.';
+                    Editable = false;
                 }
                 field("Period Start Date"; Rec."Period Start Date")
                 {
                     ApplicationArea = All;
                     Caption = 'Start Date';
+                    Editable = false;
                 }
 
                 field("Period End Date"; Rec."Period End Date")
                 {
                     ApplicationArea = All;
                     Caption = 'End Date';
-
+                    Editable = false;
 
                 }
 
@@ -40,7 +42,7 @@ page 50946 "Rent Calculation SubCard"
                 {
                     ApplicationArea = All;
                     Caption = 'Number of Days';
-
+                    Editable = false;
 
 
                 }
@@ -84,8 +86,23 @@ page 50946 "Rent Calculation SubCard"
                     Caption = 'VAT %';
                     ToolTip = 'Enter the VAT %.';
                     Editable = false;
+                    Visible = false;
                 }
 
+                field("Per Day Rent"; Rec."Per Day Rent")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Per Day Rent';
+                    ToolTip = 'Enter the Per Day Rent.';
+                    Editable = false;
+                }
+                field("Propety Classification"; Rec."Propety Classification")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Caption = 'Property Classification';
+                    Visible = false;
+                }
 
 
             }
@@ -93,13 +110,14 @@ page 50946 "Rent Calculation SubCard"
 
 
 
-            group(Group2)
+            group(" ")
             {
                 field("Total Amount"; Rec."Total Amount")
                 {
                     ApplicationArea = All;
                     Caption = 'Total Amount';
                     ToolTip = 'Enter the Total Amount.';
+                    Editable = false;
 
                 }
                 field("VAT Amount"; Rec."VAT Amount")
@@ -108,6 +126,7 @@ page 50946 "Rent Calculation SubCard"
                     Caption = 'VAT Amount';
                     ToolTip = 'Enter the VAT Amount.';
                     Visible = false;
+                    Editable = false;
                 }
 
                 field("Amount Including VAT"; Rec."Amount Including VAT")
@@ -116,6 +135,7 @@ page 50946 "Rent Calculation SubCard"
                     Caption = 'Amount Including VAT';
                     ToolTip = 'Enter the Amount Including VAT.';
                     Visible = false;
+                    Editable = false;
                 }
 
                 field("Secondary Item Type"; Rec."Secondary Item Type")
@@ -124,6 +144,7 @@ page 50946 "Rent Calculation SubCard"
                     Caption = 'Secondary Item Type';
                     ToolTip = 'Enter the Secondary Item Type.';
                     Visible = false;
+                    Editable = false;
                 }
 
 
@@ -236,6 +257,7 @@ page 50946 "Rent Calculation SubCard"
                                         end;
 
                                         InstallmentStructure.Modify();
+                                        Message('Date Update Successfully!');
                                     end else begin
                                         // Insert new record
                                         InstallmentStructure.Init();
@@ -243,7 +265,7 @@ page 50946 "Rent Calculation SubCard"
                                         // InstallmentStructure."Proposal ID" := RevenueStructure."Proposal ID";
                                         InstallmentStructure."Tenant ID" := RevenueStructure."Tenant ID";
                                         InstallmentStructure."Contract ID" := RevenueStructure."Contract ID";
-
+                                        InstallmentStructure."Primary Classification" := RevenueStructure."Propety Classification";
                                         // InstallmentStructure."VAT Amount" := VATAmount2;
                                         InstallmentStructure."VAT %" := VATPer;
                                         InstallmentStructure."Secondary Item Type" := RevenueStructure."Secondary Item Type";
@@ -325,7 +347,7 @@ page 50946 "Rent Calculation SubCard"
 
 
                             until RevenueStructure.Next() = 0;
-
+                            Message('Date Create Successfully!');
                         end else
                             Error('No records found in the Revenue Structure.');
                     end;

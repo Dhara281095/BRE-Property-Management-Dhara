@@ -19,7 +19,7 @@ table 50944 "Rent Calculation Subpage2"
         field(50101; "Installment No."; Integer)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Instalment No.';
+            Caption = 'Installment No.';
             Editable = false;
 
         }
@@ -27,7 +27,7 @@ table 50944 "Rent Calculation Subpage2"
         field(50102; "Installment Start Date"; Date)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Instalment Start Date';
+            Caption = 'Installment Start Date';
             Editable = false;
 
 
@@ -35,7 +35,7 @@ table 50944 "Rent Calculation Subpage2"
         field(50103; "Installment End Date"; Date)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Instalment End Date';
+            Caption = 'Installment End Date';
             Editable = false;
 
 
@@ -138,6 +138,12 @@ table 50944 "Rent Calculation Subpage2"
             CalcFormula = sum("Rent Calculation Subpage2".Amount where("RC ID" = field("RC ID")));
             // CalcFormula = sum("Payment Schedule2"."Amount Including VAT" where("Proposal ID" = field("Proposal ID"), "Tenant ID" = field("Tenant ID")));
             DecimalPlaces = 0 : 0;
+        }
+
+        field(50117; "Primary Classification"; Text[100])
+        {
+            Caption = 'Primary Classification';
+            DataClassification = ToBeClassified;
         }
 
 

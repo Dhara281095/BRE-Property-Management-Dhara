@@ -3,7 +3,7 @@ page 50927 "Payment Mode Card"
     PageType = Card;
     SourceTable = "Payment Mode";
     ApplicationArea = All;
-    Caption = 'Payment Mode Card';
+    Caption = 'Payment mode Details';
     // UsageCategory = Administration;
 
     layout
@@ -19,7 +19,7 @@ page 50927 "Payment Mode Card"
 
                     ShowMandatory = true;
                     NotBlank = true;
-                    // Editable = IsFieldEditable;
+                    Editable = IsFieldEditable;
 
                     //Editable = false; // The ID is not editable since it's auto-incrementing
                 }
@@ -246,6 +246,7 @@ page 50927 "Payment Mode Card"
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     begin
+
         // CurrPage."PaymentMode".Page.SetProposalID(Rec."Proposal ID");
         // CurrPage."Revenue".Page.SetStartEndDate(Rec."Lease Start Date", Rec."Lease End Date");
         CurrPage."PaymentMode".Page.SetTenantID(Rec."Tenant ID");
@@ -296,6 +297,7 @@ page 50927 "Payment Mode Card"
     var
         PermissionSet: Record "User Personalization";
     begin
+        IsFieldEditable := (Rec."Approval Status" <> Rec."Approval Status"::Approved);
         // Check if the current user has the 'LEASE_MANAGER' permission set
         IsFinanceManager := false;
         PermissionSet.SetRange("User ID", UserId());

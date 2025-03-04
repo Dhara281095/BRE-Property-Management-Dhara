@@ -26,6 +26,7 @@ table 50507 "PDC Transaction"
         field(50504; "Cheque Number"; Text[20])
         {
             DataClassification = CustomerContent;
+
         }
         field(50505; "Cheque Date"; Date)
         {
@@ -87,7 +88,7 @@ table 50507 "PDC Transaction"
         field(50514; View; text[250])
         {
             DataClassification = ToBeClassified;
-            InitValue = 'View';
+            InitValue = 'View Document';
         }
 
         field(50515; Selected; Boolean)

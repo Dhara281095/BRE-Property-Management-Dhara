@@ -20,10 +20,10 @@ page 50931 "Revenue Recognition List"
                     ApplicationArea = All;
                     Caption = 'RR Id';
                 }
-                field("Proposal ID"; Rec."Proposal ID")
+                field("Contract ID"; Rec."Contract ID")
                 {
                     ApplicationArea = All;
-                    Caption = 'Proposal ID';
+                    Caption = 'Contract ID';
                 }
 
                 field("Tenant ID"; Rec."Tenant ID")

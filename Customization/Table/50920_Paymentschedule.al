@@ -47,15 +47,15 @@ table 50920 "Payment Schedule"
         field(50102; "Contract ID"; Integer)
         {
             DataClassification = ToBeClassified;
-            TableRelation = "Tenancy Contract"."Contract ID";
+            TableRelation = "Tenancy Contract"."Contract ID" WHERE("Tenant Contract Status" = CONST(Active));
             // AutoIncrement = true;
             Caption = 'Contract ID';
+
             trigger OnValidate()
             var
                 leaserec: Record "Tenancy Contract";
 
             begin
-
                 leaserec.SetRange("Contract ID", Rec."Contract ID");
                 if leaserec.FindFirst() then begin
                     //"Proposal ID" := leaserec."Proposal ID";
@@ -72,7 +72,7 @@ table 50920 "Payment Schedule"
                 addrevnuestructurpagelinePaymentschedule2();
                 // AssignPaymentSeries();
                 EvaluatePaymentSchedule();
-                GetNextSequenceNo();
+                //GetNextSequenceNo();
 
 
             end;
@@ -115,6 +115,11 @@ table 50920 "Payment Schedule"
         {
             Caption = 'Tenant Name';
 
+        }
+        field(50914; "Property Classification"; Text[100])
+        {
+            Caption = 'Property Classification';
+            DataClassification = ToBeClassified;
         }
 
 
@@ -195,11 +200,13 @@ table 50920 "Payment Schedule"
                 PaymentSchedule."Secondary Item Type" := RentCalculationSubpage."Secondary Item Type";
                 PaymentSchedule.Amount := RentCalculationSubpage.Amount;
                 PaymentSchedule."VAT Amount" := RentCalculationSubpage."VAT Amount";
+                PaymentSchedule."Property Classification" := RentCalculationSubpage."Primary Classification";
                 PaymentSchedule."Installment Start Date" := RentCalculationSubpage."Installment Start Date";
                 PaymentSchedule."Installment End Date" := RentCalculationSubpage."Installment End Date";
                 PaymentSchedule."Installment No." := RentCalculationSubpage."Installment No.";
                 PaymentSchedule."Amount Including VAT" := RentCalculationSubpage."Amount Including VAT";
                 PaymentSchedule."Due Date" := RentCalculationSubpage."Due Date";
+
                 PaymentSchedule.Insert();
                 Clear(PaymentSchedule);
             until RentCalculationSubpage.Next() = 0;
@@ -274,90 +281,190 @@ table 50920 "Payment Schedule"
 
 
 
+    // procedure EvaluatePaymentSchedule()
+    // var
+    //     PaymentScheduleRec: Record "Payment Schedule2";
+    //     PaymentScheduleRec2: Record "Payment Schedule2";
+    //     NewPaymentCode: Code[20];
+    //     SequenceNo: Integer;
+    //     DueDate: Date;
+    //     MinDueDate: Date;
+    //     ProcessedDueDates: Dictionary of [Date, Boolean]; // Track processed due dates
+    //     DueDateList: List of [Date]; // List to store due dates
+    //     TempDate: Date;
+    //     i: Integer; // Declare the variable 'i' for the loop
+    //     SortedDueDateList: List of [Date]; // List for sorted due dates
+
+    // begin
+    //     // Filter by Proposal ID, Tenant ID, and Contract ID
+    //     // PaymentScheduleRec.SetRange("Proposal ID", Rec."Proposal ID");
+    //     PaymentScheduleRec.SetRange("Tenant ID", Rec."Tenant ID");
+    //     PaymentScheduleRec.SetRange("Contract ID", Rec."Contract ID");
+
+    //     // Sort records by Due Date
+    //     // Collect unique due dates
+    //     if PaymentScheduleRec.FindSet() then
+    //         repeat
+    //             MinDueDate := PaymentScheduleRec."Due Date";
+    //             if not DueDateList.Contains(MinDueDate) then
+    //                 DueDateList.Add(MinDueDate);
+    //         until PaymentScheduleRec.Next() = 0;
+
+    //     // Sort the DueDateList
+    //     while DueDateList.Count() > 0 do begin
+    //         TempDate := DueDateList.Get(1); // Assume the first date is the smallest
+    //         for i := 2 to DueDateList.Count() do begin
+    //             if DueDateList.Get(i) < TempDate then
+    //                 TempDate := DueDateList.Get(i); // Update if a smaller date is found
+    //         end;
+    //         SortedDueDateList.Add(TempDate); // Add the smallest date to the sorted list
+    //         DueDateList.Remove(TempDate); // Remove the smallest date from the original list
+    //     end;
+
+    //     // Process each due date in the sorted order
+    //     for i := 1 to SortedDueDateList.Count() do begin
+    //         MinDueDate := SortedDueDateList.Get(i);
+
+
+    //         // Generate unique Payment Series
+    //         SequenceNo := GetNextSequenceNo();
+    //         NewPaymentCode := GeneratePaymentCode(SequenceNo);
+
+    //         // Process records for the current Due Date
+    //         PaymentScheduleRec2.Reset();
+    //         PaymentScheduleRec2.SetRange("Due Date", MinDueDate);
+
+    //         //  PaymentScheduleRec2.SetRange("Proposal ID", Rec."Proposal ID");
+    //         PaymentScheduleRec2.SetRange("Tenant ID", Rec."Tenant ID");
+    //         PaymentScheduleRec2.SetRange("Contract ID", Rec."Contract ID");
+
+    //         if PaymentScheduleRec2.FindSet() then begin
+    //             // Modify existing records
+    //             repeat
+    //                 PaymentScheduleRec2."Payment Series" := NewPaymentCode;
+    //                 PaymentScheduleRec2.Modify();
+    //             until PaymentScheduleRec2.Next() = 0;
+    //         end else begin
+    //             // Insert a new record for the current Due Date
+    //             PaymentScheduleRec2.Init();
+    //             //  PaymentScheduleRec2."Proposal ID" := Rec."Proposal ID";
+    //             PaymentScheduleRec2."Tenant ID" := Rec."Tenant ID";
+    //             PaymentScheduleRec2."Contract ID" := Rec."Contract ID";
+    //             //PaymentScheduleRec2."Tenant Name" := Rec."Tenant Name";
+    //             PaymentScheduleRec2."Due Date" := DueDate;
+    //             PaymentScheduleRec2."Payment Series" := NewPaymentCode;
+
+    //             PaymentScheduleRec2.Insert();
+    //             Clear(PaymentScheduleRec2);
+    //         end
+
+    //         // until PaymentScheduleRec.Next() = 0;
+    //     end;
+
+    //     Message('Process completed successfully.');
+    // end;
+
+
+
+    // local procedure GeneratePaymentCode(SequenceNumber: Integer): Code[20]
+    // begin
+    //     exit('PAY' + PadStr(Format(SequenceNumber), 2, '0'));
+    // end;
+
+    // local procedure PadStr(Input: Text[20]; Length: Integer; PaddingChar: Char): Text[20]
+    // begin
+    //     while StrLen(Input) < Length do
+    //         Input := PaddingChar + Input;
+    //     exit(Input);
+    // end;
+
+    // local procedure GetNextSequenceNo(): Integer
+    // var
+    //     MaxSequence: Integer;
+    //     LastSequence: Text[10];
+    //     PaymentScheduleRec: Record "Payment Schedule2";
+    // begin
+    //     PaymentScheduleRec.Reset();
+    //     PaymentScheduleRec.SetRange("Contract ID", Rec."Contract ID");
+    //     //PaymentScheduleRec.SetRange("Proposal ID", Rec."Proposal ID");
+
+    //     if PaymentScheduleRec.FindSet() then begin
+    //         repeat
+    //             // Extract the numeric part of the Payment Series
+    //             LastSequence := CopyStr(PaymentScheduleRec."Payment Series", 4, StrLen(PaymentScheduleRec."Payment Series"));
+    //             if Evaluate(MaxSequence, LastSequence) and (MaxSequence > MaxSequence) then
+    //                 MaxSequence := MaxSequence;
+    //         until PaymentScheduleRec.Next() = 0;
+    //     end else
+    //         MaxSequence := 0; // Default to 0 if no records are found
+
+    //     exit(MaxSequence + 1);
+    // end;
     procedure EvaluatePaymentSchedule()
     var
         PaymentScheduleRec: Record "Payment Schedule2";
         PaymentScheduleRec2: Record "Payment Schedule2";
         NewPaymentCode: Code[20];
         SequenceNo: Integer;
-        DueDate: Date;
         MinDueDate: Date;
-        ProcessedDueDates: Dictionary of [Date, Boolean]; // Track processed due dates
-        DueDateList: List of [Date]; // List to store due dates
+        DueDateList: List of [Date]; // List to store unique due dates
         TempDate: Date;
         i: Integer; // Declare the variable 'i' for the loop
+        j: Integer; // Additional loop counter
         SortedDueDateList: List of [Date]; // List for sorted due dates
-
     begin
-        // Filter by Proposal ID, Tenant ID, and Contract ID
-        // PaymentScheduleRec.SetRange("Proposal ID", Rec."Proposal ID");
+        // Filter by Tenant ID and Contract ID
         PaymentScheduleRec.SetRange("Tenant ID", Rec."Tenant ID");
         PaymentScheduleRec.SetRange("Contract ID", Rec."Contract ID");
 
-        // Sort records by Due Date
         // Collect unique due dates
         if PaymentScheduleRec.FindSet() then
             repeat
-                MinDueDate := PaymentScheduleRec."Due Date";
-                if not DueDateList.Contains(MinDueDate) then
-                    DueDateList.Add(MinDueDate);
+                if not DueDateList.Contains(PaymentScheduleRec."Due Date") then
+                    DueDateList.Add(PaymentScheduleRec."Due Date");
             until PaymentScheduleRec.Next() = 0;
 
-        // Sort the DueDateList
+        // Sort the due dates in ascending order
         while DueDateList.Count() > 0 do begin
-            TempDate := DueDateList.Get(1); // Assume the first date is the smallest
+            TempDate := DueDateList.Get(1); // Start with first date
             for i := 2 to DueDateList.Count() do begin
                 if DueDateList.Get(i) < TempDate then
-                    TempDate := DueDateList.Get(i); // Update if a smaller date is found
+                    TempDate := DueDateList.Get(i); // Find the earliest date
             end;
-            SortedDueDateList.Add(TempDate); // Add the smallest date to the sorted list
-            DueDateList.Remove(TempDate); // Remove the smallest date from the original list
+            SortedDueDateList.Add(TempDate); // Add to sorted list
+            DueDateList.Remove(TempDate); // Remove from original list
         end;
+
+        // Reset sequence counter at the beginning
+        SequenceNo := 1;
 
         // Process each due date in the sorted order
         for i := 1 to SortedDueDateList.Count() do begin
             MinDueDate := SortedDueDateList.Get(i);
 
-
-            // Generate unique Payment Series
-            SequenceNo := GetNextSequenceNo();
+            // Generate payment code for this due date
             NewPaymentCode := GeneratePaymentCode(SequenceNo);
 
-            // Process records for the current Due Date
+            // Find all records with this due date
             PaymentScheduleRec2.Reset();
             PaymentScheduleRec2.SetRange("Due Date", MinDueDate);
-
-            //  PaymentScheduleRec2.SetRange("Proposal ID", Rec."Proposal ID");
             PaymentScheduleRec2.SetRange("Tenant ID", Rec."Tenant ID");
             PaymentScheduleRec2.SetRange("Contract ID", Rec."Contract ID");
 
             if PaymentScheduleRec2.FindSet() then begin
-                // Modify existing records
+                // Modify all records with this due date to have the same payment series
                 repeat
                     PaymentScheduleRec2."Payment Series" := NewPaymentCode;
                     PaymentScheduleRec2.Modify();
                 until PaymentScheduleRec2.Next() = 0;
-            end else begin
-                // Insert a new record for the current Due Date
-                PaymentScheduleRec2.Init();
-                //  PaymentScheduleRec2."Proposal ID" := Rec."Proposal ID";
-                PaymentScheduleRec2."Tenant ID" := Rec."Tenant ID";
-                PaymentScheduleRec2."Contract ID" := Rec."Contract ID";
-                //PaymentScheduleRec2."Tenant Name" := Rec."Tenant Name";
-                PaymentScheduleRec2."Due Date" := DueDate;
-                PaymentScheduleRec2."Payment Series" := NewPaymentCode;
+            end;
 
-                PaymentScheduleRec2.Insert();
-                Clear(PaymentScheduleRec2);
-            end
-
-            // until PaymentScheduleRec.Next() = 0;
+            // Increment sequence for the next due date
+            SequenceNo += 1;
         end;
 
-        Message('Process completed successfully.');
+        Message('Payment series assignment completed successfully.');
     end;
-
-
 
     local procedure GeneratePaymentCode(SequenceNumber: Integer): Code[20]
     begin
@@ -370,30 +477,6 @@ table 50920 "Payment Schedule"
             Input := PaddingChar + Input;
         exit(Input);
     end;
-
-    local procedure GetNextSequenceNo(): Integer
-    var
-        MaxSequence: Integer;
-        LastSequence: Text[10];
-        PaymentScheduleRec: Record "Payment Schedule2";
-    begin
-        PaymentScheduleRec.Reset();
-        PaymentScheduleRec.SetRange("Contract ID", Rec."Contract ID");
-        //PaymentScheduleRec.SetRange("Proposal ID", Rec."Proposal ID");
-
-        if PaymentScheduleRec.FindSet() then begin
-            repeat
-                // Extract the numeric part of the Payment Series
-                LastSequence := CopyStr(PaymentScheduleRec."Payment Series", 4, StrLen(PaymentScheduleRec."Payment Series"));
-                if Evaluate(MaxSequence, LastSequence) and (MaxSequence > MaxSequence) then
-                    MaxSequence := MaxSequence;
-            until PaymentScheduleRec.Next() = 0;
-        end else
-            MaxSequence := 0; // Default to 0 if no records are found
-
-        exit(MaxSequence + 1);
-    end;
-
 
 
     trigger OnDelete()

@@ -253,10 +253,12 @@ page 50315 "Lease Proposal Card"
                 field("Rent Amount"; rec."Rent Amount")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
                 field("Annual Rent Amount"; rec."Annual Rent Amount")
                 {
                     ApplicationArea = All;
+                    Editable = false;
 
                 }
                 field("Rent VAT Amount"; rec."Rent VAT Amount")
@@ -332,11 +334,12 @@ page 50315 "Lease Proposal Card"
                 field("Security Deposit Amount"; rec."Security Deposit Amount")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
-                field("Other Fees"; rec."Other Fees")
-                {
-                    ApplicationArea = All;
-                }
+                // field("Other Fees"; rec."Other Fees")
+                // {
+                //     ApplicationArea = All;
+                // }
                 field("Refund Conditions"; rec."Refund Conditions")
                 {
                     ApplicationArea = All;
@@ -409,10 +412,7 @@ page 50315 "Lease Proposal Card"
                         UpdateVisibility();
                     end;
                 }
-                field("Proposal Status"; rec."Proposal Status")
-                {
-                    ApplicationArea = All;
-                }
+               
 
                 field("Update Data"; Rec."Update Data")
                 {
@@ -700,6 +700,14 @@ page 50315 "Lease Proposal Card"
                     SubPageLink = ProposalID = FIELD("Proposal ID"); // Link to filter attachments for this owner only
                     ApplicationArea = All;
                     // Visible = isVisible;
+                }
+            }
+
+            group("Proposal Status")  // Add a separate group for clarity
+            {
+                field("ProposalStatus"; Rec."Proposal Status")
+                {
+                    ApplicationArea = All;
                 }
             }
 

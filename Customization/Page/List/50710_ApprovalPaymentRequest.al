@@ -299,6 +299,7 @@ page 50710 "Approval Payment Request"
                     PaymentModeTable."Due Date" := PaymentChangeReqTable."Due Date";
                     PaymentModeTable."Payment Mode" := PaymentChangeReqTable."Payment Mode";
                     PaymentModeTable."Payment Series" := NewPaymentCode;
+                    PaymentModeTable."Payment Status" := PaymentModeTable."Payment Status"::Scheduled;
                     PaymentModeTable.Insert(true);
                     Clear(PaymentModeTable);
                     // Message('Inserted new Payment Mode record with Series: %1', NewPaymentCode);
@@ -398,6 +399,7 @@ page 50710 "Approval Payment Request"
                         PaymentModeTable."Due Date" := PaymentChangeReqTable."Due Date";
                         PaymentModeTable."Payment Mode" := PaymentChangeReqTable."Payment mode";
                         PaymentModeTable."Payment Series" := NewPaymentCode;
+                        PaymentModeTable."Payment Status" := PaymentModeTable."Payment Status"::Scheduled;
                         PaymentModeTable.Insert(true);
                         Clear(PaymentModeTable);
                         // Message('Inserted new payment record with Payment Series: %1', NewPaymentCode);

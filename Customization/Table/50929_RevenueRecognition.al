@@ -13,21 +13,53 @@ table 50929 "Revenue Recognition"
 
         }
 
-        field(50100; "Proposal ID"; Integer)
+        // field(50100; "Proposal ID"; Integer)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     TableRelation = "Lease Proposal Details"."Proposal ID";
+
+        //     trigger OnValidate()
+        //     var
+        //         leaserec: Record "Lease Proposal Details";
+        //     begin
+        //         leaserec.SetRange("Proposal ID", Rec."Proposal ID");
+        //         if leaserec.FindFirst() then begin
+        //             "Tenant Id" := leaserec."Tenant Id";
+        //             "Start Date" := leaserec."Lease Start Date";
+        //             "End Date" := leaserec."Lease End Date";
+        //             "Contract Amount" := leaserec."Annual Rent Amount";
+
+        //         end else begin
+        //             // Clear the field if no record is found
+        //             "Tenant Id" := '';
+        //             "Start Date" := 0D;
+        //             "End Date" := 0D;
+        //             "Contract Amount" := 0;
+        //         end;
+
+        //         CalculateMonthlyRevenue();
+
+        //     end;
+        // }
+
+
+        field(50100; "Contract ID"; Integer)
         {
             DataClassification = ToBeClassified;
-            TableRelation = "Lease Proposal Details"."Proposal ID";
+            TableRelation = "Tenancy Contract"."Contract ID";
+            // AutoIncrement = true;
+            Caption = 'Contract ID';
 
             trigger OnValidate()
             var
-                leaserec: Record "Lease Proposal Details";
+                tenancyrec: Record "Tenancy Contract";
             begin
-                leaserec.SetRange("Proposal ID", Rec."Proposal ID");
-                if leaserec.FindFirst() then begin
-                    "Tenant Id" := leaserec."Tenant Id";
-                    "Start Date" := leaserec."Lease Start Date";
-                    "End Date" := leaserec."Lease End Date";
-                    "Contract Amount" := leaserec."Annual Rent Amount";
+                tenancyrec.SetRange("Contract ID", Rec."Contract ID");
+                if tenancyrec.FindFirst() then begin
+                    "Tenant Id" := tenancyrec."Tenant Id";
+                    "Start Date" := tenancyrec."Contract Start Date";
+                    "End Date" := tenancyrec."Contract End Date";
+                    "Contract Amount" := tenancyrec."Annual Rent Amount";
 
                 end else begin
                     // Clear the field if no record is found
@@ -41,6 +73,8 @@ table 50929 "Revenue Recognition"
 
             end;
         }
+
+
         field(50101; "Tenant Id"; Code[20])
         {
             DataClassification = ToBeClassified;
@@ -135,7 +169,7 @@ table 50929 "Revenue Recognition"
         while CurrentDate <= "End Date" do begin
             SubpageRec.Init();
             SubpageRec."RR Id" := "RR Id";
-            SubpageRec."Proposal ID" := "Proposal ID";
+            SubpageRec."Contract ID" := "Contract ID";
             SubpageRec."Tenant Id" := "Tenant Id";
 
             // Format Month-Year
@@ -195,8 +229,8 @@ table 50929 "Revenue Recognition"
             // // Check if the days in the month are fewer than the typical month days (30 or 31)
             if MonthDays < ActualDaysInMonth then begin
                 // Adjust the MonthlyRate based on actual MonthDays
-                MonthlyRate2 := ("Contract Amount" / TotalMonths);
-                MonthlyRate := MonthlyRate2 / DaysInMonth * MonthDays;
+                MonthlyRate2 := Round("Contract Amount" / TotalMonths);
+                MonthlyRate := Round(MonthlyRate2 / DaysInMonth * MonthDays);
             end else begin
                 // Default case: use the standard MonthlyRate formula
                 MonthlyRate := MonthlyRate2;

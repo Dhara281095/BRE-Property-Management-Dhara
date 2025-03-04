@@ -44,11 +44,11 @@ pageextension 50101 Items extends "Item Card"
         }
         modify(InventoryGrp)
         {
-            Visible = true;
+            Visible = false;
         }
         modify("Costs & Posting")
         {
-            Visible = true;
+            Visible = false;
         }
         modify("Prices & Sales")
         {
@@ -122,7 +122,15 @@ pageextension 50101 Items extends "Item Card"
                 Editable = false;
             }
         }
-
+        addafter("Gen. Prod. Posting Group")
+        {
+            field("Primary Classification Type"; Rec."Primary Classification Type")
+            {
+                ApplicationArea = All;
+                Caption = 'Primary Classification Type';
+                Editable = ISPrimaryType;
+            }
+        }
         addafter(Item)
         {
             group(UnitManagement)
@@ -266,6 +274,7 @@ pageextension 50101 Items extends "Item Card"
                 }
 
             }
+
 
             // group(MergedUnits)
             // {
@@ -471,7 +480,7 @@ pageextension 50101 Items extends "Item Card"
     trigger OnModifyRecord(): Boolean
     begin
         CurrPage."Document Attachments".Page.SetUnitId(Rec."No.");
-        ;
+        ISPrimaryType := SetPrimaryType();
     end;
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
@@ -490,9 +499,27 @@ pageextension 50101 Items extends "Item Card"
         else begin
             isVisible := false;
         end;
+        ISPrimaryType := SetPrimaryType();
+
+    end;
+
+    trigger OnAfterGetCurrRecord()
+    begin
+        ISPrimaryType := SetPrimaryType();
+    end;
+
+
+    procedure SetPrimaryType(): Boolean
+    var
+    begin
+        if Rec.Type = Rec.Type::"Non-Inventory" then
+            exit(true)
+        else
+            exit(false);
     end;
 
     var
+        ISPrimaryType: Boolean;
         documentattachment: Codeunit UploadAttachment;
 
     // trigger OnOpenPage()

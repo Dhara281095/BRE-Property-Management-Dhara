@@ -4,7 +4,7 @@ page 50123 "Revenue Allocation SubGrid"
     ApplicationArea = All;
     // UsageCategory = Administration;
     SourceTable = "Revenue Allocation SubGrid";
-    Caption = 'Revenue Allocation Report';
+    Caption = 'Revenue Allocation Master data';
 
     layout
     {
@@ -106,6 +106,11 @@ page 50123 "Revenue Allocation SubGrid"
                 {
                     ApplicationArea = All;
                     Caption = 'Posting Period';
+                }
+                field("Final Annual Amount"; Rec."Final Annual Amount")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Final Annual Amount';
                 }
                 field("No Of Days"; Rec."No Of Days")
                 {

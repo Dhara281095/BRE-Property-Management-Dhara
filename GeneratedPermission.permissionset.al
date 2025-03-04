@@ -319,6 +319,20 @@ permissionset 50100 GeneratedPermission
         page "TC Merge SameSqure SubPage" = X,
         page "TC PerDayRent for Revenue Card" = X,
         page "TC Single LumAnnualAmnt SP" = X,
-        page "TC Single Unit Rent SubPage" = X;
+        page "TC Single Unit Rent SubPage" = X,
+        tabledata ContractEndProcessApproval = RIMD,
+        table ContractEndProcessApproval = X,
+        codeunit "Send PaymentMode Email" = X,
+        codeunit ShowDialogboxRejctionInvoice = X,
+        page "Contract End Process Approval" = X,
+        page ContractEndApprovalProcess = X,
+        page DialogBoxForInvoiceRejection = X,
+        page "Approval FinalCalculation List" = X,
+        page "FinalCalculationApproval" = X,
+        table "Final Calculation" = X,
+        page "Final Calculation Card" = X,
+        page "Final Calculation List" = X,
+        table "Approval Final Calculation" = X;
+
     //page "Revenue Item SubPage Card2" = X;
 }

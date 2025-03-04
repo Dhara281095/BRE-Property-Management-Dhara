@@ -140,7 +140,7 @@ table 50938 "Tenancy Contract Subpage"
         field(50113; "Link"; Integer)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Link';
+            Caption = 'Revenue Structure Link';
             Editable = false;
             //InitValue = 'link';
 

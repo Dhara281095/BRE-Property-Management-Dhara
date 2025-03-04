@@ -30,10 +30,7 @@ page 50115 "Emirate Card"
                     Caption = 'Country Code';
                     ShowMandatory = true;
                     NotBlank = true;
-                    trigger OnValidate()
-                    begin
-                        CurrPage.Update(true);
-                    end;
+
                 }
                 field("Emirate Name"; Rec."Emirate Name")
                 {

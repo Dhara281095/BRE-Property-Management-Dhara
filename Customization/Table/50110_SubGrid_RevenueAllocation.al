@@ -148,6 +148,11 @@ table 50110 "Revenue Allocation SubGrid"
             DataClassification = ToBeClassified;
             Caption = 'Header No.';
         }
+        field(50124; "Final Annual Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Header No.';
+        }
 
     }
 

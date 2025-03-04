@@ -114,6 +114,7 @@ table 50924 "Payment Mode"
                 paymentGridRec: Record "Payment Mode2";
                 paymentModeRec: Record "Payment Mode";
                 paymentSeriesRec: Record "Payment Mode2";
+                PdcTransRec: Record "PDC Transaction";
                 approvalPending: Boolean;
                 Isrejected: Boolean;
                 IsApproved: Boolean;
@@ -126,6 +127,15 @@ table 50924 "Payment Mode"
                             paymentGridRec."Approval Status" := paymentGridRec."Approval Status"::Approved;
 
                             paymentGridRec.Modify();
+                            // **Update related PDC Transactions for each Payment Series**
+                            pdcTransRec.SetRange("Payment Series", paymentGridRec."Payment Series");
+                            pdcTransRec.SetRange("Contract ID", Rec."Contract ID");
+                            if pdcTransRec.FindSet() then begin
+                                repeat
+                                    pdcTransRec."Approval Status" := pdcTransRec."Approval Status"::Approved;
+                                    pdcTransRec.Modify();
+                                until pdcTransRec.Next() = 0;
+                            end;
                         until paymentGridRec.Next() = 0;
                     end;
                     Rec."On-hold" := Rec."On-hold"::"False";
@@ -337,6 +347,7 @@ table 50924 "Payment Mode"
         i: Integer; // Declare the variable 'i' for the loop
         SortedDueDateList: List of [Date]; // List for sorted due dates
         TempDate: Date;
+        PaymentStatus: Enum "Payment Status";
     begin
         // Initialize totals
         TotalAmount := 0;
@@ -412,6 +423,8 @@ table 50924 "Payment Mode"
                 MergedRecord."VAT Amount" := TotalVAT;
                 MergedRecord."Amount Including VAT" := GrandTotal;
                 MergedRecord."Due Date" := MinDueDate;
+                MergedRecord."Payment Status" := PaymentStatus::Scheduled;
+
 
                 //Message('Inserting record with Payment Series: %1', NewPaymentCode);
 

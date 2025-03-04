@@ -3,7 +3,7 @@ page 50928 "Payment Mode Card2"
     PageType = ListPart;
     SourceTable = "Payment Mode2";
     ApplicationArea = All;
-    Caption = 'Payment Mode Card2';
+    Caption = 'Payment Details';
 
     layout
     {
@@ -35,7 +35,7 @@ page 50928 "Payment Mode Card2"
                 field("Amount Including VAT"; Rec."Amount Including VAT")
                 {
                     ApplicationArea = All;
-                    Editable = true; // The ID is not editable since it's auto-incrementing
+                    Editable = IsApproved; // The ID is not editable since it's auto-incrementing
                 }
 
 
@@ -43,7 +43,7 @@ page 50928 "Payment Mode Card2"
                 field("Due Date"; Rec."Due Date")
                 {
                     ApplicationArea = All;
-                    Editable = true;  // The ID is not editable since it's auto-incrementing
+                    Editable = IsApproved;  // The ID is not editable since it's auto-incrementing
                 }
 
 
@@ -52,7 +52,7 @@ page 50928 "Payment Mode Card2"
                 {
                     ApplicationArea = All;
                     Lookup = true;
-                    Editable = (Rec."Payment Status" <> Rec."Payment Status"::Cancelled); // Makes the field editable unless Payment Status is "Cancelled"
+                    Editable = IsApproved AND (Rec."Payment Status" <> Rec."Payment Status"::Cancelled); // Makes the field editable unless Payment Status is "Cancelled"
 
                 }
 
@@ -61,7 +61,7 @@ page 50928 "Payment Mode Card2"
                 field("Cheque Number"; Rec."Cheque Number")
                 {
                     ApplicationArea = All;
-                    Editable = (Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" <> Rec."Payment Status"::Cancelled);  // The ID is not editable since it's auto-incrementing
+                    Editable = IsApproved AND (Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" <> Rec."Payment Status"::Cancelled);  // The ID is not editable since it's auto-incrementing
                                                                                                                                //Editable = (Rec."Payment Mode" = 'Cheque'); // Editable only if Payment Mode is 'Cheque'
                                                                                                                                //Editable = not ((Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" = Rec."Payment Status"::Cancelled));
 
@@ -71,7 +71,7 @@ page 50928 "Payment Mode Card2"
                 {
                     ApplicationArea = All;
                     Lookup = true;
-                    Editable = (Rec."Payment Mode" <> 'Cash');
+                    Editable = IsApproved AND (Rec."Payment Mode" <> 'Cash');
                     // Editable = (Rec."Payment Status" <> Rec."Payment Status"::Cancelled); // Makes the field editable unless Payment Status is "Cancelled"
                 }
 
@@ -86,7 +86,7 @@ page 50928 "Payment Mode Card2"
                 field("Payment Status"; Rec."Payment Status")
                 {
                     ApplicationArea = All;
-
+                    Editable = IsApproved;
                     //  trigger OnValidate()
                     // var
                     //     Statuschange: Codeunit "Daily Job Queue";
@@ -98,6 +98,7 @@ page 50928 "Payment Mode Card2"
                 field("Cheque Status"; Rec."Cheque Status")
                 {
                     ApplicationArea = All;
+                    Editable = IsApproved;
                     //Editable = (Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" <> Rec."Payment Status"::Cancelled);  
                     //Editable = (Rec."Payment Mode" = 'Cheque'); // Editable only if Payment Mode is 'Cheque'
                     //Editable = not ((Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" = Rec."Payment Status"::Cancelled));
@@ -112,20 +113,20 @@ page 50928 "Payment Mode Card2"
                 field("Invoice #"; Rec."Invoice #")
                 {
                     ApplicationArea = All;
-                    Editable = (Rec."Payment Status" <> Rec."Payment Status"::Cancelled); // Makes the field editable unless Payment Status is "Cancelled"
+                    Editable = IsApproved AND (Rec."Payment Status" <> Rec."Payment Status"::Cancelled); // Makes the field editable unless Payment Status is "Cancelled"
                 }
 
                 field("Receipt #"; Rec."Receipt #")
                 {
                     ApplicationArea = All;
-                    Editable = (Rec."Payment Status" <> Rec."Payment Status"::Cancelled); // Makes the field editable unless Payment Status is "Cancelled"
+                    Editable = IsApproved AND (Rec."Payment Status" <> Rec."Payment Status"::Cancelled); // Makes the field editable unless Payment Status is "Cancelled"
 
                 }
 
                 field("Old Cheque #"; Rec."Old Cheque #")
                 {
                     ApplicationArea = All;
-                    Editable = (Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" <> Rec."Payment Status"::Cancelled);
+                    Editable = IsApproved AND (Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" <> Rec."Payment Status"::Cancelled);
                     // Editable = (Rec."Payment Mode" = 'Cheque'); // Editable only if Payment Mode is 'Cheque'
                     // Editable = (Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" <> Rec."Payment Status"::Cancelled);
                     // Editable = not ((Rec."Payment Mode" = 'Cheque') and (Rec."Payment Status" = Rec."Payment Status"::Cancelled));
@@ -167,6 +168,10 @@ page 50928 "Payment Mode Card2"
                         if Rec."Payment Status" = Rec."Payment Status"::Cancelled then begin
                             Message('Upload Cheque cannot be accessed because Payment Status is Cancelled');
                             exit; // Stop execution here
+                        end;
+                        // Check if the Payment Mode is 'Cheque'
+                        if Rec."Payment Mode" <> 'Cheque' then begin
+                            Error('Cheque upload is only allowed when Payment Mode is "Cheque".');
                         end;
                         // Validate and retrieve the SAS URL from the configuration table
                         if not ConfigRecord.FindFirst() then
@@ -229,6 +234,10 @@ page 50928 "Payment Mode Card2"
                         if Rec."Payment Status" = Rec."Payment Status"::Cancelled then begin
                             Message('View cannot be accessed because Payment Status is Cancelled');
                             exit; // Stop execution here
+                        end;
+                         // Check if the Payment Mode is 'Cheque'
+                        if Rec."Payment Mode" <> 'Cheque' then begin
+                          Error('Cheque upload is only allowed when Payment Mode is "Cheque".');
                         end;
                         // Get the URL of the uploaded document
                         FileURL := Rec."View Document URL";
@@ -301,21 +310,25 @@ page 50928 "Payment Mode Card2"
                 field("Approval Status"; Rec."Approval Status")
                 {
                     ApplicationArea = All;
-                    // Editable = IsFinanceManager;
+                    Editable = IsApproved;
                 }
                 field(Reason; Rec.Reason)
                 {
                     ApplicationArea = All;
+                    Editable = IsApproved;
                     // Editable = IsFinanceManager;
                 }
                 field(IsUpdated; Rec.IsUpdated)
                 {
                     ApplicationArea = All;
+                    Editable = IsApproved;
                     Visible = false;
                 }
                 field("Approve/Decline Status"; Rec."Approve/Decline Status")
                 {
                     ApplicationArea = All;
+                    Editable = IsApproved;
+                    Visible = false;
                 }
 
 
@@ -376,8 +389,8 @@ page 50928 "Payment Mode Card2"
                 ApplicationArea = All;
                 Caption = 'Insert Data';
                 Image = NewDocument;
-                Visible = IsLeaseManager;
-
+                Visible = IsLeaseManager AND IsApproved;
+                
                 trigger OnAction()
                 var
                     approvalflow: Codeunit 50510;
@@ -393,8 +406,8 @@ page 50928 "Payment Mode Card2"
                     Isupdate: Boolean;
                 begin
                     Isupdate := false;
-                    approvalflow.SendPaymentModeApprovalToFinanceManger(Format(Rec."Contract ID"), Rec."Tenant Id", Rec."Contract ID", Isupdate);
 
+                   
                     // Update Approval Status in the grid
                     PaymentModeRec.SetRange("Contract ID", Rec."Contract ID"); // Filter by Contract ID
                     if PaymentModeRec.FindSet() then begin
@@ -409,7 +422,8 @@ page 50928 "Payment Mode Card2"
                     paymentRec.SetRange("Tenant Id", Rec."Tenant Id");
                     if paymentRec.FindSet() then begin
                         paymentRec."Approval Status" := paymentRec."Approval Status"::Pending;
-
+                        paymentRec."On-hold" := paymentRec."On-hold"::"True";
+                        paymentRec.Modify();
                     end;
 
                     // Insert records into PDC Transaction for Payment Modes with "Cheque"
@@ -419,6 +433,9 @@ page 50928 "Payment Mode Card2"
 
                     if PaymentModeRec.FindSet() then begin
                         repeat
+                            //  **Validation: Check if Cheque Number is blank**
+                            if DelChr(PaymentModeRec."Cheque Number", '=', ' ') = '' then
+                                Error('Cheque Number cannot be blank when Payment Mode is Cheque.');
                             // Check for duplicate PDC Transaction record
                             // PrePDCTransRec.SetRange("Cheque Number", PaymentModeRec."Cheque Number");
                             PrePDCTransRec.SetRange("Tenant Id", PaymentModeRec."Tenant Id");
@@ -447,6 +464,9 @@ page 50928 "Payment Mode Card2"
                         Message('PDC Transaction records successfully created for Cheque payment modes.');
                     end else
                         Message('No payment modes with "Cheque" found for the given Contract ID and Tenant ID.');
+
+                    approvalflow.SendPaymentModeApprovalToFinanceManger(Format(Rec."Contract ID"), Rec."Tenant Id", Rec."Contract ID", Isupdate);
+
                 end;
 
 
@@ -465,9 +485,57 @@ page 50928 "Payment Mode Card2"
                     PaymentModeRec: Record "Payment Mode2";
                     paymentRec: Record "Payment Mode";
                     Isupdate: Boolean;
+                    PDCTransRec : Record "PDC Transaction";
+                    PrePDCTransRec: Record "PDC Transaction";
+                    approvalEnum : Enum "Approval Status Enum";
                 begin
                     Isupdate := true;
                     approvalflow.SendPaymentModeApprovalToFinanceManger(Format(Rec."Contract ID"), Rec."Tenant Id", Rec."Contract ID", Isupdate);
+
+                        PaymentModeRec.Reset();
+                        PaymentModeRec.SetRange("Approval Status", approvalEnum::" ");
+                    if PaymentModeRec.FindSet() then begin
+                        repeat
+                        PaymentModeRec."Approval Status" := approvalEnum::Pending;
+                        PaymentModeRec.Modify();
+                        until PaymentModeRec.Next() = 0;
+                        Message('Approval Status updated successfully.');
+                    end;
+
+                    PaymentModeRec.Reset();
+                    PaymentModeRec.SetRange("Contract ID", Rec."Contract ID");
+                    PaymentModeRec.SetRange("Tenant Id", Rec."Tenant Id");
+                    PaymentModeRec.SetRange("Payment Mode", 'Cheque');
+
+                    if PaymentModeRec.FindSet() then begin
+                        repeat
+                            PrePDCTransRec.SetRange("Tenant Id", PaymentModeRec."Tenant Id");
+                            PrePDCTransRec.SetRange("Contract ID",PaymentModeRec."Contract ID");
+                            PrePDCTransRec.SetRange("payment Series",PaymentModeRec."Payment Series");
+
+                            if not PrePDCTransRec.FindFirst() then begin
+                                PDCTransRec.Init();
+                                PDCTransRec."Cheque Number" := PaymentModeRec."Cheque Number";
+                                PDCTransRec."Bank Name" := PaymentModeRec."Deposit Bank";
+                                PDCTransRec."Cheque Date" := PaymentModeRec."Due Date";
+                                PDCTransRec.Amount := PaymentModeRec."Amount Including VAT";
+                                PDCTransRec."Tenant Id" := PaymentModeRec."Tenant Id";
+                                PDCTransRec."Contract ID" := PaymentModeRec."Contract ID";
+                                PDCTransRec."Cheque Status" := PaymentModeRec."Cheque Status";
+                                PDCTransRec."Approval Status" := PaymentModeRec."Approval Status";
+                                PDCTransRec."View Document URL" := PaymentModeRec."View Document URL";
+                                PDCTransRec."payment Series" := PaymentModeRec."Payment Series";
+                                PDCTransRec.Insert(true);
+                                Clear(PDCTransRec);
+                            end;
+                        until PaymentModeRec.Next() = 0;
+                        Message('PDC Transaction Updated successfully.');
+                    end
+                    else
+                        Message('No new cheque payments found.');
+
+                       
+
                 end;
 
             }
@@ -478,6 +546,7 @@ page 50928 "Payment Mode Card2"
 
     trigger OnAfterGetRecord()
     begin
+        IsApproved:= (Rec."Approval Status" <> Rec."Approval Status"::Approved);
         // If the field is blank, assign '-'
         if Rec."Cheque Number" = '' then
             Rec."Cheque Number" := '-';
@@ -504,7 +573,7 @@ page 50928 "Payment Mode Card2"
         //     end;
     end;
 
-
+    
 
     procedure SetProposalID(pProposalID: Integer)
     begin
@@ -555,10 +624,11 @@ page 50928 "Payment Mode Card2"
         tenantName: Text[100];
         tenantEmail: Text[80];
         ContractID: Integer;
-        isApproved: Boolean;
+        IsApproved: Boolean;
         IsLeaseManager: Boolean;
         IsFinanceManager: Boolean;
 
+    
     trigger OnOpenPage()
     var
         PermissionSet: Record "User Personalization";
@@ -578,6 +648,10 @@ page 50928 "Payment Mode Card2"
 
     end;
 
+    trigger OnModifyRecord(): Boolean
+    begin
+        IsApproved:= (Rec."Approval Status" <> Rec."Approval Status"::Approved);
+    end;
 
 
 }
