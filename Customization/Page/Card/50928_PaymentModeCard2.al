@@ -169,6 +169,10 @@ page 50928 "Payment Mode Card2"
                             Message('Upload Cheque cannot be accessed because Payment Status is Cancelled');
                             exit; // Stop execution here
                         end;
+                        // Check if the Payment Mode is 'Cheque'
+                        if Rec."Payment Mode" <> 'Cheque' then begin
+                            Error('Cheque upload is only allowed when Payment Mode is "Cheque".');
+                        end;
                         // Validate and retrieve the SAS URL from the configuration table
                         if not ConfigRecord.FindFirst() then
                             Error('Azure configuration is missing. Please set up the SAS URL in the Azure Configuration table.');
@@ -230,6 +234,10 @@ page 50928 "Payment Mode Card2"
                         if Rec."Payment Status" = Rec."Payment Status"::Cancelled then begin
                             Message('View cannot be accessed because Payment Status is Cancelled');
                             exit; // Stop execution here
+                        end;
+                         // Check if the Payment Mode is 'Cheque'
+                        if Rec."Payment Mode" <> 'Cheque' then begin
+                          Error('Cheque upload is only allowed when Payment Mode is "Cheque".');
                         end;
                         // Get the URL of the uploaded document
                         FileURL := Rec."View Document URL";
@@ -641,7 +649,7 @@ page 50928 "Payment Mode Card2"
 
     trigger OnModifyRecord(): Boolean
     begin
-        
+        IsApproved:= (Rec."Approval Status" <> Rec."Approval Status"::Approved);
     end;
 
 
