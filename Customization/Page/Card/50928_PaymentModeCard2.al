@@ -169,12 +169,6 @@ page 50928 "Payment Mode Card2"
                             Message('Upload Cheque cannot be accessed because Payment Status is Cancelled');
                             exit; // Stop execution here
                         end;
-
-                          // Check if the Payment Mode is 'Cheque'
-                        if Rec."Payment Mode" <> 'Cheque' then begin
-                        Error('Cheque upload is only allowed when Payment Mode is "Cheque".');
-                        end;
-                        
                         // Validate and retrieve the SAS URL from the configuration table
                         if not ConfigRecord.FindFirst() then
                             Error('Azure configuration is missing. Please set up the SAS URL in the Azure Configuration table.');
@@ -237,11 +231,6 @@ page 50928 "Payment Mode Card2"
                             Message('View cannot be accessed because Payment Status is Cancelled');
                             exit; // Stop execution here
                         end;
-
-                          // Check if the Payment Mode is 'Cheque'
-                          if Rec."Payment Mode" <> 'Cheque' then begin
-                          Error('Cheque upload is only allowed when Payment Mode is "Cheque".');
-                           end;
                         // Get the URL of the uploaded document
                         FileURL := Rec."View Document URL";
 
@@ -272,7 +261,6 @@ page 50928 "Payment Mode Card2"
                             Message('View Revenue Details cannot be accessed because Payment Status is Cancelled');
                             exit; // Stop execution here
                         end;
-
                         PaymentScheduleRec.SetRange("Contract ID", Rec."Contract ID");
                         // PaymentScheduleRec.SetRange("Proposal ID", Rec."Proposal ID");
                         PaymentScheduleRec.SetRange("Tenant ID", Rec."Tenant ID");
@@ -393,8 +381,8 @@ page 50928 "Payment Mode Card2"
                 ApplicationArea = All;
                 Caption = 'Insert Data';
                 Image = NewDocument;
-                Visible = IsLeaseManager;
-
+                Visible = IsLeaseManager AND IsApproved;
+                
                 trigger OnAction()
                 var
                     approvalflow: Codeunit 50510;
@@ -410,8 +398,8 @@ page 50928 "Payment Mode Card2"
                     Isupdate: Boolean;
                 begin
                     Isupdate := false;
-                    approvalflow.SendPaymentModeApprovalToFinanceManger(Format(Rec."Contract ID"), Rec."Tenant Id", Rec."Contract ID", Isupdate);
 
+                   
                     // Update Approval Status in the grid
                     PaymentModeRec.SetRange("Contract ID", Rec."Contract ID"); // Filter by Contract ID
                     if PaymentModeRec.FindSet() then begin
@@ -436,6 +424,9 @@ page 50928 "Payment Mode Card2"
 
                     if PaymentModeRec.FindSet() then begin
                         repeat
+                            //  **Validation: Check if Cheque Number is blank**
+                            if DelChr(PaymentModeRec."Cheque Number", '=', ' ') = '' then
+                                Error('Cheque Number cannot be blank when Payment Mode is Cheque.');
                             // Check for duplicate PDC Transaction record
                             // PrePDCTransRec.SetRange("Cheque Number", PaymentModeRec."Cheque Number");
                             PrePDCTransRec.SetRange("Tenant Id", PaymentModeRec."Tenant Id");
@@ -464,6 +455,9 @@ page 50928 "Payment Mode Card2"
                         Message('PDC Transaction records successfully created for Cheque payment modes.');
                     end else
                         Message('No payment modes with "Cheque" found for the given Contract ID and Tenant ID.');
+
+                    approvalflow.SendPaymentModeApprovalToFinanceManger(Format(Rec."Contract ID"), Rec."Tenant Id", Rec."Contract ID", Isupdate);
+
                 end;
 
 
@@ -647,7 +641,7 @@ page 50928 "Payment Mode Card2"
 
     trigger OnModifyRecord(): Boolean
     begin
-        IsApproved:= (Rec."Approval Status" <> Rec."Approval Status"::Approved);
+        
     end;
 
 
