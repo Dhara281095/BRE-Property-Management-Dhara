@@ -24,9 +24,9 @@ page 50720 ContractEndApprovalProcess
                 {
                     Caption = 'Contract Id';
                 }
-                field(description; Rec.Description)
+                field(Property_MStatus; Rec."Property_M Status")
                 {
-                    Caption = 'Description';
+                    Caption = 'Property Manager Status';
                 }
                 field(endDate; Rec."End Date")
                 {
@@ -44,9 +44,9 @@ page 50720 ContractEndApprovalProcess
                 {
                     Caption = 'Contract Start Date';
                 }
-                field(status; Rec.Status)
+                field(Lease_MStatus; Rec."Lease_M Status")
                 {
-                    Caption = 'Status';
+                    Caption = 'Lease Manager Status';
                 }
                 field(systemCreatedAt; Rec.SystemCreatedAt)
                 {
@@ -76,13 +76,13 @@ page 50720 ContractEndApprovalProcess
                 {
                     Caption = 'Tenant Name';
                 }
-                field(Remark; Rec.Remark)
+                field("LeaseManagerRemark"; Rec."Lease Manager Remark")
                 {
-                    Caption = 'Remark';
+                    Caption = 'Lease Manager Remark';
                 }
-                field("RequestType"; Rec."Request Type")
+                field("PropertyManagerRemark"; Rec."Property Manager Remark")
                 {
-                    Caption = 'Request Type';
+                    Caption = 'Property Manager Remark';
                 }
             }
         }

@@ -12,16 +12,16 @@ table 50704 "ContractEndProcessApproval"
             // Editable = false;
             AutoIncrement = true;
         }
-        field(50102; "Status"; Text[200])
+        field(50102; "Property_M Status"; Text[200])
         {
             DataClassification = ToBeClassified;
-            Caption = 'Status';
+            Caption = 'Property Manager Approval Status';
             //Editable = false;
         }
-        field(50111; "Request Type"; Text[200])
+        field(50111; "Lease_M Status"; Text[200])
         {
             DataClassification = ToBeClassified;
-            Caption = 'Request Type';
+            Caption = 'Lease Manager Approval Status';
             //Editable = false;
         }
         field(50103; "Contract Id"; Integer)
@@ -60,16 +60,16 @@ table 50704 "ContractEndProcessApproval"
             Caption = 'Requested Date';
             // Editable = false;
         }
-        field(50109; "Description"; Text[400])
+        field(50109; "Lease Manager Remark"; Text[400])
         {
             DataClassification = ToBeClassified;
-            Caption = 'Tenant Notes';
+            Caption = 'Lease Manager Remark';
             //Editable = false;
         }
-        field(50110; "Remark"; Text[400])
+        field(50110; "Property Manager Remark"; Text[400])
         {
             DataClassification = ToBeClassified;
-            Caption = 'Remarks';
+            Caption = 'Property Manager Remark';
             //Editable = false;
         }
 
