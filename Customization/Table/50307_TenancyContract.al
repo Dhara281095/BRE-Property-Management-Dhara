@@ -741,6 +741,7 @@ table 50307 "Tenancy Contract"
                 ItemRec: Record Item;
                 MergeUnitRec: Record "Merged Units";
                 emailrec: Codeunit "Send Contract Email";
+
             begin
                 // Handle logic for Unit ID
                 if "Unit ID" <> '' then begin
@@ -816,6 +817,8 @@ table 50307 "Tenancy Contract"
                 if Rec."Tenant Contract Status" = Rec."Tenant Contract Status"::Active then begin
                     emailrec.SendEmail(Rec);
                 end;
+
+
 
             end;
         }
@@ -1675,6 +1678,7 @@ table 50307 "Tenancy Contract"
 
 
     end;
+
 
     // Procedure to calculate the grace period based on start and end dates
     // Procedure to calculate the contract tenor in months

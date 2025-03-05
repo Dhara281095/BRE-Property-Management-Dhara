@@ -61,11 +61,13 @@ table 50920 "Payment Schedule"
                     //"Proposal ID" := leaserec."Proposal ID";
                     "Tenant Id" := leaserec."Tenant Id";
                     "Tenant Name" := leaserec."Customer Name";
+                    "Contract Status" := Format(leaserec."Tenant Contract Status");
                 end else begin
                     // Clear the field if no record is found
                     // "Proposal Id" := '';
                     "Tenant Id" := '';
                     "Tenant Name" := '';
+                    "Contract Status" := '';
                 end;
                 UpdatePaymentSchedule2();
                 UpdatePaymentSchedule();
@@ -122,6 +124,12 @@ table 50920 "Payment Schedule"
             DataClassification = ToBeClassified;
         }
 
+        field(50915; "Contract Status"; Text[100])
+        {
+            Caption = 'Contract Status';
+            DataClassification = ToBeClassified;
+        }
+
 
     }
 
@@ -161,6 +169,7 @@ table 50920 "Payment Schedule"
                 // PaymentSchedule2."PS ID" := Rec."PS Id";
                 PaymentSchedule2."Contract ID" := RevenueSubpage."ContractID";
                 // PaymentSchedule2."Proposal ID" := rec."Proposal ID";
+                PaymentSchedule2."Contract Status" := Rec."Contract Status";
                 PaymentSchedule2."Tenant Name" := Rec."Tenant Name";
                 PaymentSchedule2."Tenant ID" := RevenueSubpage."TenantId";
                 PaymentSchedule2."Secondary Item Type" := RevenueSubpage."Secondary Item Type";
@@ -195,6 +204,7 @@ table 50920 "Payment Schedule"
                 // PaymentSchedule3."PS ID" := Rec."PS Id";
                 PaymentSchedule."Contract ID" := RentCalculationSubpage."Contract ID";
                 // PaymentSchedule3."Proposal ID" := Rec."Proposal ID";
+                PaymentSchedule."Contract Status" := Rec."Contract Status";
                 PaymentSchedule."Tenant Name" := Rec."Tenant Name";
                 PaymentSchedule."Tenant ID" := RentCalculationSubpage."Tenant Id";
                 PaymentSchedule."Secondary Item Type" := RentCalculationSubpage."Secondary Item Type";
@@ -230,6 +240,7 @@ table 50920 "Payment Schedule"
                 // PaymentSchedule3."PS ID" := Rec."PS Id";
                 PaymentSchedule3."Contract ID" := RevenueStructureSubpage."Contract ID";
                 // PaymentSchedule3."Proposal ID" := Rec."Proposal ID";
+                PaymentSchedule3."Contract Status" := Rec."Contract Status";
                 PaymentSchedule3."Tenant Name" := Rec."Tenant Name";
                 PaymentSchedule3."Tenant ID" := RevenueStructureSubpage."Tenant Id";
                 PaymentSchedule3."Secondary Item Type" := RevenueStructureSubpage."Secondary Item Type";
@@ -245,6 +256,7 @@ table 50920 "Payment Schedule"
             until RevenueStructureSubpage.Next() = 0;
 
     end;
+
 
 
 

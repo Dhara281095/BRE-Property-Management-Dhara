@@ -109,6 +109,12 @@ page 50922 "Payment Schedule Card2"
                     Editable = InvoicedField;
 
                 }
+                field("Contract Status"; Rec."Contract Status")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Contract Status';
+
+                }
 
                 field("Payment Status"; Rec."Payment Status")
                 {
@@ -166,12 +172,22 @@ page 50922 "Payment Schedule Card2"
 
     trigger OnAfterGetRecord()
     var
+        PaymentSchedule: Record "Payment Schedule";
     begin
         InvoicedField := NotAccessInvoicedFieldFinanceManager();
         // UpdateBalanceAmountOnPaymentReceived();
 
 
+
+        // if PaymentSchedule.Get(Rec."Contract ID")
+        //   then begin
+        //     Rec."Contract Status" := PaymentSchedule."Contract Status";
+        //     Rec.Modify();
+        // end;
     end;
+
+
+
 
     var
         InvoicedField: Boolean;
