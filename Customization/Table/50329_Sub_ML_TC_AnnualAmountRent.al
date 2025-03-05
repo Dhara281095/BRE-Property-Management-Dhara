@@ -122,7 +122,6 @@ table 50329 "TC Merge LumAnnualAmount SP"
             DataClassification = ToBeClassified;
         }
 
-
     }
 
     keys
