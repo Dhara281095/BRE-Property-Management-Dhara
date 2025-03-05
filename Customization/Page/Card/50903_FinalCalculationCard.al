@@ -154,6 +154,12 @@ page 50903 "Final Calculation Card"
                     Caption = 'Status';
                     Editable = false;
                 }
+
+                field("Termination Status"; Rec."Termination Status")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
             }
 
             // group("Final Revenue Calculation")

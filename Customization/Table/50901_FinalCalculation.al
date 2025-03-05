@@ -71,6 +71,30 @@ table 50901 "Final Calculation"
             DataClassification = ToBeClassified;
             Caption = 'Termination Date';
 
+            trigger OnValidate()
+            var
+                TerminateDate: Date;
+                EndDate: Date;
+                FinalCalculation: Record "Final Calculation";
+            begin
+                FinalCalculation.SetRange("FC ID", Rec."FC ID");
+                FinalCalculation.SetRange("Contract ID", Rec."Contract ID");
+                if FinalCalculation.FindFirst() then begin
+                    EndDate := Rec."Contract End Date";
+                    TerminateDate := Rec."Termination Date";
+
+                    if ("Contract End Date" = "Termination Date") then
+                        "Termination Status" := "Termination Status"::"Regular Termination"
+                    else if ("Contract End Date" > "Termination Date") then
+                        "Termination Status" := "Termination Status"::"Early Termination"
+                    else
+                        Error('Termination Date cannot be greater than Contract End Date.');
+
+                    // if (EndDate = TerminateDate) or (EndDate < TerminateDate) then
+                    //     Error('Termination Date cannot be greater than Contract End Date.');
+                end;
+            end;
+
         }
 
         field(50110; "Original Contract Tenure"; Integer)
@@ -139,6 +163,13 @@ table 50901 "Final Calculation"
             DataClassification = ToBeClassified;
             Caption = 'Other Deposit';
         }
+
+        field(50123; "Termination Status"; Option)
+        {
+            OptionMembers = " ","Regular Termination","Early Termination","Suspension to Termination";
+            Editable = false;
+        }
+
         field(50124; "Total Refundable Deposit"; Decimal)
         {
             DataClassification = ToBeClassified;
