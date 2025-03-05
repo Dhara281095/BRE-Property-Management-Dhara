@@ -1670,24 +1670,24 @@ page 50313 "Tenancy Contract Card"
 
                     }
 
-                    field("Suspended Reason list"; Rec."Suspended Reason list")
-                    {
-                        ApplicationArea = All;
-                        ToolTip = 'Click to open the Suspended Reason List.';
-                        Style = Strong; // Makes the field look like a hyperlink
-                        StyleExpr = true;
 
-                        trigger OnAssistEdit()
-                        var
-                            SuspendedReasonRec: Record "SuspendReasonTable";
-                        begin
-                            // Filter the Suspended Reason List page by the current Contract ID
-                            SuspendedReasonRec.SetRange("Contract ID", Rec."Contract ID");
-                            Page.Run(Page::"SuspendReasonList", SuspendedReasonRec);
-                        end;
-                    }
                 }
+                field("Suspended Reason list"; Rec."Suspended Reason list")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Click to open the Suspended Reason List.';
+                    Style = Strong; // Makes the field look like a hyperlink
+                    StyleExpr = true;
 
+                    trigger OnAssistEdit()
+                    var
+                        SuspendedReasonRec: Record "SuspendReasonTable";
+                    begin
+                        // Filter the Suspended Reason List page by the current Contract ID
+                        SuspendedReasonRec.SetRange("Contract ID", Rec."Contract ID");
+                        Page.Run(Page::"SuspendReasonList", SuspendedReasonRec);
+                    end;
+                }
 
 
             }
