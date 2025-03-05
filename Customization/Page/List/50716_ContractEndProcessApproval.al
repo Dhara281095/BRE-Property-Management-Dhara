@@ -20,12 +20,12 @@ page 50719 "Contract End Process Approval"
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field(Status; Rec.Status)
+                field("Property_M Status"; Rec."Property_M Status")
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field("Request Type"; Rec."Request Type")
+                field("Lease_M Status"; Rec."Lease_M Status")
                 {
                     ApplicationArea = All;
                     Editable = false;
@@ -60,12 +60,12 @@ page 50719 "Contract End Process Approval"
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field(Description; Rec.Description)
+                field("Lease Manager Remark"; Rec."Lease Manager Remark")
                 {
                     ApplicationArea = All;
                     Editable = true;
                 }
-                field(Remark; Rec.Remark)
+                field("Property Manager Remark"; Rec."Property Manager Remark")
                 {
                     ApplicationArea = All;
                     Editable = true;
@@ -75,13 +75,15 @@ page 50719 "Contract End Process Approval"
         }
     }
 
+
     actions
     {
         area(processing)
         {
-            action(Approve)
+            // Approve Action for Property_M Status
+            action(ApproveProperty)
             {
-                Caption = 'Approve';
+                Caption = 'Approve Property';
                 ApplicationArea = All;
                 Image = Approve;
 
@@ -90,7 +92,6 @@ page 50719 "Contract End Process Approval"
                     SelectedRecs: Record "ContractEndProcessApproval";
                     ApproveCount: Integer;
                     ErrorCount: Integer;
-                    TenancyContract: Record "Tenancy Contract";
                 begin
                     CurrPage.SetSelectionFilter(SelectedRecs);
 
@@ -104,15 +105,9 @@ page 50719 "Contract End Process Approval"
 
                     if SelectedRecs.FindSet() then
                         repeat
-                            if SelectedRecs.Status = 'Pending' then begin
-                                SelectedRecs.Status := 'Approve';
+                            if SelectedRecs."Property_M Status" = 'Pending' then begin
+                                SelectedRecs."Property_M Status" := 'Approved';
                                 SelectedRecs.Modify();
-
-                                // TenancyContract.SetRange("Contract ID", Rec."Contract ID");
-                                // if TenancyContract.findset() then
-                                //     TenancyContract.Status := Rec."Request Type";  // Update status based on Request Type
-                                // TenancyContract.Modify();  // Modify the existing TenancyContract
-
                                 ApproveCount += 1;
                             end else
                                 ErrorCount += 1;
@@ -121,11 +116,131 @@ page 50719 "Contract End Process Approval"
                     Commit();
                     CurrPage.Update(false);
 
-                    Message('%1 record(s) approved. %2 record(s) were not in "Pending" status.', ApproveCount, ErrorCount);
+                    Message('%1 record(s) approved for Property. %2 record(s) were not in "Pending" status.', ApproveCount, ErrorCount);
+                end;
+            }
+
+            // Approve Action for Lease_M Status
+            action(ApproveLease)
+            {
+                Caption = 'Approve Lease';
+                ApplicationArea = All;
+                Image = Approve;
+
+                trigger OnAction()
+                var
+                    SelectedRecs: Record "ContractEndProcessApproval";
+                    ApproveCount: Integer;
+                    ErrorCount: Integer;
+                begin
+                    CurrPage.SetSelectionFilter(SelectedRecs);
+
+                    if SelectedRecs.IsEmpty() then begin
+                        Message('No records selected for approval.');
+                        exit;
+                    end;
+
+                    ApproveCount := 0;
+                    ErrorCount := 0;
+
+                    if SelectedRecs.FindSet() then
+                        repeat
+                            if SelectedRecs."Lease_M Status" = 'Pending' then begin
+                                SelectedRecs."Lease_M Status" := 'Approved';
+                                SelectedRecs.Modify();
+                                ApproveCount += 1;
+                            end else
+                                ErrorCount += 1;
+                        until SelectedRecs.Next() = 0;
+
+                    Commit();
+                    CurrPage.Update(false);
+
+                    Message('%1 record(s) approved for Lease. %2 record(s) were not in "Pending" status.', ApproveCount, ErrorCount);
+                end;
+            }
+
+            // Decline Action for Property_M Status
+            action(DeclineProperty)
+            {
+                Caption = 'Decline Property';
+                ApplicationArea = All;
+                Image = Cancel;
+
+                trigger OnAction()
+                var
+                    SelectedRecs: Record "ContractEndProcessApproval";
+                    DeclineCount: Integer;
+                    ErrorCount: Integer;
+                begin
+                    CurrPage.SetSelectionFilter(SelectedRecs);
+
+                    if SelectedRecs.IsEmpty() then begin
+                        Message('No records selected for decline.');
+                        exit;
+                    end;
+
+                    DeclineCount := 0;
+                    ErrorCount := 0;
+
+                    if SelectedRecs.FindSet() then
+                        repeat
+                            if SelectedRecs."Property_M Status" = 'Pending' then begin
+                                SelectedRecs."Property_M Status" := 'Declined';
+                                SelectedRecs.Modify();
+                                DeclineCount += 1;
+                            end else
+                                ErrorCount += 1;
+                        until SelectedRecs.Next() = 0;
+
+                    Commit();
+                    CurrPage.Update(false);
+
+                    Message('%1 record(s) declined for Property. %2 record(s) were not in "Pending" status.', DeclineCount, ErrorCount);
+                end;
+            }
+
+            // Decline Action for Lease_M Status
+            action(DeclineLease)
+            {
+                Caption = 'Decline Lease';
+                ApplicationArea = All;
+                Image = Cancel;
+
+                trigger OnAction()
+                var
+                    SelectedRecs: Record "ContractEndProcessApproval";
+                    DeclineCount: Integer;
+                    ErrorCount: Integer;
+                begin
+                    CurrPage.SetSelectionFilter(SelectedRecs);
+
+                    if SelectedRecs.IsEmpty() then begin
+                        Message('No records selected for decline.');
+                        exit;
+                    end;
+
+                    DeclineCount := 0;
+                    ErrorCount := 0;
+
+                    if SelectedRecs.FindSet() then
+                        repeat
+                            if SelectedRecs."Lease_M Status" = 'Pending' then begin
+                                SelectedRecs."Lease_M Status" := 'Declined';
+                                SelectedRecs.Modify();
+                                DeclineCount += 1;
+                            end else
+                                ErrorCount += 1;
+                        until SelectedRecs.Next() = 0;
+
+                    Commit();
+                    CurrPage.Update(false);
+
+                    Message('%1 record(s) declined for Lease. %2 record(s) were not in "Pending" status.', DeclineCount, ErrorCount);
                 end;
             }
         }
     }
-
-
 }
+
+
