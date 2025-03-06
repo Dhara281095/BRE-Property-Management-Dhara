@@ -1,7 +1,7 @@
 table 50507 "PDC Transaction"
 {
     DataClassification = ToBeClassified;
-    DataCaptionFields = SystemId, "PDC ID";
+    DataCaptionFields = "PDC ID";
     fields
     {
         field(50501; "PDC ID"; Code[20])
@@ -26,6 +26,7 @@ table 50507 "PDC Transaction"
         field(50504; "Cheque Number"; Text[20])
         {
             DataClassification = CustomerContent;
+
         }
         field(50505; "Cheque Date"; Date)
         {
@@ -50,15 +51,28 @@ table 50507 "PDC Transaction"
         {
             DataClassification = ToBeClassified;
         }
-        field(50511; "Replacement PDC ID"; Code[20])
+        field(50511; "Old Cheque#"; Text[20])
         {
             DataClassification = ToBeClassified;
-            TableRelation = "PDC Transaction";
+            // TableRelation = "PDC Transaction";
         }
 
-        field(50512; "Bank Name"; Text[20])
+        field(50512; "Bank Name"; code[100])
         {
             DataClassification = ToBeClassified;
+            TableRelation = "Bank Account"; // You can add a TableRelation here if required
+
+            trigger OnValidate()
+            var
+                BankAccountRec: Record "Bank Account";
+            begin
+                // When a Deposit Bank is selected (i.e., a Bank Account No. is provided)
+                if "Bank Name" <> '' then begin
+                    // Attempt to find the Bank Account using the No. from the Deposit Bank
+                    if BankAccountRec.Get("Bank Name") then
+                        "Bank Name" := BankAccountRec."Name"; // Populating the Name field from the Bank Account table
+                end;
+            end;
         }
 
         field(50513; "Approval Status"; Enum "Approval Status Enum")
@@ -66,9 +80,15 @@ table 50507 "PDC Transaction"
             DataClassification = ToBeClassified;
         }
 
+        field(50517; "View Document URL"; Text[2048])
+        {
+            DataClassification = ToBeClassified;
+        }
+
         field(50514; View; text[250])
         {
             DataClassification = ToBeClassified;
+            InitValue = 'View Document';
         }
 
         field(50515; Selected; Boolean)

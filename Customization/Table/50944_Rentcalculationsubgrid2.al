@@ -19,7 +19,7 @@ table 50944 "Rent Calculation Subpage2"
         field(50101; "Installment No."; Integer)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Instalment No.';
+            Caption = 'Installment No.';
             Editable = false;
 
         }
@@ -27,7 +27,7 @@ table 50944 "Rent Calculation Subpage2"
         field(50102; "Installment Start Date"; Date)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Instalment Start Date';
+            Caption = 'Installment Start Date';
             Editable = false;
 
 
@@ -35,7 +35,7 @@ table 50944 "Rent Calculation Subpage2"
         field(50103; "Installment End Date"; Date)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Instalment End Date';
+            Caption = 'Installment End Date';
             Editable = false;
 
 
@@ -63,14 +63,6 @@ table 50944 "Rent Calculation Subpage2"
 
         }
 
-        // field(50106; "Payment Mode"; Option)
-        // {
-        //     OptionMembers = Cash,"Bank Transfers","Credit Card",Cheque;
-        //     Caption = 'Payment Mode';
-
-
-
-        // }
 
         field(50107; "Entry No."; Integer)
         {
@@ -84,13 +76,6 @@ table 50944 "Rent Calculation Subpage2"
             Caption = 'RC ID';
 
         }
-
-        // field(50109; "Proposal ID"; Integer)
-        // {
-        //     DataClassification = ToBeClassified;
-        //     Caption = 'Proposal ID';
-
-        // }
 
         field(50110; "VAT Amount"; Decimal)
         {
@@ -155,6 +140,12 @@ table 50944 "Rent Calculation Subpage2"
             DecimalPlaces = 0 : 0;
         }
 
+        field(50117; "Primary Classification"; Text[100])
+        {
+            Caption = 'Primary Classification';
+            DataClassification = ToBeClassified;
+        }
+
 
     }
 
@@ -166,20 +157,6 @@ table 50944 "Rent Calculation Subpage2"
             Clustered = true;
         }
     }
-
-
-    // local procedure CalcVATAndTotal()
-    // var
-    //     vatPer: Integer;
-    // begin
-    //     if "VAT %" = "VAT %"::"5" then
-    //         vatPer := 5
-    //     else
-    //         vatPer := 0;
-
-    //     "VAT Amount" := Amount * (vatPer / 100);
-    //     "Amount Including VAT" := Amount + "VAT Amount";
-    // end;
 
 
 

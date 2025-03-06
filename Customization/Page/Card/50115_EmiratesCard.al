@@ -28,21 +28,20 @@ page 50115 "Emirate Card"
                 {
                     ApplicationArea = All;
                     Caption = 'Country Code';
-                    // TableRelation = "Primary Classification";
-                    // Add a lookup to the Primary Classification table
-                    // Lookup = true;
+                    ShowMandatory = true;
+                    NotBlank = true;
+
                 }
                 field("Emirate Name"; Rec."Emirate Name")
                 {
                     ApplicationArea = All;
                     Caption = 'Emirate Name';
+                    ShowMandatory = true;
+                    NotBlank = true;
                 }
             }
         }
     }
 
 
-
-    // Adding navigation from the list page
-    // usagecategory = Lists;
 }

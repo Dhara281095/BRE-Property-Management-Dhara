@@ -5,7 +5,7 @@ report 50108 "Contract Renewal"
     ApplicationArea = All;
     Caption = 'Contract Renewal';
     UsageCategory = ReportsAndAnalysis;
-    DefaultRenderingLayout = "ContractRenewal.docx";
+    DefaultRenderingLayout = "ContractRenewalTemplate.docx";
     dataset
     {
         dataitem(ContractRenewal; "Contract Renewal")
@@ -75,12 +75,12 @@ report 50108 "Contract Renewal"
 
     rendering
     {
-        layout("ContractRenewal.docx")
+        layout("ContractRenewalTemplate.docx")
         {
             Type = Word;
-            LayoutFile = './ContractRenewal.docx';
-            Caption = 'ContractRenewal (Word)';
-            Summary = 'The ContractRenewal (Word) provides a simple layout that is also relatively easy for an end-user to modify.';
+            LayoutFile = './ContractRenewalTemplate.docx';
+            Caption = 'ContractRenewalTemplate (Word)';
+            Summary = 'The ContractRenewalTemplate (Word) provides a simple layout that is also relatively easy for an end-user to modify.';
         }
     }
 

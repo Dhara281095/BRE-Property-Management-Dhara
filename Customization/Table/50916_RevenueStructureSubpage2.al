@@ -19,7 +19,7 @@ table 50916 "Revenue Structure Subpage1"
         field(50101; "Installment No."; Integer)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Instalment No.';
+            Caption = 'Installment No.';
             Editable = false;
 
         }
@@ -27,7 +27,7 @@ table 50916 "Revenue Structure Subpage1"
         field(50102; "Installment Start Date"; Date)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Instalment Start Date';
+            Caption = 'Installment Start Date';
             Editable = false;
 
 
@@ -35,7 +35,7 @@ table 50916 "Revenue Structure Subpage1"
         field(50103; "Installment End Date"; Date)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Instalment End Date';
+            Caption = 'Installment End Date';
             Editable = false;
 
 

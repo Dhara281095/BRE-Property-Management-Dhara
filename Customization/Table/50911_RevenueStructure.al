@@ -62,7 +62,7 @@ table 50911 "Revenue Structure"
         field(50106; "Number of Installments"; Integer)
         {
             // DataClassification = ToBeClassified;
-            Caption = 'Number of Instalments';
+            Caption = 'Number of Installments';
             //  Editable = false;
             // FieldClass = FlowField;
             // CalcFormula = sum("Revenue Structure Subpage"."Yearly No. of Installment" where("Proposal Id" = field("Proposal ID"), "RS ID" = field("RS ID")));
@@ -74,14 +74,14 @@ table 50911 "Revenue Structure"
         field(50107; "VAT Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Number of Instalments';
+            Caption = 'VAT Amount';
             Editable = false;
         }
 
         field(50108; "Amount Including VAT"; Decimal)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Number of Instalments';
+            Caption = 'Amount Including VAT';
             Editable = false;
         }
 

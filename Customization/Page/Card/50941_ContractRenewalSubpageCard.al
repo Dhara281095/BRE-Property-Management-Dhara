@@ -18,12 +18,16 @@ page 50941 "Contract Renewal SubPage Card"
                     ApplicationArea = All;
                     Caption = 'Secondary Item Type';
                     ToolTip = 'Enter the Secondary Item Type.';
+                    ShowMandatory = true;
+                    NotBlank = true;
 
                 }
                 field("Amount"; Rec.Amount)
                 {
                     ApplicationArea = All;
                     Caption = 'Amount';
+                    ShowMandatory = true;
+                    NotBlank = true;
 
                     trigger OnValidate()
                     begin

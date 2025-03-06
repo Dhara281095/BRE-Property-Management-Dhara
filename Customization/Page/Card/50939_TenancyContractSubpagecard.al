@@ -64,6 +64,8 @@ page 50939 "Tenancy Contract SubPage Card"
                     ApplicationArea = All;
                     Caption = 'Payment Type';
                     ToolTip = 'Enter the Payment Type.';
+                    ShowMandatory = true;
+                    NotBlank = true;
 
 
                 }
@@ -181,7 +183,7 @@ page 50939 "Tenancy Contract SubPage Card"
                                     RevenueStructure."VAT %" := TargetRecord."VAT %";
 
 
-                                    if PeriodStartDate + 365 > EndDate then
+                                    if PeriodStartDate + 365 >= EndDate then
                                         PeriodEndDate := EndDate
                                     else
                                         PeriodEndDate := PeriodStartDate + 365 - 1;
@@ -207,8 +209,8 @@ page 50939 "Tenancy Contract SubPage Card"
                                     end;
 
                                     // Adjust the number of days if a leap year is in range
-                                    if IsLeapYearInRange then
-                                        NumDays := NumDays + 1;
+                                    // if IsLeapYearInRange then
+                                    //     NumDays := NumDays + 1;
 
                                     RevenueStructure."Number of Days" := NumDays;
 
@@ -256,7 +258,7 @@ page 50939 "Tenancy Contract SubPage Card"
                 field("Link"; Rec."Link")
                 {
                     ApplicationArea = All;
-                    Caption = 'Link';
+                    Caption = 'Revenue Structure Link';
                     DrillDown = true;
 
 
@@ -314,7 +316,7 @@ page 50939 "Tenancy Contract SubPage Card"
     begin
         Rec.ContractID := ContractID;
         Rec.TenantID := tenantID;
-        Rec.ProposalID := proposalID;
+        Rec.ProposalID := (proposalID);
 
     end;
 

@@ -117,6 +117,48 @@ pageextension 50104 "MyRoleCenterExtension" extends "Business Manager Role Cente
                     ApplicationArea = Basic, Suite;
                     RunObject = Page "Category List";
                 }
+                action(RevenueAllocation)
+                {
+                    Caption = 'Revenue Allocation';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Revenue Allocation List";
+                }
+                action(AvailabilityStatus)
+                {
+                    Caption = 'Availability Status';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Availability Status List";
+                }
+                action(ApprovalContractStatus)
+                {
+                    Caption = 'Approval Contract Status';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Approval Contract Status List";
+                }
+                action(ConytractRenewal)
+                {
+                    Caption = 'Contract Renewal';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Contract Renewal List";
+                }
+                action(SecurityDeposit)
+                {
+                    Caption = 'Security Deposit';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Security Deposit List";
+                }
+                action(AdjustSecurityDeposit)
+                {
+                    Caption = 'Adjust Security Deposit';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page Adjustment_Security_Deposit;
+                }
+                action(FinalCalculation)
+                {
+                    Caption = 'Final Calculation';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Final Calculation List";
+                }
 
             }
         }

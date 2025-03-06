@@ -39,6 +39,8 @@ table 50934 "Payment Schedule2"
             DataClassification = ToBeClassified;
             Caption = 'Amount Including VAT';
 
+
+
         }
 
         field(50104; "Installment Start Date"; Date)
@@ -87,23 +89,6 @@ table 50934 "Payment Schedule2"
         }
 
 
-
-        // field(50109; "Proposal ID"; Integer)
-        // {
-
-        //     Caption = 'Proposal ID';
-
-        //     // trigger OnValidate()
-        //     // var
-        //     //     leaserec: Record "Lease Proposal Details";
-        //     //     payschedule: Record "Payment Schedule2";
-        //     // begin
-        //     //     payschedule.FetchPaymentScheduleData("Proposal ID", "Tenant ID");
-
-        //     // end;
-
-        // }
-
         field(50110; "Tenant ID"; Code[20])
         {
 
@@ -116,12 +101,6 @@ table 50934 "Payment Schedule2"
             Caption = 'Tenant Name';
 
         }
-        // field(50111; "PS ID"; Integer)
-        // {
-
-        //     Caption = 'PS ID';
-
-        // }
         field(50915; "Invoiced"; Boolean)
         {
             Caption = 'Invoiced';
@@ -132,10 +111,28 @@ table 50934 "Payment Schedule2"
         {
             Caption = 'Contract ID';
         }
+
+        field(50916; "Payment Status"; Text[100])
+        {
+            Caption = 'Payment Status';
+
+
+        }
+        field(50917; "Property Classification"; Text[100])
+        {
+            Caption = 'Property Classification';
+            DataClassification = ToBeClassified;
+        }
         // field(50916; "Tenant Name"; Text[100])
         // {
         //     Caption = 'Tenant Name';
         // }
+
+        field(50918; "Contract Status"; Text[100])
+        {
+            Caption = 'Contract Status';
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys
@@ -151,70 +148,40 @@ table 50934 "Payment Schedule2"
 
 
 
-
-    // procedure FetchPaymentScheduleData(pProposalID: Integer; pTenantID: Code[20])
+    // local procedure UpdateBalanceAmountOnPaymentReceived()
     // var
-    //     RevenueStructureSubpageRec: Record "Revenue Structure Subpage1";
-    //     Onetimepay: Record "Revenue Item Subpage";
     //     PaymentScheduleRec: Record "Payment Schedule2";
+    //     TenancyContractRec: Record "Tenancy Contract";
     // begin
-    //     // Clear existing data in the Payment Schedule2 table for the given ProposalID and TenantID
-    //     PaymentScheduleRec.SetRange("Proposal ID", pProposalID);
-    //     PaymentScheduleRec.SetRange("Tenant ID", pTenantID);
-    //     if PaymentScheduleRec.FindSet() then
+    //     // Filter records where 'Secondary Item Type' is 'Security Deposit Amount' and 'Payment Status' is 'Received'
+    //     PaymentScheduleRec.SetRange("Secondary Item Type", 'Security Deposit Amount');
+    //     PaymentScheduleRec.SetRange("Payment Status", 'Received');
+
+    //     if PaymentScheduleRec.FindSet() then begin
     //         repeat
-    //             PaymentScheduleRec.Delete();
+    //             // Filter Tenancy Contract records based on Contract ID
+    //             TenancyContractRec.SetRange("Contract ID", PaymentScheduleRec."Contract ID");
+
+    //             if TenancyContractRec.FindSet() then begin
+    //                 repeat
+    //                     // If Balance Amount has a value, update it
+    //                     if TenancyContractRec."Balance Amount" <> 0 then begin
+    //                         TenancyContractRec."Balance Amount" += PaymentScheduleRec."Amount Including VAT";
+    //                         TenancyContractRec."Security Balanced Amount" += PaymentScheduleRec."Amount Including VAT";
+    //                     end
+    //                     else begin
+    //                         // If Balance Amount is 0, set it to Amount Including VAT
+    //                         TenancyContractRec."Balance Amount" := PaymentScheduleRec."Amount Including VAT";
+    //                         TenancyContractRec."Security Balanced Amount" := PaymentScheduleRec."Amount Including VAT";
+    //                     end;
+
+    //                     // Modify the record to save changes
+    //                     TenancyContractRec.Modify();
+    //                 until TenancyContractRec.Next() = 0;
+    //             end;
     //         until PaymentScheduleRec.Next() = 0;
-
-    //     // Insert data from Revenue Structure Subpage1
-    //     RevenueStructureSubpageRec.SetRange("Proposal ID", pProposalID);
-    //     RevenueStructureSubpageRec.SetRange("Tenant ID", pTenantID);
-
-    //     if RevenueStructureSubpageRec.FindSet() then
-    //         repeat
-    //             PaymentScheduleRec.Init();
-    //             PaymentScheduleRec."Proposal ID" := RevenueStructureSubpageRec."Proposal ID";
-    //             PaymentScheduleRec."Tenant ID" := RevenueStructureSubpageRec."Tenant ID";
-    //             PaymentScheduleRec."Secondary Item Type" := RevenueStructureSubpageRec."Secondary Item Type";
-    //             PaymentScheduleRec."Amount" := RevenueStructureSubpageRec."Amount";
-    //             PaymentScheduleRec."VAT Amount" := RevenueStructureSubpageRec."VAT Amount";
-    //             PaymentScheduleRec."Amount Including VAT" := RevenueStructureSubpageRec."Amount Including VAT";
-    //             PaymentScheduleRec."Installment Start Date" := RevenueStructureSubpageRec."Installment Start Date";
-    //             PaymentScheduleRec."Installment End Date" := RevenueStructureSubpageRec."Installment End Date";
-    //             PaymentScheduleRec."Due Date" := RevenueStructureSubpageRec."Due Date";
-    //             PaymentScheduleRec."Installment No." := RevenueStructureSubpageRec."Installment No.";
-    //             PaymentScheduleRec."Proposal ID" := pProposalID;
-    //             PaymentScheduleRec."Tenant ID" := pTenantID;
-    //             PaymentScheduleRec.Insert();
-    //         until RevenueStructureSubpageRec.Next() = 0;
-
-    //     // Insert data from Revenue Item Subpage
-    //     Onetimepay.SetRange("ProposalID", pProposalID);
-    //     Onetimepay.SetRange("TenantID", pTenantID);
-
-    //     if Onetimepay.FindSet() then
-    //         repeat
-    //             PaymentScheduleRec.Init();
-    //             PaymentScheduleRec."Proposal ID" := Onetimepay."ProposalID";
-    //             PaymentScheduleRec."Tenant ID" := Onetimepay."TenantID";
-    //             PaymentScheduleRec."Secondary Item Type" := Onetimepay."Secondary Item Type";
-    //             PaymentScheduleRec."Amount" := Onetimepay.Amount;
-    //             PaymentScheduleRec."VAT Amount" := Onetimepay."VAT Amount";
-    //             PaymentScheduleRec."Amount Including VAT" := Onetimepay."Amount Including VAT";
-    //             PaymentScheduleRec."Installment Start Date" := Onetimepay."Start Date";
-    //             PaymentScheduleRec."Installment End Date" := Onetimepay."End Date";
-    //             PaymentScheduleRec."Due Date" := Onetimepay."Start Date";
-    //             PaymentScheduleRec."Installment No." := Onetimepay."Payment Type";
-    //             PaymentScheduleRec."Proposal ID" := pProposalID;
-    //             PaymentScheduleRec."Tenant ID" := pTenantID;
-    //             PaymentScheduleRec.Insert();
-    //         until Onetimepay.Next() = 0;
-
-    //     // Update the page with new data
-    //     // CurrPage.SetTableView(PaymentScheduleRec);
-    //     // CurrPage.Update();
+    //     end;
     // end;
-
 
 
 

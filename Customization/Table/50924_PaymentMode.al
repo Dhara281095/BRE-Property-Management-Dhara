@@ -18,17 +18,22 @@ table 50924 "Payment Mode"
             var
                 leaserec: Record "Payment Schedule";
                 payschedule: Record "Payment Schedule2";
+                Tenancycontract: Record "Tenancy Contract";
             begin
 
                 leaserec.SetRange("Contract ID", Rec."Contract ID");
+                Tenancycontract.SetRange("Contract ID", Rec."Contract ID");
                 if leaserec.FindFirst() then begin
-                    // "Proposal ID" := leaserec."Proposal ID";
                     "Tenant Id" := leaserec."Tenant Id";
-
                 end else begin
-                    // Clear the field if no record is found
-                    // "Proposal Id" := '';
                     "Tenant Id" := '';
+                end;
+                if Tenancycontract.FindFirst() then begin
+                    "Tenant Name" := Tenancycontract."Customer Name";
+                    "Tenant Email" := Tenancycontract."Email Address";
+                end else begin
+                    "Tenant Name" := '';
+                    "Tenant Email" := '';
                 end;
                 EvaluatePaymentSchedule();
                 GetNextSequenceNo();
@@ -100,16 +105,19 @@ table 50924 "Payment Mode"
 
         }
 
-        field(50501; "Approval Status"; Enum "Approval Status Enum")
+        field(50501; "Approval Status"; Option)
         {
-            DataClassification = ToBeClassified;
+            // DataClassification = ToBeClassified;
+            OptionMembers = " ","Pending","Approved","On-Hold","Rejected";
             trigger OnValidate()
             var
                 paymentGridRec: Record "Payment Mode2";
                 paymentModeRec: Record "Payment Mode";
                 paymentSeriesRec: Record "Payment Mode2";
+                PdcTransRec: Record "PDC Transaction";
                 approvalPending: Boolean;
                 Isrejected: Boolean;
+                IsApproved: Boolean;
                 sendRejectionToLeaseTeam: Codeunit 50511;
             begin
                 if Rec."Approval Status" = Rec."Approval Status"::Approved then begin
@@ -119,9 +127,19 @@ table 50924 "Payment Mode"
                             paymentGridRec."Approval Status" := paymentGridRec."Approval Status"::Approved;
 
                             paymentGridRec.Modify();
+                            // **Update related PDC Transactions for each Payment Series**
+                            pdcTransRec.SetRange("Payment Series", paymentGridRec."Payment Series");
+                            pdcTransRec.SetRange("Contract ID", Rec."Contract ID");
+                            if pdcTransRec.FindSet() then begin
+                                repeat
+                                    pdcTransRec."Approval Status" := pdcTransRec."Approval Status"::Approved;
+                                    pdcTransRec.Modify();
+                                until pdcTransRec.Next() = 0;
+                            end;
                         until paymentGridRec.Next() = 0;
                     end;
                     Rec."On-hold" := Rec."On-hold"::"False";
+                    IsApproved := true;
                 end;
                 if Rec."Approval Status" = Rec."Approval Status"::Rejected then begin
                     paymentGridRec.SetRange("Contract ID", Rec."Contract ID");
@@ -173,6 +191,16 @@ table 50924 "Payment Mode"
         {
             // DataClassification = ToBeClassified;
             OptionMembers = " ","True","False";
+        }
+
+        field(50129; "Tenant Name"; Text[100])
+        {
+            Caption = 'Tenant Name';
+        }
+
+        field(50130; "Tenant Email"; Text[80])
+        {
+            Caption = 'Tenant Email';
         }
 
 
@@ -319,6 +347,7 @@ table 50924 "Payment Mode"
         i: Integer; // Declare the variable 'i' for the loop
         SortedDueDateList: List of [Date]; // List for sorted due dates
         TempDate: Date;
+        PaymentStatus: Enum "Payment Status";
     begin
         // Initialize totals
         TotalAmount := 0;
@@ -387,11 +416,15 @@ table 50924 "Payment Mode"
                 // MergedRecord."Proposal ID" := Rec."Proposal ID";
                 MergedRecord."Tenant ID" := Rec."Tenant ID";
                 MergedRecord."Contract ID" := Rec."Contract ID";
+                MergedRecord."Tenant Email" := Rec."Tenant Email";
+                MergedRecord."Tenant Name" := Rec."Tenant Name";
                 MergedRecord."Payment Series" := NewPaymentCode;
                 MergedRecord."Amount" := TotalAmount;
                 MergedRecord."VAT Amount" := TotalVAT;
                 MergedRecord."Amount Including VAT" := GrandTotal;
                 MergedRecord."Due Date" := MinDueDate;
+                MergedRecord."Payment Status" := PaymentStatus::Scheduled;
+
 
                 //Message('Inserting record with Payment Series: %1', NewPaymentCode);
 

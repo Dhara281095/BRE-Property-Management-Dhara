@@ -54,6 +54,8 @@ page 50337 "Security Deposit Card"
                     ApplicationArea = All;
                     Editable = false;
                 }
+
+
             }
 
             group("Carry Forward To")
@@ -101,6 +103,12 @@ page 50337 "Security Deposit Card"
                     Editable = false;
                 }
 
+                field("New_Balance Amount"; rec."New_Balance Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
                 field("Adjusted amount"; rec."Adjusted amount")
                 {
                     ApplicationArea = All;
@@ -118,21 +126,21 @@ page 50337 "Security Deposit Card"
     }
 
 
-    actions
-    {
-        area(processing)
-        {
-            action(Save)
-            {
-                ApplicationArea = All;
-                Caption = 'Save';
-                trigger OnAction()
-                begin
-                    // Save logic, if needed
-                end;
-            }
-        }
-    }
+    // actions
+    // {
+    //     area(processing)
+    //     {
+    //         action(Save)
+    //         {
+    //             ApplicationArea = All;
+    //             Caption = 'Save';
+    //             trigger OnAction()
+    //             begin
+    //                 // Save logic, if needed
+    //             end;
+    //         }
+    //     }
+    // }
 
 
 

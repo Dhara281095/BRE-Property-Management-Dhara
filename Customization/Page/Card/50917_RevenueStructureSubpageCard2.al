@@ -64,7 +64,7 @@ page 50917 "Revenue Payment Schedule"
                 {
                     ApplicationArea = All;
                     Caption = 'VAT Amount';
-                    Visible = true;
+                    Visible = false;
                     Editable = false;
 
                 }
@@ -73,7 +73,7 @@ page 50917 "Revenue Payment Schedule"
                 {
                     ApplicationArea = All;
                     Caption = 'Amount Including VAT';
-                    Visible = true;
+                    Visible = false;
 
                 }
 
@@ -108,6 +108,7 @@ page 50917 "Revenue Payment Schedule"
                     Caption = 'VAT %';
                     ToolTip = 'Enter the VAT %.';
                     Editable = false;
+                    Visible = false;
                 }
 
 

@@ -31,6 +31,8 @@ page 50908 "Secondary Item Card"
                     ApplicationArea = All;
                     Caption = 'Category Types';
                     ToolTip = 'Enter the Category Types.';
+                    ShowMandatory = true;
+                    NotBlank = true;
                 }
 
                 field("Secondary Item Type"; Rec."Secondary Item Type")
@@ -38,6 +40,8 @@ page 50908 "Secondary Item Card"
                     ApplicationArea = All;
                     Caption = 'Secondary Item Type';
                     ToolTip = 'Enter the Secondary Item Type.';
+                    ShowMandatory = true;
+                    NotBlank = true;
                 }
 
                 field("VAT Type"; Rec."VAT Type")
@@ -45,6 +49,8 @@ page 50908 "Secondary Item Card"
                     ApplicationArea = All;
                     Caption = 'VAT Type';
                     ToolTip = 'Enter the VAT Type.';
+                    // ShowMandatory = true;
+                    // NotBlank = true;
                 }
 
                 field("VAT %"; Rec."VAT %")
@@ -55,13 +61,13 @@ page 50908 "Secondary Item Card"
                     Editable = false;
                 }
 
-                // field("Payment System"; Rec."Payment System")
-                // {
-                //     ApplicationArea = All;
-                //     Caption = 'Payment System';
-                //     ToolTip = 'Enter the Payment System.';
+                field("Charges Status"; Rec."Charges Status")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Charges Status';
+                    ToolTip = 'Enter the Charges Status.';
 
-                // }
+                }
             }
         }
     }

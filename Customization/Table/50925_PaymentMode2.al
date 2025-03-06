@@ -84,18 +84,64 @@ table 50925 "Payment Mode2"
         {
             Caption = 'Payment Mode';
             TableRelation = "Payment Type"."Payment Method";
+
+            trigger OnValidate()
+            begin
+                if Rec."Payment Mode" = 'Cheque' then begin
+                    Rec."Cheque Status" := Rec."Cheque Status"::"Cheque Received";
+                    Rec.Modify();
+                end;
+            end;
         }
 
         field(50106; "Cheque Number"; Text[100])
         {
             DataClassification = ToBeClassified;
             Caption = 'Cheque Number';
+
+            trigger OnValidate()
+            var
+                pdcTransRec: Record "PDC Transaction";
+                paymentGridRec: Record "Payment Mode2";
+            begin
+                paymentGridRec.SetRange("Cheque Number", Rec."Cheque Number");
+                paymentGridRec.SetFilter("Entry No.", '<>%1', Rec."Entry No.");
+                if paymentGridRec.FindFirst() then
+                    Error('This cheque number has already been used.');
+
+
+                pdcTransRec.SetRange("payment Series", Rec."Payment Series");
+                pdcTransRec.SetRange("Contract ID", Rec."Contract ID");
+                if pdcTransRec.FindSet() then begin
+                    pdcTransRec."Cheque Number" := Rec."Cheque Number";
+                    pdcTransRec.Modify();
+                end;
+            end;
         }
 
         field(50107; "Deposit Bank"; Code[100])
         {
             Caption = 'Deposit Bank';
-            TableRelation = "Bank Account"."No.";
+            TableRelation = "Bank Account"; // You can add a TableRelation here if required
+
+            trigger OnValidate()
+            var
+                BankAccountRec: Record "Bank Account";
+                pdcTransRec: Record "PDC Transaction";
+            begin
+                // When a Deposit Bank is selected (i.e., a Bank Account No. is provided)
+                if "Deposit Bank" <> '' then begin
+                    // Attempt to find the Bank Account using the No. from the Deposit Bank
+                    if BankAccountRec.Get("Deposit Bank") then
+                        "Deposit Bank" := BankAccountRec."Name"; // Populating the Name field from the Bank Account table
+                end;
+                pdcTransRec.SetRange("payment Series", Rec."Payment Series");
+                pdcTransRec.SetRange("Contract ID", Rec."Contract ID");
+                if pdcTransRec.FindSet() then begin
+                    pdcTransRec."Bank Name" := Rec."Deposit Bank";
+                    pdcTransRec.Modify();
+                end;
+            end;
         }
 
         field(50108; "Deposit Status"; Option)
@@ -108,7 +154,29 @@ table 50925 "Payment Mode2"
         {
             //OptionMembers = "Scheduled","Due","Received","Overdue","Cancelled";
             Caption = 'Payment Status';
+
+
+            //     trigger OnValidate()
+            //     var
+            //         emailrec: Codeunit "Send PaymentMode Email";
+
+            //     begin
+            //         // Check the status and call the appropriate email procedure
+            //         if Rec."Payment Status" = Rec."Payment Status"::Received then begin
+            //             emailrec.SendEmail(Rec); // Call for Received status
+
+            //         end
+
+            //         else if Rec."Payment Status" = Rec."Payment Status"::Cancelled then begin
+            //             emailrec.SendEmailCancelled(Rec); // Call for Cancelled status
+            //         end
+
+            //         else if Rec."Payment Status" = Rec."Payment Status"::Overdue then begin
+            //             emailrec.SendEmailOverdue(Rec); // Call for Overdue status
+            //         end;
+            //     end;
         }
+
 
         field(50113; "Cheque Status"; Enum "PDC Status Type Enum")
         {
@@ -117,6 +185,8 @@ table 50925 "Payment Mode2"
 
 
             trigger OnValidate()
+            var
+                pdcTransRec: Record "PDC Transaction";
             begin
                 if (Rec."Cheque Status" in [Rec."Cheque Status"::Cleared, Rec."Cheque Status"::Deposited, Rec."Cheque Status"::Returned]) then
                     Rec."Deposit Status" := Rec."Deposit Status"::"Y"
@@ -128,6 +198,13 @@ table 50925 "Payment Mode2"
                 if (Rec."Cheque Status" = Rec."Cheque Status"::Cleared) then
                     Rec."Payment Status" := Rec."Payment Status"::"Received";
 
+
+                pdcTransRec.SetRange("payment Series", Rec."Payment Series");
+                pdcTransRec.SetRange("Contract ID", Rec."Contract ID");
+                if pdcTransRec.FindSet() then begin
+                    pdcTransRec."Cheque Status" := Rec."Cheque Status";
+                    pdcTransRec.Modify();
+                end;
             end;
 
         }
@@ -182,6 +259,17 @@ table 50925 "Payment Mode2"
         {
             DataClassification = ToBeClassified;
             Caption = 'View Document URL';
+            trigger OnValidate()
+            var
+                pdcTransRec: Record "PDC Transaction";
+            begin
+                pdcTransRec.SetRange("payment Series", Rec."Payment Series");
+                pdcTransRec.SetRange("Contract ID", Rec."Contract ID");
+                if pdcTransRec.FindSet() then begin
+                    pdcTransRec."View Document URL" := Rec."View Document URL";
+                    pdcTransRec.Modify();
+                end;
+            end;
         }
 
 
@@ -212,6 +300,8 @@ table 50925 "Payment Mode2"
         {
             Caption = 'Tenant Id';
         }
+
+
         field(50111; "Contract ID"; Integer)
         {
             Caption = 'Contract ID';
@@ -235,41 +325,100 @@ table 50925 "Payment Mode2"
             var
                 paymentModeRec: Record "Payment Mode";
                 paymentGridRec: Record "Payment Mode2";
+                pdcTransRec: Record "PDC Transaction";
                 AllApproved: Boolean;
-                AnyPendingOrRejected: Boolean;
+                AnyPending: Boolean;
+                AnyRejected: Boolean;
+                CurrApproved: Boolean;
+                CurrRejected: Boolean;
+                CurrAnyPending: Boolean;
+                sendRejectionToLeaseTeam: Codeunit 50511;
+                approvalflow: Codeunit 50510;
             begin
+                pdcTransRec.SetRange("payment Series", Rec."Payment Series");
+                pdcTransRec.SetRange("Contract ID", Rec."Contract ID");
+                if pdcTransRec.FindSet() then begin
+                    repeat
+                        pdcTransRec."Approval Status" := Rec."Approval Status";
+                        pdcTransRec.Modify();
+                    until pdcTransRec.Next() = 0;
+                end;
                 // Fetch the Parent Record (Main Payment Mode Card)
                 if paymentModeRec.Get(Rec."Contract ID") then begin
 
-                    AllApproved := true;
-                    AnyPendingOrRejected := false;
+                    AllApproved := false;
+                    AnyPending := false;
+                    CurrApproved := false;
+                    CurrAnyPending := false;
+                    AnyRejected := false;
+                    CurrRejected := false;
 
                     // Check if all grid records have "Approved" status
                     paymentGridRec.SetRange("Contract ID", Rec."Contract ID");
+                    paymentGridRec.SetFilter("Entry No.", '<>%1', Rec."Entry No.");
+
 
                     if paymentGridRec.FindSet() then begin
                         // paymentGridRec.Init();
                         repeat
-                            if not (paymentGridRec."Approval Status" = paymentGridRec."Approval Status"::Approved) then
-                                AllApproved := false;
-
-                            if paymentGridRec."Approval Status" = paymentGridRec."Approval Status"::Pending then
-                                AnyPendingOrRejected := true;
-
-                            if paymentGridRec."Approval Status" = paymentGridRec."Approval Status"::Rejected then
-                                AnyPendingOrRejected := true;
-
+                            if (paymentGridRec."Approval Status" = paymentGridRec."Approval Status"::Approved) then begin
+                                // AnyPending := false;
+                                AllApproved := true;
+                                // AnyRejected := false;
+                            end
+                            else if paymentGridRec."Approval Status" = paymentGridRec."Approval Status"::Pending then begin
+                                AnyPending := true;
+                                // AllApproved := false;
+                                // AnyRejected := false;
+                            end
+                            else if paymentGridRec."Approval Status" = paymentGridRec."Approval Status"::Rejected then begin
+                                // AnyPending := false;
+                                // AllApproved := false;
+                                AnyRejected := true;
+                            end;
 
                         until paymentGridRec.Next() = 0;
+
+                        if (Rec."Approval Status" = Rec."Approval Status"::Approved) then begin
+                            CurrAnyPending := false;
+                            CurrApproved := true;
+                            CurrRejected := false;
+                        end
+                        else if Rec."Approval Status" = Rec."Approval Status"::Pending then begin
+                            CurrAnyPending := true;
+                            CurrApproved := false;
+                            CurrRejected := false;
+                        end
+                        else if Rec."Approval Status" = Rec."Approval Status"::Rejected then begin
+                            CurrAnyPending := false;
+                            CurrApproved := false;
+                            CurrRejected := true;
+                        end;
+
                     end;
 
-                    if AllApproved then begin
+                    if AllApproved and CurrApproved and (not CurrRejected and not AnyRejected) and (not CurrAnyPending and not AnyPending) then begin
                         paymentModeRec."Approval Status" := paymentModeRec."Approval Status"::Approved;
                         paymentModeRec."On-hold" := paymentModeRec."On-hold"::"False";
                         paymentModeRec.Modify();
+                        approvalflow.SendPaymentModeApprovalToFinanceManger(Format(paymentModeRec."Contract ID"), paymentModeRec."Tenant Id", paymentModeRec."Contract ID", false);
                     end
-                    else if AnyPendingOrRejected then begin
+                    else if AnyPending or CurrAnyPending then begin
                         paymentModeRec."On-hold" := paymentModeRec."On-hold"::"True";
+                        paymentModeRec."Approval Status" := paymentModeRec."Approval Status"::Pending;
+                        paymentModeRec.Modify();
+                    end
+                    else if AnyRejected and CurrRejected and (not AllApproved and not CurrApproved) and (not AnyPending and not CurrAnyPending) then begin
+                        paymentModeRec."Approval Status" := paymentModeRec."Approval Status"::Rejected;
+                        paymentModeRec."On-hold" := paymentModeRec."On-hold"::"True";
+                        paymentModeRec.Modify();
+                        sendRejectionToLeaseTeam.SendPaymentRejectionToLeaseManager(paymentModeRec."Contract ID", paymentModeRec."Tenant Id", paymentModeRec."Contract ID");
+                    end
+                    else if (AllApproved or CurrApproved) and (AnyRejected or CurrRejected) and (not AnyPending and not CurrAnyPending) then begin
+                        paymentModeRec."Approval Status" := paymentModeRec."Approval Status"::"On-Hold";
+                        paymentModeRec."On-hold" := paymentModeRec."On-hold"::"True";
+                        paymentModeRec.Modify();
+                        sendRejectionToLeaseTeam.SendPaymentRejectionToLeaseManager(paymentModeRec."Contract ID", paymentModeRec."Tenant Id", paymentModeRec."Contract ID");
                     end;
                     paymentModeRec.Modify();
                 end;
@@ -284,6 +433,21 @@ table 50925 "Payment Mode2"
         {
             // DataClassification = ToBeClassified;
             OptionMembers = " ","Yes","No";
+        }
+
+        field(50128; "Approve/Decline Status"; Text[50])
+        {
+            DataClassification = ToBeClassified;
+        }
+
+        field(50129; "Tenant Name"; Text[100])
+        {
+            Caption = 'Tenant Name';
+        }
+
+        field(50130; "Tenant Email"; Text[80])
+        {
+            Caption = 'Tenant Email';
         }
 
 
@@ -331,13 +495,25 @@ table 50925 "Payment Mode2"
 
     trigger OnInsert()
     begin
-
+        if Rec."Payment Mode" = 'Cheque' then begin
+            if DelChr(Rec."Cheque Number", '=', ' ') = '' then
+                Error('Cheque Number cannot be blank when Payment Mode is Cheque.');
+        end;
     end;
 
     trigger OnModify()
+    var
+        emailrec: Codeunit "Send PaymentMode Email";
     begin
 
+        if Rec."Payment Status" = Rec."Payment Status"::Received then
+            emailrec.SendEmail(Rec)
+        else if Rec."Payment Status" = Rec."Payment Status"::Cancelled then
+            emailrec.SendEmailCancelled(Rec)
+        else if Rec."Payment Status" = Rec."Payment Status"::Overdue then
+            emailrec.SendEmailOverdue(Rec);
     end;
+
 
     trigger OnDelete()
     begin

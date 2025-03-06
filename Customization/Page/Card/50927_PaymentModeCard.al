@@ -3,7 +3,7 @@ page 50927 "Payment Mode Card"
     PageType = Card;
     SourceTable = "Payment Mode";
     ApplicationArea = All;
-    Caption = 'Payment Mode Card';
+    Caption = 'Payment mode Details';
     // UsageCategory = Administration;
 
     layout
@@ -16,6 +16,11 @@ page 50927 "Payment Mode Card"
                 field("Contract ID"; Rec."Contract ID")
                 {
                     ApplicationArea = All;
+
+                    ShowMandatory = true;
+                    NotBlank = true;
+                    Editable = IsFieldEditable;
+
                     //Editable = false; // The ID is not editable since it's auto-incrementing
                 }
 
@@ -43,10 +48,23 @@ page 50927 "Payment Mode Card"
 
 
                 }
+
+                field("Tenant Name"; Rec."Tenant Name")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
+                field("Tenant Email"; Rec."Tenant Email")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
                 field("Approval Status"; Rec."Approval Status")
                 {
                     ApplicationArea = All;
-                    Editable = IsFinanceManager;
+                    Editable = IsFinanceManager AND IsFieldEditable;
                     // trigger OnValidate()
                     // begin
                     //     // Scenario 1: Update all payment grid records to "Approved" when card status changes
@@ -59,6 +77,7 @@ page 50927 "Payment Mode Card"
                 field("On-hold"; Rec."On-hold")
                 {
                     ApplicationArea = All;
+                    Editable = IsFieldEditable;
                     // trigger OnValidate()
                     // var
                     //     paymentModeRec: Record "Payment Mode";
@@ -93,6 +112,7 @@ page 50927 "Payment Mode Card"
                 field(Isupdated; Rec.Isupdated)
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
 
 
@@ -108,7 +128,7 @@ page 50927 "Payment Mode Card"
                       "Tenant ID" = FIELD("Tenant ID"); // Link to filter attachments for this owner only
                                                         // "Contract ID" = FIELD("Contract ID")
                     ApplicationArea = All;
-
+                    Editable = IsFieldEditable;
                     // Visible = isVisible;
                 }
             }
@@ -198,10 +218,13 @@ page 50927 "Payment Mode Card"
 
     trigger OnAfterGetRecord()
     begin
-
+        // Fields are editable only if Approval Status is not "Approved"
+        IsFieldEditable := (Rec."Approval Status" <> Rec."Approval Status"::Approved);
         // CurrPage."PaymentMode".Page.SetProposalID(Rec."Proposal ID");
         CurrPage."PaymentMode".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."PaymentMode".Page.SetContractID(Rec."Contract ID");
+        CurrPage.PaymentMode.Page.SetDetails(Rec."Tenant Name", Rec."Tenant Email");
+
 
 
     end;
@@ -209,10 +232,12 @@ page 50927 "Payment Mode Card"
 
     trigger OnModifyRecord(): Boolean
     begin
+        IsFieldEditable := (Rec."Approval Status" <> Rec."Approval Status"::Approved);
         //CurrPage."PaymentMode".Page.SetProposalID(Rec."Proposal ID");
         //CurrPage."Revenue".Page.SetStartEndDate(Rec."Lease Start Date", Rec."Lease End Date");
         CurrPage."PaymentMode".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."PaymentMode".Page.SetContractID(Rec."Contract ID");
+        CurrPage.PaymentMode.Page.SetDetails(Rec."Tenant Name", Rec."Tenant Email");
 
 
 
@@ -221,10 +246,12 @@ page 50927 "Payment Mode Card"
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     begin
+
         // CurrPage."PaymentMode".Page.SetProposalID(Rec."Proposal ID");
         // CurrPage."Revenue".Page.SetStartEndDate(Rec."Lease Start Date", Rec."Lease End Date");
         CurrPage."PaymentMode".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."PaymentMode".Page.SetContractID(Rec."Contract ID");
+        CurrPage.PaymentMode.Page.SetDetails(Rec."Tenant Name", Rec."Tenant Email");
 
 
     end;
@@ -264,11 +291,13 @@ page 50927 "Payment Mode Card"
     // end;
     var
         IsFinanceManager: Boolean;
+        IsFieldEditable: Boolean;
 
     trigger OnOpenPage()
     var
         PermissionSet: Record "User Personalization";
     begin
+        IsFieldEditable := (Rec."Approval Status" <> Rec."Approval Status"::Approved);
         // Check if the current user has the 'LEASE_MANAGER' permission set
         IsFinanceManager := false;
         PermissionSet.SetRange("User ID", UserId());

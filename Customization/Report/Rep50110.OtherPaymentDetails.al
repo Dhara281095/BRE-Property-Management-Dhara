@@ -5,15 +5,14 @@ report 50110 "Other Payment Details"
     ApplicationArea = All;
     Caption = 'Other Payment Details';
     UsageCategory = ReportsAndAnalysis;
-    DefaultRenderingLayout = "OtherPaymentDetails.docx";
+    DefaultRenderingLayout = "OtherPayment.docx";
     dataset
     {
-        dataitem(TenancyContractSubpage; "Revenue Item Subpage")
+        dataitem("Revenue Item Subpage"; "Revenue Item Subpage")
         {
             column(ProposalID; ProposalID)
             {
             }
-
             column(Property_Name; "Property Name")
             {
             }
@@ -26,7 +25,7 @@ report 50110 "Other Payment Details"
             column(Customer_Name; "Customer Name")
             {
             }
-            column(Entry_No_; "Entry No.")
+            column(Entry_No_; AutoEntryNo)
             {
             }
             column(Secondary_Item_Type; "Secondary Item Type")
@@ -38,7 +37,7 @@ report 50110 "Other Payment Details"
             column(VAT_Amount; "VAT Amount")
             {
             }
-            column(Amount_Including_VAT; "Amount Including VAT")
+            column(A_Including_VAT; "Amount Including VAT")
             {
             }
             column(Start_Date; "Start Date")
@@ -56,10 +55,10 @@ report 50110 "Other Payment Details"
             column(CompanyName; CompanyInfo.Name)
             {
             }
-
             trigger OnAfterGetRecord()
             begin
-                // Store values in global variables
+                AutoEntryNo += 1;  // Auto-increment Entry No.
+                                   // Store values in global variables
                 PropertyNameStored := "Property Name";
                 UnitNameStored := "Unit Name";
                 UnitSizeStored := "Unit Size";
@@ -74,13 +73,34 @@ report 50110 "Other Payment Details"
         {
             DataItemTableView = sorting(Number) where(Number = const(1));
 
-            column(Total_Amount; TotalAmount)
+            column(T_Amount; TotalAmount)
             {
             }
-            column(Total_VAT_Amount; TotalVATAmount)
+            column(T_VAT_A; TotalVATAmount)
             {
             }
-            column(Total_Amount_Including_VAT; TotalAmountIncludingVAT)
+            column(TA_Incl_VAT; TotalAmountIncludingVAT)
+            {
+            }
+        }
+
+        dataitem("Lease Proposal Details"; "Lease Proposal Details")
+        {
+            DataItemLink = "Proposal ID" = field(ProposalID);
+            DataItemLinkReference = "Revenue Item Subpage";
+            column(ID; "Proposal ID")
+            {
+            }
+            column(Rent_Amount; "Rent Amount")
+            {
+            }
+            column(Annual_R_A; "Annual Rent Amount")
+            {
+            }
+            column(Rent_VAT_A; "Rent VAT Amount")
+            {
+            }
+            column(RA_Incl_VAT; "Rent Amount Including VAT")
             {
             }
         }
@@ -93,6 +113,7 @@ report 50110 "Other Payment Details"
             {
                 group(GroupName)
                 {
+
                 }
             }
         }
@@ -100,16 +121,17 @@ report 50110 "Other Payment Details"
         {
             area(Processing)
             {
+
             }
         }
     }
     rendering
     {
-        layout("OtherPaymentDetails.docx")
+        layout("OtherPayment.docx")
         {
             Type = Word;
-            LayoutFile = './OtherPaymentDetails.docx';
-            Caption = 'OtherPaymentDetails (Word)';
+            LayoutFile = './OtherPayment.docx';
+            Caption = 'OtherPayment (Word)';
             Summary = 'The OtherPaymentDetails (Word) provides a simple layout that is also relatively easy for an end-user to modify.';
         }
     }
@@ -121,6 +143,7 @@ report 50110 "Other Payment Details"
             // CompanyAddress := CompanyInfo.City + ', ' + CompanyInfo.County + ' ' + CompanyInfo."Post Code";
             CompanyInfo.CalcFields(Picture);
         end;
+        AutoEntryNo := 0;  // Initialize auto-increment variable
     end;
 
     var
@@ -132,6 +155,6 @@ report 50110 "Other Payment Details"
         UnitNameStored: Text;
         UnitSizeStored: Decimal;
         CustomerNameStored: Text[100];
-
-
+        AutoEntryNo: Integer;  // New variable for auto-increment Entry No.
 }
+

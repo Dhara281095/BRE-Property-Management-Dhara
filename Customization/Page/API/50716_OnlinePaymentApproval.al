@@ -47,6 +47,10 @@ page 50716 OnlinePaymentApproval
                 {
                     Caption = 'Payment Series';
                 }
+                field("PaymenttransactionID"; Rec."Payment transaction ID")
+                {
+                    Caption = 'Payment transaction ID';
+                }
                 field(systemCreatedAt; Rec.SystemCreatedAt)
                 {
                     Caption = 'SystemCreatedAt';
@@ -70,6 +74,10 @@ page 50716 OnlinePaymentApproval
                 field(tenantID; Rec."Tenant ID")
                 {
                     Caption = 'Tenant ID';
+                }
+                field("TenantName"; Rec."Tenant Name")
+                {
+                    Caption = 'Tenant Name';
                 }
                 field(totalAmount; Rec."Total Amount")
                 {

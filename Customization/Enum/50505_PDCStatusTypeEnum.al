@@ -19,7 +19,7 @@ enum 50505 "PDC Status Type Enum"
     }
     value(4; "Due cheque not deposited")
     {
-        Caption = 'Due\u002C cheque not deposited';
+        Caption = 'Due cheque not deposited';
     }
     value(5; "Retrieved")
     {
