@@ -1,8 +1,6 @@
-namespace BREPropertyManagemenMeghatMaster.BREPropertyManagemenMeghatMaster;
-
 page 50721 FinalCalculationApproval
 {
-    APIGroup = 'Finance';
+    APIGroup = 'finance';
     APIPublisher = 'RealeststeDev';
     APIVersion = 'v2.0';
     ApplicationArea = All;
@@ -13,6 +11,8 @@ page 50721 FinalCalculationApproval
     PageType = API;
     ODataKeyFields = SystemId;
     SourceTable = "Approval Final Calculation";
+    DeleteAllowed = true;
+    ModifyAllowed = true;
 
     layout
     {
