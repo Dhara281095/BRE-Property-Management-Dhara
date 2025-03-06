@@ -61,13 +61,13 @@ page 50908 "Secondary Item Card"
                     Editable = false;
                 }
 
-                // field("Payment System"; Rec."Payment System")
-                // {
-                //     ApplicationArea = All;
-                //     Caption = 'Payment System';
-                //     ToolTip = 'Enter the Payment System.';
+                field("Charges Status"; Rec."Charges Status")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Charges Status';
+                    ToolTip = 'Enter the Charges Status.';
 
-                // }
+                }
             }
         }
     }
