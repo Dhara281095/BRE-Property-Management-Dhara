@@ -35,6 +35,33 @@ page 50916 "Approval FinalCalculation List"
                     Editable = false;
                 }
 
+                field("FC ID"; Rec."FC ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
+                field("Link"; Rec."Link")
+                {
+                    ApplicationArea = All;
+                    DrillDown = true;
+
+
+                    trigger OnDrillDown()
+                    var
+                        FinalCalculation: Record "Final Calculation";
+                        FinalCalculationid: Integer;
+                    begin
+
+                        // Navigate to the Revenue Structure Card page
+                        if FinalCalculation.Get(Rec."Link") then
+                            PAGE.RUN(PAGE::"Final Calculation Card", FinalCalculation)
+                        else
+                            Message('The related Revenue Structure does not exist.')
+                    end;
+
+                }
+
                 field("Contract Start Date"; Rec."Contract Start Date")
                 {
                     ApplicationArea = All;
@@ -61,6 +88,8 @@ page 50916 "Approval FinalCalculation List"
 
 
 
+
+
             }
         }
     }
@@ -73,7 +102,7 @@ page 50916 "Approval FinalCalculation List"
             action(Approve)
             {
                 ApplicationArea = All;
-                Caption = 'Approve Entry';
+                Caption = 'Approve';
                 Image = Approve;
                 Promoted = true;
                 PromotedCategory = Process;

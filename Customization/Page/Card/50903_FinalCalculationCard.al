@@ -369,6 +369,11 @@ page 50903 "Final Calculation Card"
                         ApplicationArea = All;
                         Editable = false;
                     }
+                    field("Total Adjustment"; Rec."Total Adjustment")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                    }
                     field("Total Refund"; Rec."Total Refund")
                     {
                         ApplicationArea = All;
@@ -410,27 +415,58 @@ page 50903 "Final Calculation Card"
                 trigger OnAction()
                 var
                     SecurityDepositEntry: Record "Approval Final Calculation";
+                    FinalCalculation: Record "Final Calculation";
+                    FinalCalculationid: Integer;
                 begin
                     // Validate required fields
                     if Rec."Contract ID" = 0 then
                         Error('Contract ID must be specified');
 
-                    // Create new entry
-                    SecurityDepositEntry.Init();
-                    SecurityDepositEntry."ID" := Rec."FC ID";
-                    SecurityDepositEntry."Contract ID" := Rec."Contract ID";
-                    SecurityDepositEntry."Tenant ID" := Rec."Tenant ID";
-                    SecurityDepositEntry."Status" := Rec."Status";
-                    SecurityDepositEntry."Contract Start Date" := Rec."Contract Start Date";
-                    SecurityDepositEntry."Contract End Date" := Rec."Contract End Date";
-                    SecurityDepositEntry."Termination Date" := Rec."Termination Date";
-                    SecurityDepositEntry."Contract Amount" := Rec."Contract Amount";
-                    SecurityDepositEntry.Insert(true);
+                    SecurityDepositEntry.SetRange("Contract ID", Rec."Contract ID");
+                    SecurityDepositEntry.SetRange("Tenant ID", Rec."Tenant ID");
 
-                    Message('Approval Request Send successfully!');
+                    if SecurityDepositEntry.FindSet() then begin
+                        SecurityDepositEntry."FC ID" := Rec."FC ID";
+                        SecurityDepositEntry."Contract ID" := Rec."Contract ID";
+                        SecurityDepositEntry."Tenant ID" := Rec."Tenant ID";
+                        SecurityDepositEntry."Status" := Rec."Status";
+                        SecurityDepositEntry."Contract Start Date" := Rec."Contract Start Date";
+                        SecurityDepositEntry."Contract End Date" := Rec."Contract End Date";
+                        SecurityDepositEntry."Termination Date" := Rec."Termination Date";
+                        SecurityDepositEntry."Contract Amount" := Rec."Contract Amount";
+                        SecurityDepositEntry.Modify();
+                        Message('Approval Request Modify successfully!');
+                    end else begin
 
-                    // Open the entries list
-                    // Page.Run(Page::"Security Deposit Entries");
+                        // Create new entry
+                        SecurityDepositEntry.Init();
+                        SecurityDepositEntry."FC ID" := Rec."FC ID";
+                        SecurityDepositEntry."Contract ID" := Rec."Contract ID";
+                        SecurityDepositEntry."Tenant ID" := Rec."Tenant ID";
+                        SecurityDepositEntry."Status" := Rec."Status";
+                        SecurityDepositEntry."Contract Start Date" := Rec."Contract Start Date";
+                        SecurityDepositEntry."Contract End Date" := Rec."Contract End Date";
+                        SecurityDepositEntry."Termination Date" := Rec."Termination Date";
+                        SecurityDepositEntry."Contract Amount" := Rec."Contract Amount";
+
+
+                        if FinalCalculation.FindSet() then begin
+                            // If found, get the latest RS ID
+                            FinalCalculationid := SecurityDepositEntry."FC ID";
+                        end else begin
+                            // If no record is found, create a new Revenue Structure record
+                            FinalCalculation.Init();
+                            FinalCalculation.Insert(true);
+                            FinalCalculation.Modify(true);  // Insert the new record and generate the RS ID
+
+                            // Get the newly created RS ID
+                            FinalCalculationid := SecurityDepositEntry."FC ID";
+                        end;
+                        SecurityDepositEntry."Link" := FinalCalculationid;
+                        SecurityDepositEntry.Insert(true);
+
+                        Message('Approval Request Send successfully!');
+                    end;
                 end;
             }
         }

@@ -13,6 +13,13 @@ table 50908 "Approval Final Calculation"
             AutoIncrement = true;
 
         }
+
+        field(50105; "FC ID"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'FC ID';
+            Editable = false;
+        }
         field(50102; Status; Option)
         {
             DataClassification = ToBeClassified;
@@ -61,6 +68,13 @@ table 50908 "Approval Final Calculation"
         {
             DataClassification = ToBeClassified;
             Caption = 'Contract Amount';
+        }
+        field(50115; "Link"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Final Calculation Link';
+            Editable = false;
+
         }
         // field(50115; "Vat Amount"; Integer)
         // {
