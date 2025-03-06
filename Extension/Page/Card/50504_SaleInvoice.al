@@ -110,6 +110,11 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                     Editable = approvaleditable;
                     //Editable = true;
                 }
+                field("Overdue Invoice"; Rec."Overdue Invoice")
+                {
+                    Caption = 'Overdue Invoice';
+                    ApplicationArea = All;
+                }
 
 
             }

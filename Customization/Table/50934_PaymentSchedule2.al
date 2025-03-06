@@ -133,6 +133,16 @@ table 50934 "Payment Schedule2"
             Caption = 'Contract Status';
             DataClassification = ToBeClassified;
         }
+        field(50919; "Invoice ID"; Code[50])
+        {
+            Caption = 'Invoice ID';
+            DataClassification = ToBeClassified;
+        }
+        field(50920; "Overdue Invoice"; Text[20])
+        {
+            Caption = 'Overdue Invoice';
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys

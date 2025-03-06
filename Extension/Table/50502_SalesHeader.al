@@ -81,6 +81,11 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
             DataClassification = ToBeClassified;
             Caption = 'View Document URL';
         }
+        field(50113; "Overdue Invoice"; Text[20])
+        {
+            Caption = 'Overdue Invoice';
+            DataClassification = ToBeClassified;
+        }
     }
 
 }
