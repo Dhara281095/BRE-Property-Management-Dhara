@@ -109,11 +109,21 @@ page 50922 "Payment Schedule Card2"
                     Editable = InvoicedField;
 
                 }
+                field("Invoice ID"; Rec."Invoice ID")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Invoice ID';
+                }
                 field("Contract Status"; Rec."Contract Status")
                 {
                     ApplicationArea = All;
                     Caption = 'Contract Status';
 
+                }
+                field("Overdue Invoice"; Rec."Overdue Invoice")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Overdue Invoice';
                 }
 
                 field("Payment Status"; Rec."Payment Status")

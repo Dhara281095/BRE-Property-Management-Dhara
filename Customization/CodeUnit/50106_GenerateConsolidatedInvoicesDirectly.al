@@ -7,31 +7,92 @@ codeunit 50106 GenerateConsolidatedInvoices
         SalesHeader: Record "Sales Header";
         newsalesheader: Record "Sales Header";
         todaydate: Date;
+        paymentschedul1: Record "Payment Schedule";
+
+        paymentScheudle3: Record "Payment Schedule2";
+        newsalesheader1: Record "Sales Header";
+        SalesHeader1: Record "Sales Header";
+        currentdate: Date;
+
     begin
-        todaydate := 20251129D;
-        // todaydate := 20281128D;
+        todaydate := 20261129D;
+
+        currentdate := Today();
+
+
+        paymentScheudle3.SetFilter("Due Date", '<%1', todaydate);
+        paymentScheudle3.SetRange("Contract Status", 'Active');
+        if paymentScheudle3.FindSet() then
+            repeat
+                if paymentScheudle3.Invoiced = false then begin
+                    //   SalesHeader.SetRange("Sell-to Customer No.", paymentScheudle3."Tenant ID");
+                    // SalesHeader1.SetRange("No.", paymentScheudle3."Invoice ID");
+                    SalesHeader1.SetRange("Overdue Invoice", 'Reactive');
+                    SalesHeader1.SetRange("Due Date", currentdate);
+                    SalesHeader1.SetRange("Document Type", Enum::"Sales Document Type"::Invoice);
+                    if SalesHeader1.FindSet() then begin
+
+                        createSalesLines(SalesHeader1, paymentScheudle3);
+                    end
+                    else begin
+                        newsalesheader1 := CreateSalesInvoice(paymentScheudle3."Tenant ID", currentdate, paymentScheudle3."Contract ID", paymentScheudle3."Tenant Name");
+                        createSalesLines(newsalesheader1, paymentScheudle3);
+                    end;
+
+                    newsalesheader1."Overdue Invoice" := 'Reactive';
+                    newsalesheader1.Modify();
+
+                    paymentScheudle3.Invoiced := true;
+                    paymentScheudle3."Invoice ID" := newsalesheader1."No.";
+                    paymentScheudle3."Overdue Invoice" := newsalesheader1."Overdue Invoice";
+                    paymentScheudle3.Modify();
+
+
+
+                end;
+
+
+            until paymentScheudle3.Next() = 0;
+
+
         paymentScheudle2.SetRange("Due Date", todaydate);
 
         if paymentScheudle2.FindSet() then
             repeat
-                if paymentScheudle2.Invoiced = false then begin
-                    //   SalesHeader.SetRange("Sell-to Customer No.", paymentScheudle2."Tenant ID");
-                    SalesHeader.SetRange("Contract ID", paymentScheudle2."Contract ID");
-                    SalesHeader.SetRange("Due Date", paymentScheudle2."Due Date");
-                    SalesHeader.SetRange("Document Type", Enum::"Sales Document Type"::Invoice);
-                    if SalesHeader.FindSet() then begin
-
-                        createSalesLines(SalesHeader, paymentScheudle2);
-                    end
-                    else begin
-                        newsalesheader := CreateSalesInvoice(paymentScheudle2."Tenant ID", paymentScheudle2."Due Date", paymentScheudle2."Contract ID", paymentScheudle2."Tenant Name");
-                        createSalesLines(newsalesheader, paymentScheudle2);
-                    end;
-                    paymentScheudle2.Invoiced := true;
+                paymentschedul1.SetRange("Contract ID", paymentScheudle2."Contract ID");
+                paymentschedul1.SetFilter("Contract Status", 'Suspended');
+                if paymentschedul1.FindSet() then begin
+                    paymentScheudle2."Contract Status" := paymentschedul1."Contract Status";
                     paymentScheudle2.Modify();
+                end else begin
+                    if paymentScheudle2.Invoiced = false then begin
+                        //   SalesHeader.SetRange("Sell-to Customer No.", paymentScheudle2."Tenant ID");
+                        SalesHeader.SetRange("Contract ID", paymentScheudle2."Contract ID");
+                        SalesHeader.SetRange("Due Date", paymentScheudle2."Due Date");
+                        SalesHeader.SetRange("Document Type", Enum::"Sales Document Type"::Invoice);
+                        if SalesHeader.FindSet() then begin
 
+                            createSalesLines(SalesHeader, paymentScheudle2);
+                        end
+                        else begin
+                            newsalesheader := CreateSalesInvoice(paymentScheudle2."Tenant ID", paymentScheudle2."Due Date", paymentScheudle2."Contract ID", paymentScheudle2."Tenant Name");
+                            createSalesLines(newsalesheader, paymentScheudle2);
+                        end;
+                        paymentScheudle2.Invoiced := true;
+                        paymentScheudle2."Invoice ID" := newsalesheader."No.";
+                        paymentScheudle2.Modify();
+
+                    end;
                 end;
+
             until paymentScheudle2.Next() = 0;
+    end;
+
+
+    procedure finalinvoicelogic()
+    var
+    begin
+
     end;
 
     procedure CreateSalesInvoice(TenantID: Code[20]; DueDate: Date; ContractID: Integer; TenantName: Text[100]): Record "Sales Header"
