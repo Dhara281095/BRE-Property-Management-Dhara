@@ -80,6 +80,13 @@ table 50906 "Secondary Item"
 
         }
 
+        field(50106; "Charges Status"; Option)
+        {
+            OptionMembers = " ","Regular Charges","Additional Charges";
+            Caption = 'Charges Status';
+
+        }
+
     }
 
     keys

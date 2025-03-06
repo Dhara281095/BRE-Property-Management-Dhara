@@ -15,7 +15,7 @@ table 50902 "Additional Charges Sub"
         {
             DataClassification = ToBeClassified;
             Caption = 'Secondary Item';
-            TableRelation = "Secondary Item"."Secondary Item Type";
+            TableRelation = "Secondary Item"."Secondary Item Type" WHERE("Charges Status" = CONST("Additional Charges"));
             //TableRelation = "Secondary Item"."Secondary Item Type" WHERE("Payment System" = const("Installment"));
 
             trigger OnValidate()
