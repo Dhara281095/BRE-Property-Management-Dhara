@@ -15,8 +15,8 @@ table 50910 "Revenue Item Subpage"
         {
             DataClassification = ToBeClassified;
             Caption = 'Secondary Item';
-            TableRelation = "Secondary Item"."Secondary Item Type";
-            //TableRelation = "Secondary Item"."Secondary Item Type" WHERE("Payment System" = const("Installment"));
+            TableRelation = "Secondary Item"."Secondary Item Type" WHERE("Charges Status" = CONST("Regular Charges"));
+            // TableRelation = "Secondary Item"."Secondary Item Type";
 
             trigger OnValidate()
             var

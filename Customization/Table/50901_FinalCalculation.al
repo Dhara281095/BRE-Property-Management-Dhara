@@ -209,6 +209,12 @@ table 50901 "Final Calculation"
             InitValue = 'Final Calculation Document';
         }
 
+        field(50131; "Total Adjustment"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Total Adjustment';
+        }
+
 
     }
 
