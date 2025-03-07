@@ -159,6 +159,7 @@ page 50903 "Final Calculation Card"
                 {
                     ApplicationArea = All;
                     Editable = false;
+                    Caption = 'Termination Type';
                 }
                 field("Final Calculation Document"; Rec."Final Calculation Document")
                 {
