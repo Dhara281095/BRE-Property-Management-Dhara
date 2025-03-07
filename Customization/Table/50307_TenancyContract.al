@@ -1562,11 +1562,12 @@ table 50307 "Tenancy Contract"
             DataClassification = ToBeClassified;
         }
 
-        // field(50191; "Status"; Text[100])
-        // {
-        //     DataClassification = ToBeClassified;
-        //     // OptionMembers = " ","End Contract","Renewal Contract";
-        // }
+        field(50191; "Rent Calculation Link"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Rent Calculation Link';
+            Editable = false;
+        }
 
         field(50192; "Link"; Integer)
         {
