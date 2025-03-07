@@ -1280,6 +1280,7 @@ page 50313 "Tenancy Contract Card"
                         Lastyear: Integer;
                         InstallmentAmount2: Decimal;
                         Year: Integer;
+                        RentRecordid: Integer;
                     begin
                         // Find the Tenancy Contract record
                         Tenancycontract.SetRange("Contract ID", Rec."Contract ID");
@@ -1521,9 +1522,49 @@ page 50313 "Tenancy Contract Card"
                             end;
                             Message('New record has been created in Rent Calculation and subpage updated successfully.');
                         end;
+
+                        RentRecord.SetRange("Contract ID", Rec."Contract ID");
+                        RentRecord.SetRange("Tenant ID", Rec."Tenant ID");
+
+                        if RentRecord.FindSet() then begin
+                            // If found, get the latest RS ID
+                            RentRecordid := RentRecord."RC ID";
+                        end else begin
+                            // If no record is found, create a new Revenue Structure record
+                            RentRecord.Init();
+                            RentRecord.Insert(true);
+                            RentRecord.Modify(true);  // Insert the new record and generate the RS ID
+
+                            // Get the newly created RS ID
+                            RentRecordid := RentRecord."RC ID";
+                        end;
+                        Rec."Rent Calculation Link" := RentRecordid;
                     end;
 
                 }
+
+                field("Rent Calculation Link"; Rec."Rent Calculation Link")
+                {
+                    ApplicationArea = All;
+                    DrillDown = true;
+
+
+                    trigger OnDrillDown()
+                    var
+                        RentCalculation: Record "Rent Calculation";
+                        RentCalculationid: Integer;
+                    begin
+                        // Navigate to the Revenue Structure Card page
+                        if RentCalculation.Get(Rec."Rent Calculation Link") then
+                            PAGE.RUN(PAGE::"Rent Calculation Card", RentCalculation)
+                        else
+                            Message('The related Revenue Structure does not exist.')
+                    end;
+
+                }
+
+
+
 
                 group(FinalCalculation)
                 {
