@@ -54,16 +54,7 @@ table 50908 "Approval Final Calculation"
             DataClassification = ToBeClassified;
             Caption = 'Termination Date';
         }
-        // field(50112; "change Payment series"; Text[300])
-        // {
-        //     DataClassification = ToBeClassified;
-        //     Caption = 'changed Payment series';
-        // }
-        // field(50113; "Payment mode"; Text[300])
-        // {
-        //     DataClassification = ToBeClassified;
-        //     Caption = 'Payment mode';
-        // }
+
         field(50114; "Contract Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
@@ -76,29 +67,7 @@ table 50908 "Approval Final Calculation"
             Editable = false;
 
         }
-        // field(50115; "Vat Amount"; Integer)
-        // {
-        //     DataClassification = ToBeClassified;
-        //     Caption = 'New Vat Amount';
-        // }
 
-        // field(50117; "Due Date"; Date)
-        // {
-        //     DataClassification = ToBeClassified;
-        //     Caption = 'New Due Date';
-        // }
-        // Field(50110; "Description"; Text[500])
-        // {
-        //     DataClassification = ToBeClassified;
-        //     Caption = 'Description';
-        //     Editable = true;
-        // }
-
-        // field(50118; "Items"; Text[500])
-        // {
-        //     DataClassification = ToBeClassified;
-        //     Caption = 'Items';
-        // }
     }
 
     keys
