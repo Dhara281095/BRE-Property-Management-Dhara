@@ -121,6 +121,16 @@ page 50701 "Company Data"
                     Caption = 'Environment Name';
                 }
             }
+
+            group("WorkflowFrequency")
+            {
+                part("Workflow Frequency"; "Workflow Frequency Card")
+                {
+                    SubPageLink = "Company ID" = FIELD("Company ID"); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    // Visible = isVisible;
+                }
+            }
         }
     }
     procedure OpenFileInBrowser(URL: Text)
