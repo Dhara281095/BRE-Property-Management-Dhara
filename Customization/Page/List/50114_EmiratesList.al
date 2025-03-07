@@ -40,25 +40,25 @@ page 50114 "Emirate List"
         }
     }
 
-    actions
-    {
-        area(processing)
-        {
-            action(New)
-            {
-                ApplicationArea = All;
-                Caption = 'New';
-                Promoted = true;
-                PromotedCategory = Process;
-                trigger OnAction()
-                begin
-                    Rec.Init();
-                    Rec.Insert(true);
-                    CurrPage.Update();
-                end;
-            }
-        }
-    }
+    // actions
+    // {
+    //     area(processing)
+    //     {
+    //         action(New)
+    //         {
+    //             ApplicationArea = All;
+    //             Caption = 'New';
+    //             Promoted = true;
+    //             PromotedCategory = Process;
+    //             trigger OnAction()
+    //             begin
+    //                 Rec.Init();
+    //                 Rec.Insert(true);
+    //                 CurrPage.Update();
+    //             end;
+    //         }
+    //     }
+    // }
 
     // Link to open the card page for detailed editing
     // DrillDownPageId = "Secondary Classification Card";
