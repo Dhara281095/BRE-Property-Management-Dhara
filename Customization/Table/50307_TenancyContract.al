@@ -568,7 +568,7 @@ table 50307 "Tenancy Contract"
             var
             begin
                 TenancyContractSubpage();
-                //  TenancyContractSubpage2();
+                TenancyContractSubpage2();
             end;
         }
 

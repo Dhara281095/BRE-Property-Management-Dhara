@@ -218,117 +218,6 @@ table 50924 "Payment Mode"
     }
 
 
-
-
-
-
-    // procedure EvaluatePaymentSchedule()
-    // var
-    //     PaymentScheduleRec: Record "Payment Schedule2";
-    //     PaymentScheduleRec2: Record "Payment Schedule2";
-    //     MergedRecord: Record "Payment Mode2";
-    //     TotalAmount: Decimal;
-    //     TotalVAT: Decimal;
-    //     GrandTotal: Decimal;
-    //     NewPaymentCode: Code[20];
-    //     SequenceNo: Integer;
-    //     MinDueDate: Date;
-    //     MaxDueDate: Date;
-    //     DueDates: Text[100];
-    //     IsValid: Boolean;
-    //     DueDateList: List of [Date];  // List to store due dates
-    //     i: Integer;  // Declare the variable 'i' for the loop
-    // begin
-    //     // Initialize totals
-    //     TotalAmount := 0;
-    //     TotalVAT := 0;
-    //     GrandTotal := 0;
-
-    //     // Filter by Proposal ID and Tenant ID
-    //     PaymentScheduleRec.SetRange("Proposal ID", Rec."Proposal ID");
-    //     PaymentScheduleRec.SetRange("Tenant ID", Rec."Tenant ID");
-    //     PaymentScheduleRec.SetRange("Contract ID", Rec."Contract ID");
-    //     // Debugging: Add message to check if records are being found
-    //     if PaymentScheduleRec.FindSet() then
-
-    //         // Start looping over the records
-    //         repeat
-    //             // Get the due date for the current record
-    //             MinDueDate := PaymentScheduleRec."Due Date";
-
-    //             // Store the due date in the list
-    //             if not DueDateList.Contains(PaymentScheduleRec."Due Date") then begin
-    //                 DueDateList.Add(MinDueDate);
-
-    //                 //  Reset totals for the next group of records
-    //                 TotalAmount := 0;
-    //                 TotalVAT := 0;
-    //                 GrandTotal := 0;
-
-    //                 // Set the filter to process the records for this due date
-    //                 PaymentScheduleRec2.SetRange("Due Date", MinDueDate);
-    //                 PaymentScheduleRec2.SetRange("Proposal ID", Rec."Proposal ID");
-    //                 PaymentScheduleRec2.SetRange("Tenant ID", Rec."Tenant ID");
-    //                 PaymentScheduleRec2.SetRange("Contract ID", Rec."Contract ID");
-    //                 if PaymentScheduleRec2.FindSet() then
-    //                     // Loop through and calculate totals for the records with the same due date
-    //                     repeat
-    //                         TotalAmount += PaymentScheduleRec2."Amount";
-    //                         TotalVAT += PaymentScheduleRec2."VAT Amount";
-    //                         GrandTotal += PaymentScheduleRec2."Amount Including VAT";
-    //                     until PaymentScheduleRec2.Next() = 0;
-
-    //                 SequenceNo := GetNextSequenceNo();
-    //                 NewPaymentCode := GeneratePaymentCode(SequenceNo);
-
-    //                 // Insert a new merged record for the current due date
-    //                 MergedRecord.Init();
-    //                 MergedRecord."Proposal ID" := Rec."Proposal ID";
-    //                 MergedRecord."Tenant ID" := Rec."Tenant ID";
-    //                 MergedRecord."Contract ID" := Rec."Contract ID";
-    //                 MergedRecord."Payment Series" := NewPaymentCode;
-    //                 MergedRecord."Amount" := TotalAmount;
-    //                 MergedRecord."VAT Amount" := TotalVAT;
-    //                 MergedRecord."Amount Including VAT" := GrandTotal;
-    //                 MergedRecord."Due Date" := MinDueDate; // Store only the current due date
-
-    //                 // Debugging: Add message before inserting
-    //                 Message('Inserting record with Payment Series: %1', NewPaymentCode);
-
-    //                 MergedRecord.Insert();
-    //                 Clear(MergedRecord);
-
-    //                 // // Add debug messages to check totals
-    //                 // Message('Due Date: %1, Total Amount: %2, Total VAT: %3, Grand Total: %4', MinDueDate, TotalAmount, TotalVAT, GrandTotal);
-    //             end;
-
-
-
-    //         // Process the next due date in the list (if more than 1)
-    //         // if DueDateList.Count() > 0 then begin  // Modify this to just check if there are any dates
-    //         //                                        // Loop through all due dates in the list
-    //         //     for i := 1 to DueDateList.Count() do begin
-    //         //         MinDueDate := DueDateList.Get(i);  // Correct method to access list item
-
-    //         //         // Get the next sequence number and generate a new payment code (e.g., PAY01, PAY02)
-
-
-    //         //         // Display message for inserted record
-    //         //         Message('Record inserted for Proposal ID: %1, Due Date: %2, Payment Series: %3', Rec."Proposal ID", MinDueDate, NewPaymentCode);
-    //         //     end;
-
-
-    //         until PaymentScheduleRec.Next() = 0 // Move to the next record
-
-    //     else
-    //         Error('No records found for Proposal ID: %1, Tenant ID: %2', Rec."Proposal ID", Rec."Tenant ID");
-
-    //     Message(Format(DueDateList));
-    // end;
-
-
-
-
     procedure EvaluatePaymentSchedule()
     var
         PaymentScheduleRec: Record "Payment Schedule2";
@@ -425,17 +314,10 @@ table 50924 "Payment Mode"
                 MergedRecord."Due Date" := MinDueDate;
                 MergedRecord."Payment Status" := PaymentStatus::Scheduled;
 
-
-                //Message('Inserting record with Payment Series: %1', NewPaymentCode);
-
                 MergedRecord.Insert();
                 Clear(MergedRecord);
-            end //else
-                // Message('Record for Due Date %1 already exists. Skipping.', MinDueDate);
-
+            end
         end;
-
-        // Message('Process completed successfully.');
     end;
 
 

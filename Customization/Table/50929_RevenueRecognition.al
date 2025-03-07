@@ -13,35 +13,6 @@ table 50929 "Revenue Recognition"
 
         }
 
-        // field(50100; "Proposal ID"; Integer)
-        // {
-        //     DataClassification = ToBeClassified;
-        //     TableRelation = "Lease Proposal Details"."Proposal ID";
-
-        //     trigger OnValidate()
-        //     var
-        //         leaserec: Record "Lease Proposal Details";
-        //     begin
-        //         leaserec.SetRange("Proposal ID", Rec."Proposal ID");
-        //         if leaserec.FindFirst() then begin
-        //             "Tenant Id" := leaserec."Tenant Id";
-        //             "Start Date" := leaserec."Lease Start Date";
-        //             "End Date" := leaserec."Lease End Date";
-        //             "Contract Amount" := leaserec."Annual Rent Amount";
-
-        //         end else begin
-        //             // Clear the field if no record is found
-        //             "Tenant Id" := '';
-        //             "Start Date" := 0D;
-        //             "End Date" := 0D;
-        //             "Contract Amount" := 0;
-        //         end;
-
-        //         CalculateMonthlyRevenue();
-
-        //     end;
-        // }
-
 
         field(50100; "Contract ID"; Integer)
         {
@@ -74,7 +45,6 @@ table 50929 "Revenue Recognition"
             end;
         }
 
-
         field(50101; "Tenant Id"; Code[20])
         {
             DataClassification = ToBeClassified;
@@ -83,17 +53,12 @@ table 50929 "Revenue Recognition"
             Editable = false; // Make it read-only for the user
 
         }
-
-
         field(50103; "Start Date"; Date)
         {
             DataClassification = ToBeClassified;
             Caption = 'Start Date';
 
         }
-
-
-
         field(50104; "End Date"; Date)
         {
             DataClassification = ToBeClassified;
@@ -101,17 +66,12 @@ table 50929 "Revenue Recognition"
 
         }
 
-
-
         field(50105; "Contract Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Contract Amount';
 
         }
-
-
-
 
     }
 
@@ -373,56 +333,6 @@ table 50929 "Revenue Recognition"
     end;
 
     //-----------------Calculate Total Days in Months's-----------------//
-
-
-    // local procedure CalculateMonthlyRevenue()
-    // var
-    //     SubpageRec: Record "Revenue Recognition Subpage";
-    //     StartDate: Date;
-    //     EndDate: Date;
-    //     TotalDays: Integer;
-    //     CurrentDate: Date;
-    //     MonthDays: Integer;
-    //     MonthlyAmount1: Decimal;
-    //     MonthlyAmount2: Decimal;
-    //     DailyRate: Decimal;
-    //     MonthlyRate: Decimal;
-    //     AllocatedAmount: Decimal;
-    // begin
-    //     // Clear existing records in the subpage table
-    //     SubpageRec.DeleteAll();
-
-    //     // Ensure Start and End Dates are valid
-    //     if ("Start Date" = 0D) or ("End Date" = 0D) then
-    //         exit;
-
-    //     TotalDays := ("End Date" - "Start Date") + 1;
-    //     DailyRate := "Annual Rent Amount" / TotalDays;
-    //     MonthlyRate := "Annual Rent Amount" / 12;
-
-    //     CurrentDate := "Start Date";
-    //     while CurrentDate <= "End Date" do begin
-    //         SubpageRec.Init();
-    //         SubpageRec."RR Id" := "RR Id";
-    //         SubpageRec."Proposal ID" := "Proposal ID";
-    //         SubpageRec."Tenant Id" := "Tenant Id";
-    //         SubpageRec."Month" := FORMAT(CurrentDate, 0, '<Month Text>') + '-' + FORMAT(CurrentDate, 0, '<Year>');
-    //         MonthDays := CALCDATE('<+1M>', CurrentDate) - CurrentDate;
-
-    //         if (CurrentDate + MonthDays - 1) > "End Date" then
-    //             MonthDays := ("End Date" - CurrentDate) + 1;
-
-    //         AllocatedAmount := MonthDays * DailyRate;
-
-    //         SubpageRec."No. of Days" := MonthDays;
-    //         SubpageRec."RR - Method 1 (Day)" := AllocatedAmount;
-    //         SubpageRec."RR - Method 2 (Month)" := MonthlyRate;
-    //         SubpageRec.Insert();
-
-    //         CurrentDate := CALCDATE('<+1M>', CurrentDate);
-    //     end;
-    // end;
-
 
 
 }

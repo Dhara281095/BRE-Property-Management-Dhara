@@ -257,42 +257,6 @@ table 50920 "Payment Schedule"
 
     end;
 
-
-
-
-    // procedure AssignPaymentSeries()
-    // var
-    //     PaymentRec: Record "Payment Schedule2";
-    //     SortedDueDates: Dictionary of [Date, Text];
-    //     CurrentSeries: Integer;
-    //     SeriesCode: Text[10];
-    //     DueDate: Date;
-    // begin
-    //     CurrentSeries := 1;
-
-    //     // Step 1: Process all Payment Schedule2 records
-    //     if PaymentRec.FindSet(true) then begin
-    //         repeat
-    //             DueDate := PaymentRec."Due Date";
-
-    //             // Step 2: Check if Due Date is already assigned a Payment Series
-    //             if not SortedDueDates.ContainsKey(DueDate) then begin
-    //                 // Generate series code as PAY01, PAY02, etc.
-    //                 SeriesCode := StrSubstNo('PAY%1', Format(CurrentSeries, 2, '0'));
-    //                 SortedDueDates.Add(DueDate, SeriesCode);
-    //                 CurrentSeries := CurrentSeries + 1;
-    //             end;
-
-    //             // Step 3: Assign the Payment Series from the dictionary
-    //             PaymentRec."Payment Series" := SortedDueDates.Get(DueDate);
-    //             PaymentRec.Modify();
-    //         until PaymentRec.Next() = 0;
-    //     end;
-    // end;
-
-
-
-
     // procedure EvaluatePaymentSchedule()
     // var
     //     PaymentScheduleRec: Record "Payment Schedule2";
