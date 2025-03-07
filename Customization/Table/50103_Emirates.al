@@ -8,10 +8,7 @@ table 50103 "Emirate"
         field(50100; "ID"; Integer)
         {
             DataClassification = ToBeClassified;
-            AutoIncrement = true; // Automatically increment the ID
-            Editable = false; // Make it read-only for the user
-            NotBlank = false;
-
+            AutoIncrement = true;
         }
         field(50101; "Sl No."; Integer)
         {
@@ -24,8 +21,6 @@ table 50103 "Emirate"
             DataClassification = ToBeClassified;
             Caption = 'Country Code';
             TableRelation = Country."Country Code";
-
-            // This will store the ID of the Primary Classification for lookup
         }
         field(50103; "Emirate Name"; Text[100])
         {
@@ -36,13 +31,13 @@ table 50103 "Emirate"
 
     keys
     {
-        key(PK; "ID", "Emirate Name")
+        key(PK; "ID", "Emirate Name", "Country Code")
         {
             Clustered = true;
         }
-        key("Country_Emirate"; "Country Code")
-        {
-        }
+        // key("Country_Emirate"; "Country Code")
+        // {
+        // }
     }
 
     fieldgroups
@@ -78,8 +73,6 @@ table 50103 "Emirate"
     var
         EmirateRec: Record "Emirate";
     begin
-
-
         // Check if 'Sl No.' is 0 (indicating it's a new record)
         if "Sl No." = 0 then begin
             // If there are existing records, find the last one and increment
