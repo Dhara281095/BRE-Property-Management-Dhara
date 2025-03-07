@@ -96,6 +96,7 @@ page 50951 "Final Billing Calculation"
     var
     begin
         FetchDataFromRevenueCalcGrid();
+        Receiptamountfrompaymentscheule();
         DifferenceAmountCalculation();
     end;
 
@@ -125,5 +126,37 @@ page 50951 "Final Billing Calculation"
         Rec.DifferenceAmountInclVAT := Rec.InvoicedAmountInclVAT - Rec.RevisedAmountInclVAT;
         Rec.Modify();
 
+    end;
+
+    procedure Receiptamountfrompaymentscheule()
+    var
+        PaymentScheduleRec: Record "Payment Schedule2";
+        Totalamount: Decimal;
+        VATAmount: Decimal;
+        AmountIncVAT: Decimal;
+    begin
+        Totalamount := 0;
+        PaymentScheduleRec.Reset();
+        PaymentScheduleRec.SetRange("Contract ID", Rec."Contract ID");
+        PaymentScheduleRec.SetFilter("Due Date", '<%1', Rec."Termination Date");
+        PaymentScheduleRec.SetRange(Invoiced, true);
+        PaymentScheduleRec.SetRange("Secondary Item Type", Rec.RevenueDescription);
+        if PaymentScheduleRec.FindSet() then begin
+            repeat
+                Totalamount += PaymentScheduleRec.Amount;
+                VATAmount += PaymentScheduleRec."VAT Amount";
+                AmountIncVAT += PaymentScheduleRec."Amount Including VAT";
+
+            until PaymentScheduleRec.Next() = 0;
+        end;
+        PaymentScheduleRec.SetRange("Contract ID", Rec."Contract ID");
+        PaymentScheduleRec.SetRange("Secondary Item Type", Rec.RevenueDescription);
+        if PaymentScheduleRec.FindSet() then
+            repeat
+                Rec.InvoicedAmount := Totalamount;
+                Rec.InvoicedVAT := VATAmount;
+                Rec.InvoicedAmountInclVAT := AmountIncVAT;
+                Rec.Modify();
+            until PaymentScheduleRec.Next() = 0;
     end;
 }
