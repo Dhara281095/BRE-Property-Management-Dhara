@@ -16,7 +16,7 @@ codeunit 50106 GenerateConsolidatedInvoices
         paymentschedulcard: Record "Payment Schedule";
 
     begin
-        todaydate := 20260530D;
+        todaydate := 20260228D;
 
         currentdate := Today();
 
@@ -92,11 +92,7 @@ codeunit 50106 GenerateConsolidatedInvoices
     end;
 
 
-    procedure finalinvoicelogic()
-    var
-    begin
 
-    end;
 
     procedure CreateSalesInvoice(TenantID: Code[20]; DueDate: Date; ContractID: Integer; TenantName: Text[100]): Record "Sales Header"
     var
@@ -195,6 +191,8 @@ codeunit 50106 GenerateConsolidatedInvoices
 
         Clear(saleline);
     end;
+
+
 
 
 

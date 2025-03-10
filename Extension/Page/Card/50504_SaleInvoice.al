@@ -114,6 +114,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 {
                     Caption = 'Overdue Invoice';
                     ApplicationArea = All;
+                    Editable = false;
                 }
 
 
