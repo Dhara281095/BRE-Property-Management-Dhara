@@ -22,7 +22,8 @@ page 50301 "Primary Classification Card"
                 {
                     ApplicationArea = All;
                     Caption = 'Primary Classification Name';
-                    ToolTip = 'Enter the primary classification name.';
+                    ShowMandatory = true;
+                    NotBlank = true;
                 }
             }
         }

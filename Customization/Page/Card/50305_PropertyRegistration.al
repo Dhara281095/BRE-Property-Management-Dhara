@@ -19,6 +19,18 @@ page 50305 "Property Registration Card"
                 {
                     ApplicationArea = All;
                     Editable = false;
+
+                }
+
+                field("Company ID"; rec."Company ID")
+                {
+                    ApplicationArea = All;
+                    Visible = false;
+
+                    // trigger OnValidate()
+                    // begin
+                    //     workflowfrequency();
+                    // end;
                 }
 
                 field("Description"; rec."Description")
@@ -155,6 +167,17 @@ page 50305 "Property Registration Card"
                 }
             }
 
+            group("WorkflowFrequencys")
+            {
+                part("Workflow Frequency"; "Workflow Frequency PR Card")
+                {
+                    SubPageLink = "Company ID" = FIELD("Company ID"),
+                    "Property ID" = FIELD("Property ID"); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    // Visible = isVisible;
+                }
+            }
+
         }
 
 
@@ -168,12 +191,15 @@ page 50305 "Property Registration Card"
     trigger OnModifyRecord(): Boolean
     begin
         CurrPage."Document Attachments".Page.SetPropertyId(Rec."Property ID");
+        workflowfrequency();
     end;
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     begin
         CurrPage."Document Attachments".Page.SetPropertyId(Rec."Property ID");
         isVisible := true;
+
+        workflowfrequency();
     end;
 
     trigger OnAfterGetRecord()
@@ -186,6 +212,35 @@ page 50305 "Property Registration Card"
         else begin
             isVisible := false;
         end;
+        workflowfrequency();
+
+    end;
+
+    procedure workflowfrequency()
+    var
+        workflowfrequency: Record "Workflow Frequency";
+        workflowfrequencyPR: Record "Workflow Frequency PR";
+    begin
+        workflowfrequencyPR.SetRange("Property ID", Rec."Property ID");
+        workflowfrequencyPR.SetRange("Company ID", Rec."Company ID");
+
+        if workflowfrequencyPR.FindSet() then begin
+            workflowfrequencyPR.DeleteAll();
+        end;
+
+        if workflowfrequency.FindSet() then
+            repeat
+                workflowfrequencyPR.Init();
+                // PaymentSchedule3."PS ID" := Rec."PS Id";
+                workflowfrequencyPR."Property ID" := Rec."Property ID";
+                workflowfrequencyPR."Company ID" := workflowfrequency."Company ID";
+                workflowfrequencyPR.Workflow := workflowfrequency.Workflow;
+                workflowfrequencyPR."frequncy Status" := workflowfrequency."frequncy Status";
+                workflowfrequencyPR."No. of Days" := workflowfrequency."No. of Days";
+                workflowfrequencyPR.Insert();
+                Clear(workflowfrequencyPR);
+            until workflowfrequency.Next() = 0;
+
 
     end;
 

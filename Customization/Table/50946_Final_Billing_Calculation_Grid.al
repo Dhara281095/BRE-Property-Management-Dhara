@@ -143,6 +143,17 @@ table 50946 "Final Billing Calculation Grid"
             Caption = 'Termination Date';
             DataClassification = ToBeClassified;
         }
+        field(23; "Invoice To Be Raised"; Decimal)
+        {
+            Caption = 'Invoice To Be Raised';
+            DataClassification = ToBeClassified;
+
+        }
+        field(24; "Credit Note To Be Raised"; Decimal)
+        {
+            Caption = 'Credit To Be Raised';
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys

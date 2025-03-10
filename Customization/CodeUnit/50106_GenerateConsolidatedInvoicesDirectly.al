@@ -13,9 +13,10 @@ codeunit 50106 GenerateConsolidatedInvoices
         newsalesheader1: Record "Sales Header";
         SalesHeader1: Record "Sales Header";
         currentdate: Date;
+        paymentschedulcard: Record "Payment Schedule";
 
     begin
-        todaydate := 20251129D;
+        todaydate := 20260228D;
 
         currentdate := Today();
 
@@ -25,6 +26,8 @@ codeunit 50106 GenerateConsolidatedInvoices
         if paymentScheudle3.FindSet() then
             repeat
                 if paymentScheudle3.Invoiced = false then begin
+
+
                     //   SalesHeader.SetRange("Sell-to Customer No.", paymentScheudle3."Tenant ID");
                     // SalesHeader1.SetRange("No.", paymentScheudle3."Invoice ID");
                     SalesHeader1.SetRange("Overdue Invoice", 'Reactive');
@@ -89,11 +92,7 @@ codeunit 50106 GenerateConsolidatedInvoices
     end;
 
 
-    procedure finalinvoicelogic()
-    var
-    begin
 
-    end;
 
     procedure CreateSalesInvoice(TenantID: Code[20]; DueDate: Date; ContractID: Integer; TenantName: Text[100]): Record "Sales Header"
     var
@@ -192,6 +191,8 @@ codeunit 50106 GenerateConsolidatedInvoices
 
         Clear(saleline);
     end;
+
+
 
 
 

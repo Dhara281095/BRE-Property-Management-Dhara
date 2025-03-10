@@ -15,6 +15,13 @@ table 50303 "Property Registration"
             // Editable = false; // Make it read-only for the user
         }
 
+        field(50127; "Company ID"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Company ID';
+            TableRelation = "testData"."Company ID";
+        }
+
         // Property Description field
         field(50101; "Description"; Text[100])
         {
@@ -231,11 +238,16 @@ table 50303 "Property Registration"
     trigger OnInsert()
     var
         NoSeriesMgt: Codeunit "No. Series";
+        CompanyRec: Record "testData"; // Assuming "testData" stores company data
 
     begin
         if "Property ID" = '' then begin
             "Property ID" := NoSeriesMgt.GetNextNo('PROPERTYID', Today(), true);
         end;
+
+        // Auto Populate Company ID (Example: Fetch from Default Company)
+        if CompanyRec.FindFirst() then
+            "Company ID" := CompanyRec."Company ID";
 
     end;
 
