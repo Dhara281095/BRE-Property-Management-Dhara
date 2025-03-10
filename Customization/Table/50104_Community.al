@@ -8,8 +8,8 @@ table 50104 "Community"
         field(50100; "ID"; Integer)
         {
             DataClassification = ToBeClassified;
-            AutoIncrement = true; // Automatically increment the ID
-            Editable = false; // Make it read-only for the user
+            AutoIncrement = true;
+            Editable = false;
         }
         field(50101; "Sl No."; Integer)
         {
@@ -22,8 +22,6 @@ table 50104 "Community"
             DataClassification = ToBeClassified;
             Caption = '"Emirate Name"';
             TableRelation = Emirate."Emirate Name";
-
-            // This will store the ID of the Primary Classification for lookup
         }
         field(50103; "Community Code"; Code[30])
         {
@@ -34,13 +32,12 @@ table 50104 "Community"
         {
             DataClassification = ToBeClassified;
             Caption = 'Community Name';
-            NotBlank = true;
         }
     }
 
     keys
     {
-        key(PK; "ID", "Community Name")
+        key(PK; "ID", "Community Name", "Emirate Name")
         {
             Clustered = true;
         }

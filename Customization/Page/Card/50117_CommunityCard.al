@@ -28,9 +28,8 @@ page 50117 "Community Card"
                 {
                     ApplicationArea = All;
                     Caption = 'Emirate Name';
-                    // TableRelation = "Primary Classification";
-                    // Add a lookup to the Primary Classification table
-                    // Lookup = true;
+                    ShowMandatory = true;
+                    NotBlank = true;
                 }
                 field("Community Code"; Rec."Community Code")
                 {
@@ -41,6 +40,8 @@ page 50117 "Community Card"
                 {
                     ApplicationArea = All;
                     Caption = 'Community Name';
+                    ShowMandatory = true;
+                    NotBlank = true;
                 }
             }
         }

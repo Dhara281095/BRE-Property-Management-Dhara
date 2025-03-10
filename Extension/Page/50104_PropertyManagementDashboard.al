@@ -16,12 +16,26 @@ pageextension 50104 "MyRoleCenterExtension" extends "Business Manager Role Cente
             group(Action42)
             {
                 Caption = 'Property Management';
-                action(PeopertyRegistration)
+
+                action(CountryList)
                 {
-                    Caption = ' Property Registrations';
+                    Caption = 'Countries';
                     ApplicationArea = Basic, Suite;
-                    RunObject = Page "Property Registration List";
+                    RunObject = Page "Country List";
                 }
+                action(EmirateList)
+                {
+                    Caption = 'Emirates';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Emirate List";
+                }
+                action(CommunityList)
+                {
+                    Caption = 'Communities';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Community List";
+                }
+
 
                 action(PropertyClassification)
                 {
@@ -29,28 +43,12 @@ pageextension 50104 "MyRoleCenterExtension" extends "Business Manager Role Cente
                     ApplicationArea = Basic, Suite;
                     RunObject = Page "Primary Classification List";
                 }
-
-                action(UnitList)
-                {
-                    Caption = 'Unit Registrations';
-                    ApplicationArea = Basic, Suite;
-                    RunObject = Page "Item List";
-                }
-
                 action(PropertyType)
                 {
                     Caption = 'Property Types';
                     ApplicationArea = Basic, Suite;
                     RunObject = Page "Property Type List";
                 }
-
-                action(TenantProfile)
-                {
-                    Caption = 'Tenant Profiles';
-                    ApplicationArea = Basic, Suite;
-                    RunObject = Page "Customer List";
-                }
-
                 action(UnitType)
                 {
                     Caption = 'Unit Types';
@@ -58,18 +56,39 @@ pageextension 50104 "MyRoleCenterExtension" extends "Business Manager Role Cente
                     RunObject = Page "Secondary Classification List";
                 }
 
+
+                action(OwnerProfile)
+                {
+                    Caption = 'Owner Profiles';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Owner Profile List";
+                }
+                action(TenantProfile)
+                {
+                    Caption = 'Tenant Profiles';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Customer List";
+                }
+                action(PeopertyRegistration)
+                {
+                    Caption = ' Property Registrations';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Property Registration List";
+                }
+
+
+
+                action(UnitList)
+                {
+                    Caption = 'Unit Registrations';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Item List";
+                }
                 action(LeaseProposal)
                 {
                     Caption = 'Lease Proposals';
                     ApplicationArea = Basic, Suite;
                     RunObject = Page "Lease Proposal List";
-                }
-
-                action(CountryList)
-                {
-                    Caption = 'Countries';
-                    ApplicationArea = Basic, Suite;
-                    RunObject = Page "Country List";
                 }
 
                 action(TenancyContract)
@@ -79,31 +98,36 @@ pageextension 50104 "MyRoleCenterExtension" extends "Business Manager Role Cente
                     RunObject = Page "Tenancy Contract List";
                 }
 
-                action(EmirateList)
-                {
-                    Caption = 'Emirates';
-                    ApplicationArea = Basic, Suite;
-                    RunObject = Page "Emirate List";
-                }
 
-                action(OwnerProfile)
-                {
-                    Caption = 'Owner Profiles';
-                    ApplicationArea = Basic, Suite;
-                    RunObject = Page "Owner Profile List";
-                }
 
-                action(CommunityList)
-                {
-                    Caption = 'Communities';
-                    ApplicationArea = Basic, Suite;
-                    RunObject = Page "Community List";
-                }
                 action(MergeUnits)
                 {
                     Caption = 'Merge Units';
                     ApplicationArea = Basic, Suite;
                     RunObject = Page "Merged Units List";
+                }
+                action(RentCalculation)
+                {
+                    Caption = 'Rent Calculation';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Rent Calculation List";
+                }
+                action(PaymentMode)
+                {
+                    Caption = 'Payment Mode';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Payment Mode List";
+                }
+
+
+
+
+
+                action(PDCTransactions)
+                {
+                    Caption = 'PDC Transactions';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "PDC Transactions";
                 }
                 action(RevenueItemlist)
                 {
@@ -117,12 +141,15 @@ pageextension 50104 "MyRoleCenterExtension" extends "Business Manager Role Cente
                     ApplicationArea = Basic, Suite;
                     RunObject = Page "Category List";
                 }
-                action(RevenueAllocation)
-                {
-                    Caption = 'Revenue Allocation';
-                    ApplicationArea = Basic, Suite;
-                    RunObject = Page "Revenue Allocation List";
-                }
+                // action(RevenueAllocation)
+                // {
+                //     Caption = 'Revenue Allocation';
+                //     ApplicationArea = Basic, Suite;
+                //     RunObject = Page "Revenue Allocation List";
+                // }
+
+
+
                 action(AvailabilityStatus)
                 {
                     Caption = 'Availability Status';
@@ -141,6 +168,10 @@ pageextension 50104 "MyRoleCenterExtension" extends "Business Manager Role Cente
                     ApplicationArea = Basic, Suite;
                     RunObject = Page "Contract Renewal List";
                 }
+
+
+
+
                 action(SecurityDeposit)
                 {
                     Caption = 'Security Deposit';
