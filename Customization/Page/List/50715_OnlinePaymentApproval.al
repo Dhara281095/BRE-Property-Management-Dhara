@@ -124,6 +124,7 @@ page 50715 "Online Payment Request"
                                     // Update the status of OnlinePaymentApproval record
                                     PaymentRec."Approve/Decline Status" := 'Received';
                                     PaymentRec."Payment Status" := PaymentStatus::Received;
+                                    PaymentRec."Payment Received Date" := Today;
                                     PaymentRec.Modify(true);
                                 end;
 
@@ -136,6 +137,7 @@ page 50715 "Online Payment Request"
                                     repeat
                                         // Update Payment Schedule status to "Received" for the matching Payment Series
                                         PaymentScheduleRec."Payment Status" := 'Received';
+                                        PaymentScheduleRec."Payment Received Date" := PaymentRec."Payment Received Date";
                                         PaymentScheduleRec.Modify; // Save the updated record
                                     until PaymentScheduleRec.Next() = 0; // Continue until all matching records are processed
                                 end;

@@ -346,6 +346,12 @@ page 50928 "Payment Mode Card2"
                     Visible = false;
                 }
 
+                field("Payment Received Date"; Rec."Payment Received Date")
+                {
+                    Caption = 'Payment Received Date';
+                    Editable = false;
+                }
+
 
             }
 
@@ -368,8 +374,6 @@ page 50928 "Payment Mode Card2"
                     Caption = 'Total Amount Including VAT';
                     Editable = false;
                 }
-
-              
 
             }
 

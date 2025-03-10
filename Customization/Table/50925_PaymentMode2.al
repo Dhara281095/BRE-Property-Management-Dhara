@@ -450,6 +450,11 @@ table 50925 "Payment Mode2"
             Caption = 'Tenant Email';
         }
 
+        field(50131; "Payment Received Date"; Date)
+        {
+            DataClassification = ToBeClassified;
+        }
+
 
     }
 
