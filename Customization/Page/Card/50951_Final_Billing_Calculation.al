@@ -89,6 +89,18 @@ page 50951 "Final Billing Calculation"
                     Editable = false;
                     Caption = 'Total Difference Amount Incl. VAT';
                 }
+                field("Invoice To Be Raised"; Rec."Invoice To Be Raised")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Caption = 'Invoice To Be Raised';
+                }
+                field("Credit Note To Be Raised"; Rec."Credit Note To Be Raised")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Caption = 'Credit Note To Be Raised';
+                }
             }
         }
     }
@@ -98,6 +110,7 @@ page 50951 "Final Billing Calculation"
         FetchDataFromRevenueCalcGrid();
         Receiptamountfrompaymentscheule();
         DifferenceAmountCalculation();
+        GetPositiveAmount();
     end;
 
     procedure FetchDataFromRevenueCalcGrid()
@@ -158,5 +171,18 @@ page 50951 "Final Billing Calculation"
                 Rec.InvoicedAmountInclVAT := AmountIncVAT;
                 Rec.Modify();
             until PaymentScheduleRec.Next() = 0;
+    end;
+
+    procedure GetPositiveAmount()
+    var
+    begin
+        if Rec."Total DifferenceAmountIncl.VAT" < 0 then begin
+            Rec."Invoice To Be Raised" := Abs(Rec."Total DifferenceAmountIncl.VAT");
+            Rec.Modify();
+        end else begin
+            Rec."Credit Note To Be Raised" := Rec."Total DifferenceAmountIncl.VAT";
+            Rec.Modify();
+
+        end;
     end;
 }
