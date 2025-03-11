@@ -141,7 +141,7 @@ page 50922 "Payment Schedule Card2"
 
 
                 }
-                field("Payment Received Date"; Rec."Payment Received Date")
+                field("Payment Received Date"; Rec."Payment Recieved Date")
                 {
                     ApplicationArea = All;
                     Caption = 'Payment Received Date';

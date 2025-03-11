@@ -143,6 +143,11 @@ table 50934 "Payment Schedule2"
             Caption = 'Overdue Invoice';
             DataClassification = ToBeClassified;
         }
+        field(50921; "Payment Recieved Date"; Date)
+        {
+            Caption = 'Payment Recived Date';
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys
