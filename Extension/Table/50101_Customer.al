@@ -120,7 +120,7 @@ tableextension 50101 CustomerExtension extends Customer
             end;
         }
 
-        field(505117; "Customer Type"; Enum "Customer Type Enum")
+        field(50517; "Customer Type"; Enum "Customer Type Enum")
         {
             Caption = 'Customer Type';
             DataClassification = ToBeClassified;
