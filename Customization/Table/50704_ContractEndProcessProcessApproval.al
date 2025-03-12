@@ -22,7 +22,19 @@ table 50704 "ContractEndProcessApproval"
         {
             DataClassification = ToBeClassified;
             Caption = 'Lease Manager Approval Status';
-            //Editable = false;
+
+            // trigger OnValidate()
+            // var
+            //     emailrec: Codeunit "Send Email To PropertyManager";
+
+            // begin
+            //     if Rec."Lease_M Status" = 'Approved' then begin
+            //         emailrec.SendEmail(Rec);
+            //     end;
+            // end;
+
+
+
         }
         field(50103; "Contract Id"; Integer)
         {
@@ -85,4 +97,16 @@ table 50704 "ContractEndProcessApproval"
             Clustered = true;
         }
     }
+
+
+    // trigger OnModify()
+    // var
+    //     emailrec: Codeunit "Send Email To PropertyManager";
+    // begin
+    //     if Rec."Lease_M Status" = 'Approved' then begin
+    //         emailrec.SendEmail(Rec);
+    //     end;
+    // end;
+
+
 }
