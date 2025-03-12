@@ -150,6 +150,11 @@ page 50722 "Final Calculation"
                 {
                     Caption = 'Unit Type';
                 }
+                field("FinalCalculationDocument"; Rec."Final Calculation Document")
+                {
+                    Caption = 'Unit Type';
+                }
+
             }
         }
     }
