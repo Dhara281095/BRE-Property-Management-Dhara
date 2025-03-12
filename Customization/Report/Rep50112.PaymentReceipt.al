@@ -77,7 +77,6 @@ report 50112 PaymentReceipt
             {
 
             }
-
             dataitem(Customer; Customer)
             {
                 DataItemLink = "No." = field("Account No.");
@@ -113,6 +112,22 @@ report 50112 PaymentReceipt
                 {
 
                 }
+                trigger OnAfterGetRecord()
+                begin
+                    TotalAmount := TotalAmount - Amount;  // Using negative to match your existing column format
+                end;
+
+                trigger OnPreDataItem()
+                begin
+                    TotalAmount := 0;
+                end;
+            }
+
+            dataitem(Totals; System.Utilities.Integer)
+            {
+                DataItemTableView = sorting(Number) where(Number = const(1));
+                column(TAmount; Format(TotalAmount, 0, '<Precision,2:2><Standard Format,0>'))
+                { }
             }
         }
 
@@ -158,4 +173,5 @@ report 50112 PaymentReceipt
 
     var
         CompanyInfo: Record "Company Information";
+        TotalAmount: Decimal;  // New variable to store the total amount
 }
