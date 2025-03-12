@@ -28,7 +28,7 @@ page 50719 "Contract End Process Approval"
                 field("Lease_M Status"; Rec."Lease_M Status")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field("Tenant ID"; Rec."Tenant ID")
                 {
@@ -55,11 +55,11 @@ page 50719 "Contract End Process Approval"
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field("Requested Date"; Rec."Requested Date")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
+                // field("Requested Date"; Rec."Requested Date")
+                // {
+                //     ApplicationArea = All;
+                //     Editable = false;
+                // }
                 field("Lease Manager Remark"; Rec."Lease Manager Remark")
                 {
                     ApplicationArea = All;
@@ -86,6 +86,8 @@ page 50719 "Contract End Process Approval"
                 Caption = 'Approve Property';
                 ApplicationArea = All;
                 Image = Approve;
+                Visible = IsPropertyManager;
+
 
                 trigger OnAction()
                 var
@@ -121,17 +123,59 @@ page 50719 "Contract End Process Approval"
             }
 
             // Approve Action for Lease_M Status
+            // action(ApproveLease)
+            // {
+            //     Caption = 'Approve Lease';
+            //     ApplicationArea = All;
+            //     Image = Approve;
+            //     Visible = IsLeaseManager;
+
+            //     trigger OnAction()
+            //     var
+            //         SelectedRecs: Record "ContractEndProcessApproval";
+            //         ApproveCount: Integer;
+            //         ErrorCount: Integer;
+            //     begin
+            //         CurrPage.SetSelectionFilter(SelectedRecs);
+
+            //         if SelectedRecs.IsEmpty() then begin
+            //             Message('No records selected for approval.');
+            //             exit;
+            //         end;
+
+            //         ApproveCount := 0;
+            //         ErrorCount := 0;
+
+            //         if SelectedRecs.FindSet() then
+            //             repeat
+            //                 if SelectedRecs."Lease_M Status" = 'Pending' then begin
+            //                     SelectedRecs."Lease_M Status" := 'Approved';
+            //                     SelectedRecs.Modify();
+            //                     ApproveCount += 1;
+            //                 end else
+            //                     ErrorCount += 1;
+            //             until SelectedRecs.Next() = 0;
+
+            //         Commit();
+            //         CurrPage.Update(false);
+
+            //         Message('%1 record(s) approved for Lease. %2 record(s) were not in "Pending" status.', ApproveCount, ErrorCount);
+            //     end;
+            // }
+
             action(ApproveLease)
             {
                 Caption = 'Approve Lease';
                 ApplicationArea = All;
                 Image = Approve;
+                Visible = IsLeaseManager;
 
                 trigger OnAction()
                 var
                     SelectedRecs: Record "ContractEndProcessApproval";
                     ApproveCount: Integer;
                     ErrorCount: Integer;
+                    EmailSender: Codeunit 50302;
                 begin
                     CurrPage.SetSelectionFilter(SelectedRecs);
 
@@ -149,6 +193,9 @@ page 50719 "Contract End Process Approval"
                                 SelectedRecs."Lease_M Status" := 'Approved';
                                 SelectedRecs.Modify();
                                 ApproveCount += 1;
+
+                                // Send Email After Approval
+                                EmailSender.SendEmail(SelectedRecs);
                             end else
                                 ErrorCount += 1;
                         until SelectedRecs.Next() = 0;
@@ -160,12 +207,14 @@ page 50719 "Contract End Process Approval"
                 end;
             }
 
+
             // Decline Action for Property_M Status
             action(DeclineProperty)
             {
                 Caption = 'Decline Property';
                 ApplicationArea = All;
                 Image = Cancel;
+                Visible = IsPropertyManager; // Button visible only for Property Manager
 
                 trigger OnAction()
                 var
@@ -206,6 +255,7 @@ page 50719 "Contract End Process Approval"
                 Caption = 'Decline Lease';
                 ApplicationArea = All;
                 Image = Cancel;
+                Visible = IsLeaseManager; // Button visible only for Lease Manager
 
                 trigger OnAction()
                 var
@@ -241,6 +291,52 @@ page 50719 "Contract End Process Approval"
             }
         }
     }
+
+
+    trigger OnOpenPage()
+    begin
+        IsPropertyManager := CheckUserRole();
+        IsLeaseManager := CheckUserRole1();
+    end;
+
+    procedure CheckUserRole(): Boolean
+    var
+        UserPersonalization: Record "User Personalization";
+    begin
+        if UserPersonalization.Get(UserSecurityId()) then begin
+            case UserPersonalization."Profile ID" of
+                'PROPERTY MANAGER':
+                    exit(true);  // Only property managers can approve/reject
+                else
+                    exit(false);
+            end;
+        end;
+        exit(false);
+    end;
+
+    procedure CheckUserRole1(): Boolean
+    var
+        UserPersonalization: Record "User Personalization";
+    begin
+        if UserPersonalization.Get(UserSecurityId()) then begin
+            case UserPersonalization."Profile ID" of
+                'LEASE_MANAGER':
+                    exit(true);  // Only property managers can approve/reject
+                else
+                    exit(false);
+            end;
+        end;
+        exit(false);
+    end;
+
+    var
+        IsPropertyManager: Boolean;
+        IsLeaseManager: Boolean;
+
 }
+
+
+
+
 
 
