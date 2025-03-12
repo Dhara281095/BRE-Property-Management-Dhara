@@ -253,6 +253,24 @@ table 50303 "Property Registration"
 
     //-------------Record Insert--------------//
 
+    trigger OnDelete()
+    var
+    begin
+        deleteWorkflowFrequencyPR();
+    end;
+
+    procedure deleteWorkflowFrequencyPR()
+    var
+        WorkflowFrequencyPR: Record "Workflow Frequency PR";
+
+    begin
+        WorkflowFrequencyPR.SetRange("Company Id", Rec."Company ID");
+        WorkflowFrequencyPR.SetRange("Property ID", Rec."Property ID");
+        if WorkflowFrequencyPR.FindSet() then begin
+            WorkflowFrequencyPR.DeleteAll();
+        end
+
+    end;
 
 
 }

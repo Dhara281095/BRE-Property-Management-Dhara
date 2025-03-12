@@ -5,25 +5,25 @@ table 50701 "testData"
 
     fields
     {
-        field(1; "Company ID"; Integer)
+        field(50100; "Company ID"; Integer)
         {
             DataClassification = ToBeClassified;
             AutoIncrement = true;
         }
 
-        field(2; "Company Name"; Text[100])
+        field(50101; "Company Name"; Text[100])
         {
             DataClassification = ToBeClassified;
             Editable = false;
         }
 
-        field(3; "Company Logo"; Text[50])
+        field(50103; "Company Logo"; Text[50])
         {
             DataClassification = ToBeClassified;
 
         }
 
-        field(4; "Logo URL"; Text[250])
+        field(50104; "Logo URL"; Text[250])
         {
             DataClassification = ToBeClassified;
             Caption = 'Logo URL';

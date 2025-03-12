@@ -1,5 +1,8 @@
 namespace BREPropertyManagementMargi.BREPropertyManagementMargi;
 using Microsoft.Finance.GeneralLedger.Journal;
+using Microsoft.Sales.Customer;
+using Microsoft.Sales.Receivables;
+using Microsoft.Sales.History;
 using Microsoft.Foundation.Company;
 report 50112 PaymentReceipt
 {
@@ -35,11 +38,85 @@ report 50112 PaymentReceipt
             column(CompanyEmail; CompanyInfo."E-Mail")
             {
             }
+            column(CurrentDate; Format(CurrentDateTime, 0, '<Day,2>/<Month,2>/<Year4>'))  // Add a column to hold the current date
+            {
+            }
             column(Customer_Id; "Customer Id")
             {
 
             }
+            column(Description; Description)
+            {
+
+            }
+            column(Account_No_; "Account No.")
+            {
+
+            }
+            column(Document_No_; "Document No.")
+            {
+
+            }
+            column(ApptoDocNo; "Applies-to Doc. No.")
+            {
+
+            }
+            column(Posting_Date; "Posting Date")
+            {
+
+            }
+            column(Document_Type; "Document Type")
+            {
+
+            }
+            column(ApptoDocType; "Applies-to Doc. Type")
+            {
+
+            }
+            column(Amount; -Amount)
+            {
+
+            }
+
+            dataitem(Customer; Customer)
+            {
+                DataItemLink = "No." = field("Account No.");
+                column(Address; Address)
+                {
+
+                }
+                column(Phone_No_; "Phone No.")
+                {
+
+                }
+                column(E_Mail; "E-Mail")
+                {
+
+                }
+            }
+            dataitem("Sales Invoice Header"; "Sales Invoice Header")
+            {
+                DataItemLink = "No." = field("Applies-to Doc. No.");
+                column(Posting_Date_sales; "Posting Date")
+                {
+
+                }
+            }
+            dataitem("Cust. Ledger Entry"; "Cust. Ledger Entry")
+            {
+                DataItemLink = "Applies-to Doc. No." = field("Document No.");
+                column(DesEntry; Description)
+                {
+
+                }
+                column(Amountentry; "Amount to Apply")
+                {
+
+                }
+            }
         }
+
+
     }
     requestpage
     {
