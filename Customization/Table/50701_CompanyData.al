@@ -86,4 +86,24 @@ table 50701 "testData"
 
 
     //--------------Record Insertion-----------------//
+
+
+
+    trigger OnDelete()
+    var
+    begin
+        deleteWorkflowFrequency();
+    end;
+
+    procedure deleteWorkflowFrequency()
+    var
+        WorkflowFrequency: Record "Workflow Frequency";
+
+    begin
+        WorkflowFrequency.SetRange("Company Id", Rec."Company ID");
+        if WorkflowFrequency.FindSet() then begin
+            WorkflowFrequency.DeleteAll();
+        end
+
+    end;
 }
