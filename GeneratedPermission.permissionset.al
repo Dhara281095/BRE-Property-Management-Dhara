@@ -300,7 +300,7 @@ permissionset 50100 GeneratedPermission
         table "TC Single Unit Rent SubPage" = X,
         report "Other Payment Details" = X,
         report "PDC Transaction Report" = X,
-        codeunit "Daily Job Queue" = X,
+        //codeunit "Daily Job Queue" = X,
         codeunit RejectSalesInvoice = X,
         codeunit ResendUpdateInvoiceFM = X,
         codeunit SendApprovalToFinanceManager = X,
