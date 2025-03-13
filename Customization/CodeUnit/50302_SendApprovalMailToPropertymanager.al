@@ -60,7 +60,7 @@ codeunit 50302 "Send Email To PropertyManager"
 
                 // Send the email
                 if Email.Send(EmailMessage) then
-                    Message('Email sent successfully')
+                    Message('Email sent successfully to Property Manager for Verification.')
                 else
                     Error('Failed to send email. Please verify SMTP settings and email addresses.');
             end;
