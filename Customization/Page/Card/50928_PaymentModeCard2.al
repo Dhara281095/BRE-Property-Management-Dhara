@@ -310,7 +310,7 @@ page 50928 "Payment Mode Card2"
                 field("Approval Status"; Rec."Approval Status")
                 {
                     ApplicationArea = All;
-                    Editable = IsApproved;
+                    Editable = IsApproved AND IsFinanceManager;
                 }
                 field(Reason; Rec.Reason)
                 {
