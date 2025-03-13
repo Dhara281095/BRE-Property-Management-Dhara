@@ -1,7 +1,8 @@
 codeunit 50106 GenerateConsolidatedInvoices
 {
+    trigger OnRun()
 
-    procedure GenerateConsolidatedInvoicesDirectly()
+    // procedure GenerateConsolidatedInvoicesDirectly()
     var
         paymentScheudle2: Record "Payment Schedule2";
         SalesHeader: Record "Sales Header";

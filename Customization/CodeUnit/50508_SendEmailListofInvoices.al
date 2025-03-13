@@ -1,8 +1,8 @@
 codeunit 50508 LeaseManagerSendMail
 {
 
-    //trigger OnRun()
-    procedure sendmail()
+    trigger OnRun()
+    //procedure sendmail()
 
     var
         EmailBody: Text;
@@ -25,7 +25,7 @@ codeunit 50508 LeaseManagerSendMail
         // Initialize to check if any invoices exist
         InvoicesExist := False;
 
-        UserPersonalizationRec.SetRange("Profile ID", 'Accounting Manager'); // Accounting Manager
+        UserPersonalizationRec.SetRange("Profile ID", 'FINANCE MANAGER'); // Accounting Manager
         if UserPersonalizationRec.FindFirst() then begin
             UserRec.Get(UserPersonalizationRec."User SID");
             EmailAddress.Add(UserRec."Contact Email");
