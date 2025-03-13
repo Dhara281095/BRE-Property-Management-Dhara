@@ -17,7 +17,7 @@ codeunit 50106 GenerateConsolidatedInvoices
         paymentschedulcard: Record "Payment Schedule";
 
     begin
-        todaydate := 20260228D;
+        todaydate := Today();
 
         currentdate := Today();
 
