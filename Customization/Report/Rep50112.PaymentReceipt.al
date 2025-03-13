@@ -12,7 +12,7 @@ report 50112 PaymentReceipt
     DefaultRenderingLayout = "PaymentReceipt.docx";
     dataset
     {
-        dataitem(GenJournalLine; "Gen. Journal Line")
+        dataitem("Payment Schedule2"; "Payment Schedule2")
         {
             column(CompanyPicture; CompanyInfo.Picture)
             {
@@ -41,93 +41,71 @@ report 50112 PaymentReceipt
             column(CurrentDate; Format(CurrentDateTime, 0, '<Day,2>/<Month,2>/<Year4>'))  // Add a column to hold the current date
             {
             }
-            column(Customer_Id; "Customer Id")
+            column(Contract_ID; "Contract ID")
             {
-
             }
-            column(Description; Description)
+            column(Pay_S; "Payment Series")
             {
-
             }
-            column(Account_No_; "Account No.")
+            column(Invoice_ID; "Invoice ID")
             {
-
             }
-            column(Document_No_; "Document No.")
+            // column(Payment_Mode; "Payment Mode")
+            // {
+            // }
+            // column(Che_N; "Cheque Number")
+            // {
+            // }
+            column(Secondary_Item_Type; "Secondary Item Type")
             {
-
             }
-            column(ApptoDocNo; "Applies-to Doc. No.")
+            column(Amount; Amount)
             {
-
             }
-            column(Posting_Date; "Posting Date")
+            column(T_A; "VAT Amount")
             {
-
             }
-            column(Document_Type; "Document Type")
+            column(AIV; "Amount Including VAT")
             {
-
             }
-            column(ApptoDocType; "Applies-to Doc. Type")
-            {
-
-            }
-            column(Amount; -Amount)
-            {
-
-            }
+            // dataitem("Payment Mode2"; "Payment Mode2")
+            // {
+            //     DataItemLink = "Payment Series" = field("Payment Series");
+            //     column(Payment_Mode; "Payment Mode")
+            //     {
+            //     }
+            //     column(Che_N; "Cheque Number")
+            //     {
+            //     }
+            // }
             dataitem(Customer; Customer)
             {
-                DataItemLink = "No." = field("Account No.");
+                DataItemLink = "No." = field("Tenant Id");
+                column(Name; Name)
+                {
+                }
                 column(Address; Address)
                 {
-
                 }
                 column(Phone_No_; "Phone No.")
                 {
-
                 }
                 column(E_Mail; "E-Mail")
                 {
-
                 }
             }
-            dataitem("Sales Invoice Header"; "Sales Invoice Header")
+            dataitem("Tenancy Contract"; "Tenancy Contract")
             {
-                DataItemLink = "No." = field("Applies-to Doc. No.");
-                column(Posting_Date_sales; "Posting Date")
+                DataItemLink = "Contract ID" = field("Contract ID");
+                column(Property_Name; "Property Name")
                 {
-
                 }
-            }
-            dataitem("Cust. Ledger Entry"; "Cust. Ledger Entry")
-            {
-                DataItemLink = "Applies-to Doc. No." = field("Document No.");
-                column(DesEntry; Description)
+                column(Unit_Name; "Unit Name")
                 {
-
                 }
-                column(Amountentry; "Amount to Apply")
+                column(Contract_Tenor; "Contract Tenor")
                 {
-
                 }
-                trigger OnAfterGetRecord()
-                begin
-                    TotalAmount := TotalAmount - Amount;  // Using negative to match your existing column format
-                end;
-
-                trigger OnPreDataItem()
-                begin
-                    TotalAmount := 0;
-                end;
-            }
-
-            dataitem(Totals; System.Utilities.Integer)
-            {
-                DataItemTableView = sorting(Number) where(Number = const(1));
-                column(TAmount; Format(TotalAmount, 0, '<Precision,2:2><Standard Format,0>'))
-                { }
             }
         }
 
