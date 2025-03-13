@@ -72,8 +72,8 @@ table 50102 "Country"
     var
         CountryRec: Record "Country";
     begin
-        if (Rec."Country Name" = '') then
-            Error('Country Name is required.');
+        // if (Rec."Country Name" = '') then
+        //     Error('Country Name is required.');
 
         // Check if 'Sl No.' is 0 (indicating it's a new record)
         if "Sl No." = 0 then begin
@@ -86,10 +86,10 @@ table 50102 "Country"
     end;
     //-------------Record Insert--------------//
 
-    trigger OnModify()
-    begin
-        if (Rec."Country Name" = '') then
-            Error('Country Name is required.');
-    end;
+    // trigger OnModify()
+    // begin
+    //     if (Rec."Country Name" = '') then
+    //         Error('Country Name is required.');
+    // end;
 
 }
