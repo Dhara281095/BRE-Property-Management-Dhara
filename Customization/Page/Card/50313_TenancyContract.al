@@ -26,13 +26,20 @@ page 50313 "Tenancy Contract Card"
                     ApplicationArea = All;
                     trigger OnValidate()
                     begin
+
                         UpdateFieldsEnable();
+                        //  CurrPage.SaveRecord();
                     end;
                 }
                 field("Proposal ID"; Rec."Proposal ID")
                 {
                     ApplicationArea = All;
                     Enabled = ProposalIDEnabled;
+                    trigger OnValidate()
+                    begin
+                        // CurrPage.SaveRecord();
+                    end;
+
                 }
 
                 field("Renewal Proposal ID"; rec."Renewal Proposal ID")
@@ -1237,7 +1244,7 @@ page 50313 "Tenancy Contract Card"
                 field("Tenant Contract Status"; rec."Tenant Contract Status")
                 {
                     ApplicationArea = All;
-                    // Editable = false;
+                    Editable = false;
 
                     trigger OnValidate()
                     var

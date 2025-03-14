@@ -74,12 +74,34 @@ pageextension 50101 Items extends "Item Card"
         {
             Visible = false;
         }
+        modify("Gen. Prod. Posting Group")
+        {
+            ShowMandatory = false;
+            Editable = hideshowfields;
+            Visible = hideshowfields;
+
+        }
+        modify("VAT Prod. Posting Group")
+        {
+            ShowMandatory = false;
+            Editable = hideshowfields;
+            Visible = hideshowfields;
+
+
+        }
+        modify("Service Item Group")
+        {
+            Editable = editablefalsefieldNonInventoryType;
+        }
+
+
         addafter("Last Date Modified")
         {
             field(GTIN_; rec.GTIN_)
             {
                 ApplicationArea = All;
-                Editable = true;
+                // Editable = true;
+                Editable = editablefalsefieldNonInventoryType;
                 Caption = 'GTIN';
             }
         }
@@ -88,7 +110,8 @@ pageextension 50101 Items extends "Item Card"
             field("Market Rate per Sq. Ft."; rec."Market Rate per Sq. Ft.")
             {
                 ApplicationArea = All;
-                Editable = true;
+                //Editable = true;
+                Editable = editablefalsefieldNonInventoryType;
             }
         }
 
@@ -98,7 +121,8 @@ pageextension 50101 Items extends "Item Card"
             {
                 ApplicationArea = All;
                 Caption = 'Unit Size';
-                Editable = true;
+                // Editable = true;
+                Editable = editablefalsefieldNonInventoryType;
             }
         }
         // addafter(Type)
@@ -129,6 +153,7 @@ pageextension 50101 Items extends "Item Card"
                 ApplicationArea = All;
                 Caption = 'Primary Classification Type';
                 Editable = ISPrimaryType;
+                //Visible = hideshowfields;
             }
         }
         addafter(Item)
@@ -149,16 +174,19 @@ pageextension 50101 Items extends "Item Card"
                     ApplicationArea = All;
                     Caption = 'Country';
                     Lookup = true;
+                    Editable = editablefalsefieldNonInventoryType;
                     trigger OnValidate()
                     begin
                         AutoGenerateUnitName(); // Call to auto-generate the Unit Name when Merge Units changes
                     end;
+
                 }
                 field(Emirate; Rec.Emirate)
                 {
                     ApplicationArea = All;
                     Caption = 'Emirate';
                     Lookup = true;
+                    Editable = editablefalsefieldNonInventoryType;
                     trigger OnValidate()
                     begin
                         AutoGenerateUnitName(); // Call to auto-generate the Unit Name when Merge Units changes
@@ -169,6 +197,7 @@ pageextension 50101 Items extends "Item Card"
                     ApplicationArea = All;
                     Caption = 'Community';
                     Lookup = true;
+                    Editable = editablefalsefieldNonInventoryType;
                     trigger OnValidate()
                     begin
                         AutoGenerateUnitName(); // Call to auto-generate the Unit Name when Merge Units changes
@@ -179,6 +208,7 @@ pageextension 50101 Items extends "Item Card"
                     ApplicationArea = All;
                     Caption = 'Property ID';
                     // ShowMandatory = true;
+                    Editable = editablefalsefieldNonInventoryType;
                     trigger OnValidate()
                     begin
                         AutoGenerateUnitName();
@@ -195,13 +225,15 @@ pageextension 50101 Items extends "Item Card"
                 {
                     ApplicationArea = All;
                     Caption = 'Floor Number';
-                    Editable = true;
+                    //Editable = true;
+                    Editable = editablefalsefieldNonInventoryType;
                 }
                 field("Unit Number"; Rec."Unit Number") // Custom Field
                 {
                     ApplicationArea = All;
                     Caption = 'Unit Number';
-                    Editable = true;
+                    // Editable = true;
+                    Editable = editablefalsefieldNonInventoryType;
                     // trigger OnValidate()
                     // begin
                     //     AutoGenerateUnitName(); // Call to auto-generate the Unit Name when Unit Number changes
@@ -232,10 +264,12 @@ pageextension 50101 Items extends "Item Card"
                 {
                     ApplicationArea = All;
                     Lookup = true;
+                    Editable = editablefalsefieldNonInventoryType;
                 }
                 field("Unit Address"; rec."Unit Address")
                 {
                     ApplicationArea = All;
+                    Editable = editablefalsefieldNonInventoryType;
                 }
 
                 // field("Registration Date"; rec."Unit Address")
@@ -273,7 +307,9 @@ pageextension 50101 Items extends "Item Card"
                     Lookup = true;
                 }
 
+
             }
+
 
 
             // group(MergedUnits)
@@ -351,6 +387,7 @@ pageextension 50101 Items extends "Item Card"
                 SubPageLink = UnitID = FIELD("No."); // Link to filter attachments for this owner only
                 ApplicationArea = All;
                 Visible = isVisible;
+                Editable = editablefalsefieldNonInventoryType;
 
             }
         }
@@ -481,6 +518,9 @@ pageextension 50101 Items extends "Item Card"
     begin
         CurrPage."Document Attachments".Page.SetUnitId(Rec."No.");
         ISPrimaryType := SetPrimaryType();
+        hideshowfields := hidefields();
+        editablefalsefieldNonInventoryType := editablefalseNonInventory();
+
     end;
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
@@ -500,12 +540,18 @@ pageextension 50101 Items extends "Item Card"
             isVisible := false;
         end;
         ISPrimaryType := SetPrimaryType();
+        hideshowfields := hidefields();
+        editablefalsefieldNonInventoryType := editablefalseNonInventory();
+
 
     end;
 
     trigger OnAfterGetCurrRecord()
     begin
         ISPrimaryType := SetPrimaryType();
+        hideshowfields := hidefields();
+        editablefalsefieldNonInventoryType := editablefalseNonInventory();
+
     end;
 
 
@@ -518,10 +564,38 @@ pageextension 50101 Items extends "Item Card"
             exit(false);
     end;
 
+    procedure hidefields(): Boolean
+    var
+    begin
+        if Rec.Type = Rec.Type::Service then
+            exit(false)
+        else
+            exit(true);
+    end;
+
+    procedure editablefalseNonInventory(): Boolean
+    var
+    begin
+        if Rec.Type = Rec.Type::"Non-Inventory" then
+            exit(false)
+        else
+            exit(true);
+    end;
+
+    trigger OnOpenPage()
+    var
+    begin
+        hideshowfields := hidefields();
+        editablefalsefieldNonInventoryType := editablefalseNonInventory();
+
+    end;
+
     var
         ISPrimaryType: Boolean;
         documentattachment: Codeunit UploadAttachment;
 
+        hideshowfields: Boolean;
+        editablefalsefieldNonInventoryType: Boolean;
     // trigger OnOpenPage()
     // begin
     //     // Initialize visibility when page opens
@@ -535,7 +609,7 @@ pageextension 50101 Items extends "Item Card"
 
     // local procedure UpdateGroupVisibility()
     // begin
-    //     // Default to hiding both groups
+    //     // Defalt to hiding both groups
     //     IsUnitManagementVisible := false;
     //     IsMergedUnitsVisible := false;
 

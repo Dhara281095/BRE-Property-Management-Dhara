@@ -158,6 +158,12 @@ table 50938 "Tenancy Contract Subpage"
             DataClassification = ToBeClassified;
             Caption = 'Proposal ID';
         }
+        field(50116; "Contract Renewal ID"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Contract Renewal ID';
+
+        }
     }
 
     keys
