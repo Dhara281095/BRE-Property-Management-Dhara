@@ -1216,52 +1216,8 @@ page 50313 "Tenancy Contract Card"
                   (Rec."Praposal Type Selected" = Rec."Praposal Type Selected"::"Merge Unit");
                 }
             }
-            group("Other Payments")
+            group("Rent Calculation")
             {
-                part("Revenues"; "Tenancy Contract SubPage Card")
-                {
-                    SubPageLink = ContractID = FIELD("Contract ID"); // Link to filter attachments for this owner only
-                    ApplicationArea = All;
-                    // Visible = isVisible;
-                }
-            }
-
-            group("Contract Status")  // Add a separate group for clarity
-            {
-                field("Update Contract Status"; Rec."Update Contract Status")
-                {
-                    ApplicationArea = All;
-                    trigger OnValidate()
-                    begin
-                        // Check if "Update Contract Status" has a value other than its default (e.g., <Blank>)
-                        if Rec."Update Contract Status" <> Rec."Update Contract Status"::" " then
-                            Rec."Yes/No" := true
-                        else
-                            Rec."Yes/No" := false;
-                    end;
-                }
-
-                field("Tenant Contract Status"; rec."Tenant Contract Status")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-
-                    trigger OnValidate()
-                    var
-                        PaymentSchedule: Record "Payment Schedule";
-
-                    begin
-                        // Check if the contract status is either "Terminated" or "Renewed"
-                        if (Rec."Tenant Contract Status" = Rec."Tenant Contract Status"::"Terminated") or
-                           (Rec."Tenant Contract Status" = Rec."Tenant Contract Status"::"Contract Renewed") then
-                            IsVisible := true  // Link should be visible
-                        else
-                            IsVisible := false; // Link should be hidden
-
-                        populateTenantContractStatusPaymentschedule();
-                    end;
-                }
-
                 field("Update Data"; Rec."Update Data")
                 {
                     ApplicationArea = All;
@@ -1568,6 +1524,56 @@ page 50313 "Tenancy Contract Card"
                             Message('The related Revenue Structure does not exist.')
                     end;
 
+                }
+
+
+
+
+            }
+            group("Other Payments")
+            {
+                part("Revenues"; "Tenancy Contract SubPage Card")
+                {
+                    SubPageLink = ContractID = FIELD("Contract ID"); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    // Visible = isVisible;
+                }
+            }
+
+            group("Contract Status")  // Add a separate group for clarity
+            {
+                field("Update Contract Status"; Rec."Update Contract Status")
+                {
+                    ApplicationArea = All;
+                    trigger OnValidate()
+                    begin
+                        // Check if "Update Contract Status" has a value other than its default (e.g., <Blank>)
+                        if Rec."Update Contract Status" <> Rec."Update Contract Status"::" " then
+                            Rec."Yes/No" := true
+                        else
+                            Rec."Yes/No" := false;
+                    end;
+                }
+
+                field("Tenant Contract Status"; rec."Tenant Contract Status")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+
+                    trigger OnValidate()
+                    var
+                        PaymentSchedule: Record "Payment Schedule";
+
+                    begin
+                        // Check if the contract status is either "Terminated" or "Renewed"
+                        if (Rec."Tenant Contract Status" = Rec."Tenant Contract Status"::"Terminated") or
+                           (Rec."Tenant Contract Status" = Rec."Tenant Contract Status"::"Contract Renewed") then
+                            IsVisible := true  // Link should be visible
+                        else
+                            IsVisible := false; // Link should be hidden
+
+                        populateTenantContractStatusPaymentschedule();
+                    end;
                 }
 
 
