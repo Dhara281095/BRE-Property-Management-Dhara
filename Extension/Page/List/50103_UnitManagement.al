@@ -2,6 +2,7 @@ pageextension 50103 ItemListExtension extends "Item List"
 {
     Caption = 'Unit list';
 
+
     layout
     {
         modify("No.")
@@ -44,6 +45,7 @@ pageextension 50103 ItemListExtension extends "Item List"
         {
             Visible = false;
         }
+
         addbefore(Description)
         {
             field("Unit Name"; Rec."Unit Name")
@@ -104,7 +106,9 @@ pageextension 50103 ItemListExtension extends "Item List"
                 ApplicationArea = All;
                 Caption = 'Merged Unit ID';
             }
+
         }
+
 
     }
 
@@ -137,7 +141,12 @@ pageextension 50103 ItemListExtension extends "Item List"
         exit(SelectedUnits);
     end;
 
+    trigger OnOpenPage()
+    var
 
+    begin
+        Rec.SetRange(Type, Rec.Type::Service);
+    end;
 
 
 

@@ -280,6 +280,11 @@ page 50939 "Tenancy Contract SubPage Card"
                     end;
 
                 }
+                field("Contract Renewal ID"; Rec."Contract Renewal ID")
+                {
+                    Editable = false;
+                    ApplicationArea = All;
+                }
             }
         }
     }

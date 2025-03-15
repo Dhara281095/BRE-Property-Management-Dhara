@@ -1613,74 +1613,82 @@ table 50307 "Tenancy Contract"
         TenancyContractSubpage: Record "Tenancy Contract Subpage";
 
     begin
+        if Rec."Contract Type" = Rec."Contract Type"::"New Contract"
+        then begin
 
-        TenancyContractSubpage.SetRange("ProposalID", Rec."Proposal ID");
-        if TenancyContractSubpage.FindSet() then begin
-            TenancyContractSubpage.DeleteAll();
+
+
+            TenancyContractSubpage.SetRange(ContractID, Rec."Contract ID");
+            if TenancyContractSubpage.FindSet() then begin
+                TenancyContractSubpage.DeleteAll();
+            end;
+            RevenueSubpage.SetRange("ProposalID", Rec."Proposal ID");
+            //RevenueSubpage.SetRange("Payment Type", 1);
+            if RevenueSubpage.FindSet() then
+                repeat
+
+                    // TenancyContractSubpage.SetRange("PS ID", Rec."PS Id");
+
+                    TenancyContractSubpage.Init();
+                    // TenancyContractSubpage."PS ID" := Rec."PS Id";
+                    TenancyContractSubpage.ProposalID := RevenueSubpage.ProposalID;
+                    TenancyContractSubpage."ContractID" := Rec."Contract ID";
+                    TenancyContractSubpage."TenantID" := rec."Tenant Id";
+                    TenancyContractSubpage."Secondary Item Type" := RevenueSubpage."Secondary Item Type";
+                    TenancyContractSubpage.Amount := RevenueSubpage.Amount;
+                    TenancyContractSubpage."VAT Amount" := RevenueSubpage."VAT Amount";
+                    TenancyContractSubpage."VAT %" := RevenueSubpage."VAT %";
+                    TenancyContractSubpage."Amount Including VAT" := RevenueSubpage."Amount Including VAT";
+                    TenancyContractSubpage."Start Date" := RevenueSubpage."Start Date";
+                    TenancyContractSubpage."End Date" := RevenueSubpage."End Date";
+                    TenancyContractSubpage."Payment Type" := RevenueSubpage."Payment Type";
+
+                    TenancyContractSubpage.Insert();
+                    Clear(TenancyContractSubpage);
+                until RevenueSubpage.Next() = 0;
+
         end;
-        RevenueSubpage.SetRange("ProposalID", Rec."Proposal ID");
-        //RevenueSubpage.SetRange("Payment Type", 1);
-        if RevenueSubpage.FindSet() then
-            repeat
-
-                // TenancyContractSubpage.SetRange("PS ID", Rec."PS Id");
-
-                TenancyContractSubpage.Init();
-                // TenancyContractSubpage."PS ID" := Rec."PS Id";
-                TenancyContractSubpage.ProposalID := RevenueSubpage.ProposalID;
-                TenancyContractSubpage."ContractID" := Rec."Contract ID";
-                TenancyContractSubpage."TenantID" := rec."Tenant Id";
-                TenancyContractSubpage."Secondary Item Type" := RevenueSubpage."Secondary Item Type";
-                TenancyContractSubpage.Amount := RevenueSubpage.Amount;
-                TenancyContractSubpage."VAT Amount" := RevenueSubpage."VAT Amount";
-                TenancyContractSubpage."VAT %" := RevenueSubpage."VAT %";
-                TenancyContractSubpage."Amount Including VAT" := RevenueSubpage."Amount Including VAT";
-                TenancyContractSubpage."Start Date" := RevenueSubpage."Start Date";
-                TenancyContractSubpage."End Date" := RevenueSubpage."End Date";
-                TenancyContractSubpage."Payment Type" := RevenueSubpage."Payment Type";
-                TenancyContractSubpage.Insert();
-                Clear(TenancyContractSubpage);
-            until RevenueSubpage.Next() = 0;
-
-
     end;
 
     procedure TenancyContractSubpage2()
     var
-        RevenueSubpage: Record "Contract Renewal Subpage";
+        RevenueSubpage2: Record "Contract Renewal Subpage";
         TenancyContractSubpage2: Record "Tenancy Contract Subpage";
 
     begin
+        if Rec."Contract Type" = Rec."Contract Type"::"Renewal Contract" then begin
 
-        TenancyContractSubpage2.SetRange("ContractID", Rec."Contract ID");
-        if TenancyContractSubpage2.FindSet() then begin
-            TenancyContractSubpage2.DeleteAll();
+
+            TenancyContractSubpage2.SetRange(ContractID, Rec."Contract ID");
+            if TenancyContractSubpage2.FindSet() then begin
+                TenancyContractSubpage2.DeleteAll();
+            end;
+            //RevenueSubpage.SetRange("Id", Rec."Id");
+            RevenueSubpage2.SetRange(ID, "Renewal Proposal ID");
+            //RevenueSubpage2.SetRange("Payment Type", 1);
+            if RevenueSubpage2.FindSet() then
+                repeat
+
+                    // TenancyContractSubpage2.SetRange("PS ID", Rec."PS Id");
+
+                    TenancyContractSubpage2.Init();
+                    // TenancyContractSubpage2."PS ID" := Rec."PS Id";
+                    // TenancyContractSubpage2.ProposalID := RevenueSubpage2.p;
+                    TenancyContractSubpage2."Contract Renewal ID" := RevenueSubpage2.Id;
+                    TenancyContractSubpage2."ContractID" := Rec."Contract ID";
+                    TenancyContractSubpage2."TenantID" := rec."Tenant Id";
+                    TenancyContractSubpage2."Secondary Item Type" := RevenueSubpage2."Secondary Item Type";
+                    TenancyContractSubpage2.Amount := RevenueSubpage2.Amount;
+                    TenancyContractSubpage2."VAT Amount" := RevenueSubpage2."VAT Amount";
+                    TenancyContractSubpage2."VAT %" := RevenueSubpage2."VAT %";
+                    TenancyContractSubpage2."Amount Including VAT" := RevenueSubpage2."Amount Including VAT";
+                    TenancyContractSubpage2."Start Date" := RevenueSubpage2."Start Date";
+                    TenancyContractSubpage2."End Date" := RevenueSubpage2."End Date";
+                    TenancyContractSubpage2."Payment Type" := RevenueSubpage2."Payment Type";
+                    TenancyContractSubpage2.Insert();
+                    Clear(TenancyContractSubpage2);
+                until RevenueSubpage2.Next() = 0;
         end;
-        //RevenueSubpage.SetRange("Id", Rec."Id");
-        RevenueSubpage.SetRange(ID, "Renewal Proposal ID");
-        //RevenueSubpage.SetRange("Payment Type", 1);
-        if RevenueSubpage.FindSet() then
-            repeat
-
-                // TenancyContractSubpage2.SetRange("PS ID", Rec."PS Id");
-
-                TenancyContractSubpage2.Init();
-                // TenancyContractSubpage2."PS ID" := Rec."PS Id";
-                // TenancyContractSubpage2.ProposalID := RevenueSubpage.p;
-                TenancyContractSubpage2."ContractID" := Rec."Contract ID";
-                TenancyContractSubpage2."TenantID" := rec."Tenant Id";
-                TenancyContractSubpage2."Secondary Item Type" := RevenueSubpage."Secondary Item Type";
-                TenancyContractSubpage2.Amount := RevenueSubpage.Amount;
-                TenancyContractSubpage2."VAT Amount" := RevenueSubpage."VAT Amount";
-                TenancyContractSubpage2."VAT %" := RevenueSubpage."VAT %";
-                TenancyContractSubpage2."Amount Including VAT" := RevenueSubpage."Amount Including VAT";
-                TenancyContractSubpage2."Start Date" := RevenueSubpage."Start Date";
-                TenancyContractSubpage2."End Date" := RevenueSubpage."End Date";
-                TenancyContractSubpage2."Payment Type" := RevenueSubpage."Payment Type";
-                TenancyContractSubpage2.Insert();
-                Clear(TenancyContractSubpage2);
-            until RevenueSubpage.Next() = 0;
-
 
     end;
 
