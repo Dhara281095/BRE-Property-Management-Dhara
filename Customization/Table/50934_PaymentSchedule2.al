@@ -148,6 +148,17 @@ table 50934 "Payment Schedule2"
             Caption = 'Payment Recived Date';
             DataClassification = ToBeClassified;
         }
+
+        field(50922; "Payment Mode"; Text[100])
+        {
+            Caption = 'Payment Mode';
+        }
+
+        field(50923; "Cheque Number"; Text[100])
+        {
+            Caption = 'Cheque Number';
+        }
+
     }
 
     keys
