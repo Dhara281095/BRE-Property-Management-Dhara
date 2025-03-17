@@ -86,10 +86,22 @@ table 50925 "Payment Mode2"
             TableRelation = "Payment Type"."Payment Method";
 
             trigger OnValidate()
+            var
+                paymentschedule: Record "Payment Schedule2";
             begin
+
                 if Rec."Payment Mode" = 'Cheque' then begin
                     Rec."Cheque Status" := Rec."Cheque Status"::"Cheque Received";
                     Rec.Modify();
+                end;
+
+                paymentschedule.SetRange("payment Series", Rec."Payment Series");
+                paymentschedule.SetRange("Contract ID", Rec."Contract ID");
+                if paymentschedule.FindSet() then begin
+                    repeat
+                        paymentschedule."Payment Mode" := Rec."Payment Mode";
+                        paymentschedule.Modify();
+                    until paymentschedule.Next() = 0;
                 end;
             end;
         }
@@ -103,6 +115,7 @@ table 50925 "Payment Mode2"
             var
                 pdcTransRec: Record "PDC Transaction";
                 paymentGridRec: Record "Payment Mode2";
+                paymentschedule: Record "Payment Schedule2";
             begin
                 paymentGridRec.SetRange("Cheque Number", Rec."Cheque Number");
                 paymentGridRec.SetFilter("Entry No.", '<>%1', Rec."Entry No.");
@@ -115,6 +128,15 @@ table 50925 "Payment Mode2"
                 if pdcTransRec.FindSet() then begin
                     pdcTransRec."Cheque Number" := Rec."Cheque Number";
                     pdcTransRec.Modify();
+                end;
+
+                paymentschedule.SetRange("payment Series", Rec."Payment Series");
+                paymentschedule.SetRange("Contract ID", Rec."Contract ID");
+                if paymentschedule.FindSet() then begin
+                    repeat
+                        paymentschedule."Cheque Number" := Rec."Cheque Number";
+                        paymentschedule.Modify();
+                    until paymentschedule.Next() = 0;
                 end;
             end;
         }

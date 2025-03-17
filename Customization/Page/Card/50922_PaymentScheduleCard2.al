@@ -158,6 +158,21 @@ page 50922 "Payment Schedule Card2"
                     Visible = false;
                 }
 
+                field("Payment Mode"; Rec."Payment Mode")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Payment Mode';
+                    Editable = false;
+
+                }
+
+                field("Cheque Number"; Rec."Cheque Number")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Cheque Number';
+                    Editable = false;
+
+                }
             }
 
         }
