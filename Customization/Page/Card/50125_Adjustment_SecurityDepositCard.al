@@ -128,8 +128,8 @@ page 50125 "Adjustment Security Deposit"
                     if (Rec."Security Amount Status" = Rec."Security Amount Status"::" ") then
                         Error('Please select Security Amount Status');
 
-                    if Rec.Amount = 0 then
-                        Error('Amount must be specified');
+                    // if Rec.Amount = 0 then
+                    //     Error('Amount must be specified');
 
                     // Create new entry
                     SecurityDepositEntry.Init();

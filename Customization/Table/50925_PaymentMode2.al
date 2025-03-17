@@ -178,10 +178,11 @@ table 50925 "Payment Mode2"
             Caption = 'Payment Status';
             trigger OnValidate()
             var
-                sendReceipt: Codeunit "Send Payment Reciept";
+                emailrec: Codeunit "Send Payment Receipt";
             begin
-                if Rec."Payment Status" = Rec."Payment Status"::Received then
-                    sendReceipt.SendPaymentReceiptEmail(Rec);
+                if Rec."Payment Status" = Rec."Payment Status"::Received then begin
+                    emailrec.SendEmail(Rec);
+                end;
             end;
 
             //     trigger OnValidate()
