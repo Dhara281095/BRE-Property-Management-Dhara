@@ -158,7 +158,10 @@ page 50722 "Final Calculation"
                 {
                     Caption = 'Termination Status';
                 }
-
+                field("FinalCalculationURL"; Rec."Final Calculation URL")
+                {
+                    Caption = 'Final Calculation URL';
+                }
             }
         }
     }

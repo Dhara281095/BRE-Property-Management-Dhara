@@ -214,8 +214,10 @@ page 50903 "Final Calculation Card"
                             UploadResult := documentattachment.UploadDocumentToBlobStorage(SASUrlWithFileName, FileName, InStream);
 
 
-                            Rec."Final Calculation Document" := FileName;// Truncate to fit field length
-                                                                         // Rec."View Document URL" := UploadResult; // Truncate to fit field length
+                            Rec."Final Calculation Document" := FileName;
+                            Rec."Final Calculation URL" := UploadResult;
+                            // Truncate to fit field length
+                            // Rec."View Document URL" := UploadResult; // Truncate to fit field length
                             Rec.Modify();
                             Message('Document uploaded successfully: %1', FileName);
                         end else
