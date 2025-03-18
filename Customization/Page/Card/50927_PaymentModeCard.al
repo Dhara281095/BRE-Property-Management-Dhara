@@ -133,87 +133,177 @@ page 50927 "Payment Mode Card"
                 }
             }
 
+            group("CombinePayment")
+            {
+                Visible = IsCombineVisible;
+                field("Combine Payment Series"; Rec."Combine Payment Series")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Combine Due Date"; Rec."Combine Due Date")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Combine Payment Mode"; Rec."Combine Payment Mode")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Combine Amount"; Rec."Combine Amount")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Combine VAT Amount"; Rec."Combine VAT Amount")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Combine Amount Including VAT"; Rec."Combine Amount Including VAT")
+                {
+                    ApplicationArea = All;
+                }
+            }
+
+            group("SplitPayment")
+            {
+                Visible = IsSplitVisible;
+                field("Split Payment Series"; Rec."Split Payment Series")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Secondary Item Type"; Rec."Secondary Item Type")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Split Due Date"; Rec."Split Due Date")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Split Payment Mode"; Rec."Split Payment Mode")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Split Amount"; Rec."Split Amount")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Split VAT Amount"; Rec."Split VAT Amount")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Split Amount Including VAT"; Rec."Split Amount Including VAT")
+                {
+                    ApplicationArea = All;
+                }
+            }
         }
     }
 
 
-    // actions
-    // {
-    //     area(Processing)
-    //     {
-    //         action(UpdatePaymentModes)
-    //         {
-    //             Caption = 'Process Combine Request';
-    //             ApplicationArea = All;
-    //             trigger OnAction()
-    //             begin
-    //                 ProcessCombineRequest();
-    //             end;
-    //         }
-    //     }
-    // }
+    actions
+    {
+        area(Processing)
+        {
+            action(CombineData)
+            {
+                Caption = 'Combine Data';
+                ApplicationArea = All;
+                Image = NewDocument;
 
-    // procedure ProcessCombineRequest()
-    // var
-    //     PaymentChangeReqTable: Record "Approval Payment Request"; // Replace with your actual table name
-    //     PaymentModeTable: Record "Payment Mode2"; // Replace with your actual table name
-    //     payseries: Text[100];
-    // begin
-    //     // Ensure the current record is properly copied
-    //     // if Rec.IsEmpty() then begin
-    //     //     Message('No record selected.');
-    //     //     exit;
-    //     // end;
+                trigger OnAction()
+                var
+                    Paymentmode: Record "Payment Mode";
+                    Approvalpayment: Record "ManualApprovalPaymentRequest";
+                begin
+                    //IsVisible := NOT IsVisible;
+                    IsCombineVisible := true;
+                    IsSplitVisible := false;
+                    RequestType := RequestType::Combine;
+                    Message('Combine Payment section is open.');
+                end;
+            }
 
-    //     // Debug: Log current record IDs
-    //     Message('Processing Record for: Contract ID: %1, Tenant ID: %2, Proposal ID: %3',
-    //         Rec."Contract ID", Rec."Tenant ID", Rec."Proposal ID");
+            action(SplitData)
+            {
+                Caption = 'Split Data';
+                ApplicationArea = All;
+                Image = NewDocument;
 
-    //     // Filter PaymentChangeReqTable based on the current record's IDs
-    //     PaymentChangeReqTable.Reset();
-    //     PaymentChangeReqTable.SetRange("Contract ID", Rec."Contract ID");
-    //     PaymentChangeReqTable.SetRange("Tenant ID", Rec."Tenant ID");
-    //     PaymentChangeReqTable.SetRange("Proposal ID", Rec."Proposal ID");
-    //     PaymentChangeReqTable.SetRange(Status, 'Approve');
-    //     PaymentChangeReqTable.SetRange("Request Type", 'Combine');
+                trigger OnAction()
+                begin
+                    // IsVisible := NOT IsVisible;
+                    IsCombineVisible := false;
+                    IsSplitVisible := true;
+                    RequestType := RequestType::Split;
+                    Message('Split Payment section is open.');
+                end;
+            }
 
-    //     // Debug: Check if filtered records exist
-    //     if not PaymentChangeReqTable.FindSet() then begin
-    //         Message('No matching records found for Contract ID: %1, Tenant ID: %2, Proposal ID: %3',
-    //             Rec."Contract ID", Rec."Tenant ID");
-    //         exit;
-    //     end
-    //     else begin
 
-    //         // Process the filtered records
-    //         repeat
-    //             // Debug: Log each record being processed
-    //             Message('Processing Record: Contract ID: %1, Tenant ID: %2, Proposal ID: %3, Changed Payment Series: %4',
-    //                 PaymentChangeReqTable."Contract ID",
-    //                 PaymentChangeReqTable."Tenant ID",
-    //                 PaymentChangeReqTable."Proposal ID",
-    //                 PaymentChangeReqTable."Changed Payment Series");
+            action(RequestSend)
+            {
+                Caption = 'Request Send';
+                ApplicationArea = All;
+                Image = Send;
 
-    //             // Fetch the last payment series if any
-    //             PaymentModeTable.Reset(); // Reset to clear filters
-    //             if PaymentModeTable.FindLast() then
-    //                 payseries := PaymentModeTable."Payment Series";
+                trigger OnAction()
+                var
+                    Paymentmode: Record "Payment Mode";
+                    Approvalpayment: Record "ManualApprovalPaymentRequest";
+                begin
+                    IsVisible := NOT IsVisible;
+                    // Validate required fields
+                    if Rec."Contract ID" = 0 then
+                        Error('Contract ID must be specified');
 
-    //             Clear(PaymentModeTable);
+                    Approvalpayment.SetRange("Contract ID", Rec."Contract ID");
+                    Approvalpayment.SetRange("Tenant ID", Rec."Tenant ID");
 
-    //             // Insert new record in Payment Mode table
-    //             PaymentModeTable.Init();
-    //             PaymentModeTable."Contract ID" := PaymentChangeReqTable."Contract ID";
-    //             PaymentModeTable."Tenant ID" := PaymentChangeReqTable."Tenant ID";
-    //             PaymentModeTable."Proposal ID" := PaymentChangeReqTable."Proposal ID";
-    //             PaymentModeTable."Payment Series" := PaymentChangeReqTable."Changed Payment Series"; // Example field
-    //             PaymentModeTable.Insert(true);
-    //             Clear(PaymentModeTable);
-    //         until PaymentChangeReqTable.Next() = 0;
-    //     end;
+                    if Approvalpayment.FindSet() then begin
+                        Approvalpayment."Contract ID" := Rec."Contract ID";
+                        Approvalpayment."Tenant ID" := Rec."Tenant ID";
+                        Approvalpayment.Status := 'Pending';
+                        Approvalpayment."Request Type" := Format(RequestType);
+                        Approvalpayment."Payment Series" := Rec."Combine Payment Series";
+                        Approvalpayment."Due Date" := Rec."Combine Due Date";
+                        Approvalpayment."Payment Mode" := Rec."Combine Payment Mode";
+                        Approvalpayment."New Amount" := Rec."Combine Amount";
+                        Approvalpayment."New VAT Amount" := Rec."Combine VAT Amount";
+                        Approvalpayment."Change Amount Including VAT" := Rec."Combine Amount Including VAT";
+                        Approvalpayment.Modify();
+                        Message('Approval Request Modify successfully!');
+                    end else begin
 
-    //     Message('Processing complete.');
-    // end;
+                        // Create new entry
+                        Approvalpayment.Init();
+                        Approvalpayment."Contract ID" := Rec."Contract ID";
+                        Approvalpayment."Tenant ID" := Rec."Tenant ID";
+                        Approvalpayment.Status := 'Pending';
+                        Approvalpayment."Request Type" := Format(RequestType);
+                        Approvalpayment."Payment Series" := Rec."Combine Payment Series";
+                        Approvalpayment."Due Date" := Rec."Combine Due Date";
+                        Approvalpayment."Payment Mode" := Rec."Combine Payment Mode";
+                        Approvalpayment."New Amount" := Rec."Combine Amount";
+                        Approvalpayment."New VAT Amount" := Rec."Combine VAT Amount";
+                        Approvalpayment."Change Amount Including VAT" := Rec."Combine Amount Including VAT";
+                        Approvalpayment.Insert();
+                        Message('Approval Request Send successfully!');
+                    end;
+                end;
+            }
+        }
+    }
+
+
 
 
     trigger OnAfterGetRecord()
@@ -224,8 +314,6 @@ page 50927 "Payment Mode Card"
         CurrPage."PaymentMode".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."PaymentMode".Page.SetContractID(Rec."Contract ID");
         CurrPage.PaymentMode.Page.SetDetails(Rec."Tenant Name", Rec."Tenant Email");
-
-
 
     end;
 
@@ -239,9 +327,6 @@ page 50927 "Payment Mode Card"
         CurrPage."PaymentMode".Page.SetContractID(Rec."Contract ID");
         CurrPage.PaymentMode.Page.SetDetails(Rec."Tenant Name", Rec."Tenant Email");
 
-
-
-
     end;
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
@@ -252,7 +337,6 @@ page 50927 "Payment Mode Card"
         CurrPage."PaymentMode".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."PaymentMode".Page.SetContractID(Rec."Contract ID");
         CurrPage.PaymentMode.Page.SetDetails(Rec."Tenant Name", Rec."Tenant Email");
-
 
     end;
 
@@ -292,6 +376,10 @@ page 50927 "Payment Mode Card"
     var
         IsFinanceManager: Boolean;
         IsFieldEditable: Boolean;
+        IsVisible: Boolean;
+        IsCombineVisible: Boolean;
+        IsSplitVisible: Boolean;
+        RequestType: Option Combine,Split;
 
     trigger OnOpenPage()
     var
