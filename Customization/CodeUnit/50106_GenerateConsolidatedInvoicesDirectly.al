@@ -18,7 +18,8 @@ codeunit 50106 GenerateConsolidatedInvoices
 
     begin
         todaydate := Today();
-
+        // todaydate := 20260228D;
+        //todaydate := 20260530D;
         currentdate := Today();
 
 
@@ -31,6 +32,7 @@ codeunit 50106 GenerateConsolidatedInvoices
 
                     //   SalesHeader.SetRange("Sell-to Customer No.", paymentScheudle3."Tenant ID");
                     // SalesHeader1.SetRange("No.", paymentScheudle3."Invoice ID");
+                    SalesHeader1.SetRange("Contract ID", paymentScheudle3."Contract ID");
                     SalesHeader1.SetRange("Overdue Invoice", 'Reactive');
                     SalesHeader1.SetRange("Due Date", currentdate);
                     SalesHeader1.SetRange("Document Type", Enum::"Sales Document Type"::Invoice);
