@@ -154,6 +154,10 @@ page 50722 "Final Calculation"
                 {
                     Caption = 'Unit Type';
                 }
+                field("TerminationStatus"; Rec."Termination Status")
+                {
+                    Caption = 'Termination Status';
+                }
 
             }
         }
