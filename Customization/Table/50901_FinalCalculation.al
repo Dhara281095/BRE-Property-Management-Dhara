@@ -214,6 +214,11 @@ table 50901 "Final Calculation"
             DataClassification = ToBeClassified;
             Caption = 'Total Adjustment';
         }
+        field(50132; "Final Calculation URL"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Final Calculaion URL';
+        }
 
 
     }
