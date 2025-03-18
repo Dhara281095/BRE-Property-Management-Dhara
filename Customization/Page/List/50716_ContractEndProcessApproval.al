@@ -23,7 +23,7 @@ page 50719 "Contract End Process Approval"
                 field("Property_M Status"; Rec."Property_M Status")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field("Lease_M Status"; Rec."Lease_M Status")
                 {
@@ -53,19 +53,24 @@ page 50719 "Contract End Process Approval"
                 field("Contract End Date"; Rec."End Date")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
-                // field("Requested Date"; Rec."Requested Date")
-                // {
-                //     ApplicationArea = All;
-                //     Editable = false;
-                // }
+                field("Tenant Email"; Rec."Tenant Email")
+                {
+                    ApplicationArea = All;
+                    Editable = true;
+                }
                 field("Lease Manager Remark"; Rec."Lease Manager Remark")
                 {
                     ApplicationArea = All;
                     Editable = true;
                 }
                 field("Property Manager Remark"; Rec."Property Manager Remark")
+                {
+                    ApplicationArea = All;
+                    Editable = true;
+                }
+                field("Value"; Rec."Value")
                 {
                     ApplicationArea = All;
                     Editable = true;
@@ -80,61 +85,21 @@ page 50719 "Contract End Process Approval"
     {
         area(processing)
         {
-            // Approve Action for Property_M Status
-            action(ApproveProperty)
-            {
-                Caption = 'Approve Property';
-                ApplicationArea = All;
-                Image = Approve;
-                Visible = IsPropertyManager;
 
 
-                trigger OnAction()
-                var
-                    SelectedRecs: Record "ContractEndProcessApproval";
-                    ApproveCount: Integer;
-                    ErrorCount: Integer;
-                begin
-                    CurrPage.SetSelectionFilter(SelectedRecs);
-
-                    if SelectedRecs.IsEmpty() then begin
-                        Message('No records selected for approval.');
-                        exit;
-                    end;
-
-                    ApproveCount := 0;
-                    ErrorCount := 0;
-
-                    if SelectedRecs.FindSet() then
-                        repeat
-                            if SelectedRecs."Property_M Status" = 'Pending' then begin
-                                SelectedRecs."Property_M Status" := 'Approved';
-                                SelectedRecs.Modify();
-                                ApproveCount += 1;
-                            end else
-                                ErrorCount += 1;
-                        until SelectedRecs.Next() = 0;
-
-                    Commit();
-                    CurrPage.Update(false);
-
-                    Message('%1 record(s) approved for Property. %2 record(s) were not in "Pending" status.', ApproveCount, ErrorCount);
-                end;
-            }
-
-            // Approve Action for Lease_M Status
-            // action(ApproveLease)
+            // action(ApproveProperty)
             // {
-            //     Caption = 'Approve Lease';
+            //     Caption = 'Approve';
             //     ApplicationArea = All;
             //     Image = Approve;
-            //     Visible = IsLeaseManager;
+            //     Visible = IsPropertyManager;
 
             //     trigger OnAction()
             //     var
             //         SelectedRecs: Record "ContractEndProcessApproval";
             //         ApproveCount: Integer;
             //         ErrorCount: Integer;
+            //         LeaseNotApprovedCount: Integer;
             //     begin
             //         CurrPage.SetSelectionFilter(SelectedRecs);
 
@@ -145,27 +110,94 @@ page 50719 "Contract End Process Approval"
 
             //         ApproveCount := 0;
             //         ErrorCount := 0;
+            //         LeaseNotApprovedCount := 0;
 
             //         if SelectedRecs.FindSet() then
             //             repeat
-            //                 if SelectedRecs."Lease_M Status" = 'Pending' then begin
-            //                     SelectedRecs."Lease_M Status" := 'Approved';
-            //                     SelectedRecs.Modify();
-            //                     ApproveCount += 1;
+            //                 if SelectedRecs."Lease_M Status" = 'Approved' then begin
+            //                     if SelectedRecs."Property_M Status" = 'Pending' then begin
+            //                         SelectedRecs."Property_M Status" := 'Approved';
+            //                         SelectedRecs.Modify();
+            //                         ApproveCount += 1;
+            //                     end else
+            //                         ErrorCount += 1;
             //                 end else
-            //                     ErrorCount += 1;
+            //                     LeaseNotApprovedCount += 1;
             //             until SelectedRecs.Next() = 0;
 
             //         Commit();
             //         CurrPage.Update(false);
 
-            //         Message('%1 record(s) approved for Lease. %2 record(s) were not in "Pending" status.', ApproveCount, ErrorCount);
+            //         Message('%1 record(s) approved for Property. %2 record(s) were not in "Pending" status. %3 record(s) were skipped as Lease_M Status was not "Approved".',
+            //             ApproveCount, ErrorCount, LeaseNotApprovedCount);
             //     end;
             // }
 
+            action(ApproveProperty)
+            {
+                Caption = 'Approve';
+                ApplicationArea = All;
+                Image = Approve;
+                Visible = IsPropertyManager;
+
+                trigger OnAction()
+                var
+                    SelectedRecs: Record "ContractEndProcessApproval";
+                    ApproveCount: Integer;
+                    ErrorCount: Integer;
+                    LeaseNotApprovedCount: Integer;
+                    TodayDate: Date;
+                    DaysRemaining: Integer;
+                    SendTenantMail: Codeunit "SendTenantMail";
+                begin
+                    CurrPage.SetSelectionFilter(SelectedRecs);
+
+                    if SelectedRecs.IsEmpty() then begin
+                        Message('No records selected for approval.');
+                        exit;
+                    end;
+
+                    ApproveCount := 0;
+                    ErrorCount := 0;
+                    LeaseNotApprovedCount := 0;
+                    TodayDate := Today;
+
+                    if SelectedRecs.FindSet() then
+                        repeat
+                            if SelectedRecs."Lease_M Status" = 'Approved' then begin
+                                if SelectedRecs."Property_M Status" = 'Pending' then begin
+                                    SelectedRecs."Property_M Status" := 'Approved';
+
+                                    // Calculate remaining days until contract end date
+                                    DaysRemaining := SelectedRecs."End Date" - TodayDate;
+
+                                    if DaysRemaining <= 90 then begin
+                                        SelectedRecs."Value" := 'true'; // Set Value to text 'true'
+                                        SendTenantMail.SendEmailToTenant(SelectedRecs); // Send email to tenant
+                                    end else
+                                        SelectedRecs."Value" := 'false'; // Set Value to text 'false'
+
+
+                                    SelectedRecs.Modify();
+                                    ApproveCount += 1;
+                                end else
+                                    ErrorCount += 1;
+                            end else
+                                LeaseNotApprovedCount += 1;
+                        until SelectedRecs.Next() = 0;
+
+                    Commit();
+                    CurrPage.Update(false);
+
+                    Message('%1 record(s) approved for Property. %2 record(s) were not in "Pending" status. %3 record(s) were skipped as Lease_M Status was not "Approved".',
+                        ApproveCount, ErrorCount, LeaseNotApprovedCount);
+                end;
+            }
+
+
             action(ApproveLease)
             {
-                Caption = 'Approve Lease';
+                Caption = 'Approve';
                 ApplicationArea = All;
                 Image = Approve;
                 Visible = IsLeaseManager;
@@ -211,7 +243,7 @@ page 50719 "Contract End Process Approval"
             // Decline Action for Property_M Status
             action(DeclineProperty)
             {
-                Caption = 'Decline Property';
+                Caption = 'Decline';
                 ApplicationArea = All;
                 Image = Cancel;
                 Visible = IsPropertyManager; // Button visible only for Property Manager
@@ -252,7 +284,7 @@ page 50719 "Contract End Process Approval"
             // Decline Action for Lease_M Status
             action(DeclineLease)
             {
-                Caption = 'Decline Lease';
+                Caption = 'Decline';
                 ApplicationArea = All;
                 Image = Cancel;
                 Visible = IsLeaseManager; // Button visible only for Lease Manager

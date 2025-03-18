@@ -12,14 +12,7 @@ codeunit 50302 "Send Email To PropertyManager"
     begin
 
 
-        // UserPersonalizationRec.SetRange("Profile ID", 'PROPERTY MANAGER'); // Accounting Manager
-        // if UserPersonalizationRec.FindFirst() then begin
-        //     UserRec.Get(UserPersonalizationRec."User SID");
-        //     EmailAddress.Add(UserRec."Contact Email");
-        //     Username := UserRec."User Name";
-        //     // CCMail.Add('dhruvp6373@gmail.com');
 
-        // end;
 
         UserPersonalizationRec.SetRange("Profile ID", 'PROPERTY MANAGER');
         if UserPersonalizationRec.FindSet() then begin
@@ -46,11 +39,15 @@ codeunit 50302 "Send Email To PropertyManager"
                     '<html><body>' +
                     '<p>Dear ' + Username + ',</p>' +
                     '<p>The Leasing Team has approved Contract ID <b>' + Format(Rec."Contract ID") + '</b> for renewal, and it has been successfully verified.</p>' +
-                    '<h3>Contract Details:</h3>' +
+                    '<p>Please verified and approved request for contract renewal.</p>' +
+                    '<p>Please review the Contract End Process Approval List in Business central and take the necessary action as required.</p>' +
+                    '<h3><u>Contract Details:</u></h3>' +
                     '<b>Contract ID:</b> ' + Format(Rec."Contract ID") + '<br/>' +
                     '<b>Tenant Name:</b> ' + Rec."Tenant Name" + '<br/>' +
-                    '<b>Contract Start Date:</b> ' + Format(Rec."Start Date") + '<br/>' +
-                    '<b>Contract End Date:</b> ' + Format(Rec."End Date") + '<br/>' +
+                    // '<b>Contract Start Date:</b> ' + Format(Rec."Start Date") + '<br/>' +
+                    // '<b>Contract End Date:</b> ' + Format(Rec."End Date") + '<br/>' +
+                    '<b>Contract Start Date:</b> ' + Format(Rec."Start Date", 0, '<Day>/<Month>/<Year4>') + '<br/>' +
+                    '<b>Contract End Date:</b> ' + Format(Rec."End Date", 0, '<Day>/<Month>/<Year4>') + '<br/>' +
                     '<b>Status:</b> ' + Rec."Lease_M Status" + '<br/><br/>' +
                     '<p>Please review the details and proceed with the necessary steps.</p>' +
                     '<p>Best regards,<br/>' + CompanyInfo.Name + '<br/>Leasing Team</p>' +

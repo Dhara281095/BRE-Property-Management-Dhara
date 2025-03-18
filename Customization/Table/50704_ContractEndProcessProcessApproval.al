@@ -23,16 +23,6 @@ table 50704 "ContractEndProcessApproval"
             DataClassification = ToBeClassified;
             Caption = 'Lease Manager Approval Status';
 
-            // trigger OnValidate()
-            // var
-            //     emailrec: Codeunit "Send Email To PropertyManager";
-
-            // begin
-            //     if Rec."Lease_M Status" = 'Approved' then begin
-            //         emailrec.SendEmail(Rec);
-            //     end;
-            // end;
-
 
 
         }
@@ -66,12 +56,13 @@ table 50704 "ContractEndProcessApproval"
             Caption = 'Contract End Date';
             // Editable = false;
         }
-        field(50108; "Requested Date"; Date)
+        field(50108; "Tenant Email"; Text[200])
         {
             DataClassification = ToBeClassified;
-            Caption = 'Requested Date';
+            Caption = 'Tenant Email';
             // Editable = false;
         }
+
         field(50109; "Lease Manager Remark"; Text[400])
         {
             DataClassification = ToBeClassified;
@@ -82,6 +73,13 @@ table 50704 "ContractEndProcessApproval"
         {
             DataClassification = ToBeClassified;
             Caption = 'Property Manager Remark';
+            //Editable = false;
+        }
+
+        field(50112; "Value"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Value';
             //Editable = false;
         }
 

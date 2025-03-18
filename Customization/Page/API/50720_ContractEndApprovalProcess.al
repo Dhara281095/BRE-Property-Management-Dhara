@@ -36,7 +36,7 @@ page 50720 ContractEndApprovalProcess
                 {
                     Caption = 'ID';
                 }
-                field(requestedDate; Rec."Requested Date")
+                field(tenantEmail; Rec."Tenant Email")
                 {
                     Caption = 'Requested Date';
                 }
@@ -83,6 +83,10 @@ page 50720 ContractEndApprovalProcess
                 field("PropertyManagerRemark"; Rec."Property Manager Remark")
                 {
                     Caption = 'Property Manager Remark';
+                }
+                field("Value"; Rec."Value")
+                {
+                    Caption = 'Value';
                 }
             }
         }
