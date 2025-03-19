@@ -175,7 +175,7 @@ page 50719 "Contract End Process Approval"
                                         SelectedRecs."Value" := 'true'; // Set Value to text 'true'
                                         SendTenantMail.SendEmailToTenant(SelectedRecs); // Send email to tenant
                                     end else
-                                        SelectedRecs."Value" := 'false'; // Set Value to text 'false'
+                                        SelectedRecs."Value" := 'False'; // Set Value to text 'false'
 
 
                                     SelectedRecs.Modify();
