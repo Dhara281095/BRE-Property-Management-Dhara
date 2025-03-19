@@ -293,14 +293,17 @@ page 50903 "Final Calculation Card"
                     // Visible = isVisible;
                 }
             }
-            group("Payment Details")
+
+            // part("PaymentSchedule"; "Payment Schedule Card2")
+            // {
+            //     SubPageLink = "Contract ID" = FIELD("Contract ID"),
+            //   "Tenant ID" = FIELD("Tenant ID");
+            //     ApplicationArea = All;
+            // }
+            part(PaymentDetails; "Payment Details")
             {
-                part("PaymentSchedule"; "Payment Schedule Card2")
-                {
-                    SubPageLink = "Contract ID" = FIELD("Contract ID"),
-                  "Tenant ID" = FIELD("Tenant ID");
-                    ApplicationArea = All;
-                }
+                SubPageLink = "Contract ID" = FIELD("Contract ID");
+                ApplicationArea = All;
             }
             group("Adjust Security Deposit")
             {
@@ -898,4 +901,34 @@ page 50903 "Final Calculation Card"
 
     ////////////////// END /////////////////////////
 
+
+    ///////////// START Payment Details Grid ////////////////////////////
+
+    procedure PaymentDetailsFromPaymentSchedule2()
+    var
+        paymentschedule2Card: Record "Payment Schedule2";
+        paymentdetails: Record "Paymend Details";
+    begin
+        paymentdetails.SetRange("Contract ID", Rec."Contract ID");
+        if paymentdetails.FindSet() then begin
+            paymentdetails.DeleteAll();
+        end;
+        paymentschedule2Card.SetRange("Contract ID", Rec."Contract ID");
+        if paymentschedule2Card.FindSet() then
+            repeat
+                paymentdetails.Init();
+                paymentdetails."Contract ID" := Rec."Contract ID";
+                paymentdetails."Item Description" := paymentschedule2Card."Secondary Item Type";
+                paymentdetails.Amount := paymentschedule2Card.Amount;
+                paymentdetails."VAT Amount" := paymentschedule2Card."VAT Amount";
+                paymentdetails."Amount Including VAT" := paymentschedule2Card."Amount Including VAT";
+                paymentdetails."Payment Status" := paymentschedule2Card."Payment Status";
+                paymentdetails."Payment Recieved Date" := paymentschedule2Card."Payment Recieved Date";
+                paymentdetails.Insert();
+                Clear(paymentdetails);
+            until paymentschedule2Card.Next() = 0;
+
+    end;
+
+    //////////// END //////////////////////////////////////////
 }

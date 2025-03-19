@@ -113,20 +113,20 @@ page 50922 "Payment Schedule Card2"
                 {
                     ApplicationArea = All;
                     Caption = 'Invoice ID';
-                    Editable = false;
+                    //Editable = false;
                 }
                 field("Contract Status"; Rec."Contract Status")
                 {
                     ApplicationArea = All;
                     Caption = 'Contract Status';
-                    Editable = false;
+                    //  Editable = false;
 
                 }
                 field("Overdue Invoice"; Rec."Overdue Invoice")
                 {
                     ApplicationArea = All;
                     Caption = 'Overdue Invoice';
-                    Editable = false;
+                    //Editable = false;
                 }
 
                 field("Payment Status"; Rec."Payment Status")

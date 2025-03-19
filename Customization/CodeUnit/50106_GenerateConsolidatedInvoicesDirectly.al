@@ -22,7 +22,7 @@ codeunit 50106 GenerateConsolidatedInvoices
         //todaydate := 20260530D;
         currentdate := Today();
 
-
+        //////////// START REACTIVATION CONTRACT ////////////////////////
         paymentScheudle3.SetFilter("Due Date", '<%1', todaydate);
         paymentScheudle3.SetRange("Contract Status", 'Active');
         if paymentScheudle3.FindSet() then
@@ -60,7 +60,9 @@ codeunit 50106 GenerateConsolidatedInvoices
 
             until paymentScheudle3.Next() = 0;
 
+        //////////////////////// END REACTIVATION CONTRACT /////////////////////////////
 
+        ///////////////////////  START SUSPENDED CONTRACT & REGULAR INVOICE FLOW ////////////////////////////
         paymentScheudle2.SetRange("Due Date", todaydate);
 
         if paymentScheudle2.FindSet() then
@@ -92,6 +94,8 @@ codeunit 50106 GenerateConsolidatedInvoices
                 end;
 
             until paymentScheudle2.Next() = 0;
+
+        ////////////// END ///////////////////////////////
     end;
 
 
