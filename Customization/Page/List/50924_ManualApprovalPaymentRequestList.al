@@ -131,7 +131,7 @@ page 50924 "ManuallyApprovalPaymentRequest"
                     Commit();
                     CurrPage.Update(false);
 
-                    Message('%1 record(s) approved. %2 record(s) were not in "Pending" status.', ApproveCount, ErrorCount);
+                    // Message('%1 record(s) approved. %2 record(s) were not in "Pending" status.', ApproveCount, ErrorCount);
                 end;
             }
             action(Reject)
@@ -171,7 +171,7 @@ page 50924 "ManuallyApprovalPaymentRequest"
                     CurrPage.Update(false); // Refresh page
 
                     // Display result messages
-                    Message('%1 record(s) rejected. %2 record(s) were not in "Pending" status.', RejectCount, ErrorCount);
+                    // Message('%1 record(s) rejected. %2 record(s) were not in "Pending" status.', RejectCount, ErrorCount);
                 end;
             }
         }
