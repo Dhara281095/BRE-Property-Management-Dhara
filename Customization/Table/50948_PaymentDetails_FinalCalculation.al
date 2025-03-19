@@ -40,5 +40,18 @@ table 50948 "Paymend Details"
             Caption = 'Contract ID';
             DataClassification = ToBeClassified;
         }
+        field(50107; "Entry No."; Integer)
+        {
+            Caption = 'Entry No.';
+            AutoIncrement = true;
+            DataClassification = ToBeClassified;
+        }
+    }
+    keys
+    {
+        key(PK; "Contract ID", "Entry No.")
+        {
+            Clustered = true;
+        }
     }
 }

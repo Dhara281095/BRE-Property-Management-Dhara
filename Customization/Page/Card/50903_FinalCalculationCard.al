@@ -96,6 +96,7 @@ page 50903 "Final Calculation Card"
                         OtherPaymentCalculate();
                         RevenueCalculateOneTime();
                         RevenueCalculate();
+                        PaymentDetailsFromPaymentSchedule2();
                     end;
                 }
                 field("ContractYear(Termination Date)"; Rec."ContractYear(Termination Date)")
@@ -917,7 +918,7 @@ page 50903 "Final Calculation Card"
         if paymentschedule2Card.FindSet() then
             repeat
                 paymentdetails.Init();
-                paymentdetails."Contract ID" := Rec."Contract ID";
+                paymentdetails."Contract ID" := paymentschedule2Card."Contract ID";
                 paymentdetails."Item Description" := paymentschedule2Card."Secondary Item Type";
                 paymentdetails.Amount := paymentschedule2Card.Amount;
                 paymentdetails."VAT Amount" := paymentschedule2Card."VAT Amount";

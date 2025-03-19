@@ -334,7 +334,16 @@ table 50901 "Final Calculation"
     end;
 
 
+    procedure Deletepaymentdetails()
+    var
+        paymentdetails: Record "Paymend Details";
+    begin
+        paymentdetails.SetRange("Contract ID", Rec."Contract ID");
+        if paymentdetails.FindSet() then begin
+            paymentdetails.DeleteAll();
+        end;
 
+    end;
     //-----------------Delete record also delete subgrid -----------------//
 
 }
