@@ -1,0 +1,44 @@
+table 50948 "Paymend Details"
+{
+    DataClassification = ToBeClassified;
+    Caption = 'Payment Detais';
+    fields
+    {
+        field(50100; "Item Description"; Text[100])
+        {
+            Caption = 'Payment Description';
+            DataClassification = ToBeClassified;
+        }
+        field(50101; "Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Amount';
+        }
+        field(50102; "VAT Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'VAT Amount';
+        }
+
+        field(50103; "Amount Including VAT"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Amount Including VAT';
+        }
+        field(50104; "Payment Status"; Text[100])
+        {
+            Caption = 'Payment Status';
+            DataClassification = ToBeClassified;
+        }
+        field(50105; "Payment Recieved Date"; Date)
+        {
+            Caption = 'Payment Recived Date';
+            DataClassification = ToBeClassified;
+        }
+        field(50106; "Contract ID"; Integer)
+        {
+            Caption = 'Contract ID';
+            DataClassification = ToBeClassified;
+        }
+    }
+}

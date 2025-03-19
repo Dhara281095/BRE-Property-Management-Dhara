@@ -30,6 +30,65 @@ page 50952 "Pending Recevieable Grid"
                     Caption = 'Termination Date';
                     Editable = false;
                 }
+
+            }
+            group(" ")
+            {
+                field("Total Revised Amount"; Rec."Total Revised Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Total Revised VAT"; Rec."Total Revised VAT")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Total Revised AmountIncl. VAT"; Rec."Total Revised AmountIncl. VAT")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Total Receipts Amount"; Rec."Total Receipts Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Total Receipts VAT"; Rec."Total Receipts VAT")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Total Receipts AmountIncl. VAT"; Rec."Total Receipts AmountIncl. VAT")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Total Difference Amount"; Rec."Total Difference Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Total Difference VAT"; Rec."Total Difference VAT")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Total DifferenceAmountIncl.VAT"; Rec."Total DifferenceAmountIncl.VAT")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Total Refundable"; Rec."Total Refundable")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Total Receivable"; Rec."Total Receivable")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
             }
         }
     }
@@ -38,7 +97,9 @@ page 50952 "Pending Recevieable Grid"
     var
     begin
         FetchDataFromRevenueCalcGrid();
+        Recvieableamountfrompaymentscheule();
         DifferenceAmountCalculation();
+        GetpositiveAmount();
     end;
 
     procedure FetchDataFromRevenueCalcGrid()
@@ -57,6 +118,39 @@ page 50952 "Pending Recevieable Grid"
 
     end;
 
+    procedure Recvieableamountfrompaymentscheule()
+    var
+        PaymentScheduleRec: Record "Payment Schedule2";
+        Totalamount: Decimal;
+        VATAmount: Decimal;
+        AmountIncVAT: Decimal;
+    begin
+        Totalamount := 0;
+        PaymentScheduleRec.Reset();
+        PaymentScheduleRec.SetRange("Contract ID", Rec."Contract ID");
+        PaymentScheduleRec.SetFilter("Due Date", '<%1', Rec."Termination Date");
+        PaymentScheduleRec.SetRange("Payment Status", 'Received');
+        PaymentScheduleRec.SetRange("Secondary Item Type", Rec.RevenueDescription);
+        if PaymentScheduleRec.FindSet() then begin
+            repeat
+                Totalamount += PaymentScheduleRec.Amount;
+                VATAmount += PaymentScheduleRec."VAT Amount";
+                AmountIncVAT += PaymentScheduleRec."Amount Including VAT";
+
+            until PaymentScheduleRec.Next() = 0;
+        end;
+        PaymentScheduleRec.SetRange("Contract ID", Rec."Contract ID");
+        PaymentScheduleRec.SetRange("Secondary Item Type", Rec.RevenueDescription);
+        if PaymentScheduleRec.FindSet() then
+            repeat
+                Rec.ReceiptsAmount := Totalamount;
+                Rec.ReceiptsVAT := VATAmount;
+                Rec.ReceiptsAmountInclVAT := AmountIncVAT;
+                Rec.Modify();
+            until PaymentScheduleRec.Next() = 0;
+    end;
+
+
     procedure DifferenceAmountCalculation()
     var
 
@@ -67,5 +161,16 @@ page 50952 "Pending Recevieable Grid"
         Rec.DifferenceAmountInclVAT := Rec.RevisedAmountInclVAT - Rec.ReceiptsAmountInclVAT;
         Rec.Modify();
 
+    end;
+
+    procedure GetpositiveAmount()
+    begin
+        if Rec."Total DifferenceAmountIncl.VAT" < 0 then begin
+            Rec."Total Refundable" := Abs(Rec."Total DifferenceAmountIncl.VAT");
+            Rec.Modify();
+        end else begin
+            Rec."Total Receivable" := Rec."Total DifferenceAmountIncl.VAT";
+            Rec.Modify();
+        end;
     end;
 }
