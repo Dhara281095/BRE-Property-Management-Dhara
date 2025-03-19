@@ -169,6 +169,7 @@ table 50924 "Payment Mode"
                 // Filter Payment Mode2 records based on Contract ID
                 PaymentMode2Rec.Reset();
                 PaymentMode2Rec.SetRange("Contract ID", Rec."Contract ID");
+                PaymentMode2Rec.SetFilter("Payment Status", '<> %1 & <> %2', PaymentMode2Rec."Payment Status"::Cancelled, PaymentMode2Rec."Payment Status"::Received);
 
                 Selection.LookupMode(true);
                 Selection.SetTableView(PaymentMode2Rec);
@@ -250,6 +251,7 @@ table 50924 "Payment Mode"
                 // Filter Payment Mode2 records based on Contract ID
                 PaymentMode2Rec.Reset();
                 PaymentMode2Rec.SetRange("Contract ID", Rec."Contract ID");
+                PaymentMode2Rec.SetFilter("Payment Status", '<> %1 & <> %2', PaymentMode2Rec."Payment Status"::Cancelled, PaymentMode2Rec."Payment Status"::Received);
 
                 Selection.LookupMode(true);
                 Selection.SetTableView(PaymentMode2Rec);

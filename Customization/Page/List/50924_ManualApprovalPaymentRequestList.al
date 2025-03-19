@@ -20,7 +20,7 @@ page 50924 "ManuallyApprovalPaymentRequest"
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field("Status"; Rec."Status")
+                field("Status"; Rec."Approval Status")
                 {
                     ApplicationArea = All;
                     Editable = true;
@@ -98,6 +98,7 @@ page 50924 "ManuallyApprovalPaymentRequest"
                 Caption = 'Approve';
                 ApplicationArea = All;
                 Image = Approve;
+                Visible = IsFinanceManager;
 
                 trigger OnAction()
                 var
@@ -117,8 +118,8 @@ page 50924 "ManuallyApprovalPaymentRequest"
 
                     if SelectedRecs.FindSet() then
                         repeat
-                            if SelectedRecs.Status = 'Pending' then begin
-                                SelectedRecs.Status := 'Approve';
+                            if SelectedRecs."Approval Status" = 'Pending' then begin
+                                SelectedRecs."Approval Status" := 'Approve';
                                 SelectedRecs.Modify();
                                 ApproveCount += 1;
                                 ProcessApprovalAndSplitRequest();
@@ -139,6 +140,7 @@ page 50924 "ManuallyApprovalPaymentRequest"
                 Caption = 'Reject';
                 ApplicationArea = All;
                 Image = Reject;
+                Visible = IsFinanceManager;
 
                 trigger OnAction()
                 var
@@ -159,8 +161,8 @@ page 50924 "ManuallyApprovalPaymentRequest"
 
                     if SelectedRecs.FindSet() then
                         repeat
-                            if SelectedRecs.Status = 'Pending' then begin
-                                SelectedRecs.Status := 'Reject'; // Set status to "Declined"
+                            if SelectedRecs."Approval Status" = 'Pending' then begin
+                                SelectedRecs."Approval Status" := 'Reject'; // Set status to "Declined"
                                 SelectedRecs.Modify();
                                 RejectCount += 1;
                             end else
@@ -209,7 +211,7 @@ page 50924 "ManuallyApprovalPaymentRequest"
         ApprovalRec.SetRange("Contract ID", Rec."Contract ID");
         ApprovalRec.SetRange("Tenant ID", Rec."Tenant ID");
         ApprovalRec.SetRange("ID", Rec."ID");
-        ApprovalRec.SetRange(Status, 'Approve');
+        ApprovalRec.SetRange("Approval Status", 'Approve');
 
         if ApprovalRec.FindFirst() then begin
             RequestType := ApprovalRec."Request Type";
@@ -221,7 +223,7 @@ page 50924 "ManuallyApprovalPaymentRequest"
                 PaymentChangeReqTable.SetRange("Contract ID", Rec."Contract ID");
                 PaymentChangeReqTable.SetRange("Tenant ID", Rec."Tenant ID");
                 PaymentChangeReqTable.SetRange("ID", Rec."ID");
-                PaymentChangeReqTable.SetRange(Status, 'Approve');
+                PaymentChangeReqTable.SetRange("Approval Status", 'Approve');
                 PaymentChangeReqTable.SetRange("Request Type", 'Split');
 
                 if not PaymentChangeReqTable.FindSet() then begin
@@ -298,7 +300,7 @@ page 50924 "ManuallyApprovalPaymentRequest"
                 PaymentChangeReqTable.SetRange("Contract ID", Rec."Contract ID");
                 PaymentChangeReqTable.SetRange("Tenant ID", Rec."Tenant ID");
                 PaymentChangeReqTable.SetRange("ID", Rec."ID");
-                PaymentChangeReqTable.SetRange(Status, 'Approve');
+                PaymentChangeReqTable.SetRange("Approval Status", 'Approve');
                 PaymentChangeReqTable.SetRange("Request Type", 'Combine');
 
                 if not PaymentChangeReqTable.FindSet() then begin
@@ -436,4 +438,35 @@ page 50924 "ManuallyApprovalPaymentRequest"
         exit(MaxSequence + 1);
     end;
 
+
+
+    trigger OnOpenPage()
+    begin
+        // Check if the current user has the 'LEASE_MANAGER' permission set
+        IsFinanceManager := VisibleApproveAction();
+    end;
+
+    procedure VisibleApproveAction(): Boolean
+    var
+        UserPersonalization: Record "User Personalization";
+    begin
+
+        if UserPersonalization.Get(UserSecurityId()) then begin
+
+            case UserPersonalization."Profile ID" of
+                'PROPERTY MANAGER':
+                    exit(false);
+                'LEASE_MANAGER':
+                    exit(false);
+                'finance manager':
+                    exit(true);
+            end;
+        end;
+
+        exit(false);
+    end;
+
+    var
+        IsFinanceManager: Boolean;
+        IsFieldEditable: Boolean;
 }
