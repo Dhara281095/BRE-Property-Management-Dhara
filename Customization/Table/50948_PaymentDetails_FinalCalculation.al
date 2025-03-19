@@ -1,4 +1,4 @@
-table 50948 "Paymend Details"
+table 50948 "Payment Details"
 {
     DataClassification = ToBeClassified;
     Caption = 'Payment Detais';
@@ -30,9 +30,9 @@ table 50948 "Paymend Details"
             Caption = 'Payment Status';
             DataClassification = ToBeClassified;
         }
-        field(50105; "Payment Recieved Date"; Date)
+        field(50105; "Payment Date"; Date)
         {
-            Caption = 'Payment Recived Date';
+            Caption = 'Payment Date';
             DataClassification = ToBeClassified;
         }
         field(50106; "Contract ID"; Integer)
@@ -44,6 +44,12 @@ table 50948 "Paymend Details"
         {
             Caption = 'Entry No.';
             AutoIncrement = true;
+            DataClassification = ToBeClassified;
+        }
+        field(50108; "Termination Date"; Date)
+        {
+            Caption = 'Termination Date';
+            Editable = false;
             DataClassification = ToBeClassified;
         }
     }
