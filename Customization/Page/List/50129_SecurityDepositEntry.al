@@ -84,10 +84,15 @@ page 50129 "Security Deposit Entries"
                     SecurityDeposit: Record "Security Deposit";
                     TenancyContract: Record "Tenancy Contract";
                     TenancyContractSubpage: Record "Tenancy Contract Subpage";
+                    TerminationAddCharges: Record "Additional Charges Sub";
+                    PendingReceivableGrid: Record "Pending Receviable Grid";
                     ChillarDepositAmount: Decimal;
                     OtherDepositAmount: Decimal;
                     NetBalanceAmount: Decimal;
                     TotalRefundableDeposit: Decimal;
+                    TotalClaimAmount: Decimal;
+                    AmountIncludingVAT: Decimal;
+                    TotalRefundableAmount: Decimal;
                 begin
                     if Rec.Status = Rec.Status::Approved then
                         Error('This entry is already approved');
@@ -100,6 +105,10 @@ page 50129 "Security Deposit Entries"
                         // Update main record status
                         if AdjustSecurityDeposit.Get(Rec."Security Deposit ID") then begin
                             AdjustSecurityDeposit.Status := AdjustSecurityDeposit.Status::Approved;
+
+                            // Get the Amount Including VAT from the Adjustment Security Deposit table
+                            AmountIncludingVAT := AdjustSecurityDeposit."Amount Including VAT";
+
                             AdjustSecurityDeposit.Modify();
 
                             // Get Chillar Deposit amount from Tenancy Contract Subpage
@@ -130,10 +139,55 @@ page 50129 "Security Deposit Entries"
                             TotalRefundableDeposit := 0;  // Initialize to zero
                             TotalRefundableDeposit := NetBalanceAmount + ChillarDepositAmount + OtherDepositAmount;
 
-                            // Update Fina Calculation
+                            // Get the Total Amount from Additional Charges Sub directly from Final Calculation
+                            TotalClaimAmount := 0;
+
+                            // Get Total Refundable from Pending Receivable Grid
+                            TotalRefundableAmount := 0;
+                            PendingReceivableGrid.Reset();
+                            PendingReceivableGrid.SetRange("Contract ID", Rec."Contract ID");
+                            if PendingReceivableGrid.FindFirst() then begin
+                                TotalRefundableAmount := PendingReceivableGrid."Total Refundable";
+                            end;
+
                             FinaCalculation.Reset();
                             FinaCalculation.SetRange("Contract ID", Rec."Contract ID");
                             if FinaCalculation.FindFirst() then begin
+                                // Try to find the related Termination Additional Charges records
+                                TerminationAddCharges.Reset();
+                                TerminationAddCharges.SetRange("Contract ID", Rec."Contract ID");
+                                if TerminationAddCharges.FindSet() then begin
+                                    repeat
+                                        // Add up the "Amount Including VAT" values
+                                        TotalClaimAmount += TerminationAddCharges."Amount Including VAT";
+                                    until TerminationAddCharges.Next() = 0;
+                                end;
+
+                                // If we couldn't find records or the total is still 0, try getting the TotalAmount field
+                                if TotalClaimAmount = 0 then begin
+                                    // Check if there's a field called TotalAmount in the Termination Additional Charges table
+                                    // or try to access it from another source
+                                    TerminationAddCharges.Reset();
+                                    TerminationAddCharges.SetRange("Contract ID", Rec."Contract ID");
+                                    TerminationAddCharges.CalcSums(Amount); // Try to use Amount if TotalAmount doesn't exist
+                                    TotalClaimAmount := TerminationAddCharges.Amount;
+
+                                    if TotalClaimAmount = 0 then begin
+                                        // Final attempt - try to get it from a parent record if needed
+                                        TotalClaimAmount := GetTotalAmountFromTermination(Rec."Contract ID");
+                                    end;
+                                end;
+
+                                // Debug message to see what we found
+                                Message('Total Claim Amount calculated: %1', TotalClaimAmount);
+
+                                // Debug message to see what we found
+                                Message('Amount Including VAT from Adjustment Security Deposit: %1', AmountIncludingVAT);
+
+                                // Update Fina Calculation
+                                // FinaCalculation.Reset();
+                                // FinaCalculation.SetRange("Contract ID", Rec."Contract ID");
+                                // if FinaCalculation.FindFirst() then begin
                                 FinaCalculation."Security Deposit" := Rec."Main Security Deposit";
                                 FinaCalculation."Adjustment Security Deposit" := Rec."Main Security Deposit" - Rec."Security Deposit";
                                 FinaCalculation."Net Balance" := Rec."Security Deposit";
@@ -142,61 +196,84 @@ page 50129 "Security Deposit Entries"
                                 FinaCalculation."Other Deposit" := OtherDepositAmount;
                                 // Update Total Refundable Deposit
                                 FinaCalculation."Total Refundable Deposit" := TotalRefundableDeposit;
+                                // Update Total Claim with the sum of Total Amount from Additional Charges Sub
+                                FinaCalculation."Total Claim" := TotalClaimAmount;
+                                // Store the Amount Including VAT in the Total Adjustment field
+                                FinaCalculation."Total Adjustment" := AmountIncludingVAT;
+                                FinaCalculation."Total Refund" := TotalRefundableAmount + FinaCalculation."Total Refundable Deposit";
+                                // Add this new line to calculate Net Balance as requested
+                                FinaCalculation."Summery Net Balance" := FinaCalculation."Total Claim" + FinaCalculation."Total Adjustment" - FinaCalculation."Total Refund";
+                                // NEW CODE: Check if Summary Net Balance is positive or negative and update respective fields
+                                if FinaCalculation."Summery Net Balance" > 0 then begin
+                                    // Positive value goes to Net Receivable From The Tenant
+                                    FinaCalculation."Net Receivable From The Tenant" := FinaCalculation."Summery Net Balance";
+                                    FinaCalculation."Amount Refundable" := 0; // Clear the other field
+                                end else begin
+                                    // Negative value goes to Amount Refundable (as positive amount)
+                                    FinaCalculation."Amount Refundable" := Abs(FinaCalculation."Summery Net Balance");
+                                    FinaCalculation."Net Receivable From The Tenant" := 0; // Clear the other field
+                                end;
                                 FinaCalculation.Modify();
-                                Message('Fina Calculation updated with Security Deposit: %1', Rec."Main Security Deposit");
-                            end else
-                                Message('No Fina Calculation record found for Contract ID: %1', Rec."Contract ID");
 
-                            // // Handle carry forward grid for security deposits
-                            SecurityDeposit.Reset();
-                            SecurityDeposit.SetRange("Contract ID", Rec."Contract ID");
 
-                            if SecurityDeposit.FindSet() then begin
-                                repeat
-                                    // Check if a Carry Forward Grid record already exists
-                                    CarryForwardGrid.Reset();
-                                    CarryForwardGrid.SetRange("Contract ID", SecurityDeposit."Contract ID");
-                                    CarryForwardGrid.SetRange("New Contract ID", SecurityDeposit."New_Contract ID");
-                                    CarryForwardGrid.SetRange("Total Amount", SecurityDeposit."New_Security Deposit Amount"); // Additional Check
-
-                                    if not CarryForwardGrid.FindFirst() then begin
-                                        // Create new record only if it doesn't exist
-                                        CarryForwardGrid.Init();
-                                        // Get the next available Entry No.
-                                        CarryForwardGrid."Entry No." := GetNextEntryNo();
-                                        CarryForwardGrid."Contract ID" := SecurityDeposit."Contract ID";
-                                        CarryForwardGrid."New Contract ID" := SecurityDeposit."New_Contract ID";
-                                        CarryForwardGrid."Total Amount" := SecurityDeposit."New_Security Deposit Amount";
-                                        CarryForwardGrid."Security Deposit" := 'Security Deposit';
-                                        CarryForwardGrid.Insert();
-                                    end else begin
-                                        // Update existing record
-                                        CarryForwardGrid."Total Amount" := SecurityDeposit."New_Security Deposit Amount";
-                                        CarryForwardGrid."Security Deposit" := 'Security Deposit';
-                                        CarryForwardGrid.Modify();
-                                    end;
-                                until SecurityDeposit.Next() = 0;
                             end else begin
-                                // If no Security Deposit records exist, create a basic Carry Forward Grid record
+                                Message('No Pending Receivable Grid record found for Contract ID: %1', Rec."Contract ID");
+                            end;
+
+                            Message('Final Calculation updated with Security Deposit: %1', Rec."Main Security Deposit");
+                        end else
+                            Message('No Fina Calculation record found for Contract ID: %1', Rec."Contract ID");
+
+                        // // Handle carry forward grid for security deposits
+                        SecurityDeposit.Reset();
+                        SecurityDeposit.SetRange("Contract ID", Rec."Contract ID");
+
+                        if SecurityDeposit.FindSet() then begin
+                            repeat
+                                // Check if a Carry Forward Grid record already exists
                                 CarryForwardGrid.Reset();
-                                CarryForwardGrid.SetRange("Contract ID", Rec."Contract ID");
+                                CarryForwardGrid.SetRange("Contract ID", SecurityDeposit."Contract ID");
+                                CarryForwardGrid.SetRange("New Contract ID", SecurityDeposit."New_Contract ID");
+                                CarryForwardGrid.SetRange("Total Amount", SecurityDeposit."New_Security Deposit Amount"); // Additional Check
 
                                 if not CarryForwardGrid.FindFirst() then begin
+                                    // Create new record only if it doesn't exist
                                     CarryForwardGrid.Init();
                                     // Get the next available Entry No.
                                     CarryForwardGrid."Entry No." := GetNextEntryNo();
-                                    CarryForwardGrid."Contract ID" := Rec."Contract ID";
-                                    // You'll need to determine the New Contract ID from elsewhere
-                                    CarryForwardGrid."Total Amount" := Rec."Security Deposit";
+                                    CarryForwardGrid."Contract ID" := SecurityDeposit."Contract ID";
+                                    CarryForwardGrid."New Contract ID" := SecurityDeposit."New_Contract ID";
+                                    CarryForwardGrid."Total Amount" := SecurityDeposit."New_Security Deposit Amount";
                                     CarryForwardGrid."Security Deposit" := 'Security Deposit';
                                     CarryForwardGrid.Insert();
+                                end else begin
+                                    // Update existing record
+                                    CarryForwardGrid."Total Amount" := SecurityDeposit."New_Security Deposit Amount";
+                                    CarryForwardGrid."Security Deposit" := 'Security Deposit';
+                                    CarryForwardGrid.Modify();
                                 end;
+                            until SecurityDeposit.Next() = 0;
+                        end else begin
+                            // If no Security Deposit records exist, create a basic Carry Forward Grid record
+                            CarryForwardGrid.Reset();
+                            CarryForwardGrid.SetRange("Contract ID", Rec."Contract ID");
+
+                            if not CarryForwardGrid.FindFirst() then begin
+                                CarryForwardGrid.Init();
+                                // Get the next available Entry No.
+                                CarryForwardGrid."Entry No." := GetNextEntryNo();
+                                CarryForwardGrid."Contract ID" := Rec."Contract ID";
+                                // You'll need to determine the New Contract ID from elsewhere
+                                CarryForwardGrid."Total Amount" := Rec."Security Deposit";
+                                CarryForwardGrid."Security Deposit" := 'Security Deposit';
+                                CarryForwardGrid.Insert();
                             end;
                         end;
-
-                        Message('Entry has been approved successfully!');
                     end;
+
+                    Message('Entry has been approved successfully!');
                 end;
+                // end;
 
                 // trigger OnAction()
                 // var
@@ -273,6 +350,23 @@ page 50129 "Security Deposit Entries"
         // If user is not a Finance Manager, show error and exit
         if not IsFinanceManager then
             Error('You do not have permission to access this page. Only Finance Managers can access this page.');
+    end;
+
+    // Helper function to get the total amount from a parent termination record if needed
+    local procedure GetTotalAmountFromTermination(ContractID: Integer): Decimal
+    var
+        TerminationHeader: Record "Additional Charges Sub"; // Use the actual table name
+        TotalAmount: Decimal;
+    begin
+        TotalAmount := 0;
+        TerminationHeader.Reset();
+        TerminationHeader.SetRange("Contract ID", ContractID);
+        if TerminationHeader.FindFirst() then begin
+            // Try to get TotalAmount field or equivalent
+            if TerminationHeader.Get(ContractID) then
+                TotalAmount := TerminationHeader."Total Amount"; // Use the correct field name
+        end;
+        exit(TotalAmount); // Fixed: Changed "return" to "exit"
     end;
 
 
