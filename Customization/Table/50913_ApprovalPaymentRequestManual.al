@@ -1,6 +1,7 @@
 table 50913 "ManualApprovalPaymentRequest"
 {
     DataClassification = ToBeClassified;
+    DataCaptionFields = "ID";
 
     fields
     {
@@ -34,18 +35,18 @@ table 50913 "ManualApprovalPaymentRequest"
             Caption = 'Contract ID';
         }
 
-        field(50114; "New Amount"; Integer)
+        field(50114; "New Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'New Amount';
         }
-        field(50115; "New VAT Amount"; Integer)
+        field(50115; "New VAT Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'New Vat Amount';
         }
 
-        field(50109; "Change Amount Including VAT"; Integer)
+        field(50109; "Change Amount Including VAT"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'New Amount Including VAT';
