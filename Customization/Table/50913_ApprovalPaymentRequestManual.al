@@ -13,7 +13,7 @@ table 50913 "ManualApprovalPaymentRequest"
             AutoIncrement = true;
 
         }
-        field(50102; "Status"; Text[100])
+        field(50102; "Approval Status"; Text[100])
         {
             DataClassification = ToBeClassified;
             Caption = 'Status';
@@ -93,6 +93,17 @@ table 50913 "ManualApprovalPaymentRequest"
     }
 
 
+    trigger OnModify()
+    var
+        emailrec: Codeunit "Send Change Payment Request";
+    begin
 
+        if Rec."Approval Status" = 'Approve' then
+            emailrec.SendEmail(Rec)
+        // else if Rec."Payment Status" = Rec."Payment Status"::Cancelled then
+        //     emailrec.SendEmailCancelled(Rec)
+        // else if Rec."Payment Status" = Rec."Payment Status"::Overdue then
+        //     emailrec.SendEmailOverdue(Rec);
+    end;
 }
 

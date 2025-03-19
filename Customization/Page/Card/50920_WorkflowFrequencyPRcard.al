@@ -30,12 +30,22 @@ page 50920 "Workflow Frequency PR Card"
                     ApplicationArea = All;
                     Caption = 'frequncy Status';
                     Editable = false;
+
+                    trigger OnValidate()
+                    begin
+                        // If "Property" is selected, allow editing "No of Days", otherwise disable it
+                        if Rec."frequncy Status" = Rec."frequncy Status"::Property then
+                            IsApproved := true
+                        else
+                            IsApproved := false;
+                    end;
                 }
 
                 field("No. of Days"; Rec."No. of Days")
                 {
                     ApplicationArea = All;
-                    // Editable = IsApproved;
+                    Editable = IsApproved;
+
                 }
 
                 field("Property ID"; Rec."Property ID")
@@ -49,11 +59,14 @@ page 50920 "Workflow Frequency PR Card"
         }
     }
 
-    // var
-    //     IsApproved: Boolean;
+    var
+        IsApproved: Boolean;
 
-    // trigger OnModifyRecord(): Boolean
-    // begin
-    //     IsApproved := (Rec."frequncy Status" <> Rec."frequncy Status"::Property);
-    // end;
+    trigger OnAfterGetRecord()
+    begin
+        if Rec."frequncy Status" = Rec."frequncy Status"::Property then
+            IsApproved := true
+        else
+            IsApproved := false;
+    end;
 }

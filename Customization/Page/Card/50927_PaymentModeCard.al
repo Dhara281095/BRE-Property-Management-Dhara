@@ -279,7 +279,7 @@ page 50927 "Payment Mode Card"
                     Approvalpayment.ID := MaxID; // Assign the new auto-incremented ID
                     Approvalpayment."Contract ID" := Rec."Contract ID";
                     Approvalpayment."Tenant ID" := Rec."Tenant ID";
-                    Approvalpayment.Status := 'Pending';
+                    Approvalpayment."Approval Status" := 'Pending';
                     Approvalpayment."Request Type" := Format(RequestType);
 
                     if IsCombineVisible then begin
