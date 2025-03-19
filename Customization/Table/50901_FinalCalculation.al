@@ -336,7 +336,7 @@ table 50901 "Final Calculation"
 
     procedure Deletepaymentdetails()
     var
-        paymentdetails: Record "Paymend Details";
+        paymentdetails: Record "Payment Details";
     begin
         paymentdetails.SetRange("Contract ID", Rec."Contract ID");
         if paymentdetails.FindSet() then begin

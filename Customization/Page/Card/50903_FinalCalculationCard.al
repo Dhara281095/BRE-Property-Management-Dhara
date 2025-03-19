@@ -96,6 +96,7 @@ page 50903 "Final Calculation Card"
                         OtherPaymentCalculate();
                         RevenueCalculateOneTime();
                         RevenueCalculate();
+                        PaymentDetailsFromPaymentSchedule2();
 
                     end;
                 }
@@ -908,7 +909,7 @@ page 50903 "Final Calculation Card"
     procedure PaymentDetailsFromPaymentSchedule2()
     var
         paymentschedule2Card: Record "Payment Schedule2";
-        paymentdetails: Record "Paymend Details";
+        paymentdetails: Record "Payment Details";
     begin
         paymentdetails.SetRange("Contract ID", Rec."Contract ID");
         if paymentdetails.FindSet() then begin
@@ -924,7 +925,8 @@ page 50903 "Final Calculation Card"
                 paymentdetails."VAT Amount" := paymentschedule2Card."VAT Amount";
                 paymentdetails."Amount Including VAT" := paymentschedule2Card."Amount Including VAT";
                 paymentdetails."Payment Status" := paymentschedule2Card."Payment Status";
-                paymentdetails."Payment Recieved Date" := paymentschedule2Card."Payment Recieved Date";
+                paymentdetails."Payment Date" := paymentschedule2Card."Due Date";
+                paymentdetails."Termination Date" := Rec."Termination Date";
                 paymentdetails.Insert();
                 Clear(paymentdetails);
             until paymentschedule2Card.Next() = 0;

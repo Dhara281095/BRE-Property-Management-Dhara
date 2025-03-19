@@ -1,7 +1,7 @@
 page 50953 "Payment Details"
 {
     PageType = ListPart;
-    SourceTable = "Paymend Details";
+    SourceTable = "Payment Details";
     ApplicationArea = All;
     Caption = 'Payment Schedule Details';
     //UsageCategory = Administration;
@@ -38,11 +38,14 @@ page 50953 "Payment Details"
                 {
                     ApplicationArea = All;
                     Editable = false;
+                    StyleExpr = StyleExprTxt;
+
                 }
-                field("Payment Recieved Date"; Rec."Payment Recieved Date")
+                field("Payment Date"; Rec."Payment Date")
                 {
                     ApplicationArea = All;
                     Editable = false;
+                    StyleExpr = StyleExprTxt;
                 }
                 field("Contract ID"; Rec."Contract ID")
                 {
@@ -54,7 +57,30 @@ page 50953 "Payment Details"
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field("Termination Date"; Rec."Termination Date")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
             }
         }
     }
+    trigger OnAfterGetRecord()
+    begin
+        if Rec."Payment Date" > Rec."Termination Date" then begin
+            Rec."Payment Status" := 'Due';
+            StyleExprTxt := 'Unfavorable';
+            Rec.Modify();
+        end else begin
+            StyleExprTxt := '   '
+        end;
+        if Rec."Payment Status" = 'Received' then begin
+            Rec."Payment Status" := 'Paid';
+            Rec.Modify();
+        end;
+
+    end;
+
+    var
+        StyleExprTxt: Text;
 }
