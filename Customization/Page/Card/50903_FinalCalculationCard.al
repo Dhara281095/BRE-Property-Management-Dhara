@@ -96,6 +96,7 @@ page 50903 "Final Calculation Card"
                         OtherPaymentCalculate();
                         RevenueCalculateOneTime();
                         RevenueCalculate();
+
                     end;
                 }
                 field("ContractYear(Termination Date)"; Rec."ContractYear(Termination Date)")
@@ -358,7 +359,7 @@ page 50903 "Final Calculation Card"
                         ApplicationArea = All;
                         Editable = false;
                     }
-                    field("Total Net Balance"; Rec."Net Balance")
+                    field("Total Net Balance"; Rec."Total Refundable Deposit")
                     {
                         ApplicationArea = All;
                         Caption = 'Total Refundable Deposit';

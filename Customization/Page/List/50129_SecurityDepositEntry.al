@@ -82,6 +82,12 @@ page 50129 "Security Deposit Entries"
                     FinaCalculation: Record "Final Calculation";
                     CarryForwardGrid: Record "Carry Forward Grid";
                     SecurityDeposit: Record "Security Deposit";
+                    TenancyContract: Record "Tenancy Contract";
+                    TenancyContractSubpage: Record "Tenancy Contract Subpage";
+                    ChillarDepositAmount: Decimal;
+                    OtherDepositAmount: Decimal;
+                    NetBalanceAmount: Decimal;
+                    TotalRefundableDeposit: Decimal;
                 begin
                     if Rec.Status = Rec.Status::Approved then
                         Error('This entry is already approved');
@@ -96,16 +102,46 @@ page 50129 "Security Deposit Entries"
                             AdjustSecurityDeposit.Status := AdjustSecurityDeposit.Status::Approved;
                             AdjustSecurityDeposit.Modify();
 
-                            // Get the security deposit value directly from the current record
-                            // Message('Using Security Deposit value: %1', Rec."Main Security Deposit");
+                            // Get Chillar Deposit amount from Tenancy Contract Subpage
+                            ChillarDepositAmount := 0;
+                            OtherDepositAmount := 0;
+                            TenancyContract.Reset();
+                            TenancyContract.SetRange("Contract ID", Rec."Contract ID");
+                            if TenancyContract.FindFirst() then begin
+                                TenancyContractSubpage.Reset();
+                                TenancyContractSubpage.SetRange(ContractID, TenancyContract."Contract ID");
+                                TenancyContractSubpage.SetRange("Secondary Item Type", 'Chiller Deposit Amount');
+                                if TenancyContractSubpage.FindFirst() then begin
+                                    ChillarDepositAmount := TenancyContractSubpage.Amount;
+                                end;
+                                // Get Other Deposit amount
+                                TenancyContractSubpage.Reset();
+                                TenancyContractSubpage.SetRange(ContractID, TenancyContract."Contract ID");
+                                TenancyContractSubpage.SetRange("Secondary Item Type", 'Other Deposit');
+                                if TenancyContractSubpage.FindFirst() then begin
+                                    OtherDepositAmount := TenancyContractSubpage.Amount;
+                                end;
+                            end;
+
+                            // Calculate Net Balance for Security Deposit
+                            NetBalanceAmount := Rec."Security Deposit";
+
+                            // Calculate Total Refundable Deposit
+                            TotalRefundableDeposit := 0;  // Initialize to zero
+                            TotalRefundableDeposit := NetBalanceAmount + ChillarDepositAmount + OtherDepositAmount;
 
                             // Update Fina Calculation
                             FinaCalculation.Reset();
                             FinaCalculation.SetRange("Contract ID", Rec."Contract ID");
                             if FinaCalculation.FindFirst() then begin
                                 FinaCalculation."Security Deposit" := Rec."Main Security Deposit";
-                                FinaCalculation."Adjustment Security Deposit" := Rec."Security Deposit";
-                                FinaCalculation."Net Balance" := Rec."Main Security Deposit" - Rec."Security Deposit";
+                                FinaCalculation."Adjustment Security Deposit" := Rec."Main Security Deposit" - Rec."Security Deposit";
+                                FinaCalculation."Net Balance" := Rec."Security Deposit";
+                                // Update Chillar Deposit field
+                                FinaCalculation."Chiller Deposit" := ChillarDepositAmount;
+                                FinaCalculation."Other Deposit" := OtherDepositAmount;
+                                // Update Total Refundable Deposit
+                                FinaCalculation."Total Refundable Deposit" := TotalRefundableDeposit;
                                 FinaCalculation.Modify();
                                 Message('Fina Calculation updated with Security Deposit: %1', Rec."Main Security Deposit");
                             end else
