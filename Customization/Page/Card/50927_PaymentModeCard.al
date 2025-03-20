@@ -207,6 +207,23 @@ page 50927 "Payment Mode Card"
                     ApplicationArea = All;
                 }
             }
+
+            group("ChangePaymentMode")
+            {
+                Visible = IsChangePaymodeVisible;
+                Caption = 'Change Payment Mode';
+                field("Change Payment Series"; Rec."Change Payment Series")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Change Payment Mode"; Rec."Change Payment Mode")
+                {
+                    ApplicationArea = All;
+                }
+
+
+            }
         }
     }
 
@@ -229,6 +246,7 @@ page 50927 "Payment Mode Card"
                     //IsVisible := NOT IsVisible;
                     IsCombineVisible := true;
                     IsSplitVisible := false;
+                    IsChangePaymodeVisible := false;
                     RequestType := RequestType::Combine;
                     Status := Status::Manual;
                     Message('Combine Payment section is open.');
@@ -245,10 +263,30 @@ page 50927 "Payment Mode Card"
                 begin
                     // IsVisible := NOT IsVisible;
                     IsCombineVisible := false;
+                    IsChangePaymodeVisible := false;
                     IsSplitVisible := true;
                     RequestType := RequestType::Split;
                     Status := Status::Manual;
                     Message('Split Payment section is open.');
+                end;
+            }
+
+
+            action(Paymode)
+            {
+                Caption = 'Pay Mode Change';
+                ApplicationArea = All;
+                Image = NewDocument;
+
+                trigger OnAction()
+                begin
+                    //IsVisible := NOT IsVisible;
+                    IsCombineVisible := false;
+                    IsSplitVisible := false;
+                    IsChangePaymodeVisible := true;
+                    RequestType := RequestType::"Payment Mode";
+                    Status := Status::Manual;
+                    Message('Paymode Payment section is open.');
                 end;
             }
 
@@ -302,57 +340,15 @@ page 50927 "Payment Mode Card"
                         Approvalpayment.Items := Rec."Secondary Item Type";
                         Approvalpayment."VAT Amount" := Rec."Split VAT Amount";
                         Approvalpayment."Change Amount" := Rec."Split Amount Including VAT";
+                    end
+                    else if IsChangePaymodeVisible then begin
+                        Approvalpayment."Payment Series" := Rec."Change Payment Series";
+                        Approvalpayment."Payment Mode" := Rec."Change Payment Mode";
                     end;
-
                     Approvalpayment.Insert();
                     Message('Approval Request Sent successfully!');
                 end;
 
-
-                // trigger OnAction()
-                // var
-                //     Paymentmode: Record "Payment Mode";
-                //     Approvalpayment: Record "ManualApprovalPaymentRequest";
-                // begin
-                //     IsVisible := NOT IsVisible;
-                //     // Validate required fields
-                //     if Rec."Contract ID" = 0 then
-                //         Error('Contract ID must be specified');
-
-                //     Approvalpayment.SetRange("Contract ID", Rec."Contract ID");
-                //     Approvalpayment.SetRange("Tenant ID", Rec."Tenant ID");
-
-                //     if Approvalpayment.FindSet() then begin
-                //         Approvalpayment."Contract ID" := Rec."Contract ID";
-                //         Approvalpayment."Tenant ID" := Rec."Tenant ID";
-                //         Approvalpayment.Status := 'Pending';
-                //         Approvalpayment."Request Type" := Format(RequestType);
-                //         Approvalpayment."Payment Series" := Rec."Combine Payment Series";
-                //         Approvalpayment."Due Date" := Rec."Combine Due Date";
-                //         Approvalpayment."Payment Mode" := Rec."Combine Payment Mode";
-                //         Approvalpayment."New Amount" := Rec."Combine Amount";
-                //         Approvalpayment."New VAT Amount" := Rec."Combine VAT Amount";
-                //         Approvalpayment."Change Amount Including VAT" := Rec."Combine Amount Including VAT";
-                //         Approvalpayment.Modify();
-                //         Message('Approval Request Modify successfully!');
-                //     end else begin
-
-                //         // Create new entry
-                //         Approvalpayment.Init();
-                //         Approvalpayment."Contract ID" := Rec."Contract ID";
-                //         Approvalpayment."Tenant ID" := Rec."Tenant ID";
-                //         Approvalpayment.Status := 'Pending';
-                //         Approvalpayment."Request Type" := Format(RequestType);
-                //         Approvalpayment."Payment Series" := Rec."Combine Payment Series";
-                //         Approvalpayment."Due Date" := Rec."Combine Due Date";
-                //         Approvalpayment."Payment Mode" := Rec."Combine Payment Mode";
-                //         Approvalpayment."New Amount" := Rec."Combine Amount";
-                //         Approvalpayment."New VAT Amount" := Rec."Combine VAT Amount";
-                //         Approvalpayment."Change Amount Including VAT" := Rec."Combine Amount Including VAT";
-                //         Approvalpayment.Insert();
-                //         Message('Approval Request Send successfully!');
-                //     end;
-                // end;
             }
         }
     }
@@ -433,7 +429,9 @@ page 50927 "Payment Mode Card"
         IsVisible: Boolean;
         IsCombineVisible: Boolean;
         IsSplitVisible: Boolean;
-        RequestType: Option Combine,Split;
+
+        IsChangePaymodeVisible: Boolean;
+        RequestType: Option Combine,Split,"Payment Mode";
 
         Status: Option Manual,Frontend;
 
