@@ -3,7 +3,7 @@ page 50953 "Payment Details"
     PageType = ListPart;
     SourceTable = "Payment Details";
     ApplicationArea = All;
-    Caption = 'Payment Schedule Details';
+    Caption = 'Payment Details';
     //UsageCategory = Administration;
     layout
     {
