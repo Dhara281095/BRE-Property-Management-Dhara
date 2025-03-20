@@ -61,7 +61,7 @@ table 50702 "Approval Payment Request"
             DataClassification = ToBeClassified;
             Caption = 'Payment Series';
         }
-        field(50109; "Change Amount"; Decimal)
+        field(50109; "Change Amount"; Code[100])
         {
             DataClassification = ToBeClassified;
             Caption = 'New Amount Including VAT';
@@ -76,12 +76,12 @@ table 50702 "Approval Payment Request"
             DataClassification = ToBeClassified;
             Caption = 'Payment mode';
         }
-        field(50114; "Amount"; Decimal)
+        field(50114; "Amount"; Code[100])
         {
             DataClassification = ToBeClassified;
             Caption = 'New Amount';
         }
-        field(50115; "Vat Amount"; Decimal)
+        field(50115; "Vat Amount"; Code[100])
         {
             DataClassification = ToBeClassified;
             Caption = 'New Vat Amount';
