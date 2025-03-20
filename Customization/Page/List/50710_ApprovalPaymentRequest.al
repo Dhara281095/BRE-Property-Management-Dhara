@@ -20,6 +20,13 @@ page 50710 "Approval Payment Request"
                     ApplicationArea = All;
                     Editable = false;
                 }
+
+                field("Manual/Auto Status"; Rec."Manual/Auto Status")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
                 field("Status"; Rec."Status")
                 {
                     ApplicationArea = All;
@@ -48,11 +55,6 @@ page 50710 "Approval Payment Request"
 
 
                 }
-                // field("Changed Payment Series"; Rec."Changed Payment Series")
-                // {
-                //     ApplicationArea = All;
-                //     Editable = false;
-                // }
                 field("Payment Series"; Rec."Payment Series")
                 {
                     ApplicationArea = All;
@@ -109,6 +111,8 @@ page 50710 "Approval Payment Request"
                 Caption = 'Approve';
                 ApplicationArea = All;
                 Image = Approve;
+                Visible = IsFinanceManager;
+
 
                 trigger OnAction()
                 var
@@ -157,12 +161,14 @@ page 50710 "Approval Payment Request"
                 Caption = 'Reject';
                 ApplicationArea = All;
                 Image = Reject;
+                Visible = IsFinanceManager;
 
                 trigger OnAction()
                 var
                     SelectedRecs: Record "Approval Payment Request";
                     RejectCount: Integer;
                     ErrorCount: Integer;
+
                 begin
                     // Store selected records
                     CurrPage.SetSelectionFilter(SelectedRecs);
@@ -610,7 +616,35 @@ page 50710 "Approval Payment Request"
 
 
 
+    trigger OnOpenPage()
+    begin
+        // Check if the current user has the 'LEASE_MANAGER' permission set
+        IsFinanceManager := VisibleApproveAction();
+    end;
 
+    procedure VisibleApproveAction(): Boolean
+    var
+        UserPersonalization: Record "User Personalization";
+    begin
+
+        if UserPersonalization.Get(UserSecurityId()) then begin
+
+            case UserPersonalization."Profile ID" of
+                'PROPERTY MANAGER':
+                    exit(false);
+                'LEASE_MANAGER':
+                    exit(false);
+                'finance manager':
+                    exit(true);
+            end;
+        end;
+
+        exit(false);
+    end;
+
+    var
+        IsFinanceManager: Boolean;
+        IsFieldEditable: Boolean;
 
 
 

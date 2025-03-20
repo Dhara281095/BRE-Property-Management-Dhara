@@ -15,6 +15,14 @@ table 50702 "Approval Payment Request"
 
 
         }
+
+
+        field(50100; "Manual/Auto Status"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Manual/Auto Status';
+        }
+
         field(50102; "Status"; Text[100])
         {
             DataClassification = ToBeClassified;
