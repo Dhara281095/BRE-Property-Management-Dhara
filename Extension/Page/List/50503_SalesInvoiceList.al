@@ -101,20 +101,20 @@ pageextension 50503 salesinvoiceext extends "Sales Invoice List"
     {
         addbefore("&Invoice")
         {
-            // action(CreateSalesInvoice)
-            // {
-            //     Caption = 'Sale Invoice';
-            //     ApplicationArea = All;
-            //     trigger OnAction()
-            //     var
-            //         generateSaleInvoice: Codeunit GenerateConsolidatedInvoices;
+            action(CreateSalesInvoice)
+            {
+                Caption = 'Sale Invoice';
+                ApplicationArea = All;
+                trigger OnAction()
+                var
+                    generateSaleInvoice: Codeunit GenerateConsolidatedInvoices;
 
-            //     begin
-            //         generateSaleInvoice.GenerateConsolidatedInvoicesDirectly();
+                begin
+                    generateSaleInvoice.GenerateConsolidatedInvoicesDirectly();
 
 
-            //     end;
-            // }
+                end;
+            }
             // action(SendInvoiceLeaserManager)
             // {
             //     Caption = 'Lease Manager Send Mail';

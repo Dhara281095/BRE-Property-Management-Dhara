@@ -549,6 +549,8 @@ page 50928 "Payment Mode Card2"
 
 
     trigger OnAfterGetRecord()
+    var
+        paymentschedul2grid : Record "Payment Schedule2";
     begin
         IsApproved:= (Rec."Approval Status" <> Rec."Approval Status"::Approved);
         // If the field is blank, assign '-'
@@ -575,10 +577,32 @@ page 50928 "Payment Mode Card2"
 
         //      //   Modify();
         //     end;
+
+         paymentschedul2grid.SetRange("Contract ID", Rec."Contract ID");
+        paymentschedul2grid.SetRange("Payment Series", Rec."Payment Series");
+        paymentschedul2grid.SetRange(Invoiced, true);
+        if paymentschedul2grid.FindSet() then
+            repeat
+                Rec."Invoice #" := paymentschedul2grid."Invoice ID";
+                Rec.Modify();
+            until paymentschedul2grid.Next() = 0;
+
     end;
 
+    trigger OnAfterGetCurrRecord()
+    var
+    paymentschedul2grid : Record "Payment Schedule2";
+    begin
+         paymentschedul2grid.SetRange("Contract ID", Rec."Contract ID");
+        paymentschedul2grid.SetRange("Payment Series", Rec."Payment Series");
+         paymentschedul2grid.SetRange(Invoiced, true);
+        if paymentschedul2grid.FindSet() then
+            repeat
+                Rec."Invoice #" := paymentschedul2grid."Invoice ID";
+                Rec.Modify();
+            until paymentschedul2grid.Next() = 0;
+    end;
     
-
     procedure SetProposalID(pProposalID: Integer)
     begin
         proposalID := pProposalID;
@@ -636,6 +660,7 @@ page 50928 "Payment Mode Card2"
     trigger OnOpenPage()
     var
         PermissionSet: Record "User Personalization";
+         paymentschedul2grid : Record "Payment Schedule2";
     begin
         // Check if the current user has the 'LEASE_MANAGER' permission set
         IsLeaseManager := false;
@@ -648,8 +673,8 @@ page 50928 "Payment Mode Card2"
         end
         // else if PermissionSet."Profile ID" = 'FINANCE MANAGER' then
         //         IsFinanceManager := true;
-
-
+        
+ 
     end;
 
     trigger OnModifyRecord(): Boolean

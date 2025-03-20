@@ -69,4 +69,30 @@ tableextension 50504 PostedSalesInvoiceHeader extends "Sales Invoice Header"
         }
 
     }
+    trigger OnAfterInsert()
+    var
+        postedinvoiceheader: Record "Sales Invoice Header";
+        paymentschedule2: Record "Payment Schedule2";
+        paymentmode2: Record "Payment Mode2";
+        paymentschedule2grid: Record "Payment Schedule2";
+    begin
+        paymentschedule2.SetRange("Contract ID", Rec."Contract ID");
+        paymentschedule2.SetRange("Invoice ID", Rec."Pre-Assigned No.");
+        if paymentschedule2.FindSet() then
+            repeat
+                paymentschedule2."Invoice ID" := Rec."No.";
+                paymentschedule2.Modify();
+            until paymentschedule2.Next() = 0;
+
+        // paymentmode2.SetRange("Contract ID", paymentschedule2grid."Contract ID");
+        // paymentmode2.SetRange("Payment Series", paymentschedule2grid."Payment Series");
+        // if paymentmode2.FindSet() then
+        //     repeat
+        //         paymentmode2."Invoice #" := paymentschedule2grid."Invoice ID";
+        //         paymentmode2.Modify();
+        //     until paymentmode2.Next() = 0;
+
+    end;
+
+
 }
