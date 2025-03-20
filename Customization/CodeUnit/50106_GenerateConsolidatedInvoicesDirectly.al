@@ -1,8 +1,8 @@
 codeunit 50106 GenerateConsolidatedInvoices
 {
-    trigger OnRun()
+    //trigger OnRun()
 
-    // procedure GenerateConsolidatedInvoicesDirectly()
+    procedure GenerateConsolidatedInvoicesDirectly()
     var
         paymentScheudle2: Record "Payment Schedule2";
         SalesHeader: Record "Sales Header";
@@ -15,11 +15,12 @@ codeunit 50106 GenerateConsolidatedInvoices
         SalesHeader1: Record "Sales Header";
         currentdate: Date;
         paymentschedulcard: Record "Payment Schedule";
+        salesreciveablesetup: Record "Sales & Receivables Setup";
 
     begin
-        todaydate := Today();
-        // todaydate := 20260228D;
-        //todaydate := 20260530D;
+        // todaydate := Today();
+        todaydate := 20260228D;
+        // todaydate := 20260530D;
         currentdate := Today();
 
         //////////// START REACTIVATION CONTRACT ////////////////////////
@@ -46,6 +47,7 @@ codeunit 50106 GenerateConsolidatedInvoices
                     end;
 
                     newsalesheader1."Overdue Invoice" := 'Reactive';
+                    // newsalesheader1."Posting No. Series" := salesreciveablesetup."Posted Invoice Nos.";
                     newsalesheader1.Modify();
 
                     paymentScheudle3.Invoiced := true;
@@ -86,6 +88,9 @@ codeunit 50106 GenerateConsolidatedInvoices
                             newsalesheader := CreateSalesInvoice(paymentScheudle2."Tenant ID", paymentScheudle2."Due Date", paymentScheudle2."Contract ID", paymentScheudle2."Tenant Name");
                             createSalesLines(newsalesheader, paymentScheudle2);
                         end;
+
+                        // newsalesheader."Posting No. Series" := salesreciveablesetup."Posted Invoice Nos.";
+                        // newsalesheader.Modify();
                         paymentScheudle2.Invoiced := true;
                         paymentScheudle2."Invoice ID" := newsalesheader."No.";
                         paymentScheudle2.Modify();
@@ -121,6 +126,7 @@ codeunit 50106 GenerateConsolidatedInvoices
         salesHeader."Document Date" := Today;
         salesHeader."Posting Date" := Today;
         salesHeader."Shipment Date" := Today;
+        salesHeader."Posting No. Series" := salesReciveable."Posted Invoice Nos.";
 
         salesHeader.Insert();
 
