@@ -351,6 +351,44 @@ table 50924 "Payment Mode"
             DataClassification = ToBeClassified;
         }
 
+        field(50131; "Change Payment Mode"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            TableRelation = "Payment Type"."Payment Method";
+        }
+
+        field(50128; "Change Payment Series"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+
+            trigger OnLookup()
+            var
+                PaymentMode2Rec: Record "Payment Mode2";
+                Selection: Page "Payment Mode2 List";
+            begin
+                // Ensure Contract ID is selected first
+                if Rec."Contract ID" = 0 then
+                    Error('Please select a Contract ID first');
+
+                // Filter Payment Mode2 records based on Contract ID
+                PaymentMode2Rec.Reset();
+                PaymentMode2Rec.SetRange("Contract ID", Rec."Contract ID");
+                PaymentMode2Rec.SetFilter("Payment Status", '<> %1 & <> %2', PaymentMode2Rec."Payment Status"::Cancelled, PaymentMode2Rec."Payment Status"::Received);
+
+                Selection.LookupMode(true);
+                Selection.SetTableView(PaymentMode2Rec);
+
+                if Selection.RunModal() = ACTION::LookupOK then begin
+                    Selection.SetSelectionFilter(PaymentMode2Rec);
+
+                    if PaymentMode2Rec.FindSet() then begin
+                        Rec."Change Payment Series" := PaymentMode2Rec."Payment Series"; // Select only one value
+                    end;
+                end;
+            end;
+        }
+
+
     }
 
     keys
