@@ -403,6 +403,18 @@ page 50903 "Final Calculation Card"
                         Editable = false;
                     }
                 }
+
+            }
+
+            group("FinalSettlemt")
+            {
+                Caption = 'Final Settlement';
+                part("FinalSettelemts"; "FinalSettlemtCard")
+                {
+                    SubPageLink = "Contract ID" = FIELD("Contract ID"); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    // Visible = isVisible;
+                }
             }
         }
     }

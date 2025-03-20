@@ -133,6 +133,20 @@ page 50927 "Payment Mode Card"
                 }
             }
 
+
+            group("CombinePaymentLog")
+            {
+                Visible = IsCombineVisible;
+                Caption = 'Combine Payment Log';
+                part("CombinePaymentsLog"; "CombinePaymentLogCard")
+                {
+                    SubPageLink = "Contract ID" = FIELD("Contract ID"),
+                      "Tenant ID" = FIELD("Tenant ID"); // Link to filter attachments for this owner only
+                                                        // "Contract ID" = FIELD("Contract ID")
+                    ApplicationArea = All;
+                }
+            }
+
             group("CombinePayment")
             {
                 Visible = IsCombineVisible;
@@ -168,42 +182,81 @@ page 50927 "Payment Mode Card"
                 }
             }
 
+
+            group("SplitPaymentLog")
+            {
+                Visible = IsSplitVisible;
+                Caption = 'Split Payment Log';
+                part("SplitPaymentsLog"; "SplitPaymentLogCard")
+                {
+                    SubPageLink = "Contract ID" = FIELD("Contract ID"),
+                      "Tenant ID" = FIELD("Tenant ID"); // Link to filter attachments for this owner only
+                                                        // "Contract ID" = FIELD("Contract ID")
+                    ApplicationArea = All;
+                }
+            }
             group("SplitPayment")
             {
                 Visible = IsSplitVisible;
                 Caption = 'Split Payment';
-                field("Split Payment Series"; Rec."Split Payment Series")
+                part("SplitPayments"; "Split Payment Change Card")
                 {
+                    SubPageLink = "Contract ID" = FIELD("Contract ID"),
+                      "Tenant ID" = FIELD("Tenant ID"); // Link to filter attachments for this owner only
+                                                        // "Contract ID" = FIELD("Contract ID")
                     ApplicationArea = All;
                 }
+            }
 
-                field("Secondary Item Type"; Rec."Secondary Item Type")
-                {
-                    ApplicationArea = All;
-                }
+            // group("SplitPayment")
+            // {
+            //     Visible = IsSplitVisible;
+            //     Caption = 'Split Payment';
+            //     field("Split Payment Series"; Rec."Split Payment Series")
+            //     {
+            //         ApplicationArea = All;
+            //     }
 
-                field("Split Due Date"; Rec."Split Due Date")
-                {
-                    ApplicationArea = All;
-                }
+            //     field("Secondary Item Type"; Rec."Secondary Item Type")
+            //     {
+            //         ApplicationArea = All;
+            //     }
 
-                field("Split Payment Mode"; Rec."Split Payment Mode")
-                {
-                    ApplicationArea = All;
-                }
+            //     field("Split Due Date"; Rec."Split Due Date")
+            //     {
+            //         ApplicationArea = All;
+            //     }
 
-                field("Split Amount"; Rec."Split Amount")
-                {
-                    ApplicationArea = All;
-                }
+            //     field("Split Payment Mode"; Rec."Split Payment Mode")
+            //     {
+            //         ApplicationArea = All;
+            //     }
 
-                field("Split VAT Amount"; Rec."Split VAT Amount")
-                {
-                    ApplicationArea = All;
-                }
+            //     field("Split Amount"; Rec."Split Amount")
+            //     {
+            //         ApplicationArea = All;
+            //     }
 
-                field("Split Amount Including VAT"; Rec."Split Amount Including VAT")
+            //     field("Split VAT Amount"; Rec."Split VAT Amount")
+            //     {
+            //         ApplicationArea = All;
+            //     }
+
+            //     field("Split Amount Including VAT"; Rec."Split Amount Including VAT")
+            //     {
+            //         ApplicationArea = All;
+            //     }
+            // }
+
+            group("PaymentModeChangeLog")
+            {
+                Visible = IsChangePaymodeVisible;
+                Caption = 'Change Payment Mode Log';
+                part("PaymentsModeChangeLog"; "PaymentModeChangeLogCard")
                 {
+                    SubPageLink = "Contract ID" = FIELD("Contract ID"),
+                      "Tenant ID" = FIELD("Tenant ID"); // Link to filter attachments for this owner only
+                                                        // "Contract ID" = FIELD("Contract ID")
                     ApplicationArea = All;
                 }
             }
@@ -304,6 +357,7 @@ page 50927 "Payment Mode Card"
                     // Approvalpayment: Record "ManualApprovalPaymentRequest";
                     Approvalpayment: Record "Approval Payment Request";
                     MaxID: Integer;
+                    SplitPayChange: Record "Split Payment Change";
                 begin
                     // Validate required fields
                     if Rec."Contract ID" = 0 then
@@ -333,13 +387,13 @@ page 50927 "Payment Mode Card"
                         Approvalpayment."Change Amount" := Rec."Combine Amount Including VAT";
                     end
                     else if IsSplitVisible then begin
-                        Approvalpayment."Payment Series" := Rec."Split Payment Series";
-                        Approvalpayment."Due Date" := Rec."Split Due Date";
-                        Approvalpayment."Payment Mode" := Rec."Split Payment Mode";
-                        Approvalpayment."Amount" := Rec."Split Amount";
-                        Approvalpayment.Items := Rec."Secondary Item Type";
-                        Approvalpayment."VAT Amount" := Rec."Split VAT Amount";
-                        Approvalpayment."Change Amount" := Rec."Split Amount Including VAT";
+                        Approvalpayment."Payment Series" := SplitPayChange."Split Payment Series";
+                        Approvalpayment."Due Date" := SplitPayChange."Split Due Date";
+                        Approvalpayment."Payment Mode" := SplitPayChange."Split Payment Mode";
+                        Approvalpayment."Amount" := SplitPayChange."Split Amount";
+                        Approvalpayment.Items := SplitPayChange."Secondary Item Type";
+                        Approvalpayment."VAT Amount" := SplitPayChange."Split VAT Amount";
+                        Approvalpayment."Change Amount" := SplitPayChange."Split Amount Including VAT";
                     end
                     else if IsChangePaymodeVisible then begin
                         Approvalpayment."Payment Series" := Rec."Change Payment Series";
@@ -347,8 +401,29 @@ page 50927 "Payment Mode Card"
                     end;
                     Approvalpayment.Insert();
                     Message('Approval Request Sent successfully!');
-                end;
 
+                    // Clear relevant fields after sending request
+                    Clear(SplitPayChange."Split Payment Series");
+                    Clear(SplitPayChange."Split Due Date");
+                    Clear(SplitPayChange."Split Payment Mode");
+                    Clear(SplitPayChange."Split Amount");
+                    Clear(SplitPayChange."Secondary Item Type");
+                    Clear(SplitPayChange."Split VAT Amount");
+                    Clear(SplitPayChange."Split Amount Including VAT");
+
+                    Clear(Rec."Combine Payment Series");
+                    Clear(Rec."Combine Due Date");
+                    Clear(Rec."Combine Payment Mode");
+                    Clear(Rec."Combine Amount");
+                    Clear(Rec."Combine VAT Amount");
+                    Clear(Rec."Combine Amount Including VAT");
+
+                    Clear(Rec."Change Payment Series");
+                    Clear(Rec."Change Payment Mode");
+
+                    // Modify and update the record
+                    Rec.Modify();
+                end;
             }
         }
     }
