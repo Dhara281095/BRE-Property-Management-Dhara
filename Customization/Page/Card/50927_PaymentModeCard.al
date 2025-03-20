@@ -223,13 +223,14 @@ page 50927 "Payment Mode Card"
 
                 trigger OnAction()
                 var
-                    Paymentmode: Record "Payment Mode";
-                    Approvalpayment: Record "ManualApprovalPaymentRequest";
+                // Paymentmode: Record "Payment Mode";
+                // Approvalpayment: Record "Approval Payment Request";
                 begin
                     //IsVisible := NOT IsVisible;
                     IsCombineVisible := true;
                     IsSplitVisible := false;
                     RequestType := RequestType::Combine;
+                    Status := Status::Manual;
                     Message('Combine Payment section is open.');
                 end;
             }
@@ -246,6 +247,7 @@ page 50927 "Payment Mode Card"
                     IsCombineVisible := false;
                     IsSplitVisible := true;
                     RequestType := RequestType::Split;
+                    Status := Status::Manual;
                     Message('Split Payment section is open.');
                 end;
             }
@@ -261,7 +263,8 @@ page 50927 "Payment Mode Card"
                 trigger OnAction()
                 var
                     Paymentmode: Record "Payment Mode";
-                    Approvalpayment: Record "ManualApprovalPaymentRequest";
+                    // Approvalpayment: Record "ManualApprovalPaymentRequest";
+                    Approvalpayment: Record "Approval Payment Request";
                     MaxID: Integer;
                 begin
                     // Validate required fields
@@ -279,25 +282,26 @@ page 50927 "Payment Mode Card"
                     Approvalpayment.ID := MaxID; // Assign the new auto-incremented ID
                     Approvalpayment."Contract ID" := Rec."Contract ID";
                     Approvalpayment."Tenant ID" := Rec."Tenant ID";
-                    Approvalpayment."Approval Status" := 'Pending';
+                    Approvalpayment."Status" := 'Pending';
                     Approvalpayment."Request Type" := Format(RequestType);
+                    Approvalpayment."Manual/Auto Status" := Format(Status);
 
                     if IsCombineVisible then begin
                         Approvalpayment."Payment Series" := Rec."Combine Payment Series";
                         Approvalpayment."Due Date" := Rec."Combine Due Date";
                         Approvalpayment."Payment Mode" := Rec."Combine Payment Mode";
-                        Approvalpayment."New Amount" := Rec."Combine Amount";
-                        Approvalpayment."New VAT Amount" := Rec."Combine VAT Amount";
-                        Approvalpayment."Change Amount Including VAT" := Rec."Combine Amount Including VAT";
+                        Approvalpayment."Amount" := Rec."Combine Amount";
+                        Approvalpayment."VAT Amount" := Rec."Combine VAT Amount";
+                        Approvalpayment."Change Amount" := Rec."Combine Amount Including VAT";
                     end
                     else if IsSplitVisible then begin
                         Approvalpayment."Payment Series" := Rec."Split Payment Series";
                         Approvalpayment."Due Date" := Rec."Split Due Date";
                         Approvalpayment."Payment Mode" := Rec."Split Payment Mode";
-                        Approvalpayment."New Amount" := Rec."Split Amount";
+                        Approvalpayment."Amount" := Rec."Split Amount";
                         Approvalpayment.Items := Rec."Secondary Item Type";
-                        Approvalpayment."New VAT Amount" := Rec."Split VAT Amount";
-                        Approvalpayment."Change Amount Including VAT" := Rec."Split Amount Including VAT";
+                        Approvalpayment."VAT Amount" := Rec."Split VAT Amount";
+                        Approvalpayment."Change Amount" := Rec."Split Amount Including VAT";
                     end;
 
                     Approvalpayment.Insert();
@@ -430,6 +434,8 @@ page 50927 "Payment Mode Card"
         IsCombineVisible: Boolean;
         IsSplitVisible: Boolean;
         RequestType: Option Combine,Split;
+
+        Status: Option Manual,Frontend;
 
     trigger OnOpenPage()
     var
