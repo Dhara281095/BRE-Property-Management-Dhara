@@ -303,6 +303,7 @@ page 50927 "Payment Mode Card"
                     RequestType := RequestType::Combine;
                     Status := Status::Manual;
                     Message('Combine Payment section is open.');
+                    CombinePaymentLogStore();
                 end;
             }
 
@@ -321,13 +322,14 @@ page 50927 "Payment Mode Card"
                     RequestType := RequestType::Split;
                     Status := Status::Manual;
                     Message('Split Payment section is open.');
+                    SplitPaymentLogStore();
                 end;
             }
 
 
             action(Paymode)
             {
-                Caption = 'Pay Mode Change';
+                Caption = 'Payment Mode Change';
                 ApplicationArea = All;
                 Image = NewDocument;
 
@@ -340,6 +342,7 @@ page 50927 "Payment Mode Card"
                     RequestType := RequestType::"Payment Mode";
                     Status := Status::Manual;
                     Message('Paymode Payment section is open.');
+                    PaymentModeLogStore();
                 end;
             }
 
@@ -354,7 +357,6 @@ page 50927 "Payment Mode Card"
                 trigger OnAction()
                 var
                     Paymentmode: Record "Payment Mode";
-                    // Approvalpayment: Record "ManualApprovalPaymentRequest";
                     Approvalpayment: Record "Approval Payment Request";
                     MaxID: Integer;
                     SplitPayChange: Record "Split Payment Change";
@@ -369,37 +371,70 @@ page 50927 "Payment Mode Card"
                     else
                         MaxID := 1; // If no records exist, start from 1
 
-                    // Create a new record
-                    Approvalpayment.Init();
-                    Approvalpayment.ID := MaxID; // Assign the new auto-incremented ID
-                    Approvalpayment."Contract ID" := Rec."Contract ID";
-                    Approvalpayment."Tenant ID" := Rec."Tenant ID";
-                    Approvalpayment."Status" := 'Pending';
-                    Approvalpayment."Request Type" := Format(RequestType);
-                    Approvalpayment."Manual/Auto Status" := Format(Status);
-
                     if IsCombineVisible then begin
+                        Approvalpayment.Init();
+                        Approvalpayment.ID := MaxID; // Assign the new auto-incremented ID
+                        Approvalpayment."Contract ID" := Rec."Contract ID";
+                        Approvalpayment."Tenant ID" := Rec."Tenant ID";
+                        Approvalpayment."Status" := 'Pending';
+                        Approvalpayment."Request Type" := Format(RequestType);
+                        Approvalpayment."Manual/Auto Status" := Format(Status);
                         Approvalpayment."Payment Series" := Rec."Combine Payment Series";
                         Approvalpayment."Due Date" := Rec."Combine Due Date";
                         Approvalpayment."Payment Mode" := Rec."Combine Payment Mode";
                         Approvalpayment."Amount" := Rec."Combine Amount";
                         Approvalpayment."VAT Amount" := Rec."Combine VAT Amount";
                         Approvalpayment."Change Amount" := Rec."Combine Amount Including VAT";
+                        Approvalpayment.Insert();
                     end
                     else if IsSplitVisible then begin
-                        Approvalpayment."Payment Series" := SplitPayChange."Split Payment Series";
-                        Approvalpayment."Due Date" := SplitPayChange."Split Due Date";
-                        Approvalpayment."Payment Mode" := SplitPayChange."Split Payment Mode";
-                        Approvalpayment."Amount" := SplitPayChange."Split Amount";
-                        Approvalpayment.Items := SplitPayChange."Secondary Item Type";
-                        Approvalpayment."VAT Amount" := SplitPayChange."Split VAT Amount";
-                        Approvalpayment."Change Amount" := SplitPayChange."Split Amount Including VAT";
+                        if SplitPayChange.FindSet() then begin
+                            repeat
+
+                                if (SplitPayChange."Split Payment Series" <> '') and
+                 (SplitPayChange."Secondary Item Type" <> '') and
+                 (SplitPayChange."Split Due Date" <> 0D) and
+                 //(SplitPayChange."Payment Mode" <> '') and
+                 (SplitPayChange."Split Amount" <> 0) then begin
+
+
+                                    Approvalpayment.Init(); // Initialize a new record
+                                    Approvalpayment.ID := MaxID; // Assign unique ID
+                                    MaxID += 1; // Increment for the next record
+
+                                    Approvalpayment."Contract ID" := Rec."Contract ID";
+                                    Approvalpayment."Tenant ID" := Rec."Tenant ID";
+                                    Approvalpayment."Status" := 'Pending';
+                                    Approvalpayment."Request Type" := Format(RequestType);
+                                    Approvalpayment."Manual/Auto Status" := Format(Status);
+                                    Approvalpayment.Items := SplitPayChange."Secondary Item Type";
+                                    Approvalpayment."Payment Series" := SplitPayChange."Split Payment Series";
+                                    Approvalpayment."Due Date" := SplitPayChange."Split Due Date";
+                                    Approvalpayment."Payment Mode" := SplitPayChange."Split Payment Mode";
+                                    Approvalpayment."Amount" := SplitPayChange."Split Amount";
+                                    Approvalpayment."VAT Amount" := SplitPayChange."Split VAT Amount";
+                                    Approvalpayment."Change Amount" := SplitPayChange."Split Amount Including VAT";
+
+                                    Approvalpayment.Insert(); // Insert inside the loop
+                                end;
+                            until SplitPayChange.Next() = 0;
+                            SplitPayChange.Reset();
+                            SplitPayChange.DeleteAll(); // Delete all records from the grid
+                        end;
                     end
                     else if IsChangePaymodeVisible then begin
+                        Approvalpayment.Init();
+                        Approvalpayment.ID := MaxID;
+                        Approvalpayment."Contract ID" := Rec."Contract ID";
+                        Approvalpayment."Tenant ID" := Rec."Tenant ID";
+                        Approvalpayment."Status" := 'Pending';
+                        Approvalpayment."Request Type" := Format(RequestType);
+                        Approvalpayment."Manual/Auto Status" := Format(Status);
                         Approvalpayment."Payment Series" := Rec."Change Payment Series";
                         Approvalpayment."Payment Mode" := Rec."Change Payment Mode";
+                        Approvalpayment.Insert();
                     end;
-                    Approvalpayment.Insert();
+
                     Message('Approval Request Sent successfully!');
 
                     // Clear relevant fields after sending request
@@ -424,6 +459,93 @@ page 50927 "Payment Mode Card"
                     // Modify and update the record
                     Rec.Modify();
                 end;
+
+
+                // trigger OnAction()
+                // var
+                //     Paymentmode: Record "Payment Mode";
+                //     // Approvalpayment: Record "ManualApprovalPaymentRequest";
+                //     Approvalpayment: Record "Approval Payment Request";
+                //     MaxID: Integer;
+                //     SplitPayChange: Record "Split Payment Change";
+                // begin
+                //     // Validate required fields
+                //     if Rec."Contract ID" = 0 then
+                //         Error('Contract ID must be specified');
+
+                //     // Find the highest ID and increment it
+                //     if Approvalpayment.FindLast() then
+                //         MaxID := Approvalpayment.ID + 1
+                //     else
+                //         MaxID := 1; // If no records exist, start from 1
+
+                //     // Create a new record
+                //     Approvalpayment.Init();
+                //     Approvalpayment.ID := MaxID; // Assign the new auto-incremented ID
+                //     Approvalpayment."Contract ID" := Rec."Contract ID";
+                //     Approvalpayment."Tenant ID" := Rec."Tenant ID";
+                //     Approvalpayment."Status" := 'Pending';
+                //     Approvalpayment."Request Type" := Format(RequestType);
+                //     Approvalpayment."Manual/Auto Status" := Format(Status);
+
+                //     if IsCombineVisible then begin
+                //         Approvalpayment."Payment Series" := Rec."Combine Payment Series";
+                //         Approvalpayment."Due Date" := Rec."Combine Due Date";
+                //         Approvalpayment."Payment Mode" := Rec."Combine Payment Mode";
+                //         Approvalpayment."Amount" := Rec."Combine Amount";
+                //         Approvalpayment."VAT Amount" := Rec."Combine VAT Amount";
+                //         Approvalpayment."Change Amount" := Rec."Combine Amount Including VAT";
+                //     end
+                //     else if IsSplitVisible then begin
+                //         if SplitPayChange.FindSet() then begin
+                //             repeat
+                //                 Approvalpayment.Init();
+                //                 Approvalpayment.ID := MaxID; // Assign the new auto-incremented ID
+                //                 Approvalpayment."Contract ID" := Rec."Contract ID";
+                //                 Approvalpayment."Tenant ID" := Rec."Tenant ID";
+                //                 Approvalpayment."Status" := 'Pending';
+                //                 Approvalpayment."Request Type" := Format(RequestType);
+                //                 Approvalpayment."Manual/Auto Status" := Format(Status);
+                //                 Approvalpayment.Items := SplitPayChange."Secondary Item Type";
+                //                 Approvalpayment."Payment Series" := SplitPayChange."Split Payment Series";
+                //                 Approvalpayment."Due Date" := SplitPayChange."Split Due Date";
+                //                 Approvalpayment."Payment Mode" := SplitPayChange."Split Payment Mode";
+                //                 Approvalpayment."Amount" := SplitPayChange."Split Amount";
+                //                 Approvalpayment."VAT Amount" := SplitPayChange."Split VAT Amount";
+                //                 Approvalpayment."Change Amount" := SplitPayChange."Split Amount Including VAT";
+                //             // Approvalpayment.Insert();
+                //             until SplitPayChange.Next() = 0;
+                //         end;
+                //     end
+                //     else if IsChangePaymodeVisible then begin
+                //         Approvalpayment."Payment Series" := Rec."Change Payment Series";
+                //         Approvalpayment."Payment Mode" := Rec."Change Payment Mode";
+                //     end;
+                //     Approvalpayment.Insert();
+                //     Message('Approval Request Sent successfully!');
+
+                //     // Clear relevant fields after sending request
+                //     Clear(SplitPayChange."Split Payment Series");
+                //     Clear(SplitPayChange."Split Due Date");
+                //     Clear(SplitPayChange."Split Payment Mode");
+                //     Clear(SplitPayChange."Split Amount");
+                //     Clear(SplitPayChange."Secondary Item Type");
+                //     Clear(SplitPayChange."Split VAT Amount");
+                //     Clear(SplitPayChange."Split Amount Including VAT");
+
+                //     Clear(Rec."Combine Payment Series");
+                //     Clear(Rec."Combine Due Date");
+                //     Clear(Rec."Combine Payment Mode");
+                //     Clear(Rec."Combine Amount");
+                //     Clear(Rec."Combine VAT Amount");
+                //     Clear(Rec."Combine Amount Including VAT");
+
+                //     Clear(Rec."Change Payment Series");
+                //     Clear(Rec."Change Payment Mode");
+
+                //     // Modify and update the record
+                //     Rec.Modify();
+                // end;
             }
         }
     }
@@ -439,7 +561,8 @@ page 50927 "Payment Mode Card"
         CurrPage."PaymentMode".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."PaymentMode".Page.SetContractID(Rec."Contract ID");
         CurrPage.PaymentMode.Page.SetDetails(Rec."Tenant Name", Rec."Tenant Email");
-
+        CurrPage."SplitPayments".Page.SetTenantID(Rec."Tenant ID");
+        CurrPage."SplitPayments".Page.SetContractID(Rec."Contract ID");
     end;
 
 
@@ -451,7 +574,8 @@ page 50927 "Payment Mode Card"
         CurrPage."PaymentMode".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."PaymentMode".Page.SetContractID(Rec."Contract ID");
         CurrPage.PaymentMode.Page.SetDetails(Rec."Tenant Name", Rec."Tenant Email");
-
+        CurrPage."SplitPayments".Page.SetTenantID(Rec."Tenant ID");
+        CurrPage."SplitPayments".Page.SetContractID(Rec."Contract ID");
     end;
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
@@ -462,8 +586,127 @@ page 50927 "Payment Mode Card"
         CurrPage."PaymentMode".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."PaymentMode".Page.SetContractID(Rec."Contract ID");
         CurrPage.PaymentMode.Page.SetDetails(Rec."Tenant Name", Rec."Tenant Email");
+        CurrPage."SplitPayments".Page.SetTenantID(Rec."Tenant ID");
+        CurrPage."SplitPayments".Page.SetContractID(Rec."Contract ID");
 
     end;
+
+    procedure CombinePaymentLogStore()
+    var
+        ApprovalPaymentRequest: Record "Approval Payment Request";
+        CombinePaymentLogsub: Record "CombinePaymentLog";
+    begin
+
+        CombinePaymentLogsub.SetRange("Contract ID", Rec."Contract ID");
+        if CombinePaymentLogsub.FindSet() then begin
+            CombinePaymentLogsub.DeleteAll();
+        end;
+
+
+        // TenancyContractLine.Reset();
+        ApprovalPaymentRequest.SetRange("Contract ID", Rec."Contract ID");
+        ApprovalPaymentRequest.SetRange("Tenant ID", Rec."Tenant ID");
+        // ApprovalPaymentRequest.SetRange("ID", CombinePaymentLogsub."ID");
+        ApprovalPaymentRequest.SetRange("Request Type", 'Combine');
+        if ApprovalPaymentRequest.FindSet() then begin
+            repeat
+                CombinePaymentLogsub.Init();
+                CombinePaymentLogsub."Contract ID" := Rec."Contract ID";
+                CombinePaymentLogsub."Tenant ID" := Rec."Tenant ID";
+                // Calculate VAT amount based on percentage
+                CombinePaymentLogsub."ID" := ApprovalPaymentRequest.ID;
+                CombinePaymentLogsub."Approval Status" := ApprovalPaymentRequest."Status";
+                CombinePaymentLogsub."Request Type" := ApprovalPaymentRequest."Request Type";
+                CombinePaymentLogsub."New Amount" := ApprovalPaymentRequest."Amount";
+                CombinePaymentLogsub."New VAT Amount" := ApprovalPaymentRequest."Vat Amount";
+                CombinePaymentLogsub."Change Amount Including VAT" := ApprovalPaymentRequest."Change Amount";
+                CombinePaymentLogsub."Payment mode" := ApprovalPaymentRequest."Payment mode";
+                CombinePaymentLogsub."Payment Series" := ApprovalPaymentRequest."Payment Series";
+                CombinePaymentLogsub."Due Date" := ApprovalPaymentRequest."Due Date";
+                CombinePaymentLogsub.Insert();
+                Clear(CombinePaymentLogsub);
+            until ApprovalPaymentRequest.Next() = 0;
+        end;
+
+    end;
+
+    procedure SplitPaymentLogStore()
+    var
+        ApprovalPaymentRequest: Record "Approval Payment Request";
+        SplitPaymentLogsub: Record "SplitPaymentLog";
+    begin
+
+        SplitPaymentLogsub.SetRange("Contract ID", Rec."Contract ID");
+        if SplitPaymentLogsub.FindSet() then begin
+            SplitPaymentLogsub.DeleteAll();
+        end;
+
+
+        // TenancyContractLine.Reset();
+        ApprovalPaymentRequest.SetRange("Contract ID", Rec."Contract ID");
+        ApprovalPaymentRequest.SetRange("Tenant ID", Rec."Tenant ID");
+        // ApprovalPaymentRequest.SetRange("ID", CombinePaymentLogsub."ID");
+        ApprovalPaymentRequest.SetRange("Request Type", 'Split');
+        if ApprovalPaymentRequest.FindSet() then begin
+            repeat
+                SplitPaymentLogsub.Init();
+                SplitPaymentLogsub."Contract ID" := Rec."Contract ID";
+                SplitPaymentLogsub."Tenant ID" := Rec."Tenant ID";
+                // Calculate VAT amount based on percentage
+                SplitPaymentLogsub."ID" := ApprovalPaymentRequest.ID;
+                SplitPaymentLogsub."Approval Status" := ApprovalPaymentRequest."Status";
+                SplitPaymentLogsub."Request Type" := ApprovalPaymentRequest."Request Type";
+                SplitPaymentLogsub."Payment Series" := ApprovalPaymentRequest."Payment Series";
+                SplitPaymentLogsub."New Amount" := ApprovalPaymentRequest."Amount";
+                SplitPaymentLogsub."New VAT Amount" := ApprovalPaymentRequest."Vat Amount";
+                SplitPaymentLogsub."Change Amount Including VAT" := ApprovalPaymentRequest."Change Amount";
+                SplitPaymentLogsub."Payment mode" := ApprovalPaymentRequest."Payment mode";
+                SplitPaymentLogsub."Due Date" := ApprovalPaymentRequest."Due Date";
+                SplitPaymentLogsub.Items := ApprovalPaymentRequest.Items;
+                SplitPaymentLogsub.Insert();
+                Clear(SplitPaymentLogsub);
+            until ApprovalPaymentRequest.Next() = 0;
+        end;
+
+    end;
+
+
+    procedure PaymentModeLogStore()
+    var
+        ApprovalPaymentRequest: Record "Approval Payment Request";
+        PaymentModeLogSub: Record "PaymentModeChangeLog";
+    begin
+
+        PaymentModeLogSub.SetRange("Contract ID", Rec."Contract ID");
+        if PaymentModeLogSub.FindSet() then begin
+            PaymentModeLogSub.DeleteAll();
+        end;
+
+
+        // TenancyContractLine.Reset();
+        ApprovalPaymentRequest.SetRange("Contract ID", Rec."Contract ID");
+        ApprovalPaymentRequest.SetRange("Tenant ID", Rec."Tenant ID");
+        // ApprovalPaymentRequest.SetRange("ID", CombinePaymentLogsub."ID");
+        ApprovalPaymentRequest.SetRange("Request Type", 'Payment Mode');
+        if ApprovalPaymentRequest.FindSet() then begin
+            repeat
+                PaymentModeLogSub.Init();
+                PaymentModeLogSub."Contract ID" := Rec."Contract ID";
+                PaymentModeLogSub."Tenant ID" := Rec."Tenant ID";
+                // Calculate VAT amount based on percentage
+                PaymentModeLogSub."ID" := ApprovalPaymentRequest.ID;
+                PaymentModeLogSub."Approval Status" := ApprovalPaymentRequest."Status";
+                PaymentModeLogSub."Request Type" := ApprovalPaymentRequest."Request Type";
+                PaymentModeLogSub."Payment Series" := ApprovalPaymentRequest."Payment Series";
+                PaymentModeLogSub."Payment mode" := ApprovalPaymentRequest."Payment mode";
+                PaymentModeLogSub.Insert();
+                Clear(PaymentModeLogSub);
+            until ApprovalPaymentRequest.Next() = 0;
+        end;
+
+    end;
+
+
 
     // procedure UpdateAllPaymentGridApprovalStatus(ContractID: Integer; NewStatus: Enum "Approval Status Enum")
     // var
