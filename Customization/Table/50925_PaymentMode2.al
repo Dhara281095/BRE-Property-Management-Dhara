@@ -176,24 +176,7 @@ table 50925 "Payment Mode2"
         {
             //OptionMembers = "Scheduled","Due","Received","Overdue","Cancelled";
             Caption = 'Payment Status';
-            trigger OnValidate()
-            var
-                Email: Codeunit "Send Payment Receipt";
-                emailrec: Codeunit "Send PaymentMode Email";
-            begin
-                if Rec."Payment Status" = Rec."Payment Status"::Received then begin
-                    Email.SendEmail(Rec);
-                end
-
-                else if Rec."Payment Status" = Rec."Payment Status"::Cancelled then begin
-                    emailrec.SendEmailCancelled(Rec); // Call for Cancelled status
-                end
-
-                else if Rec."Payment Status" = Rec."Payment Status"::Overdue then begin
-                    emailrec.SendEmailOverdue(Rec); // Call for Overdue status
-                end;
-
-            end;
+       
 
             // trigger OnValidate()
             // var
@@ -491,6 +474,16 @@ table 50925 "Payment Mode2"
         field(50131; "Payment Received Date"; Date)
         {
             DataClassification = ToBeClassified;
+        }
+        field(50132; "View Invoice"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'View Invoice';
+        }
+        field(50133; "View Reciept document URL"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'View Document URL';
         }
 
 
