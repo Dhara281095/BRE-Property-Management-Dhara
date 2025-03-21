@@ -176,6 +176,7 @@ table 50925 "Payment Mode2"
         {
             //OptionMembers = "Scheduled","Due","Received","Overdue","Cancelled";
             Caption = 'Payment Status';
+<<<<<<< HEAD
             trigger OnValidate()
             var
                 Email: Codeunit "Send Payment Receipt";
@@ -194,6 +195,9 @@ table 50925 "Payment Mode2"
                 end;
 
             end;
+=======
+       
+>>>>>>> 2a050f33cf43f1cf03f5ffc8df2bcb9fbd2a0cab
 
             // trigger OnValidate()
             // var
