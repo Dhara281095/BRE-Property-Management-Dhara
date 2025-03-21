@@ -178,34 +178,43 @@ table 50925 "Payment Mode2"
             Caption = 'Payment Status';
             trigger OnValidate()
             var
-                emailrec: Codeunit "Send Payment Receipt";
+                Email: Codeunit "Send Payment Receipt";
+                emailrec: Codeunit "Send PaymentMode Email";
             begin
                 if Rec."Payment Status" = Rec."Payment Status"::Received then begin
-                    emailrec.SendEmail(Rec);
+                    Email.SendEmail(Rec);
+                end
+
+                else if Rec."Payment Status" = Rec."Payment Status"::Cancelled then begin
+                    emailrec.SendEmailCancelled(Rec); // Call for Cancelled status
+                end
+
+                else if Rec."Payment Status" = Rec."Payment Status"::Overdue then begin
+                    emailrec.SendEmailOverdue(Rec); // Call for Overdue status
                 end;
+
             end;
 
-            //     trigger OnValidate()
-            //     var
-            //         emailrec: Codeunit "Send PaymentMode Email";
+            // trigger OnValidate()
+            // var
+            //     emailrec: Codeunit "Send PaymentMode Email";
 
-            //     begin
-            //         // Check the status and call the appropriate email procedure
-            //         if Rec."Payment Status" = Rec."Payment Status"::Received then begin
-            //             emailrec.SendEmail(Rec); // Call for Received status
+            // begin
+            //     // Check the status and call the appropriate email procedure
+            //     if Rec."Payment Status" = Rec."Payment Status"::Received then begin
+            //         emailrec.SendEmail(Rec); // Call for Received status
 
-            //         end
+            //     end
 
-            //         else if Rec."Payment Status" = Rec."Payment Status"::Cancelled then begin
-            //             emailrec.SendEmailCancelled(Rec); // Call for Cancelled status
-            //         end
+            //     else if Rec."Payment Status" = Rec."Payment Status"::Cancelled then begin
+            //         emailrec.SendEmailCancelled(Rec); // Call for Cancelled status
+            //     end
 
-            //         else if Rec."Payment Status" = Rec."Payment Status"::Overdue then begin
-            //             emailrec.SendEmailOverdue(Rec); // Call for Overdue status
-            //         end;
+            //     else if Rec."Payment Status" = Rec."Payment Status"::Overdue then begin
+            //         emailrec.SendEmailOverdue(Rec); // Call for Overdue status
             //     end;
+            // end;
         }
-
 
         field(50113; "Cheque Status"; Enum "PDC Status Type Enum")
         {
