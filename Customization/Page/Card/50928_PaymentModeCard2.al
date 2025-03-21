@@ -350,7 +350,35 @@ page 50928 "Payment Mode Card2"
                 {
                     Caption = 'Payment Received Date';
                     Editable = false;
-                }
+                }   
+
+            field("View Invoice"; Rec."View Invoice")
+            {
+                ApplicationArea = All;
+                Caption = 'View Invoice';
+                Editable = false;
+                DrillDown = true;
+                trigger OnDrillDown()
+                var
+                    FileURL: Text;
+                begin
+
+                    FileURL := Rec."View Reciept document URL";
+
+
+                    if FileURL = '' then
+                        Error('No document is available to view.');
+
+
+                    OpenFileInBrowser1(FileURL);
+                end;
+
+            }
+            field("View Reciept document URL";Rec."View Reciept document URL")
+            {
+                ApplicationArea = All;
+                Caption = 'View Reciept document URL';
+            }
 
 
             }
@@ -629,6 +657,15 @@ page 50928 "Payment Mode Card2"
             Error('The file URL is invalid.');
     end;
 
+
+    procedure OpenFileInBrowser1(URL: Text)
+    begin
+        // Use the Hyperlink method to open the file in the browser
+        if URL <> '' then
+            Hyperlink(URL)
+        else
+            Error('The file URL is invalid.');
+    end;
     procedure SetDetails(pTenantName: Text[100]; pTenantEmail: Text[80])
     begin
         tenantName := pTenantName;

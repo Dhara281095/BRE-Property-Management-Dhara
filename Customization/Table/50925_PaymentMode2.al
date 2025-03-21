@@ -492,6 +492,16 @@ table 50925 "Payment Mode2"
         {
             DataClassification = ToBeClassified;
         }
+        field(50132; "View Invoice"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'View Invoice';
+        }
+        field(50133; "View Reciept document URL"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'View Document URL';
+        }
 
 
     }

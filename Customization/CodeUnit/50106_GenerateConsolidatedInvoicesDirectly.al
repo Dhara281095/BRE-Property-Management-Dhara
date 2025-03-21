@@ -69,34 +69,40 @@ codeunit 50106 GenerateConsolidatedInvoices
 
         if paymentScheudle2.FindSet() then
             repeat
-                paymentschedul1.SetRange("Contract ID", paymentScheudle2."Contract ID");
-                paymentschedul1.SetFilter("Contract Status", 'Suspended');
-                if paymentschedul1.FindSet() then begin
-                    paymentScheudle2."Contract Status" := paymentschedul1."Contract Status";
-                    paymentScheudle2.Modify();
+                if paymentScheudle2."Contract Status" = 'Terminated' then begin
+                    exit;
                 end else begin
-                    if paymentScheudle2.Invoiced = false then begin
-                        //   SalesHeader.SetRange("Sell-to Customer No.", paymentScheudle2."Tenant ID");
-                        SalesHeader.SetRange("Contract ID", paymentScheudle2."Contract ID");
-                        SalesHeader.SetRange("Due Date", paymentScheudle2."Due Date");
-                        SalesHeader.SetRange("Document Type", Enum::"Sales Document Type"::Invoice);
-                        if SalesHeader.FindSet() then begin
-
-                            createSalesLines(SalesHeader, paymentScheudle2);
-                        end
-                        else begin
-                            newsalesheader := CreateSalesInvoice(paymentScheudle2."Tenant ID", paymentScheudle2."Due Date", paymentScheudle2."Contract ID", paymentScheudle2."Tenant Name");
-                            createSalesLines(newsalesheader, paymentScheudle2);
-                        end;
-
-                        // newsalesheader."Posting No. Series" := salesreciveablesetup."Posted Invoice Nos.";
-                        // newsalesheader.Modify();
-                        paymentScheudle2.Invoiced := true;
-                        paymentScheudle2."Invoice ID" := newsalesheader."No.";
+                    // add below code for create invoice 
+                    paymentschedul1.SetRange("Contract ID", paymentScheudle2."Contract ID");
+                    paymentschedul1.SetFilter("Contract Status", 'Suspended');
+                    if paymentschedul1.FindSet() then begin
+                        paymentScheudle2."Contract Status" := paymentschedul1."Contract Status";
                         paymentScheudle2.Modify();
+                    end else begin
+                        if paymentScheudle2.Invoiced = false then begin
+                            //   SalesHeader.SetRange("Sell-to Customer No.", paymentScheudle2."Tenant ID");
+                            SalesHeader.SetRange("Contract ID", paymentScheudle2."Contract ID");
+                            SalesHeader.SetRange("Due Date", paymentScheudle2."Due Date");
+                            SalesHeader.SetRange("Document Type", Enum::"Sales Document Type"::Invoice);
+                            if SalesHeader.FindSet() then begin
 
+                                createSalesLines(SalesHeader, paymentScheudle2);
+                            end
+                            else begin
+                                newsalesheader := CreateSalesInvoice(paymentScheudle2."Tenant ID", paymentScheudle2."Due Date", paymentScheudle2."Contract ID", paymentScheudle2."Tenant Name");
+                                createSalesLines(newsalesheader, paymentScheudle2);
+                            end;
+
+                            // newsalesheader."Posting No. Series" := salesreciveablesetup."Posted Invoice Nos.";
+                            // newsalesheader.Modify();
+                            paymentScheudle2.Invoiced := true;
+                            paymentScheudle2."Invoice ID" := newsalesheader."No.";
+                            paymentScheudle2.Modify();
+
+                        end;
                     end;
                 end;
+
 
             until paymentScheudle2.Next() = 0;
 
