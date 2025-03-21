@@ -145,6 +145,26 @@ page 50707 paymentdata
                 {
                     Caption = 'Approve/Decline Status';
                 }
+                field("TenantEmail"; Rec."Tenant Email")
+                {
+                    Caption = 'Tenant Email';
+                }
+                field("TenantName"; Rec."Tenant Name")
+                {
+                    Caption = 'Tenant Name';
+                }
+                field("ViewInvoice"; Rec."View Invoice")
+                {
+                    Caption = 'View Invoice';
+                }
+                field("ViewRecieptdocumentURL"; Rec."View Reciept document URL")
+                {
+                    Caption = 'View Reciept document URL';
+                }
+                field("PaymentReceivedDate"; Rec."Payment Received Date")
+                {
+                    Caption = 'Payment Received Date';
+                }
             }
         }
     }
