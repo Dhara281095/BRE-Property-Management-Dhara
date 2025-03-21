@@ -23,24 +23,20 @@ page 50929 "Split Payment Change Card"
                 {
                     ApplicationArea = All;
                     Caption = 'Split Payment Series';
-                    Editable = false;
                 }
                 field("Secondary Item Type"; Rec."Secondary Item Type")
                 {
                     ApplicationArea = All;
-                    Editable = false;
                     Caption = 'Secondary Item Type';
                 }
                 field("Split Due Date"; Rec."Split Due Date")
                 {
                     ApplicationArea = All;
-                    Editable = false;
                     Caption = 'Split Due Date';
                 }
                 field("Split Payment Mode"; Rec."Split Payment Mode")
                 {
                     ApplicationArea = All;
-                    Editable = false;
                     Caption = 'Split Payment Mode';
                 }
 
@@ -87,4 +83,28 @@ page 50929 "Split Payment Change Card"
         }
 
     }
+
+    procedure SetTenantID(pTenantID: Code[20])
+    begin
+        tenantID := pTenantID;
+
+    end;
+
+    procedure SetContractID(pContractID: Integer)
+    begin
+        ContractID := pContractID;
+    end;
+
+
+    trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    begin
+
+        Rec."Tenant ID" := tenantID;
+        Rec."Contract ID" := ContractID;
+    end;
+
+    var
+        tenantID: Code[20];
+        ContractID: Integer;
+
 }
