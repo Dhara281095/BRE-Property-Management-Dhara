@@ -21,6 +21,7 @@ codeunit 50102 "Send Payment Receipt"
         ConsolidatedInvoiceHeader.Reset();
         ConsolidatedInvoiceHeader.SetRange("Tenant ID", Rec."Tenant ID");
         ConsolidatedInvoiceHeader.SetRange("Contract ID", Rec."Contract ID"); // Ensure filtering on unique ID
+        ConsolidatedInvoiceHeader.SetRange("Payment Series", Rec."Payment Series"); // Add this line to filter by Payment Series
 
         if ConsolidatedInvoiceHeader.FindFirst() then begin
             // Prepare the report output
@@ -62,6 +63,6 @@ codeunit 50102 "Send Payment Receipt"
 
             exit('Email sent successfully');
         end else
-            Error('No Payment Receipt details found for Tenant ID: %1, Contract ID: %2', Rec."Tenant ID", Rec."Contract ID");
+            Error('No Payment Receipt details found for Tenant ID: %1, Contract ID: %2', Rec."Tenant ID", Rec."Contract ID", Rec."Payment Series");
     end;
 }
