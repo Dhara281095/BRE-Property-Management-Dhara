@@ -154,6 +154,11 @@ table 50946 "Final Billing Calculation Grid"
             Caption = 'Credit To Be Raised';
             DataClassification = ToBeClassified;
         }
+        field(50125; "Payment Type"; Text[250])
+        {
+            Caption = 'Payment Type';
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys

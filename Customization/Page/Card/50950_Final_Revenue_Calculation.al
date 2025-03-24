@@ -128,6 +128,13 @@ page 50950 "Final Revenue Calculation Grid"
                     ToolTip = 'Enter the Total No. Of Days.';
                     Editable = false;
                 }
+                field("Payment Type"; Rec."Payment Type")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Payment Type';
+                    Editable = false;
+                    Visible = false;
+                }
 
             }
             group("")

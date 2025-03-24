@@ -30,6 +30,13 @@ page 50952 "Pending Recevieable Grid"
                     Caption = 'Termination Date';
                     Editable = false;
                 }
+                field("Payment Type"; Rec."Payment Type")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Payment Type';
+                    Editable = false;
+                    Visible = false;
+                }
 
             }
             group(" ")
