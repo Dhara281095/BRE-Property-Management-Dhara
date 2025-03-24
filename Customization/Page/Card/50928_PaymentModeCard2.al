@@ -579,6 +579,7 @@ page 50928 "Payment Mode Card2"
     trigger OnAfterGetRecord()
     var
         paymentschedul2grid : Record "Payment Schedule2";
+        paymentTypeRec: Record "Payment Type"; // Record variable for Payment Type
     begin
         IsApproved:= (Rec."Approval Status" <> Rec."Approval Status"::Approved);
         // If the field is blank, assign '-'
@@ -595,6 +596,11 @@ page 50928 "Payment Mode Card2"
             Rec."Invoice #" := '-';
 
 
+        if Rec."Payment mode" = '' then begin
+            // Retrieve the first available Payment Method from the Payment Type table
+            if paymentTypeRec.FindFirst() then
+                Rec."Payment mode" := paymentTypeRec."Payment Method"; // Set the first Payment Method as default
+        end;
         // if Rec."Due Date" <> xRec."Due Date" then begin
         //         if Rec."Due Date" = Today() then
         //             Rec."Payment Status" := Rec."Payment Status"::"Due"
@@ -606,7 +612,7 @@ page 50928 "Payment Mode Card2"
         //      //   Modify();
         //     end;
 
-         paymentschedul2grid.SetRange("Contract ID", Rec."Contract ID");
+        paymentschedul2grid.SetRange("Contract ID", Rec."Contract ID");
         paymentschedul2grid.SetRange("Payment Series", Rec."Payment Series");
         paymentschedul2grid.SetRange(Invoiced, true);
         if paymentschedul2grid.FindSet() then

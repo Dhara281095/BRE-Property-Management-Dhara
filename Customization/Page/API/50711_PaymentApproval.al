@@ -32,6 +32,10 @@ page 50711 PaymentApproval
                 {
                     Caption = 'ID';
                 }
+                field(manualautoStatus; Rec."Manual/Auto Status")
+                {
+                    Caption = 'Manual/Auto Status';
+                }
                 field(proposalID; Rec."Proposal ID")
                 {
                     Caption = 'Proposal ID';
