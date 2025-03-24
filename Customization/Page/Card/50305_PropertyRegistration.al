@@ -41,6 +41,11 @@ page 50305 "Property Registration Card"
                 field("Property Name"; rec."Property Name")
                 {
                     ApplicationArea = All;
+
+                    trigger OnValidate()
+                    begin
+                        workflowfrequency();
+                    end;
                 }
 
                 // field("Blocked"; rec."Blocked")
@@ -56,6 +61,11 @@ page 50305 "Property Registration Card"
                 field("Base Unit of Measure"; rec."Base Unit of Measure")
                 {
                     ApplicationArea = All;
+
+                    trigger OnValidate()
+                    begin
+                        workflowfrequency();
+                    end;
                 }
                 field("Property Size"; rec."Property Size")
                 {
@@ -191,15 +201,12 @@ page 50305 "Property Registration Card"
     trigger OnModifyRecord(): Boolean
     begin
         CurrPage."Document Attachments".Page.SetPropertyId(Rec."Property ID");
-        workflowfrequency();
     end;
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     begin
         CurrPage."Document Attachments".Page.SetPropertyId(Rec."Property ID");
         isVisible := true;
-
-        workflowfrequency();
     end;
 
     trigger OnAfterGetRecord()
@@ -212,8 +219,6 @@ page 50305 "Property Registration Card"
         else begin
             isVisible := false;
         end;
-        workflowfrequency();
-
     end;
 
     procedure workflowfrequency()
