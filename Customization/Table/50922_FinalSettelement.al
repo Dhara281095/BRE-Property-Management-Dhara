@@ -14,7 +14,6 @@ table 50922 "FinalSettlement"
         {
             OptionMembers = " ",Company,Tenant;
         }
-
         field(50102; "To."; Option)
         {
             OptionMembers = " ",Company,Tenant;
@@ -46,6 +45,18 @@ table 50922 "FinalSettlement"
             DataClassification = ToBeClassified;
             Caption = 'Deposit Bank';
             TableRelation = "Bank Account";
+
+            trigger OnValidate()
+            var
+                BankAccountRec: Record "Bank Account";
+            begin
+                // When a Deposit Bank is selected (i.e., a Bank Account No. is provided)
+                if "Deposit Bank" <> '' then begin
+                    // Attempt to find the Bank Account using the No. from the Deposit Bank
+                    if BankAccountRec.Get("Deposit Bank") then
+                        "Deposit Bank" := BankAccountRec."Name"; // Populating the Name field from the Bank Account table
+                end;
+            end;
         }
 
         field(50108; "Cheque No."; Text[300])
@@ -80,6 +91,14 @@ table 50922 "FinalSettlement"
             Clustered = true;
         }
     }
+
+    trigger OnInsert()
+    begin
+        if Rec."Payment Mode" = 'Cheque' then begin
+            if DelChr(Rec."Cheque No.", '=', ' ') = '' then
+                Error('Cheque Number cannot be blank when Payment Mode is Cheque.');
+        end;
+    end;
 
 }
 
