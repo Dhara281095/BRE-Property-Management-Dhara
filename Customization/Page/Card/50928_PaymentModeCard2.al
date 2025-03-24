@@ -355,8 +355,8 @@ page 50928 "Payment Mode Card2"
             field("View Invoice"; Rec."View Invoice")
             {
                 ApplicationArea = All;
-                Caption = 'View Invoice';
-                Editable = false;
+                Caption = 'View Receipt Document';
+               // Editable = false;
                 DrillDown = true;
                 trigger OnDrillDown()
                 var

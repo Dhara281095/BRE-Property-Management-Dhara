@@ -217,28 +217,27 @@ table 50925 "Payment Mode2"
                         //  RecRef.Open(DATABASE::"Sales Header"); // Open the table reference
                         // RecRef.GetTable(Rec);
                         paymentmode2Grid.Reset();
-                        paymentmode2Grid.Reset();
                         paymentmode2Grid.SetRange("Tenant ID", Rec."Tenant ID");
                         paymentmode2Grid.SetRange("Contract ID", Rec."Contract ID"); // Ensure filtering on unique ID
                         paymentmode2Grid.SetRange("Payment Series", Rec."Payment Series"); // Add this line to filter by Payment Series
 
-                        if paymentmode2Grid.FindFirst() then begin
-                            RecRef.GetTable(paymentmode2Grid);
-                            // RecRef.GetTable(Rec);
-                            TempBlob.CreateOutStream(OutStream);
-                            Report.SaveAs(ReportID, '', ReportFormat::Pdf, OutStream, RecRef);
+                        if not paymentmode2Grid.FindFirst() then
+                            Error('Not avavilable');
+                        RecRef.GetTable(paymentmode2Grid);
+                        // RecRef.GetTable(Rec);
+                        TempBlob.CreateOutStream(OutStream);
+                        Report.SaveAs(ReportID, '', ReportFormat::Pdf, OutStream, RecRef);
 
 
 
-                            TempBlob.CreateInStream(InStream);
-                            FileName := 'Invoice_' + Rec."Invoice #" + FileExtension;
-                            SASUrlWithFileName := StrSubstNo('%1/%2?%3', CopyStr(SASUrlBase, 1, StrPos(SASUrlBase, '?') - 1), FileName, CopyStr(SASUrlBase, StrPos(SASUrlBase, '?') + 1));
-                            UploadResult := documentattachment.UploadDocumentToBlobStorage(SASUrlWithFileName, FileName, InStream);
-                            Rec."View Invoice" := FileName;
-                            Rec."View Reciept document URL" := UploadResult;
-                            Rec.Modify();
+                        TempBlob.CreateInStream(InStream);
+                        FileName := 'Invoice_' + Format(Rec."Contract ID") + Rec."Payment Series" + FileExtension;
+                        SASUrlWithFileName := StrSubstNo('%1/%2?%3', CopyStr(SASUrlBase, 1, StrPos(SASUrlBase, '?') - 1), FileName, CopyStr(SASUrlBase, StrPos(SASUrlBase, '?') + 1));
+                        UploadResult := documentattachment.UploadDocumentToBlobStorage(SASUrlWithFileName, FileName, InStream);
+                        Rec."View Invoice" := FileName;
+                        Rec."View Reciept document URL" := UploadResult;
+                        Rec.Modify();
 
-                        end;
 
                     end;
                 end
