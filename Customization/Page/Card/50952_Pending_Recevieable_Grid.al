@@ -34,61 +34,78 @@ page 50952 "Pending Recevieable Grid"
             }
             group(" ")
             {
-                field("Total Revised Amount"; Rec."Total Revised Amount")
+                grid(SummaryGrid)
                 {
-                    ApplicationArea = All;
-                    Editable = false;
+                    GridLayout = Columns;
+
+                    group("Revised Values")
+                    {
+                        field("Total Revised Amount"; Rec."Total Revised Amount")
+                        {
+                            ApplicationArea = All;
+                            Editable = false;
+                        }
+                        field("Total Revised VAT"; Rec."Total Revised VAT")
+                        {
+                            ApplicationArea = All;
+                            Editable = false;
+                        }
+                        field("Total Revised AmountIncl. VAT"; Rec."Total Revised AmountIncl. VAT")
+                        {
+                            ApplicationArea = All;
+                            Editable = false;
+                        }
+                    }
+                    group("Receipts Values")
+                    {
+                        field("Total Receipts Amount"; Rec."Total Receipts Amount")
+                        {
+                            ApplicationArea = All;
+                            Editable = false;
+                        }
+                        field("Total Receipts VAT"; Rec."Total Receipts VAT")
+                        {
+                            ApplicationArea = All;
+                            Editable = false;
+                        }
+                        field("Total Receipts AmountIncl. VAT"; Rec."Total Receipts AmountIncl. VAT")
+                        {
+                            ApplicationArea = All;
+                            Editable = false;
+                        }
+                    }
+                    group("Difference & Summary")
+                    {
+                        field("Total Difference Amount"; Rec."Total Difference Amount")
+                        {
+                            ApplicationArea = All;
+                            Editable = false;
+                        }
+                        field("Total Difference VAT"; Rec."Total Difference VAT")
+                        {
+                            ApplicationArea = All;
+                            Editable = false;
+                        }
+                        field("Total DifferenceAmountIncl.VAT"; Rec."Total DifferenceAmountIncl.VAT")
+                        {
+                            ApplicationArea = All;
+                            Editable = false;
+                        }
+                        field("Total Refundable"; Rec."Total Refundable")
+                        {
+                            ApplicationArea = All;
+                            Editable = false;
+                        }
+                        field("Total Receivable"; Rec."Total Receivable")
+                        {
+                            ApplicationArea = All;
+                            Editable = false;
+                        }
+                    }
                 }
-                field("Total Revised VAT"; Rec."Total Revised VAT")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
-                field("Total Revised AmountIncl. VAT"; Rec."Total Revised AmountIncl. VAT")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
-                field("Total Receipts Amount"; Rec."Total Receipts Amount")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
-                field("Total Receipts VAT"; Rec."Total Receipts VAT")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
-                field("Total Receipts AmountIncl. VAT"; Rec."Total Receipts AmountIncl. VAT")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
-                field("Total Difference Amount"; Rec."Total Difference Amount")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
-                field("Total Difference VAT"; Rec."Total Difference VAT")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
-                field("Total DifferenceAmountIncl.VAT"; Rec."Total DifferenceAmountIncl.VAT")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
-                field("Total Refundable"; Rec."Total Refundable")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
-                field("Total Receivable"; Rec."Total Receivable")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
+
+
+
             }
         }
     }
