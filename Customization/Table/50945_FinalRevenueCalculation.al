@@ -174,7 +174,11 @@ table 50945 "Final Revenue Calculation Grid"
             CalcFormula = sum("Final Revenue Calculation Grid"."Difference Amount Incl." where("Contract ID" = field("Contract ID")));
 
         }
-
+        field(50128; "Payment Type"; Text[250])
+        {
+            Caption = 'Payment Type';
+            DataClassification = ToBeClassified;
+        }
 
 
 

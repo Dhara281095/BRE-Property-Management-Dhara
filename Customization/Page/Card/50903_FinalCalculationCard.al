@@ -555,6 +555,7 @@ page 50903 "Final Calculation Card"
                 FinalRevCalcGrid1."ContractYear(Termination Date)" := Rec."ContractYear(Termination Date)";
                 //  FinalRevCalcGrid1."Annual Rent Amount TermiYear" := Rec."Annual Rent Amount TermiYear";
                 FinalRevCalcGrid1."Total No. Of Days" := Rec."Total No. Of Days";
+                FinalRevCalcGrid1."Payment Type" := Format(TenancyContractLine1."Payment Type");
                 FinalRevCalcGrid1.Insert();
                 Clear(FinalRevCalcGrid1);
             until TenancyContractLine1.Next() = 0;
@@ -851,6 +852,7 @@ page 50903 "Final Calculation Card"
                 BillingCalc1."Contract ID" := Rec."Contract ID";
                 BillingCalc1."RevenueDescription" := TenancyContractLine2."Secondary Item Type";
                 BillingCalc1."Termination Date" := Rec."Termination Date";
+                BillingCalc1."Payment Type" := Format(TenancyContractLine2."Payment Type");
                 BillingCalc1.Insert();
                 Clear(BillingCalc1);
             until TenancyContractLine2.Next() = 0;
@@ -907,6 +909,7 @@ page 50903 "Final Calculation Card"
                 RecvieableCalcGrid1."Contract ID" := Rec."Contract ID";
                 RecvieableCalcGrid1."RevenueDescription" := TenancyContractLine3."Secondary Item Type";
                 RecvieableCalcGrid1."Termination Date" := Rec."Termination Date";
+                RecvieableCalcGrid1."Payment Type" := Format(TenancyContractLine3."Payment Type");
                 RecvieableCalcGrid1.Insert();
                 Clear(RecvieableCalcGrid1);
             until TenancyContractLine3.Next() = 0;

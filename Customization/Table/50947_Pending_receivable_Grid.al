@@ -136,6 +136,11 @@ table 50947 "Pending Receviable Grid"
             FieldClass = FlowField;
             CalcFormula = sum("Pending Receviable Grid".DifferenceAmountInclVAT where("Contract ID" = field("Contract ID")));
         }
+        field(50125; "Payment Type"; Text[250])
+        {
+            Caption = 'Payment Type';
+            DataClassification = ToBeClassified;
+        }
 
     }
 
