@@ -35,7 +35,7 @@ page 50952 "Pending Recevieable Grid"
                     ApplicationArea = All;
                     Caption = 'Payment Type';
                     Editable = false;
-                    Visible = false;
+
                 }
 
             }

@@ -37,7 +37,7 @@ page 50951 "Final Billing Calculation"
                     ApplicationArea = All;
                     Caption = 'Payment Type';
                     Editable = false;
-                    Visible = false;
+
                 }
             }
             group(" ")
