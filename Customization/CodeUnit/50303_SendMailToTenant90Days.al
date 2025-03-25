@@ -12,10 +12,10 @@ codeunit 50303 "SendTenantMail"
                 // Create the email message
                 EmailMessage.Create(
                     Rec."Tenant Email", // The recipient's email address
-                    'Contract Renewal Confirmation ' + Format(Rec."Contract ID"),
+                    'Contract Renewal Confirmation : Contract ID - ' + Format(Rec."Contract ID"),
                     '<html><body>' +
                     '<p>Dear ' + Rec."Tenant Name" + ',</p>' +
-                    '<p>I hope this email finds you well.  This is a kind reminder that your contract with Contract ID :- ' + Format(Rec."Contract ID") + 'is set to expire in the next <b> 90 days</b>. To ensure continuity, we would like to know if you are interested in renewing your contract.</p>' +
+                    '<p>I hope this email finds you well.  This is a kind reminder that your contract with Contract ID - ' + Format(Rec."Contract ID") + ' is set to expire in the next <b> 90 days</b>. To ensure continuity, we would like to know if you are interested in renewing your contract.</p>' +
 
                     '<p>Please let us know your decision at your earliest convenience so we can proceed accordingly. If you have any questions or require assistance, feel free to reach out to us.</p>' +
                     '<p>Looking forward to your response.</p>' +
