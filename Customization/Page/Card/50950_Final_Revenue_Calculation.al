@@ -133,7 +133,7 @@ page 50950 "Final Revenue Calculation Grid"
                     ApplicationArea = All;
                     Caption = 'Payment Type';
                     Editable = false;
-                    Visible = false;
+
                 }
 
             }

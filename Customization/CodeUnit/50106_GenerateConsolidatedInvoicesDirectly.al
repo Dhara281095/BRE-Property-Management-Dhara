@@ -25,6 +25,7 @@ codeunit 50106 GenerateConsolidatedInvoices
 
         //////////// START REACTIVATION CONTRACT ////////////////////////
         paymentScheudle3.SetFilter("Due Date", '<%1', todaydate);
+        //paymentScheudle3.SetFilter("Workflow Frequency Date", '<%1', todaydate);
         paymentScheudle3.SetRange("Contract Status", 'Active');
         if paymentScheudle3.FindSet() then
             repeat
@@ -66,6 +67,7 @@ codeunit 50106 GenerateConsolidatedInvoices
 
         ///////////////////////  START SUSPENDED CONTRACT & REGULAR INVOICE FLOW ////////////////////////////
         paymentScheudle2.SetRange("Due Date", todaydate);
+        //paymentScheudle2.SetRange("Workflow Frequency Date", todaydate);
 
         if paymentScheudle2.FindSet() then
             repeat
