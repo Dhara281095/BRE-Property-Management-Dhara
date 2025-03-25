@@ -26,7 +26,7 @@ page 50731 finalSettelement
                 // {
                 //     Caption = 'Cheque No.';
                 // }
-                field(ReceivablecontractID; Rec."Receivable Contract ID")
+                field(contractId; Rec."Receivable Contract ID")
                 {
                     Caption = 'Receivable Contract ID';
                 }
