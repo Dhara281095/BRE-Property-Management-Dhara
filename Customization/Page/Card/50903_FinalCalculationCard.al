@@ -395,7 +395,7 @@ page 50903 "Final Calculation Card"
                     field("Amount Refundable"; Rec."Amount Refundable")
                     {
                         ApplicationArea = All;
-                        Editable = false;
+                        Editable = true;
                     }
                     field("Net Receivable From The Tenant"; Rec."Net Receivable From The Tenant")
                     {
@@ -411,7 +411,8 @@ page 50903 "Final Calculation Card"
                 Caption = 'Final Settlement';
                 part("FinalSettelemts"; "FinalSettlemtCard")
                 {
-                    SubPageLink = "Contract ID" = FIELD("Contract ID"); // Link to filter attachments for this owner only
+                    SubPageLink = "Refund Contract ID" = FIELD("Contract ID"),
+                     "Receivable Contract ID" = FIELD("Contract ID"); // Link to filter attachments for this owner only
                     ApplicationArea = All;
                     // Visible = isVisible;
                 }

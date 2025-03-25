@@ -22,11 +22,11 @@ page 50731 finalSettelement
         {
             repeater(General)
             {
-                field(chequeNo; Rec."Cheque No.")
+                field(chequeNo; Rec."Receivable Cheque No.")
                 {
                     Caption = 'Cheque No.';
                 }
-                field(contractID; Rec."Contract ID")
+                field(contractID; Rec."Receivable Contract ID")
                 {
                     Caption = 'Contract ID';
                 }
@@ -38,23 +38,23 @@ page 50731 finalSettelement
                 {
                     Caption = 'Deposit Status';
                 }
-                field(dueDate; Rec."Due Date")
+                field(dueDate; Rec."Refund Due Date")
                 {
                     Caption = 'Due Date';
                 }
-                field(entryNo; Rec."Entry No.")
-                {
-                    Caption = 'Entry No.';
-                }
-                field(from; Rec."From.")
-                {
-                    Caption = 'From.';
-                }
-                field(paymentStatus; Rec."Payment Status")
+                // field(entryNo; Rec."Entry No.")
+                // {
+                //     Caption = 'Entry No.';
+                // }
+                // field(from; Rec."From.")
+                // {
+                //     Caption = 'From.';
+                // }
+                field(paymentStatus; Rec."Receivable Payment Status")
                 {
                     Caption = 'Payment Status';
                 }
-                field(paymentMode; Rec."Payment mode")
+                field(paymentMode; Rec."Receivable Payment mode")
                 {
                     Caption = 'Payment mode';
                 }
@@ -78,15 +78,15 @@ page 50731 finalSettelement
                 {
                     Caption = 'SystemModifiedBy';
                 }
-                field(tenantID; Rec."Tenant ID")
+                field(tenantID; Rec."Receivable Tenant ID")
                 {
                     Caption = 'Tenant ID';
                 }
-                field("to"; Rec."To.")
-                {
-                    Caption = 'To.';
-                }
-                field(totalAmount; Rec."Total Amount")
+                // field("to"; Rec."To.")
+                // {
+                //     Caption = 'To.';
+                // }
+                field(totalAmount; Rec."Receivable Total Amount")
                 {
                     Caption = 'Total Amount';
                 }

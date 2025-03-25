@@ -4,43 +4,68 @@ table 50922 "FinalSettlement"
 
     fields
     {
-        field(50100; "Contract ID"; Integer)
+        field(50100; "Refund Contract ID"; Integer)
         {
             DataClassification = ToBeClassified;
             Caption = 'Contract ID';
         }
-
-        field(50101; "From."; Option)
-        {
-            OptionMembers = " ",Company,Tenant;
-        }
-        field(50102; "To."; Option)
-        {
-            OptionMembers = " ",Company,Tenant;
-        }
-        field(50103; "Total Amount"; Decimal)
+        field(50101; "Refund Total Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Total Amount';
         }
-        field(50104; "Due Date"; Date)
+        field(50102; "Refund Due Date"; Date)
         {
             DataClassification = ToBeClassified;
             Caption = 'Due Date';
         }
-        field(50105; "Payment mode"; Text[300])
+        field(50103; "Refund Payment mode"; Text[300])
         {
             DataClassification = ToBeClassified;
             Caption = 'Payment mode';
             TableRelation = "Payment Type"."Payment Method";
         }
-        field(50106; "Payment Status"; Enum "Payment Status")
+        field(50104; "Refund Payment Status"; Enum "Payment Status")
         {
             DataClassification = ToBeClassified;
             Caption = 'Payment Status';
         }
 
-        field(50107; "Deposit Bank"; Text[300])
+        field(50105; "Refund Cheque No."; Text[300])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Cheque No.';
+        }
+
+        field(50106; "Receivable Total Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Total Amount';
+        }
+        field(50107; "Receivable Due Date"; Date)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Due Date';
+        }
+        field(50108; "Receivable Payment mode"; Text[300])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Payment mode';
+            TableRelation = "Payment Type"."Payment Method";
+        }
+        field(50109; "Receivable Payment Status"; Enum "Payment Status")
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Payment Status';
+        }
+
+        field(50110; "Receivable Cheque No."; Text[300])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Cheque No.';
+        }
+
+        field(50111; "Deposit Bank"; Text[300])
         {
             DataClassification = ToBeClassified;
             Caption = 'Deposit Bank';
@@ -59,34 +84,94 @@ table 50922 "FinalSettlement"
             end;
         }
 
-        field(50108; "Cheque No."; Text[300])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Cheque No.';
-        }
 
-        field(50109; "Deposit Status"; Option)
+
+        field(50112; "Deposit Status"; Option)
         {
             Caption = 'Deposit Status';
             OptionMembers = "-","N","Y";
         }
 
-        field(50110; "Tenant ID"; Text[50])
+        field(50113; "Refund Tenant ID"; Code[50])
         {
             DataClassification = ToBeClassified;
             Caption = 'Tenant ID';
         }
 
-        field(50111; "Entry No."; Integer)
+        field(50114; "Receivable Contract ID"; Integer)
         {
             DataClassification = ToBeClassified;
-            AutoIncrement = true;
+            Caption = 'Contract ID';
+        }
+
+        field(50115; "Receivable Tenant ID"; Code[50])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Tenant ID';
+        }
+        // field(50114; "Receivable Entry No."; Integer)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     AutoIncrement = true;
+        // }
+
+        // field(50114; "Refund Entry No."; Integer)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     AutoIncrement = true;
+        // }
+
+
+        field(50116; "Receivable from the Tenant"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Receivable from the Tenant';
+        }
+
+        field(50117; "Payment Processed"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Payment Processed';
+        }
+        field(50118; "Balance Receivable"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Balance Receivable';
+        }
+
+        field(50119; "PaymentStatus"; Option)
+        {
+            OptionMembers = "Pending","Received";
+            Caption = 'Payment Status';
+        }
+
+        field(50120; "Net Refund to the Tenant"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Net Refund to the Tenant';
+        }
+
+        field(50121; "Refund Processed"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Refund Processed';
+        }
+        field(50122; "Balance Refundable"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Balance Refundable';
+        }
+
+        field(50123; "Refund Status"; Option)
+        {
+            OptionMembers = "Pending","Received";
+            Caption = 'Refund Status';
         }
     }
 
     keys
     {
-        key(Key1; "Entry No.", "Contract ID")
+        key(PK; "Receivable Contract ID", "Refund Contract ID")
         {
             Clustered = true;
         }
@@ -94,8 +179,13 @@ table 50922 "FinalSettlement"
 
     trigger OnInsert()
     begin
-        if Rec."Payment Mode" = 'Cheque' then begin
-            if DelChr(Rec."Cheque No.", '=', ' ') = '' then
+        if Rec."Receivable Payment Mode" = 'Cheque' then begin
+            if DelChr(Rec."Receivable Cheque No.", '=', ' ') = '' then
+                Error('Cheque Number cannot be blank when Payment Mode is Cheque.');
+        end;
+
+        if Rec."Refund Payment Mode" = 'Cheque' then begin
+            if DelChr(Rec."Refund Cheque No.", '=', ' ') = '' then
                 Error('Cheque Number cannot be blank when Payment Mode is Cheque.');
         end;
     end;
