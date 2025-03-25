@@ -23,12 +23,12 @@ page 50719 "Contract End Process Approval"
                 field("Property_M Status"; Rec."Property_M Status")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
                 }
                 field("Lease_M Status"; Rec."Lease_M Status")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
                 }
                 field("Tenant ID"; Rec."Tenant ID")
                 {
@@ -53,12 +53,12 @@ page 50719 "Contract End Process Approval"
                 field("Contract End Date"; Rec."End Date")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
                 }
                 field("Tenant Email"; Rec."Tenant Email")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
                 }
                 field("Lease Manager Remark"; Rec."Lease Manager Remark")
                 {
@@ -73,7 +73,8 @@ page 50719 "Contract End Process Approval"
                 field("Value"; Rec."Value")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
+                    Visible = false;
                 }
 
             }

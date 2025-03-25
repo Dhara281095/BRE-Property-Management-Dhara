@@ -191,6 +191,13 @@ pageextension 50104 "MyRoleCenterExtension" extends "Business Manager Role Cente
                     RunObject = Page "Final Calculation List";
                 }
 
+                action(ContractEndProcessApproval)
+                {
+                    Caption = 'Contract End Process Approval';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Contract End Process Approval";
+                }
+
             }
         }
 
