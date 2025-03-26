@@ -22,9 +22,9 @@ page 50731 finalSettelement
         {
             repeater(General)
             {
-                // field(chequeNo; Rec."Receivable Cheque No.")
+                // field(contractId; Rec."Contract ID")
                 // {
-                //     Caption = 'Cheque No.';
+                //     Caption = 'Contract ID';
                 // }
                 field(contractId; Rec."Receivable Contract ID")
                 {
