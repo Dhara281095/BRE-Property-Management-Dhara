@@ -167,11 +167,17 @@ table 50922 "FinalSettlement"
             OptionMembers = "Pending","Received";
             Caption = 'Refund Status';
         }
+
+        field(50124; "Contract ID"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Contract ID';
+        }
     }
 
     keys
     {
-        key(PK; "Receivable Contract ID", "Refund Contract ID")
+        key(PK; "Receivable Contract ID", "Refund Contract ID", "Contract ID")
         {
             Clustered = true;
         }
