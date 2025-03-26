@@ -53,6 +53,7 @@ page 50125 "Adjustment Security Deposit"
                 field(Status; Rec.Status)
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
 
                 field("Security Amount Status"; Rec."Security Amount Status")
