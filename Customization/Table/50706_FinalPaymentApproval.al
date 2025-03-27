@@ -9,7 +9,7 @@ table 50706 "finalPaymentApproval"
         {
             DataClassification = ToBeClassified;
             Caption = 'ID';
-            Editable = false;
+            Editable = true;
             AutoIncrement = true;
         }
         field(50108; "Status"; Text[50])
