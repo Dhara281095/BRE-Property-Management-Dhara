@@ -92,9 +92,8 @@ page 50732 "final payment approval"
                     SelectedRecs: Record "finalPaymentApproval";
                     ApproveCount: Integer;
                     ErrorCount: Integer;
-                // PaymentRec: Record "Payment Mode2";
-                // PaymentStatus: Enum "Payment Status";
-                // PaymentScheduleRec: Record "Payment Schedule2";
+                    Finalsettlement: Record "FinalSettlement";
+                    PaymentStatus: Enum "Payment Status";
                 begin
                     CurrPage.SetSelectionFilter(SelectedRecs);
 
@@ -112,32 +111,19 @@ page 50732 "final payment approval"
                                 SelectedRecs.Status := 'Received';
                                 SelectedRecs.Modify();
 
-                                //     PaymentRec.SetRange(PaymentRec."Contract ID", SelectedRecs."Contract ID");
-                                //     PaymentRec.SetRange(PaymentRec."Tenant ID", SelectedRecs."Tenant ID");
-                                //     PaymentRec.SetRange(PaymentRec."Payment Series", SelectedRecs."Payment Series");
+                                Finalsettlement.SetRange("Refund Contract ID", SelectedRecs."Contract ID");
 
-                                //     if PaymentRec.FindSet() then begin
-                                //         // Update the status of OnlinePaymentApproval record
-                                //         PaymentRec."Approve/Decline Status" := 'Received';
-                                //         PaymentRec."Payment Status" := PaymentStatus::Received;
-                                //         PaymentRec."Payment Received Date" := Today;
-                                //         PaymentRec.Modify(true);
-                                //     end;
+                                if Finalsettlement.FindSet() then begin
+                                    Finalsettlement."Refund Payment Status" := PaymentStatus::Received;
+                                    Finalsettlement.Modify(true);
+                                end;
 
-                                //     PaymentScheduleRec.SetRange(PaymentScheduleRec."Contract ID", PaymentRec."Contract ID");
-                                //     PaymentScheduleRec.SetRange(PaymentScheduleRec."Tenant ID", PaymentRec."Tenant ID");
-                                //     PaymentScheduleRec.SetRange(PaymentScheduleRec."Payment Series", PaymentRec."Payment Series");
-
-                                //     // Loop through the Payment Schedule records to find matching Payment Series
-                                //     if PaymentScheduleRec.FindSet() then begin
-                                //         repeat
-                                //             // Update Payment Schedule status to "Received" for the matching Payment Series
-                                //             PaymentScheduleRec."Payment Status" := 'Received';
-                                //             PaymentScheduleRec."Payment Recieved Date" := PaymentRec."Payment Received Date";
-                                //             PaymentScheduleRec.Modify; // Save the updated record
-                                //         until PaymentScheduleRec.Next() = 0; // Continue until all matching records are processed
-                                //     end;
-
+                                Finalsettlement.SetRange("Receivable Contract ID", SelectedRecs."Contract ID");
+                                if Finalsettlement.FindSet() then begin
+                                    // Update the status of OnlinePaymentApproval record
+                                    Finalsettlement."Receivable Payment Status" := PaymentStatus::Received;
+                                    Finalsettlement.Modify(true);
+                                end;
                                 ApproveCount += 1;
                             end else
                                 ErrorCount += 1;
@@ -145,12 +131,7 @@ page 50732 "final payment approval"
 
                     Commit();
                     CurrPage.Update(false);
-
                     Message('%1 record(s) approved. %2 record(s) were not in "Pending" status.', ApproveCount, ErrorCount);
-
-
-
-
                 end;
             }
             action(NotReceived)
@@ -164,7 +145,6 @@ page 50732 "final payment approval"
                     SelectedRecs: Record "finalPaymentApproval";
                     RejectCount: Integer;
                     ErrorCount: Integer;
-                //PaymentRec: Record "Payment Mode2";
                 begin
                     // Store selected records
                     CurrPage.SetSelectionFilter(SelectedRecs);
@@ -182,31 +162,16 @@ page 50732 "final payment approval"
                             if SelectedRecs.Status = 'Pending' then begin
                                 SelectedRecs.Status := 'Not Received'; // Set status to "Declined"
                                 SelectedRecs.Modify();
-
-                                // PaymentRec.SetRange(PaymentRec."Contract ID", SelectedRecs."Contract ID");
-                                // PaymentRec.SetRange(PaymentRec."Tenant ID", SelectedRecs."Tenant ID");
-                                // PaymentRec.SetRange(PaymentRec."Payment Series", SelectedRecs."Payment Series");
-
-                                // if PaymentRec.FindSet() then begin
-                                //     // Update the status of OnlinePaymentApproval record
-                                //     PaymentRec."Approve/Decline Status" := 'Not Received';
-                                //     PaymentRec.Modify(true);
-                                // end;
-
                                 RejectCount += 1;
                             end else
                                 ErrorCount += 1; // Count records that are not in "Pending" status
                         until SelectedRecs.Next() = 0;
-
                     Commit(); // Commit changes
                     CurrPage.Update(false); // Refresh page
-
                     // Display result messages
                     Message('%1 record(s) rejected. %2 record(s) were not in "Pending" status.', RejectCount, ErrorCount);
                 end;
             }
         }
-
-
     }
 }
