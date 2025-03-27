@@ -1764,17 +1764,17 @@ page 50313 "Tenancy Contract Card"
                 var
                     TenancyContract: Record "Tenancy Contract";
                     ReportDubai: Report "Tenancy Contract";
-                    ReportAbuDhabi: Report "AbuDhabi_Contract";
+                // ReportAbuDhabi: Report "AbuDhabi_Contract";
                 begin
                     TenancyContract.SetRange("Contract ID", Rec."Contract ID");  // Set appropriate filters
 
-                    if Rec.Emirate = 'Dubai' then begin
-                        ReportDubai.SetTableView(TenancyContract);
-                        ReportDubai.RunModal();
-                    end else if Rec.Emirate = 'Abu Dhabi' then begin
-                        ReportAbuDhabi.SetTableView(TenancyContract);
-                        ReportAbuDhabi.RunModal();
-                    end;
+                    // if Rec.Emirate = 'Dubai' then begin
+                    ReportDubai.SetTableView(TenancyContract);
+                    ReportDubai.RunModal();
+                    // end else if Rec.Emirate = 'Abu Dhabi' then begin
+                    //     ReportAbuDhabi.SetTableView(TenancyContract);
+                    //     ReportAbuDhabi.RunModal();
+                    // end;
                 end;
             }
 
