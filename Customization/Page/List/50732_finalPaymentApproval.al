@@ -5,9 +5,9 @@ page 50732 "final payment approval"
     ApplicationArea = All;
     Caption = 'Final Payment Approval';
     UsageCategory = Lists;
-    InsertAllowed = false;
+    InsertAllowed = true;
     ModifyAllowed = true;
-    DeleteAllowed = false;
+    DeleteAllowed = true;
 
     layout
     {
@@ -18,7 +18,7 @@ page 50732 "final payment approval"
                 field("ID"; Rec."ID")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field(Status; Rec.Status)
                 {
@@ -29,43 +29,43 @@ page 50732 "final payment approval"
                 field("Tenant ID"; Rec."Tenant ID")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field("Tenant Name"; Rec."Tenant Name")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field("Contract ID"; Rec."Contract ID")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field("Payment transaction ID"; Rec."Payment transaction ID")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
 
                 field("Payment Date"; Rec."Payment Date")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field("Total Amount"; Rec."Total Amount")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field("Due Date"; Rec."Due Date")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field("Payment mode"; Rec."Payment mode")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field(Description; Rec.Description)
                 {

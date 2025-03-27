@@ -22,10 +22,10 @@ page 50731 finalSettelement
         {
             repeater(General)
             {
-                // field(contractId; Rec."Contract ID")
-                // {
-                //     Caption = 'Contract ID';
-                // }
+                field(contractId1; Rec."Contract ID")
+                {
+                    Caption = 'Contract ID';
+                }
                 field(contractId; Rec."Receivable Contract ID")
                 {
                     Caption = 'Receivable Contract ID';
@@ -169,6 +169,22 @@ page 50731 finalSettelement
                 field("RefundStatus"; Rec."Refund Status")
                 {
                     Caption = 'Refund Status';
+                }
+                field("paymentreceipt"; Rec."Payment Receipt")
+                {
+                    Caption = 'Payment Receipt';
+                }
+                field("paymentreceiptproof"; Rec."Payment Receipt/Proof")
+                {
+                    Caption = 'payment receipt/proof';
+                }
+                field("paymentreceiptdocumentuRL"; Rec."Payment Receipt document URL")
+                {
+                    Caption = 'Payment Receipt document URL';
+                }
+                field("payreceiptproofdocumentuRL"; Rec."Pay Receipt/Proof document URL")
+                {
+                    Caption = 'Pay Receipt/Proof document URL';
                 }
             }
         }
