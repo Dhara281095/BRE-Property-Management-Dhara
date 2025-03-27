@@ -87,6 +87,14 @@ page 50938 "FinalSettlemtCard"
                 field("Refund Cheque No."; Rec."Refund Cheque No.")
                 {
                     ApplicationArea = All;
+
+                    trigger OnValidate()
+                    var
+                        paymentmode: Record "Payment Type";
+                    begin
+                        if Rec."Receivable Payment Mode" <> 'Cheque' then
+                            Error('Cheque number can only be entered when Payment Mode is set to Cheque.');
+                    end;
                 }
 
                 // field("Entry No."; Rec."Entry No.")
@@ -196,17 +204,41 @@ page 50938 "FinalSettlemtCard"
                 field("Receivable Cheque No."; Rec."Receivable Cheque No.")
                 {
                     ApplicationArea = All;
+
+                    trigger OnValidate()
+                    var
+                        paymentmode: Record "Payment Type";
+                    begin
+                        if Rec."Receivable Payment Mode" <> 'Cheque' then
+                            Error('Cheque number can only be entered when Payment Mode is set to Cheque.');
+                    end;
                 }
 
                 field("Deposit Bank"; Rec."Deposit Bank")
                 {
                     ApplicationArea = All;
                     Lookup = true;
+
+                    trigger OnValidate()
+                    var
+                        paymentmode: Record "Payment Type";
+                    begin
+                        if Rec."Receivable Payment Mode" = 'Cash' then
+                            Error('Deposit Bank is not valid for Cash');
+                    end;
                 }
 
                 field("Deposit Status"; Rec."Deposit Status")
                 {
                     ApplicationArea = All;
+
+                    trigger OnValidate()
+                    var
+                        paymentmode: Record "Payment Type";
+                    begin
+                        if Rec."Receivable Payment Mode" = 'Cash' then
+                            Error('Deposit Bank is not valid for Cash');
+                    end;
                 }
 
                 // field("Entry No."; Rec."Entry No.")
