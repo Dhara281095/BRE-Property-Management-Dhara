@@ -395,12 +395,12 @@ page 50903 "Final Calculation Card"
                     field("Amount Refundable"; Rec."Amount Refundable")
                     {
                         ApplicationArea = All;
-                        Editable = true;
+                        // Editable = false;
                     }
                     field("Net Receivable From The Tenant"; Rec."Net Receivable From The Tenant")
                     {
                         ApplicationArea = All;
-                        Editable = false;
+                        // Editable = false;
                     }
                 }
 
@@ -412,7 +412,9 @@ page 50903 "Final Calculation Card"
                 part("FinalSettelemts"; "FinalSettlemtCard")
                 {
                     SubPageLink = "Refund Contract ID" = FIELD("Contract ID"),
-                     "Receivable Contract ID" = FIELD("Contract ID"); // Link to filter attachments for this owner only
+                     "Receivable Contract ID" = FIELD("Contract ID");// "Contract ID" = FIELD("Contract ID");
+                    //  "Refund Tenant ID" = FIELD("Tenant ID"),
+                    //  "Receivable Tenant ID" = FIELD("Tenant ID"); // Link to filter attachments for this owner only
                     ApplicationArea = All;
                     // Visible = isVisible;
                 }
@@ -789,6 +791,8 @@ page 50903 "Final Calculation Card"
         CurrPage."Additional Charges".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."Additional Charges".Page.SetContractID(Rec."Contract ID");
         CurrPage."Additional Charges".Page.SetStartEndDate(Rec."Contract Start Date", Rec."Contract End Date");
+        CurrPage."FinalSettelemts".Page.SetTenantID(Rec."Tenant ID");
+        CurrPage."FinalSettelemts".Page.SetContractID(Rec."Contract ID");
         // FetchSecurityDepositInfo();
         // UpdateTotalClaim(); // Add this line to calculate the total
     end;
@@ -798,6 +802,8 @@ page 50903 "Final Calculation Card"
         CurrPage."Additional Charges".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."Additional Charges".Page.SetContractID(Rec."Contract ID");
         CurrPage."Additional Charges".Page.SetStartEndDate(Rec."Contract Start Date", Rec."Contract End Date");
+        CurrPage."FinalSettelemts".Page.SetTenantID(Rec."Tenant ID");
+        CurrPage."FinalSettelemts".Page.SetContractID(Rec."Contract ID");
         // UpdateTotalClaim(); // Add this line to calculate the total
     end;
 
@@ -806,6 +812,8 @@ page 50903 "Final Calculation Card"
         CurrPage."Additional Charges".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."Additional Charges".Page.SetContractID(Rec."Contract ID");
         CurrPage."Additional Charges".Page.SetStartEndDate(Rec."Contract Start Date", Rec."Contract End Date");
+        CurrPage."FinalSettelemts".Page.SetTenantID(Rec."Tenant ID");
+        CurrPage."FinalSettelemts".Page.SetContractID(Rec."Contract ID");
     end;
 
     procedure BillingCalcGridRentCalc()

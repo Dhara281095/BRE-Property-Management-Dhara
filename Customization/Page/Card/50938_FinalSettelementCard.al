@@ -11,6 +11,14 @@ page 50938 "FinalSettlemtCard"
         area(Content)
         {
 
+            field("Contract ID"; Rec."Contract ID")
+            {
+                ApplicationArea = All;
+                Editable = false;
+                Visible = false;
+                Caption = 'Contract ID';
+            }
+
             group(RefundDetails)
             {
                 Caption = 'Refund Details';
@@ -57,6 +65,7 @@ page 50938 "FinalSettlemtCard"
                 field("Refund Total Amount"; Rec."Refund Total Amount")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
 
                 field("Refund Due Date"; Rec."Refund Due Date")
@@ -153,6 +162,7 @@ page 50938 "FinalSettlemtCard"
                 field("Receivable Total Amount"; Rec."Receivable Total Amount")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
 
                 field("Receivable Due Date"; Rec."Receivable Due Date")
@@ -421,6 +431,13 @@ page 50938 "FinalSettlemtCard"
         // else
         //     IsRefundable := false;
         // Rec.Modify();
+
+        Rec."Contract ID" := ContractID;
+        Rec."Receivable Contract ID" := ContractID;
+        Rec."Refund Contract ID" := ContractID;
+        Rec."Receivable Tenant ID" := tenantID;
+        Rec."Refund Tenant ID" := tenantID;
+
     end;
 
 
@@ -529,4 +546,19 @@ page 50938 "FinalSettlemtCard"
     var
         IsRefundable: Boolean;
         IsReceivable: Boolean;
+
+
+    procedure SetContractID(pContractID: Integer)
+    begin
+        ContractID := pContractID;
+    end;
+
+    procedure SetTenantID(pTenantID: Code[20])
+    begin
+        tenantID := pTenantID;
+    end;
+
+    var
+        ContractID: Integer;
+        tenantID: Code[20];
 }
