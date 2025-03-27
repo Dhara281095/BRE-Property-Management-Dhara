@@ -108,39 +108,39 @@ page 50732 "final payment approval"
 
                     if SelectedRecs.FindSet() then
                         repeat
-                        // if SelectedRecs.Status = 'Pending' then begin
-                        //     SelectedRecs.Status := 'Received';
-                        //     SelectedRecs.Modify();
+                            if SelectedRecs.Status = 'Pending' then begin
+                                SelectedRecs.Status := 'Received';
+                                SelectedRecs.Modify();
 
-                        //     PaymentRec.SetRange(PaymentRec."Contract ID", SelectedRecs."Contract ID");
-                        //     PaymentRec.SetRange(PaymentRec."Tenant ID", SelectedRecs."Tenant ID");
-                        //     PaymentRec.SetRange(PaymentRec."Payment Series", SelectedRecs."Payment Series");
+                                //     PaymentRec.SetRange(PaymentRec."Contract ID", SelectedRecs."Contract ID");
+                                //     PaymentRec.SetRange(PaymentRec."Tenant ID", SelectedRecs."Tenant ID");
+                                //     PaymentRec.SetRange(PaymentRec."Payment Series", SelectedRecs."Payment Series");
 
-                        //     if PaymentRec.FindSet() then begin
-                        //         // Update the status of OnlinePaymentApproval record
-                        //         PaymentRec."Approve/Decline Status" := 'Received';
-                        //         PaymentRec."Payment Status" := PaymentStatus::Received;
-                        //         PaymentRec."Payment Received Date" := Today;
-                        //         PaymentRec.Modify(true);
-                        //     end;
+                                //     if PaymentRec.FindSet() then begin
+                                //         // Update the status of OnlinePaymentApproval record
+                                //         PaymentRec."Approve/Decline Status" := 'Received';
+                                //         PaymentRec."Payment Status" := PaymentStatus::Received;
+                                //         PaymentRec."Payment Received Date" := Today;
+                                //         PaymentRec.Modify(true);
+                                //     end;
 
-                        //     PaymentScheduleRec.SetRange(PaymentScheduleRec."Contract ID", PaymentRec."Contract ID");
-                        //     PaymentScheduleRec.SetRange(PaymentScheduleRec."Tenant ID", PaymentRec."Tenant ID");
-                        //     PaymentScheduleRec.SetRange(PaymentScheduleRec."Payment Series", PaymentRec."Payment Series");
+                                //     PaymentScheduleRec.SetRange(PaymentScheduleRec."Contract ID", PaymentRec."Contract ID");
+                                //     PaymentScheduleRec.SetRange(PaymentScheduleRec."Tenant ID", PaymentRec."Tenant ID");
+                                //     PaymentScheduleRec.SetRange(PaymentScheduleRec."Payment Series", PaymentRec."Payment Series");
 
-                        //     // Loop through the Payment Schedule records to find matching Payment Series
-                        //     if PaymentScheduleRec.FindSet() then begin
-                        //         repeat
-                        //             // Update Payment Schedule status to "Received" for the matching Payment Series
-                        //             PaymentScheduleRec."Payment Status" := 'Received';
-                        //             PaymentScheduleRec."Payment Recieved Date" := PaymentRec."Payment Received Date";
-                        //             PaymentScheduleRec.Modify; // Save the updated record
-                        //         until PaymentScheduleRec.Next() = 0; // Continue until all matching records are processed
-                        //     end;
+                                //     // Loop through the Payment Schedule records to find matching Payment Series
+                                //     if PaymentScheduleRec.FindSet() then begin
+                                //         repeat
+                                //             // Update Payment Schedule status to "Received" for the matching Payment Series
+                                //             PaymentScheduleRec."Payment Status" := 'Received';
+                                //             PaymentScheduleRec."Payment Recieved Date" := PaymentRec."Payment Received Date";
+                                //             PaymentScheduleRec.Modify; // Save the updated record
+                                //         until PaymentScheduleRec.Next() = 0; // Continue until all matching records are processed
+                                //     end;
 
-                        //     ApproveCount += 1;
-                        // end else
-                        //     ErrorCount += 1;
+                                ApproveCount += 1;
+                            end else
+                                ErrorCount += 1;
                         until SelectedRecs.Next() = 0;
 
                     Commit();
