@@ -14,7 +14,7 @@ page 50938 "FinalSettlemtCard"
             group(RefundDetails)
             {
                 Caption = 'Refund Details';
-                // Visible = IsRefundable;
+                Visible = IsRefundable;
 
                 field("Net Refund to the Tenant";
                 Rec."Net Refund to the Tenant")
@@ -45,7 +45,7 @@ page 50938 "FinalSettlemtCard"
             repeater(RefundPaymentDetails)
             {
                 Caption = 'Refund Payment Details';
-                // Visible = IsRefundable;
+                Visible = IsRefundable;
 
                 field("Refund Contract ID"; Rec."Refund Contract ID")
                 {
@@ -93,12 +93,25 @@ page 50938 "FinalSettlemtCard"
                     Visible = false;
                 }
 
+                field("Payment Receipt/Proof"; Rec."Payment Receipt/Proof")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Payment Receipt/Proof';
+                    Editable = false;
+                    DrillDown = true;
+                }
+                field("Pay Receipt/Proof document URL"; Rec."Pay Receipt/Proof document URL")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Payment Receipt/Proof document URL';
+                    Visible = false;
+                }
             }
 
             group(ReceivableDetails)
             {
                 Caption = 'Receivable Details';
-                // Visible = not IsRefundable;
+                Visible = IsReceivable;
 
                 field("Receivable from the Tenant"; Rec."Receivable from the Tenant")
                 {
@@ -129,7 +142,7 @@ page 50938 "FinalSettlemtCard"
             repeater(ReceivablePaymentDetails)
             {
                 Caption = 'Receivable Payment Details';
-                // Visible = not IsRefundable;
+                Visible = IsReceivable;
                 field("Receivable Contract ID"; Rec."Receivable Contract ID")
                 {
                     ApplicationArea = All;
@@ -199,6 +212,19 @@ page 50938 "FinalSettlemtCard"
                     Visible = false;
                 }
 
+                field("Payment Receipt"; Rec."Payment Receipt")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Payment Receipt';
+                    Editable = false;
+                    DrillDown = true;
+                }
+                field("Payment Receipt document URL"; Rec."Payment Receipt document URL")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Payment Receipt document URL';
+                    Visible = false;
+                }
             }
 
         }
@@ -232,6 +258,12 @@ page 50938 "FinalSettlemtCard"
             Rec."PaymentStatus" := Rec."PaymentStatus"::Received;
             Rec.Modify();
         end;
+
+        // if finalCalculationgrid."Net Receivable From The Tenant" <> 0 then
+        //     IsReceivable := true
+        // else
+        //     IsReceivable := false;
+        // Rec.Modify();
         ////////////////////////// Refund final settlement /////////////////////////////////////
 
         if Rec."Refund Cheque No." = '' then
@@ -243,18 +275,24 @@ page 50938 "FinalSettlemtCard"
 
         finalCalculationgrid.SetRange("Contract ID", Rec."Refund Contract ID");
         finalCalculationgrid.SetRange("Tenant ID", Rec."Refund Tenant ID");
-        if Rec."Refund Payment Status" = PaymentStatus::" " then begin
+        if Rec."Refund Payment Status" = PaymentStatus::" " then //begin
             Rec."Refund Payment Status" := PaymentStatus::Scheduled;
-            // if finalCalculationgrid."Amount Refundable" <> 0 then
-            //     IsRefundable := true
-            // else
-            //     IsRefundable := false;
-        end;
+        // if finalCalculationgrid."Amount Refundable" <> 0 then
+        //     IsRefundable := true
+        // else
+        //     IsRefundable := false;
+        //  end;
 
         if Rec."Refund Payment Status" = PaymentStatus::Received then begin
             Rec."Refund Status" := Rec."Refund Status"::Received;
             Rec.Modify();
         end;
+
+        // if finalCalculationgrid."Amount Refundable" <> 0 then
+        //     IsRefundable := true
+        // else
+        //     IsRefundable := false;
+        // Rec.Modify();
 
     end;
 
@@ -284,6 +322,12 @@ page 50938 "FinalSettlemtCard"
             Rec."PaymentStatus" := Rec."PaymentStatus"::Received;
             Rec.Modify();
         end;
+
+        // if finalCalculationgrid."Net Receivable From The Tenant" <> 0 then
+        //     IsReceivable := true
+        // else
+        //     IsReceivable := false;
+        // Rec.Modify();
         ////////////////////////// Refund final settlement /////////////////////////////////////
 
         if Rec."Refund Cheque No." = '' then
@@ -295,18 +339,24 @@ page 50938 "FinalSettlemtCard"
 
         finalCalculationgrid.SetRange("Contract ID", Rec."Refund Contract ID");
         finalCalculationgrid.SetRange("Tenant ID", Rec."Refund Tenant ID");
-        if Rec."Refund Payment Status" = PaymentStatus::" " then begin
+        if Rec."Refund Payment Status" = PaymentStatus::" " then //begin
             Rec."Refund Payment Status" := PaymentStatus::Scheduled;
-            // if finalCalculationgrid."Amount Refundable" <> 0 then
-            //     IsRefundable := true
-            // else
-            //     IsRefundable := false;
-        end;
+        //     if finalCalculationgrid."Amount Refundable" <> 0 then
+        //         IsRefundable := true
+        //     else
+        //         IsRefundable := false;
+        // end;
 
         if Rec."Refund Payment Status" = PaymentStatus::Received then begin
             Rec."Refund Status" := Rec."Refund Status"::Received;
             Rec.Modify();
         end;
+
+        // if finalCalculationgrid."Amount Refundable" <> 0 then
+        //     IsRefundable := true
+        // else
+        //     IsRefundable := false;
+        // Rec.Modify();
     end;
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
@@ -336,6 +386,12 @@ page 50938 "FinalSettlemtCard"
             Rec."PaymentStatus" := Rec."PaymentStatus"::Received;
             Rec.Modify();
         end;
+
+        // if finalCalculationgrid."Net Receivable From The Tenant" <> 0 then
+        //     IsReceivable := true
+        // else
+        //     IsReceivable := false;
+        // Rec.Modify();
         ////////////////////////// Refund final settlement /////////////////////////////////////
 
         if Rec."Refund Cheque No." = '' then
@@ -347,18 +403,24 @@ page 50938 "FinalSettlemtCard"
 
         finalCalculationgrid.SetRange("Contract ID", Rec."Refund Contract ID");
         finalCalculationgrid.SetRange("Tenant ID", Rec."Refund Tenant ID");
-        if Rec."Refund Payment Status" = PaymentStatus::" " then begin
+        if Rec."Refund Payment Status" = PaymentStatus::" " then // begin
             Rec."Refund Payment Status" := PaymentStatus::Scheduled;
-            // if finalCalculationgrid."Amount Refundable" <> 0 then
-            //     IsRefundable := true
-            // else
-            //     IsRefundable := false;
-        end;
+        //     if finalCalculationgrid."Amount Refundable" <> 0 then
+        //         IsRefundable := true
+        //     else
+        //         IsRefundable := false;
+        // end;
 
         if Rec."Refund Payment Status" = PaymentStatus::Received then begin
             Rec."Refund Status" := Rec."Refund Status"::Received;
             Rec.Modify();
         end;
+
+        // if finalCalculationgrid."Amount Refundable" <> 0 then
+        //     IsRefundable := true
+        // else
+        //     IsRefundable := false;
+        // Rec.Modify();
     end;
 
 
@@ -379,9 +441,14 @@ page 50938 "FinalSettlemtCard"
             if Rec."Refund Payment Status" = PaymentStatus::Received then begin
                 Rec."Refund Status" := Rec."Refund Status"::Received;
                 Rec."Balance Refundable" := 0;
-                Rec."Refund Processed" := Rec."Receivable from the Tenant";
+                Rec."Refund Processed" := Rec."Net Refund to the Tenant";
                 Rec.Modify();
             end;
+
+            if finalcalculationcard."Amount Refundable" <> 0 then
+                IsRefundable := true
+            else
+                IsRefundable := false;
             Rec.Modify();
         end;
 
@@ -398,6 +465,11 @@ page 50938 "FinalSettlemtCard"
                 Rec."Payment Processed" := Rec."Receivable from the Tenant";
                 Rec.Modify();
             end;
+
+            if finalcalculationcard."Net Receivable From The Tenant" <> 0 then
+                IsReceivable := true
+            else
+                IsReceivable := false;
             Rec.Modify();
         end;
     end;
@@ -419,9 +491,14 @@ page 50938 "FinalSettlemtCard"
             if Rec."Refund Payment Status" = PaymentStatus::Received then begin
                 Rec."Refund Status" := Rec."Refund Status"::Received;
                 Rec."Balance Refundable" := 0;
-                Rec."Refund Processed" := Rec."Receivable from the Tenant";
+                Rec."Refund Processed" := Rec."Net Refund to the Tenant";
                 Rec.Modify();
             end;
+
+            if finalcalculationcard1."Amount Refundable" <> 0 then
+                IsRefundable := true
+            else
+                IsRefundable := false;
             Rec.Modify();
         end;
 
@@ -438,6 +515,11 @@ page 50938 "FinalSettlemtCard"
                 Rec."Payment Processed" := Rec."Receivable from the Tenant";
                 Rec.Modify();
             end;
+
+            if finalcalculationcard1."Net Receivable From The Tenant" <> 0 then
+                IsReceivable := true
+            else
+                IsReceivable := false;
             Rec.Modify();
         end;
     end;
@@ -446,4 +528,5 @@ page 50938 "FinalSettlemtCard"
 
     var
         IsRefundable: Boolean;
+        IsReceivable: Boolean;
 }

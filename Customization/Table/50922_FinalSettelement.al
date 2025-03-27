@@ -173,6 +173,30 @@ table 50922 "FinalSettlement"
             DataClassification = ToBeClassified;
             Caption = 'Contract ID';
         }
+
+        field(50125; "Payment Receipt"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Payment Receipt';
+            InitValue = 'View';
+        }
+        field(50126; "Payment Receipt document URL"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Payment Receipt Document URL';
+        }
+
+        field(50127; "Payment Receipt/Proof"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Payment Receipt/Proof';
+            InitValue = 'View';
+        }
+        field(50128; "Pay Receipt/Proof document URL"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Payment Receipt/Proof document URL';
+        }
     }
 
     keys
