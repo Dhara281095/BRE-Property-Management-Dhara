@@ -493,6 +493,22 @@ page 50903 "Final Calculation Card"
                 end;
             }
         }
+        area(Reporting)
+        {
+            action("Run Report")
+            {
+                ApplicationArea = All;
+                trigger OnAction()
+                var
+                    Finalcalculation: Record "Final Calculation";
+                    TerminationReport: Report "Termination Template";
+                begin
+                    Finalcalculation.SetRange("Contract ID", Rec."Contract ID");  // Set appropriate filters
+                    TerminationReport.SetTableView(Finalcalculation);
+                    TerminationReport.RunModal();
+                end;
+            }
+        }
     }
 
     //////////////////  START Final Revenue Calculation Grid ////////////////////

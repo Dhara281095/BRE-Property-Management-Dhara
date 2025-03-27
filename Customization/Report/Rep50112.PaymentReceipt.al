@@ -156,6 +156,12 @@ report 50112 PaymentReceipt
                 column(Contract_Tenor; "Contract Tenor")
                 {
                 }
+                column(Contract_Start_Date; "Contract Start Date")
+                {
+                }
+                column(Contract_End_Date; "Contract End Date")
+                {
+                }
             }
 
         }
