@@ -199,11 +199,13 @@ table 50925 "Payment Mode2"
                 OutStream: OutStream;
                 documentattachment: Codeunit UploadAttachment;
                 paymentmode2Grid: Record "Payment Mode2";
+                CashReceiptJournalCodeunit: Codeunit 50514;
             begin
                 if Rec."Payment Status" = Rec."Payment Status"::Received then begin
                     Email.SendEmail(Rec);
                     if Rec."Payment Status" = Rec."Payment Status"::Received then begin
                         emailrec.SendEmail(Rec);
+                        CashReceiptJournalCodeunit.CreateCashReceiptJournal(Rec);
 
                         if not ConfigRecord.FindFirst() then
                             Error('Azure configuration is missing. Please set up the SAS URL in the Azure Configuration table.');
