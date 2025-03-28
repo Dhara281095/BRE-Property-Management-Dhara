@@ -46,7 +46,7 @@ page 50938 "FinalSettlemtCard"
                 field("Refund Status"; Rec."Refund Status")
                 {
                     ApplicationArea = All;
-                    // Editable = false; // The ID is not editable since it's auto-incrementing
+                    Editable = false; // The ID is not editable since it's auto-incrementing
                 }
             }
 
@@ -83,6 +83,24 @@ page 50938 "FinalSettlemtCard"
                 {
                     ApplicationArea = All;
                     // Editable = false;
+
+                    trigger OnValidate()
+                    var
+                        PaymentStatus: Enum "Payment Status";
+                    begin
+                        // Check if Receivable Payment Status is 'Received'
+                        if Rec."Refund Payment Status" = PaymentStatus::Received then begin
+                            // Set PaymentStatus to 'Received' as well
+                            Rec."Refund Status" := Rec."Refund Status"::Received;
+                            Rec.Modify();  // Save changes to the current record
+                        end;
+
+                        if Rec."Refund Payment Status" <> PaymentStatus::Received then begin
+                            // Set PaymentStatus to 'Received' as well
+                            Rec."Refund Status" := Rec."Refund Status"::Pending;
+                            Rec.Modify();  // Save changes to the current record
+                        end;
+                    end;
                 }
                 field("Refund Cheque No."; Rec."Refund Cheque No.")
                 {
@@ -151,7 +169,7 @@ page 50938 "FinalSettlemtCard"
                 field("PaymentStatus"; Rec."PaymentStatus")
                 {
                     ApplicationArea = All;
-                    // Editable = false; // The ID is not editable since it's auto-incrementing
+                    Editable = false; // The ID is not editable since it's auto-incrementing
                 }
             }
 
@@ -199,6 +217,12 @@ page 50938 "FinalSettlemtCard"
                             Rec."PaymentStatus" := Rec."PaymentStatus"::Received;
                             Rec.Modify();  // Save changes to the current record
                         end;
+
+                        if Rec."Receivable Payment Status" <> PaymentStatus::Received then begin
+                            // Set PaymentStatus to 'Received' as well
+                            Rec."PaymentStatus" := Rec."PaymentStatus"::Pending;
+                            Rec.Modify();  // Save changes to the current record
+                        end;
                     end;
                 }
                 field("Receivable Cheque No."; Rec."Receivable Cheque No.")
@@ -231,6 +255,7 @@ page 50938 "FinalSettlemtCard"
                 field("Deposit Status"; Rec."Deposit Status")
                 {
                     ApplicationArea = All;
+                    Editable = false;
 
                     trigger OnValidate()
                     var
@@ -494,6 +519,13 @@ page 50938 "FinalSettlemtCard"
                 Rec.Modify();
             end;
 
+            if Rec."Refund Payment Status" <> PaymentStatus::Received then begin
+                Rec."Refund Status" := Rec."Refund Status"::Pending;
+                Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
+                Rec."Refund Processed" := 0;
+                Rec.Modify();
+            end;
+
             if finalcalculationcard."Amount Refundable" <> 0 then
                 IsRefundable := true
             else
@@ -512,6 +544,13 @@ page 50938 "FinalSettlemtCard"
                 Rec."PaymentStatus" := Rec."PaymentStatus"::Received;
                 Rec."Balance Receivable" := 0;
                 Rec."Payment Processed" := Rec."Receivable from the Tenant";
+                Rec.Modify();
+            end;
+
+            if Rec."Receivable Payment Status" <> PaymentStatus::Received then begin
+                Rec."PaymentStatus" := Rec."PaymentStatus"::Pending;
+                Rec."Balance Receivable" := Rec."Receivable from the Tenant";
+                Rec."Payment Processed" := 0;
                 Rec.Modify();
             end;
 
@@ -544,6 +583,13 @@ page 50938 "FinalSettlemtCard"
                 Rec.Modify();
             end;
 
+            if Rec."Refund Payment Status" <> PaymentStatus::Received then begin
+                Rec."Refund Status" := Rec."Refund Status"::Pending;
+                Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
+                Rec."Refund Processed" := 0;
+                Rec.Modify();
+            end;
+
             if finalcalculationcard1."Amount Refundable" <> 0 then
                 IsRefundable := true
             else
@@ -562,6 +608,13 @@ page 50938 "FinalSettlemtCard"
                 Rec."PaymentStatus" := Rec."PaymentStatus"::Received;
                 Rec."Balance Receivable" := 0;
                 Rec."Payment Processed" := Rec."Receivable from the Tenant";
+                Rec.Modify();
+            end;
+
+            if Rec."Receivable Payment Status" <> PaymentStatus::Received then begin
+                Rec."PaymentStatus" := Rec."PaymentStatus"::Pending;
+                Rec."Balance Receivable" := Rec."Receivable from the Tenant";
+                Rec."Payment Processed" := 0;
                 Rec.Modify();
             end;
 
