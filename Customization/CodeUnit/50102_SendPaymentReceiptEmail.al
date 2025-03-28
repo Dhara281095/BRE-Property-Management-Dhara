@@ -14,6 +14,8 @@ codeunit 50102 "Send Payment Receipt"
         ConsolidatedInvoiceHeader: Record "Payment Mode2";
         RecRef: RecordRef;
         FileManagement: Codeunit "File Management";
+        NoSeriesManagement: Codeunit "No. Series";
+        ReceiptNo: Code[20];
     begin
         ReportID := 50112;
 
@@ -24,6 +26,12 @@ codeunit 50102 "Send Payment Receipt"
         ConsolidatedInvoiceHeader.SetRange("Payment Series", Rec."Payment Series"); // Add this line to filter by Payment Series
 
         if ConsolidatedInvoiceHeader.FindFirst() then begin
+            // Generate auto-incremented receipt number
+            if ConsolidatedInvoiceHeader."Receipt #" = '' then begin
+                ReceiptNo := NoSeriesManagement.GetNextNo('RECEIPTNO', WorkDate(), true);
+                ConsolidatedInvoiceHeader."Receipt #" := ReceiptNo;
+                ConsolidatedInvoiceHeader.Modify(); // Save the new receipt number
+            end;
             // Prepare the report output
             RecRef.GetTable(ConsolidatedInvoiceHeader);
             TempBlob.CreateOutStream(OutStream);
@@ -31,7 +39,7 @@ codeunit 50102 "Send Payment Receipt"
             Report.SaveAs(ReportID, '', ReportFormat::Pdf, OutStream, RecRef);
 
             TempBlob.CreateInStream(InStream);
-            FileName := 'Receipt_' + Format(ConsolidatedInvoiceHeader."Tenant ID") + '.pdf';
+            FileName := 'Receipt_' + Format(ConsolidatedInvoiceHeader."Receipt #") + '.pdf';
 
             // Debugging to confirm email creation parameters
             Message('Preparing to send email to: %1', ConsolidatedInvoiceHeader."Tenant Email");
@@ -41,7 +49,7 @@ codeunit 50102 "Send Payment Receipt"
                 // Create email with detailed contract information
                 EmailMessage.Create(
                     ConsolidatedInvoiceHeader."Tenant Email",
-                    'Payment Receipt Attached_' + Format(ConsolidatedInvoiceHeader."Tenant ID"),
+                    'Payment Receipt Attached_' + Format(ConsolidatedInvoiceHeader."Receipt #"),
                     '<html>' +
                     '<body>' +
                     '<p>Dear ' + ConsolidatedInvoiceHeader."Tenant Name" + ',' +
