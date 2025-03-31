@@ -197,6 +197,16 @@ table 50922 "FinalSettlement"
             DataClassification = ToBeClassified;
             Caption = 'Payment Receipt/Proof document URL';
         }
+        field(50129; "View Invoice"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'View Invoice';
+        }
+        field(50130; "Invoice URL"; Text[400])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Invoice URL';
+        }
     }
 
     keys

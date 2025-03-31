@@ -292,6 +292,17 @@ page 50938 "FinalSettlemtCard"
                     Caption = 'Payment Receipt document URL';
                     Visible = false;
                 }
+                field("View Invoice"; Rec."View Invoice")
+                {
+                    ApplicationArea = All;
+                    Caption = 'View Invoice';
+
+                }
+                field("Invoice URL"; Rec."Invoice URL")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Invoice URL';
+                }
             }
         }
     }
