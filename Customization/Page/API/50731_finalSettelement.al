@@ -22,11 +22,11 @@ page 50731 finalSettelement
         {
             repeater(General)
             {
-                field(contractId1; Rec."Contract ID")
+                field(contractId; Rec."Contract ID")
                 {
                     Caption = 'Contract ID';
                 }
-                field(contractId; Rec."Receivable Contract ID")
+                field(ReceivablecontractId; Rec."Receivable Contract ID")
                 {
                     Caption = 'Receivable Contract ID';
                 }
@@ -185,6 +185,14 @@ page 50731 finalSettelement
                 field("payreceiptproofdocumentuRL"; Rec."Pay Receipt/Proof document URL")
                 {
                     Caption = 'Pay Receipt/Proof document URL';
+                }
+                field("ViewInvoice"; Rec."View Invoice")
+                {
+                    Caption = 'View Invoice';
+                }
+                field("InvoiceURL"; Rec."Invoice URL")
+                {
+                    Caption = 'Invoice URL';
                 }
             }
         }
