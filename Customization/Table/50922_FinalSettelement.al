@@ -141,7 +141,7 @@ table 50922 "FinalSettlement"
 
         field(50119; "PaymentStatus"; Option)
         {
-            OptionMembers = "Pending","Paid";
+            OptionMembers = "Pending","Received";
             Caption = 'Payment Status';
         }
 
@@ -164,7 +164,7 @@ table 50922 "FinalSettlement"
 
         field(50123; "Refund Status"; Option)
         {
-            OptionMembers = "Pending","Received";
+            OptionMembers = "Pending","Paid";
             Caption = 'Refund Status';
         }
 
