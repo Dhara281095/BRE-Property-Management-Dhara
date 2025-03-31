@@ -11,7 +11,7 @@ page 50938 "FinalSettlemtCard"
         area(Content)
         {
 
-            field("Contract ID"; Rec."Contract ID")
+            field("Contract ID"; Rec."Refund Contract ID")
             {
                 ApplicationArea = All;
                 Editable = false;
@@ -214,7 +214,7 @@ page 50938 "FinalSettlemtCard"
                         // Check if Receivable Payment Status is 'Received'
                         if Rec."Receivable Payment Status" = PaymentStatus::Received then begin
                             // Set PaymentStatus to 'Received' as well
-                            Rec."PaymentStatus" := Rec."PaymentStatus"::Received;
+                            Rec."PaymentStatus" := Rec."PaymentStatus"::Paid;
                             Rec.Modify();  // Save changes to the current record
                         end;
 
@@ -322,7 +322,7 @@ page 50938 "FinalSettlemtCard"
             Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
 
         if Rec."Receivable Payment Status" = PaymentStatus::Received then begin
-            Rec."PaymentStatus" := Rec."PaymentStatus"::Received;
+            Rec."PaymentStatus" := Rec."PaymentStatus"::Paid;
             Rec.Modify();
         end;
 
@@ -386,7 +386,7 @@ page 50938 "FinalSettlemtCard"
             Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
 
         if Rec."Receivable Payment Status" = PaymentStatus::Received then begin
-            Rec."PaymentStatus" := Rec."PaymentStatus"::Received;
+            Rec."PaymentStatus" := Rec."PaymentStatus"::Paid;
             Rec.Modify();
         end;
 
@@ -450,7 +450,7 @@ page 50938 "FinalSettlemtCard"
             Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
 
         if Rec."Receivable Payment Status" = PaymentStatus::Received then begin
-            Rec."PaymentStatus" := Rec."PaymentStatus"::Received;
+            Rec."PaymentStatus" := Rec."PaymentStatus"::Paid;
             Rec.Modify();
         end;
 
@@ -489,12 +489,6 @@ page 50938 "FinalSettlemtCard"
         //     IsRefundable := false;
         // Rec.Modify();
 
-        Rec."Contract ID" := ContractID;
-        Rec."Receivable Contract ID" := ContractID;
-        Rec."Refund Contract ID" := ContractID;
-        Rec."Receivable Tenant ID" := tenantID;
-        Rec."Refund Tenant ID" := tenantID;
-
     end;
 
 
@@ -508,6 +502,7 @@ page 50938 "FinalSettlemtCard"
     begin
         finalcalculationcard.SetRange("Contract ID", Rec."Refund Contract ID");
         if finalcalculationcard.FindSet() then begin
+            Rec."Contract ID" := finalcalculationcard."Contract ID";
             Rec."Net Refund to the Tenant" := finalcalculationcard."Amount Refundable";
             Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
             Rec."Refund Total Amount" := Rec."Net Refund to the Tenant";
@@ -541,7 +536,7 @@ page 50938 "FinalSettlemtCard"
 
 
             if Rec."Receivable Payment Status" = PaymentStatus::Received then begin
-                Rec."PaymentStatus" := Rec."PaymentStatus"::Received;
+                Rec."PaymentStatus" := Rec."PaymentStatus"::Paid;
                 Rec."Balance Receivable" := 0;
                 Rec."Payment Processed" := Rec."Receivable from the Tenant";
                 Rec.Modify();
@@ -571,6 +566,7 @@ page 50938 "FinalSettlemtCard"
     begin
         finalcalculationcard1.SetRange("Contract ID", Rec."Refund Contract ID");
         if finalcalculationcard1.FindSet() then begin
+            Rec."Contract ID" := finalcalculationcard1."Contract ID";
             Rec."Net Refund to the Tenant" := finalcalculationcard1."Amount Refundable";
             Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
             Rec."Refund Total Amount" := Rec."Net Refund to the Tenant";
@@ -605,7 +601,7 @@ page 50938 "FinalSettlemtCard"
 
 
             if Rec."Receivable Payment Status" = PaymentStatus::Received then begin
-                Rec."PaymentStatus" := Rec."PaymentStatus"::Received;
+                Rec."PaymentStatus" := Rec."PaymentStatus"::Paid;
                 Rec."Balance Receivable" := 0;
                 Rec."Payment Processed" := Rec."Receivable from the Tenant";
                 Rec.Modify();
@@ -633,17 +629,4 @@ page 50938 "FinalSettlemtCard"
         IsReceivable: Boolean;
 
 
-    procedure SetContractID(pContractID: Integer)
-    begin
-        ContractID := pContractID;
-    end;
-
-    procedure SetTenantID(pTenantID: Code[20])
-    begin
-        tenantID := pTenantID;
-    end;
-
-    var
-        ContractID: Integer;
-        tenantID: Code[20];
 }

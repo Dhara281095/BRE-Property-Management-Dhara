@@ -141,7 +141,7 @@ table 50922 "FinalSettlement"
 
         field(50119; "PaymentStatus"; Option)
         {
-            OptionMembers = "Pending","Received";
+            OptionMembers = "Pending","Paid";
             Caption = 'Payment Status';
         }
 
@@ -201,7 +201,7 @@ table 50922 "FinalSettlement"
 
     keys
     {
-        key(PK; "Receivable Contract ID", "Refund Contract ID", "Contract ID")
+        key(PK; "Receivable Contract ID", "Refund Contract ID")
         {
             Clustered = true;
         }
