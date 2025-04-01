@@ -158,6 +158,11 @@ table 50934 "Payment Schedule2"
         {
             Caption = 'Cheque Number';
         }
+        field(50924; "Contract start date"; Date)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Contract Start date';
+        }
 
     }
 
