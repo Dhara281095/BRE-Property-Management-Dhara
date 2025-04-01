@@ -128,6 +128,11 @@ page 50922 "Payment Schedule Card2"
                     Caption = 'Overdue Invoice';
                     //Editable = false;
                 }
+                field("Contract start date"; Rec."Contract start date")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
 
                 field("Payment Status"; Rec."Payment Status")
                 {
@@ -173,6 +178,7 @@ page 50922 "Payment Schedule Card2"
                     Editable = false;
 
                 }
+
             }
 
         }
@@ -209,17 +215,18 @@ page 50922 "Payment Schedule Card2"
         PaymentSchedule: Record "Payment Schedule";
     begin
         InvoicedField := NotAccessInvoicedFieldFinanceManager();
+
+
         // UpdateBalanceAmountOnPaymentReceived();
 
 
 
-        // if PaymentSchedule.Get(Rec."Contract ID")
-        //   then begin
-        //     Rec."Contract Status" := PaymentSchedule."Contract Status";
-        //     Rec.Modify();
-        // end;
+        if PaymentSchedule.Get(Rec."Contract ID")
+          then begin
+            Rec."Contract start date" := PaymentSchedule."Contract Start date";
+            Rec.Modify();
+        end;
     end;
-
 
 
 
