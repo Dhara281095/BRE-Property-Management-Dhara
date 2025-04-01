@@ -26,7 +26,7 @@ page 50731 finalSettelement
                 {
                     Caption = 'Contract ID';
                 }
-                field(ReceivablecontractId; Rec."Receivable Contract ID")
+                field(ReceivablecontractId; Rec."Contract ID")
                 {
                     Caption = 'Receivable Contract ID';
                 }
@@ -78,7 +78,7 @@ page 50731 finalSettelement
                 {
                     Caption = 'SystemModifiedBy';
                 }
-                field(ReceivabletenantID; Rec."Receivable Tenant ID")
+                field(ReceivabletenantID; Rec."Tenant ID")
                 {
                     Caption = 'Receivable Tenant ID';
                 }
@@ -90,30 +90,30 @@ page 50731 finalSettelement
                 // {
                 //     Caption = 'Total Amount';
                 // }
-                field("RefundContractID"; Rec."Refund Contract ID")
-                {
-                    Caption = 'Refund Contract ID';
-                }
-                field("RefundTotalAmount"; Rec."Refund Total Amount")
-                {
-                    Caption = 'Refund Total Amount';
-                }
-                field("RefundDueDate"; Rec."Refund Due Date")
-                {
-                    Caption = 'Refund Due Date';
-                }
-                field("RefundPaymentmode"; Rec."Refund Payment mode")
-                {
-                    Caption = 'Refund Payment mode';
-                }
-                field("RefundPaymentStatus"; Rec."Refund Payment Status")
-                {
-                    Caption = 'Refund Payment Status';
-                }
-                field("RefundChequeNo"; Rec."Refund Cheque No.")
-                {
-                    Caption = 'Refund Cheque No.';
-                }
+                // field("RefundContractID"; Rec."Refund Contract ID")
+                // {
+                //     Caption = 'Refund Contract ID';
+                // }
+                // field("RefundTotalAmount"; Rec."Refund Total Amount")
+                // {
+                //     Caption = 'Refund Total Amount';
+                // }
+                // field("RefundDueDate"; Rec."Refund Due Date")
+                // {
+                //     Caption = 'Refund Due Date';
+                // }
+                // field("RefundPaymentmode"; Rec."Refund Payment mode")
+                // {
+                //     Caption = 'Refund Payment mode';
+                // }
+                // field("RefundPaymentStatus"; Rec."Refund Payment Status")
+                // {
+                //     Caption = 'Refund Payment Status';
+                // }
+                // field("RefundChequeNo"; Rec."Refund Cheque No.")
+                // {
+                //     Caption = 'Refund Cheque No.';
+                // }
                 field("ReceivableTotalAmount"; Rec."Receivable Total Amount")
                 {
                     Caption = 'Receivable Total Amount';
@@ -134,10 +134,10 @@ page 50731 finalSettelement
                 {
                     Caption = 'Receivable Cheque No.';
                 }
-                field("RefundTenantID"; Rec."Refund Tenant ID")
-                {
-                    Caption = 'Refund Tenant ID';
-                }
+                // field("RefundTenantID"; Rec."Refund Tenant ID")
+                // {
+                //     Caption = 'Refund Tenant ID';
+                // }
                 field("ReceivablefromtheTenant"; Rec."Receivable from the Tenant")
                 {
                     Caption = 'Receivable from the Tenant';
@@ -154,38 +154,38 @@ page 50731 finalSettelement
                 {
                     Caption = 'Payment Status mode';
                 }
-                field("NetRefundtotheTenant"; Rec."Net Refund to the Tenant")
-                {
-                    Caption = 'Net Refund to the Tenant';
-                }
-                field("RefundProcessed"; Rec."Refund Processed")
-                {
-                    Caption = 'Refund Processed';
-                }
-                field("BalanceRefundable"; Rec."Balance Refundable")
-                {
-                    Caption = 'Balance Refundable';
-                }
-                field("RefundStatus"; Rec."Refund Status")
-                {
-                    Caption = 'Refund Status';
-                }
+                // field("NetRefundtotheTenant"; Rec."Net Refund to the Tenant")
+                // {
+                //     Caption = 'Net Refund to the Tenant';
+                // }
+                // field("RefundProcessed"; Rec."Refund Processed")
+                // {
+                //     Caption = 'Refund Processed';
+                // }
+                // field("BalanceRefundable"; Rec."Balance Refundable")
+                // {
+                //     Caption = 'Balance Refundable';
+                // }
+                // field("RefundStatus"; Rec."Refund Status")
+                // {
+                //     Caption = 'Refund Status';
+                // }
                 field("paymentreceipt"; Rec."Payment Receipt")
                 {
                     Caption = 'Payment Receipt';
                 }
-                field("paymentreceiptproof"; Rec."Payment Receipt/Proof")
-                {
-                    Caption = 'payment receipt/proof';
-                }
+                // field("paymentreceiptproof"; Rec."Payment Receipt/Proof")
+                // {
+                //     Caption = 'payment receipt/proof';
+                // }
                 field("paymentreceiptdocumentuRL"; Rec."Payment Receipt document URL")
                 {
                     Caption = 'Payment Receipt document URL';
                 }
-                field("payreceiptproofdocumentuRL"; Rec."Pay Receipt/Proof document URL")
-                {
-                    Caption = 'Pay Receipt/Proof document URL';
-                }
+                // field("payreceiptproofdocumentuRL"; Rec."Pay Receipt/Proof document URL")
+                // {
+                //     Caption = 'Pay Receipt/Proof document URL';
+                // }
                 field("ViewInvoice"; Rec."View Invoice")
                 {
                     Caption = 'View Invoice';
