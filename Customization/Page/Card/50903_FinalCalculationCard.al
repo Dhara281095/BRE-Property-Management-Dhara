@@ -424,7 +424,7 @@ page 50903 "Final Calculation Card"
             group("FinalSettlemt")
             {
                 Caption = 'Final Settlement';
-                Visible = IsReceivable;
+                // Visible = IsReceivable;
                 part("FinalSettelemts"; "FinalSettlemtCard")
                 {
                     SubPageLink = "FC ID" = FIELD("FC ID");
@@ -437,7 +437,7 @@ page 50903 "Final Calculation Card"
             group("FinalSettlemts")
             {
                 Caption = 'Final Settlement';
-                Visible = IsRefundable;
+                //  Visible = IsRefundable;
                 part("FinalSettelemtss"; "FinalSettlemtRefundCard")
                 {
                     SubPageLink = "FC ID" = FIELD("FC ID");
