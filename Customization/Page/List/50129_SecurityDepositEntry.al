@@ -199,10 +199,11 @@ page 50129 "Security Deposit Entries"
                                 // Update Total Claim with the sum of Total Amount from Additional Charges Sub
                                 FinaCalculation."Total Claim" := TotalClaimAmount;
                                 // Store the Amount Including VAT in the Total Adjustment field
-                                FinaCalculation."Total Adjustment" := AmountIncludingVAT;
+                                // FinaCalculation."Total Adjustment" := AmountIncludingVAT;
                                 FinaCalculation."Total Refund" := TotalRefundableAmount + FinaCalculation."Total Refundable Deposit";
                                 // Add this new line to calculate Net Balance as requested
-                                FinaCalculation."Summery Net Balance" := FinaCalculation."Total Claim" + FinaCalculation."Total Adjustment" - FinaCalculation."Total Refund";
+                                // FinaCalculation."Summery Net Balance" := FinaCalculation."Total Claim" + FinaCalculation."Total Adjustment" - FinaCalculation."Total Refund";
+                                FinaCalculation."Summery Net Balance" := FinaCalculation."Total Claim" - FinaCalculation."Total Refund";
                                 // NEW CODE: Check if Summary Net Balance is positive or negative and update respective fields
                                 if FinaCalculation."Summery Net Balance" > 0 then begin
                                     // Positive value goes to Net Receivable From The Tenant

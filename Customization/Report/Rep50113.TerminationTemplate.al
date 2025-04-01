@@ -1,5 +1,6 @@
 namespace BREPropertyManagementMargi.BREPropertyManagementMargi;
 using Microsoft.Foundation.Company;
+using System.Text;
 using Microsoft.Sales.Customer;
 
 report 50113 "Termination Template"
@@ -34,6 +35,9 @@ report 50113 "Termination Template"
             {
             }
             column(CompanyEmail; CompanyInfo."E-Mail")
+            {
+            }
+            column(CompanyTRN; CompanyInfo."VAT Registration No.")
             {
             }
             column(CurrentDate; Format(CurrentDateTime, 0, '<Day,2>/<Month,2>/<Year4>'))  // Add a column to hold the current date
@@ -105,12 +109,15 @@ report 50113 "Termination Template"
             }
             column(Final_Settlement_Words;
             ConvertFinalSettlementToWords(
-        -(GetRentBalancePending("Contract ID") +
-          GetTotalReceiptsAmount("Contract ID") - GetTotalReceiptsAmountIncludingVAT("Contract ID") +
-          GetTotalAdditionalCharges("Contract ID") +
-          -("Net Balance" + "Chiller Deposit" + "Other Deposit"))
-    )
-)
+                    -(GetRentBalancePending("Contract ID") +
+                      GetTotalReceiptsAmount("Contract ID") - GetTotalReceiptsAmountIncludingVAT("Contract ID") +
+                      GetTotalAdditionalCharges("Contract ID") +
+                      -("Net Balance" + "Chiller Deposit" + "Other Deposit"))
+                )
+            )
+            {
+            }
+            column(Total_AdC; GetTotalAdditionalCharges("Contract ID"))
             {
             }
             dataitem(Customer; Customer)
@@ -127,6 +134,9 @@ report 50113 "Termination Template"
                 {
                 }
                 column(E_Mail; "E-Mail")
+                {
+                }
+                column(VAT_Registration_No_; "VAT Registration No.")
                 {
                 }
             }
@@ -182,19 +192,15 @@ report 50113 "Termination Template"
             dataitem("Additional Charges Sub"; "Additional Charges Sub")
             {
                 DataItemLink = "Contract ID" = field("Contract ID");
-                column(Early_T_F; GetEarlyTerminationFeeAmount("Contract ID"))
+                column(Secondary_Item_Type; "Secondary Item Type")
                 {
                 }
-                column(Late_I_F; GetLateIntimationFeeAmount("Contract ID"))
+                column(Amount_IV; "Amount Including VAT")
                 {
                 }
-                column(Resto_Chrg; GetRestorationChargesAmount("Contract ID"))
-                {
-                }
-                column(T_Add_Chrg; GetEarlyTerminationFeeAmount("Contract ID") + GetLateIntimationFeeAmount("Contract ID") + GetRestorationChargesAmount("Contract ID"))
-                {
-                }
+
             }
+
         }
     }
     requestpage
@@ -261,7 +267,7 @@ report 50113 "Termination Template"
                 //     PendingReceivableGrid.ReceiptsAmount);
 
                 // Add the receipts amount
-                TotalAmount += PendingReceivableGrid.ReceiptsAmount;
+                TotalAmount += PendingReceivableGrid.RevisedAmountInclVAT;
             until PendingReceivableGrid.Next() = 0;
         end;
 
@@ -305,73 +311,96 @@ report 50113 "Termination Template"
 
 
     // -------------------------------- For Early Termination Fee ---------------------------------//
-    procedure GetEarlyTerminationFeeAmount(ContractID: Integer): Decimal
-    var
-        AdditionalChargesGrid: Record "Additional Charges Sub";
-        EarlyTerminationFeeAmount: Decimal;
-    begin
-        // Clear any previous filters
-        AdditionalChargesGrid.Reset();
+    // procedure GetEarlyTerminationFeeAmount(ContractID: Integer): Decimal
+    // var
+    //     AdditionalChargesGrid: Record "Additional Charges Sub";
+    //     EarlyTerminationFeeAmount: Decimal;
+    // begin
+    //     // Clear any previous filters
+    //     AdditionalChargesGrid.Reset();
 
-        // Filter by Contract ID and Secondary Item Type
-        AdditionalChargesGrid.SetRange("Contract ID", ContractID);
-        AdditionalChargesGrid.SetRange("Secondary Item Type", 'Early Termination Fee');
+    //     // Filter by Contract ID and Secondary Item Type
+    //     AdditionalChargesGrid.SetRange("Contract ID", ContractID);
+    //     AdditionalChargesGrid.SetRange("Secondary Item Type", 'Early Termination Fee');
 
-        // Find the first matching record and get its amount including VAT
-        if AdditionalChargesGrid.FindFirst() then begin
-            EarlyTerminationFeeAmount := AdditionalChargesGrid."Amount Including VAT";
-        end;
+    //     // Find the first matching record and get its amount including VAT
+    //     if AdditionalChargesGrid.FindFirst() then begin
+    //         EarlyTerminationFeeAmount := AdditionalChargesGrid."Amount Including VAT";
+    //     end;
 
-        // Return the Early Termination Fee amount
-        exit(EarlyTerminationFeeAmount);
-    end;
+    //     // Return the Early Termination Fee amount
+    //     exit(EarlyTerminationFeeAmount);
+    // end;
 
 
 
     // -------------------------------- For Late Intimation Fee ---------------------------------//
-    procedure GetLateIntimationFeeAmount(ContractID: Integer): Decimal
-    var
-        AdditionalChargesGrid: Record "Additional Charges Sub";
-        LateIntimationFeeAmount: Decimal;
-    begin
-        // Clear any previous filters
-        AdditionalChargesGrid.Reset();
+    // procedure GetLateIntimationFeeAmount(ContractID: Integer): Decimal
+    // var
+    //     AdditionalChargesGrid: Record "Additional Charges Sub";
+    //     LateIntimationFeeAmount: Decimal;
+    // begin
+    //     // Clear any previous filters
+    //     AdditionalChargesGrid.Reset();
 
-        // Filter by Contract ID and Secondary Item Type
-        AdditionalChargesGrid.SetRange("Contract ID", ContractID);
-        AdditionalChargesGrid.SetRange("Secondary Item Type", 'Late Intimation Fee');
+    //     // Filter by Contract ID and Secondary Item Type
+    //     AdditionalChargesGrid.SetRange("Contract ID", ContractID);
+    //     AdditionalChargesGrid.SetRange("Secondary Item Type", 'Late Intimation Fee');
 
-        // Find the first matching record and get its amount including VAT
-        if AdditionalChargesGrid.FindFirst() then begin
-            LateIntimationFeeAmount := AdditionalChargesGrid."Amount Including VAT";
-        end;
+    //     // Find the first matching record and get its amount including VAT
+    //     if AdditionalChargesGrid.FindFirst() then begin
+    //         LateIntimationFeeAmount := AdditionalChargesGrid."Amount Including VAT";
+    //     end;
 
-        // Return the Early Termination Fee amount
-        exit(LateIntimationFeeAmount);
-    end;
+    //     // Return the Early Termination Fee amount
+    //     exit(LateIntimationFeeAmount);
+    // end;
 
 
 
     // -------------------------------- For Restoration Charges Fee ---------------------------------//
-    procedure GetRestorationChargesAmount(ContractID: Integer): Decimal
+    // procedure GetRestorationChargesAmount(ContractID: Integer): Decimal
+    // var
+    //     AdditionalChargesGrid: Record "Additional Charges Sub";
+    //     RestorationChargesAmount: Decimal;
+    // begin
+    //     // Clear any previous filters
+    //     AdditionalChargesGrid.Reset();
+
+    //     // Filter by Contract ID and Secondary Item Type
+    //     AdditionalChargesGrid.SetRange("Contract ID", ContractID);
+    //     AdditionalChargesGrid.SetRange("Secondary Item Type", 'Restoration Charges');
+
+    //     // Find the first matching record and get its amount including VAT
+    //     if AdditionalChargesGrid.FindFirst() then begin
+    //         RestorationChargesAmount := AdditionalChargesGrid."Amount Including VAT";
+    //     end;
+
+    //     // Return the Early Termination Fee amount
+    //     exit(RestorationChargesAmount);
+    // end;
+
+    // ---------------------------- Total Additional Charges --------------------------------//
+    procedure GetTotalAdditionalCharges(ContractID: Integer): Decimal
     var
         AdditionalChargesGrid: Record "Additional Charges Sub";
-        RestorationChargesAmount: Decimal;
+        TotalAmount: Decimal;
     begin
         // Clear any previous filters
         AdditionalChargesGrid.Reset();
 
-        // Filter by Contract ID and Secondary Item Type
+        // Filter by Contract ID
         AdditionalChargesGrid.SetRange("Contract ID", ContractID);
-        AdditionalChargesGrid.SetRange("Secondary Item Type", 'Restoration Charges');
 
-        // Find the first matching record and get its amount including VAT
-        if AdditionalChargesGrid.FindFirst() then begin
-            RestorationChargesAmount := AdditionalChargesGrid."Amount Including VAT";
+        // Calculate the total amount for all additional charges
+        if AdditionalChargesGrid.FindSet() then begin
+            repeat
+                TotalAmount += AdditionalChargesGrid."Amount Including VAT";
+            until AdditionalChargesGrid.Next() = 0;
         end;
 
-        // Return the Early Termination Fee amount
-        exit(RestorationChargesAmount);
+        // Return the total amount
+        exit(TotalAmount);
     end;
 
 
@@ -392,14 +421,14 @@ report 50113 "Termination Template"
         exit(TotalPending);
     end;
 
-    procedure GetTotalAdditionalCharges(ContractID: Integer): Decimal
-    begin
-        exit(
-            GetEarlyTerminationFeeAmount(ContractID) +
-            GetLateIntimationFeeAmount(ContractID) +
-            GetRestorationChargesAmount(ContractID)
-        );
-    end;
+    // procedure GetTotalAdditionalCharges(ContractID: Integer): Decimal
+    // begin
+    //     exit(
+    //         GetEarlyTerminationFeeAmount(ContractID) +
+    //         GetLateIntimationFeeAmount(ContractID) +
+    //         GetRestorationChargesAmount(ContractID)
+    //     );
+    // end;
 
     procedure ConvertFinalSettlementToWords(Amount: Decimal): Text
     var
@@ -534,6 +563,9 @@ report 50113 "Termination Template"
 
     var
         CompanyInfo: Record "Company Information";
+        TotalAmountInclVAT: Decimal;
+        AutoFormat: Codeunit "Auto Format";
+
 
 
 
