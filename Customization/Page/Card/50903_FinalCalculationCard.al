@@ -396,11 +396,26 @@ page 50903 "Final Calculation Card"
                     {
                         ApplicationArea = All;
                         // Editable = false;
+                        trigger OnValidate()
+                        begin
+                            if Rec."Amount Refundable" <> 0 then
+                                IsRefundable := true
+                            else
+                                IsReceivable := true;
+                        end;
                     }
                     field("Net Receivable From The Tenant"; Rec."Net Receivable From The Tenant")
                     {
                         ApplicationArea = All;
                         // Editable = false;
+
+                        trigger OnValidate()
+                        begin
+                            if Rec."Net Receivable From The Tenant" <> 0 then
+                                IsReceivable := true
+                            else
+                                IsRefundable := true;
+                        end;
                     }
                 }
 
@@ -409,12 +424,24 @@ page 50903 "Final Calculation Card"
             group("FinalSettlemt")
             {
                 Caption = 'Final Settlement';
+                Visible = IsReceivable;
                 part("FinalSettelemts"; "FinalSettlemtCard")
                 {
-                    SubPageLink = "Refund Contract ID" = FIELD("Contract ID"),
-                    "Receivable Contract ID" = FIELD("Contract ID");// "Contract ID" = FIELD("Contract ID");
-                    //  "Refund Tenant ID" = FIELD("Tenant ID"),
-                    //  "Receivable Tenant ID" = FIELD("Tenant ID"); // Link to filter attachments for this owner only
+                    SubPageLink = "FC ID" = FIELD("FC ID");
+                    //  "Tenant ID" = FIELD("Tenant ID");
+                    ApplicationArea = All;
+                    // Visible = isVisible;
+                }
+            }
+
+            group("FinalSettlemts")
+            {
+                Caption = 'Final Settlement';
+                Visible = IsRefundable;
+                part("FinalSettelemtss"; "FinalSettlemtRefundCard")
+                {
+                    SubPageLink = "FC ID" = FIELD("FC ID");
+                    // "Tenant ID" = FIELD("Tenant ID");
                     ApplicationArea = All;
                     // Visible = isVisible;
                 }
@@ -807,10 +834,22 @@ page 50903 "Final Calculation Card"
         CurrPage."Additional Charges".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."Additional Charges".Page.SetContractID(Rec."Contract ID");
         CurrPage."Additional Charges".Page.SetStartEndDate(Rec."Contract Start Date", Rec."Contract End Date");
-        // CurrPage."FinalSettelemts".Page.SetTenantID(Rec."Tenant ID");
-        // CurrPage."FinalSettelemts".Page.SetContractID(Rec."Contract ID");
+        CurrPage."FinalSettelemts".Page.SetTenantID(Rec."Tenant ID");
+        CurrPage."FinalSettelemts".Page.SetContractID(Rec."Contract ID");
+        CurrPage."FinalSettelemtss".Page.SetTenantID(Rec."Tenant ID");
+        CurrPage."FinalSettelemtss".Page.SetContractID(Rec."Contract ID");
         // FetchSecurityDepositInfo();
         // UpdateTotalClaim(); // Add this line to calculate the total
+
+        if Rec."Amount Refundable" <> 0 then
+            IsRefundable := true
+        else
+            IsReceivable := true;
+
+        if Rec."Net Receivable From The Tenant" <> 0 then
+            IsReceivable := true
+        else
+            IsRefundable := true;
     end;
 
     trigger OnModifyRecord(): Boolean
@@ -818,9 +857,21 @@ page 50903 "Final Calculation Card"
         CurrPage."Additional Charges".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."Additional Charges".Page.SetContractID(Rec."Contract ID");
         CurrPage."Additional Charges".Page.SetStartEndDate(Rec."Contract Start Date", Rec."Contract End Date");
-        // CurrPage."FinalSettelemts".Page.SetTenantID(Rec."Tenant ID");
-        // CurrPage."FinalSettelemts".Page.SetContractID(Rec."Contract ID");
+        CurrPage."FinalSettelemts".Page.SetTenantID(Rec."Tenant ID");
+        CurrPage."FinalSettelemts".Page.SetContractID(Rec."Contract ID");
+        CurrPage."FinalSettelemtss".Page.SetTenantID(Rec."Tenant ID");
+        CurrPage."FinalSettelemtss".Page.SetContractID(Rec."Contract ID");
         // UpdateTotalClaim(); // Add this line to calculate the total
+
+        if Rec."Amount Refundable" <> 0 then
+            IsRefundable := true
+        else
+            IsReceivable := true;
+
+        if Rec."Net Receivable From The Tenant" <> 0 then
+            IsReceivable := true
+        else
+            IsRefundable := true;
     end;
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
@@ -828,8 +879,20 @@ page 50903 "Final Calculation Card"
         CurrPage."Additional Charges".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."Additional Charges".Page.SetContractID(Rec."Contract ID");
         CurrPage."Additional Charges".Page.SetStartEndDate(Rec."Contract Start Date", Rec."Contract End Date");
-        // CurrPage."FinalSettelemts".Page.SetTenantID(Rec."Tenant ID");
-        // CurrPage."FinalSettelemts".Page.SetContractID(Rec."Contract ID");
+        CurrPage."FinalSettelemts".Page.SetTenantID(Rec."Tenant ID");
+        CurrPage."FinalSettelemts".Page.SetContractID(Rec."Contract ID");
+        CurrPage."FinalSettelemtss".Page.SetTenantID(Rec."Tenant ID");
+        CurrPage."FinalSettelemtss".Page.SetContractID(Rec."Contract ID");
+
+        if Rec."Amount Refundable" <> 0 then
+            IsRefundable := true
+        else
+            IsReceivable := true;
+
+        if Rec."Net Receivable From The Tenant" <> 0 then
+            IsReceivable := true
+        else
+            IsRefundable := true;
     end;
 
     procedure BillingCalcGridRentCalc()
@@ -974,4 +1037,8 @@ page 50903 "Final Calculation Card"
     end;
 
     //////////// END //////////////////////////////////////////
+
+    var
+        IsReceivable: Boolean;
+        IsRefundable: Boolean;
 }

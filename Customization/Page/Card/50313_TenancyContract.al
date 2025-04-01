@@ -1594,9 +1594,11 @@ page 50313 "Tenancy Contract Card"
                         var
                             TenancyRecord: Record "Tenancy Contract"; // Replace with the actual table name
                             FinalCalculation: Record "Final Calculation";
-                            InstallmentStructure: Record "Revenue Structure Subpage1"; // Second Table
-                                                                                       //CarryForwardGrid: Record "Carry Forward Grid";
-                                                                                       // SecurityDeposit: Record "Security Deposit";
+                            InstallmentStructure: Record "Revenue Structure Subpage1";
+                            FinalSettlementRefund: Record FinalSettlementRefund;
+                            FinalSettlement: Record FinalSettlement;
+                            //CarryForwardGrid: Record "Carry Forward Grid";
+                            // SecurityDeposit: Record "Security Deposit";
                             StartDate: Date;
                             EndDate: Date;
                             DaysDiff: Integer;
@@ -1658,6 +1660,38 @@ page 50313 "Tenancy Contract Card"
                                 FinalCalculationid := FinalCalculation."FC ID";
                             end;
                             Rec."Link" := FinalCalculationid;
+
+                            // Add this new section to populate the Final Settlement Refund grid
+                            FinalSettlementRefund.SetRange("FC ID", FinalCalculationid);
+                            if FinalSettlementRefund.FindSet() then begin
+                                repeat
+                                    FinalSettlementRefund."Contract ID" := Rec."Contract ID";
+                                    FinalSettlementRefund.Modify(true);
+                                until FinalSettlementRefund.Next() = 0;
+                            end else begin
+                                // If you want to create a new record when none exists
+                                FinalSettlementRefund.Init();
+                                FinalSettlementRefund."FC ID" := FinalCalculationid;
+                                FinalSettlementRefund."Contract ID" := Rec."Contract ID";
+                                FinalSettlementRefund.Insert(true);
+                                Clear(FinalSettlementRefund);
+                            end;
+
+                            // Add this new section to populate the Final Settlement Refund grid
+                            FinalSettlement.SetRange("FC ID", FinalCalculationid);
+                            if FinalSettlement.FindSet() then begin
+                                repeat
+                                    FinalSettlement."Contract ID" := Rec."Contract ID";
+                                    FinalSettlement.Modify(true);
+                                until FinalSettlement.Next() = 0;
+                            end else begin
+                                // If you want to create a new record when none exists
+                                FinalSettlement.Init();
+                                FinalSettlement."FC ID" := FinalCalculationid;
+                                FinalSettlement."Contract ID" := Rec."Contract ID";
+                                FinalSettlement.Insert(true);
+                                Clear(FinalSettlement);
+                            end;
 
                             // Handle carry forward grid for security deposits
                             // SecurityDeposit.Reset();

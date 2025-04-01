@@ -4,38 +4,41 @@ table 50922 "FinalSettlement"
 
     fields
     {
-        field(50100; "Refund Contract ID"; Integer)
+
+        field(50100; "FC ID"; Integer)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Contract ID';
+            Caption = 'Receivable FC ID';
         }
-        field(50101; "Refund Total Amount"; Decimal)
+        field(50101; "Contract ID"; Integer)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Total Amount';
+            Caption = 'Receivable Contract ID';
         }
-        field(50102; "Refund Due Date"; Date)
+
+        field(50102; "Receivable from the Tenant"; Decimal)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Due Date';
+            Caption = 'Receivable from the Tenant';
         }
-        field(50103; "Refund Payment mode"; Text[300])
+
+        field(50103; "Payment Processed"; Decimal)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Payment mode';
-            TableRelation = "Payment Type"."Payment Method";
+            Caption = 'Payment Processed';
         }
-        field(50104; "Refund Payment Status"; Enum "Payment Status")
+        field(50104; "Balance Receivable"; Decimal)
         {
             DataClassification = ToBeClassified;
+            Caption = 'Balance Receivable';
+        }
+
+        field(50105; "PaymentStatus"; Option)
+        {
+            OptionMembers = "Pending","Received";
             Caption = 'Payment Status';
         }
 
-        field(50105; "Refund Cheque No."; Text[300])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Cheque No.';
-        }
 
         field(50106; "Receivable Total Amount"; Decimal)
         {
@@ -84,148 +87,68 @@ table 50922 "FinalSettlement"
             end;
         }
 
-
-
         field(50112; "Deposit Status"; Option)
         {
             Caption = 'Deposit Status';
             OptionMembers = "-","N","Y";
         }
 
-        field(50113; "Refund Tenant ID"; Code[50])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Tenant ID';
-        }
-
-        field(50114; "Receivable Contract ID"; Integer)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Contract ID';
-        }
-
-        field(50115; "Receivable Tenant ID"; Code[50])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Tenant ID';
-        }
-        // field(50114; "Receivable Entry No."; Integer)
-        // {
-        //     DataClassification = ToBeClassified;
-        //     AutoIncrement = true;
-        // }
-
-        // field(50114; "Refund Entry No."; Integer)
-        // {
-        //     DataClassification = ToBeClassified;
-        //     AutoIncrement = true;
-        // }
-
-
-        field(50116; "Receivable from the Tenant"; Decimal)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Receivable from the Tenant';
-        }
-
-        field(50117; "Payment Processed"; Decimal)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Payment Processed';
-        }
-        field(50118; "Balance Receivable"; Decimal)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Balance Receivable';
-        }
-
-        field(50119; "PaymentStatus"; Option)
-        {
-            OptionMembers = "Pending","Received";
-            Caption = 'Payment Status';
-        }
-
-        field(50120; "Net Refund to the Tenant"; Decimal)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Net Refund to the Tenant';
-        }
-
-        field(50121; "Refund Processed"; Decimal)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Refund Processed';
-        }
-        field(50122; "Balance Refundable"; Decimal)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Balance Refundable';
-        }
-
-        field(50123; "Refund Status"; Option)
-        {
-            OptionMembers = "Pending","Paid";
-            Caption = 'Refund Status';
-        }
-
-        field(50124; "Contract ID"; Integer)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Contract ID';
-        }
-
-        field(50125; "Payment Receipt"; Text[250])
+        field(50113; "Payment Receipt"; Text[250])
         {
             DataClassification = ToBeClassified;
             Caption = 'Payment Receipt';
             InitValue = 'View';
         }
-        field(50126; "Payment Receipt document URL"; Text[250])
+        field(50114; "Payment Receipt document URL"; Text[250])
         {
             DataClassification = ToBeClassified;
             Caption = 'Payment Receipt Document URL';
         }
 
-        field(50127; "Payment Receipt/Proof"; Text[250])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Payment Receipt/Proof';
-            InitValue = 'View';
-        }
-        field(50128; "Pay Receipt/Proof document URL"; Text[250])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Payment Receipt/Proof document URL';
-        }
-        field(50129; "View Invoice"; Text[250])
+        field(50115; "View Invoice"; Text[250])
         {
             DataClassification = ToBeClassified;
             Caption = 'View Invoice';
         }
-        field(50130; "Invoice URL"; Text[400])
+        field(50116; "Invoice URL"; Text[400])
         {
             DataClassification = ToBeClassified;
             Caption = 'Invoice URL';
         }
+
+        field(50117; "Tenant ID"; Code[50])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Receivable Tenant ID';
+        }
+        field(50118; "Entry No."; Integer)
+        {
+            DataClassification = ToBeClassified;
+            AutoIncrement = true;
+        }
+
     }
 
     keys
     {
-        key(PK; "Receivable Contract ID", "Refund Contract ID")
+        key(Key1; "Entry No.", "FC ID")
         {
             Clustered = true;
         }
     }
 
+    //   keys
+    // {
+    //     key(PK; "Contract ID")
+    //     {
+    //         Clustered = true;
+    //     }
+    // }
+
     trigger OnInsert()
     begin
         if Rec."Receivable Payment Mode" = 'Cheque' then begin
             if DelChr(Rec."Receivable Cheque No.", '=', ' ') = '' then
-                Error('Cheque Number cannot be blank when Payment Mode is Cheque.');
-        end;
-
-        if Rec."Refund Payment Mode" = 'Cheque' then begin
-            if DelChr(Rec."Refund Cheque No.", '=', ' ') = '' then
                 Error('Cheque Number cannot be blank when Payment Mode is Cheque.');
         end;
     end;

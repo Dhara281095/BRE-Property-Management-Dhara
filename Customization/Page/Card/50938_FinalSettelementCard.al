@@ -10,144 +10,9 @@ page 50938 "FinalSettlemtCard"
     {
         area(Content)
         {
-
-            field("Contract ID"; Rec."Refund Contract ID")
-            {
-                ApplicationArea = All;
-                Editable = false;
-                Visible = false;
-                Caption = 'Contract ID';
-            }
-
-            group(RefundDetails)
-            {
-                Caption = 'Refund Details';
-                Visible = IsRefundable;
-
-                field("Net Refund to the Tenant";
-                Rec."Net Refund to the Tenant")
-                {
-                    ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
-                }
-
-                field("Refund Processed"; Rec."Refund Processed")
-                {
-                    ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
-                }
-
-                field("Balance Refundable"; Rec."Balance Refundable")
-                {
-                    ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
-                }
-
-                field("Refund Status"; Rec."Refund Status")
-                {
-                    ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
-                }
-            }
-
-            repeater(RefundPaymentDetails)
-            {
-                Caption = 'Refund Payment Details';
-                Visible = IsRefundable;
-
-                field("Refund Contract ID"; Rec."Refund Contract ID")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                    Visible = false;
-                    Caption = 'Contract ID';
-                }
-                field("Refund Total Amount"; Rec."Refund Total Amount")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
-
-                field("Refund Due Date"; Rec."Refund Due Date")
-                {
-                    ApplicationArea = All;
-                }
-
-                field("Refund Payment mode"; Rec."Refund Payment mode")
-                {
-                    ApplicationArea = All;
-                    Lookup = true;
-                }
-
-                field("Refund Payment Status"; Rec."Refund Payment Status")
-                {
-                    ApplicationArea = All;
-                    // Editable = false;
-
-                    trigger OnValidate()
-                    var
-                        PaymentStatus: Enum "Payment Status";
-                    begin
-                        // Check if Receivable Payment Status is 'Received'
-                        if Rec."Refund Payment Status" = PaymentStatus::Received then begin
-                            // Set PaymentStatus to 'Received' as well
-                            Rec."Refund Status" := Rec."Refund Status"::Paid;
-                            Rec.Modify();  // Save changes to the current record
-                        end;
-
-                        if Rec."Refund Payment Status" <> PaymentStatus::Received then begin
-                            // Set PaymentStatus to 'Received' as well
-                            Rec."Refund Status" := Rec."Refund Status"::Pending;
-                            Rec.Modify();  // Save changes to the current record
-                        end;
-                    end;
-                }
-                field("Refund Cheque No."; Rec."Refund Cheque No.")
-                {
-                    ApplicationArea = All;
-
-                    trigger OnValidate()
-                    var
-                        paymentmode: Record "Payment Type";
-                    begin
-                        if Rec."Receivable Payment Mode" <> 'Cheque' then
-                            Error('Cheque number can only be entered when Payment Mode is set to Cheque.');
-                    end;
-                }
-
-                // field("Entry No."; Rec."Entry No.")
-                // {
-                //     ApplicationArea = All;
-                //     Editable = false;
-                //     Visible = false;
-                // }
-                field("Refund Tenant ID"; Rec."Refund Tenant ID")
-                {
-                    ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
-                    Visible = false;
-                }
-
-                field("Payment Receipt/Proof"; Rec."Payment Receipt/Proof")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Payment Receipt/Proof';
-                    Editable = false;
-                    DrillDown = true;
-                }
-                field("Pay Receipt/Proof document URL"; Rec."Pay Receipt/Proof document URL")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Payment Receipt/Proof document URL';
-                    Visible = false;
-                }
-            }
-
             group(ReceivableDetails)
             {
                 Caption = 'Receivable Details';
-                Visible = IsReceivable;
-
                 field("Receivable from the Tenant"; Rec."Receivable from the Tenant")
                 {
                     ApplicationArea = All;
@@ -177,12 +42,18 @@ page 50938 "FinalSettlemtCard"
             repeater(ReceivablePaymentDetails)
             {
                 Caption = 'Receivable Payment Details';
-                Visible = IsReceivable;
-                field("Receivable Contract ID"; Rec."Receivable Contract ID")
+                field("FC ID"; Rec."FC ID")
                 {
                     ApplicationArea = All;
                     Editable = false;
-                    Visible = false;
+                    // Visible = false;
+                    Caption = 'FC ID';
+                }
+                field("Contract ID"; Rec."Contract ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    // Visible = false;
                     Caption = 'Contract ID';
                 }
                 field("Receivable Total Amount"; Rec."Receivable Total Amount")
@@ -190,12 +61,10 @@ page 50938 "FinalSettlemtCard"
                     ApplicationArea = All;
                     Editable = false;
                 }
-
                 field("Receivable Due Date"; Rec."Receivable Due Date")
                 {
                     ApplicationArea = All;
                 }
-
                 field("Receivable Payment mode"; Rec."Receivable Payment mode")
                 {
                     ApplicationArea = All;
@@ -266,19 +135,6 @@ page 50938 "FinalSettlemtCard"
                     end;
                 }
 
-                // field("Entry No."; Rec."Entry No.")
-                // {
-                //     ApplicationArea = All;
-                //     Editable = false;
-                //     Visible = false;
-                // }
-                field("Receivable Tenant ID"; Rec."Receivable Tenant ID")
-                {
-                    ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
-                    Visible = false;
-                }
-
                 field("Payment Receipt"; Rec."Payment Receipt")
                 {
                     ApplicationArea = All;
@@ -303,6 +159,19 @@ page 50938 "FinalSettlemtCard"
                     ApplicationArea = All;
                     Caption = 'Invoice URL';
                 }
+
+                field("Tenant ID"; Rec."Tenant ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    //  Visible = false;
+                }
+                field("Entry No."; Rec."Entry No.")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    //  Visible = false;
+                }
             }
         }
     }
@@ -325,53 +194,37 @@ page 50938 "FinalSettlemtCard"
                 Rec."Receivable Payment mode" := paymentTypeRec."Payment Method"; // Set the first Payment Method as default
         end;
 
-        finalCalculationgrid.SetRange("Contract ID", Rec."Receivable Contract ID");
-        //finalCalculationgrid.SetRange("Tenant ID", Rec."Receivable Tenant ID");
-        if Rec."Receivable Payment Status" = PaymentStatus::" " then
-            Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
+        finalCalculationgrid.SetRange("FC ID", Rec."FC ID");
+        if finalCalculationgrid.FindSet() then begin
+            Rec."Contract ID" := finalCalculationgrid."Contract ID";
+            Rec."Tenant ID" := finalCalculationgrid."Tenant ID";
+            if Rec."Receivable Payment Status" = PaymentStatus::" " then
+                Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
 
-        if Rec."Receivable Payment Status" = PaymentStatus::Received then begin
-            Rec."PaymentStatus" := Rec."PaymentStatus"::Received;
-            Rec."Balance Receivable" := 0;
-            Rec."Payment Processed" := Rec."Receivable from the Tenant";
-            Rec.Modify();
+            if Rec."Receivable Payment Status" = PaymentStatus::Received then begin
+                Rec."PaymentStatus" := Rec."PaymentStatus"::Received;
+                Rec."Balance Receivable" := 0;
+                Rec."Payment Processed" := Rec."Receivable from the Tenant";
+                Rec.Modify();
+            end;
+
+            if Rec."Receivable Payment Status" <> PaymentStatus::Received then begin
+                Rec."PaymentStatus" := Rec."PaymentStatus"::Pending;
+                Rec."Balance Receivable" := Rec."Receivable from the Tenant";
+                Rec."Payment Processed" := 0;
+                Rec.Modify();
+            end;
+
+            if Rec."Receivable Due Date" = Today() then begin
+                Rec."Receivable Payment Status" := PaymentStatus::Due;
+                Rec.Modify();
+            end;
+
+            if Rec."Receivable Due Date" < Today() then begin
+                Rec."Receivable Payment Status" := PaymentStatus::Overdue;
+                Rec.Modify();
+            end;
         end;
-
-        if Rec."Receivable Payment Status" <> PaymentStatus::Received then begin
-            Rec."PaymentStatus" := Rec."PaymentStatus"::Pending;
-            Rec."Balance Receivable" := Rec."Receivable from the Tenant";
-            Rec."Payment Processed" := 0;
-            Rec.Modify();
-        end;
-
-        ////////////////////////// Refund final settlement /////////////////////////////////////
-
-        if Rec."Refund Cheque No." = '' then
-            Rec."Refund Cheque No." := '-';
-        if Rec."Refund Payment mode" = '' then begin
-            if paymentTypeRec.FindFirst() then
-                Rec."Refund Payment mode" := paymentTypeRec."Payment Method";
-        end;
-
-        finalCalculationgrid.SetRange("Contract ID", Rec."Refund Contract ID");
-        //   finalCalculationgrid.SetRange("Tenant ID", Rec."Refund Tenant ID");
-        if Rec."Refund Payment Status" = PaymentStatus::" " then //begin
-            Rec."Refund Payment Status" := PaymentStatus::Scheduled;
-
-        if Rec."Refund Payment Status" = PaymentStatus::Received then begin
-            Rec."Refund Status" := Rec."Refund Status"::Paid;
-            Rec."Balance Refundable" := 0;
-            Rec."Refund Processed" := Rec."Net Refund to the Tenant";
-            Rec.Modify();
-        end;
-
-        if Rec."Refund Payment Status" <> PaymentStatus::Received then begin
-            Rec."Refund Status" := Rec."Refund Status"::Pending;
-            Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
-            Rec."Refund Processed" := 0;
-            Rec.Modify();
-        end;
-
     end;
 
     trigger OnAfterGetRecord()
@@ -391,51 +244,37 @@ page 50938 "FinalSettlemtCard"
                 Rec."Receivable Payment mode" := paymentTypeRec."Payment Method"; // Set the first Payment Method as default
         end;
 
-        finalCalculationgrid.SetRange("Contract ID", Rec."Receivable Contract ID");
-        // finalCalculationgrid.SetRange("Tenant ID", Rec."Receivable Tenant ID");
-        if Rec."Receivable Payment Status" = PaymentStatus::" " then
-            Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
+        finalCalculationgrid.SetRange("FC ID", Rec."FC ID");
+        if finalCalculationgrid.FindSet() then begin
+            Rec."Contract ID" := finalCalculationgrid."Contract ID";
+            Rec."Tenant ID" := finalCalculationgrid."Tenant ID";
+            if Rec."Receivable Payment Status" = PaymentStatus::" " then
+                Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
 
-        if Rec."Receivable Payment Status" = PaymentStatus::Received then begin
-            Rec."PaymentStatus" := Rec."PaymentStatus"::Received;
-            Rec."Balance Receivable" := 0;
-            Rec."Payment Processed" := Rec."Receivable from the Tenant";
-            Rec.Modify();
-        end;
+            if Rec."Receivable Payment Status" = PaymentStatus::Received then begin
+                Rec."PaymentStatus" := Rec."PaymentStatus"::Received;
+                Rec."Balance Receivable" := 0;
+                Rec."Payment Processed" := Rec."Receivable from the Tenant";
+                Rec.Modify();
+            end;
 
-        if Rec."Receivable Payment Status" <> PaymentStatus::Received then begin
-            Rec."PaymentStatus" := Rec."PaymentStatus"::Pending;
-            Rec."Balance Receivable" := Rec."Receivable from the Tenant";
-            Rec."Payment Processed" := 0;
-            Rec.Modify();
-        end;
+            if Rec."Receivable Payment Status" <> PaymentStatus::Received then begin
+                Rec."PaymentStatus" := Rec."PaymentStatus"::Pending;
+                Rec."Balance Receivable" := Rec."Receivable from the Tenant";
+                Rec."Payment Processed" := 0;
+                Rec.Modify();
+            end;
 
-        ////////////////////////// Refund final settlement /////////////////////////////////////
+            if Rec."Receivable Due Date" = Today() then begin
+                Rec."Receivable Payment Status" := PaymentStatus::Due;
+                Rec.Modify();
+            end;
 
-        if Rec."Refund Cheque No." = '' then
-            Rec."Refund Cheque No." := '-';
-        if Rec."Refund Payment mode" = '' then begin
-            if paymentTypeRec.FindFirst() then
-                Rec."Refund Payment mode" := paymentTypeRec."Payment Method";
-        end;
+            if Rec."Receivable Due Date" < Today() then begin
+                Rec."Receivable Payment Status" := PaymentStatus::Overdue;
+                Rec.Modify();
+            end;
 
-        finalCalculationgrid.SetRange("Contract ID", Rec."Refund Contract ID");
-        //  finalCalculationgrid.SetRange("Tenant ID", Rec."Refund Tenant ID");
-        if Rec."Refund Payment Status" = PaymentStatus::" " then //begin
-            Rec."Refund Payment Status" := PaymentStatus::Scheduled;
-
-        if Rec."Refund Payment Status" = PaymentStatus::Received then begin
-            Rec."Refund Status" := Rec."Refund Status"::Paid;
-            Rec."Balance Refundable" := 0;
-            Rec."Refund Processed" := Rec."Net Refund to the Tenant";
-            Rec.Modify();
-        end;
-
-        if Rec."Refund Payment Status" <> PaymentStatus::Received then begin
-            Rec."Refund Status" := Rec."Refund Status"::Pending;
-            Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
-            Rec."Refund Processed" := 0;
-            Rec.Modify();
         end;
     end;
 
@@ -446,6 +285,8 @@ page 50938 "FinalSettlemtCard"
         PaymentStatus: Enum "Payment Status";
     begin
 
+        Rec."Contract ID" := ContractID;
+        Rec."Tenant ID" := tenantID;
 
         /////////////////////////// Receivable final settlement /////////////////////////////////
 
@@ -457,57 +298,42 @@ page 50938 "FinalSettlemtCard"
                 Rec."Receivable Payment mode" := paymentTypeRec."Payment Method"; // Set the first Payment Method as default
         end;
 
-        finalCalculationgrid.SetRange("Contract ID", Rec."Receivable Contract ID");
-        // finalCalculationgrid.SetRange("Tenant ID", Rec."Receivable Tenant ID");
-        if Rec."Receivable Payment Status" = PaymentStatus::" " then
-            Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
+        finalCalculationgrid.SetRange("FC ID", Rec."FC ID");
+        if finalCalculationgrid.FindSet() then begin
+            Rec."Contract ID" := finalCalculationgrid."Contract ID";
+            Rec."Tenant ID" := finalCalculationgrid."Tenant ID";
+            // finalCalculationgrid.SetRange("Tenant ID", Rec."Receivable Tenant ID");
+            if Rec."Receivable Payment Status" = PaymentStatus::" " then
+                Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
 
-        if Rec."Receivable Payment Status" = PaymentStatus::Received then begin
-            Rec."PaymentStatus" := Rec."PaymentStatus"::Received;
-            Rec."Balance Receivable" := 0;
-            Rec."Payment Processed" := Rec."Receivable from the Tenant";
-            Rec.Modify();
+            if Rec."Receivable Payment Status" = PaymentStatus::Received then begin
+                Rec."PaymentStatus" := Rec."PaymentStatus"::Received;
+                Rec."Balance Receivable" := 0;
+                Rec."Payment Processed" := Rec."Receivable from the Tenant";
+                Rec.Modify();
+            end;
+
+            if Rec."Receivable Payment Status" <> PaymentStatus::Received then begin
+                Rec."PaymentStatus" := Rec."PaymentStatus"::Pending;
+                Rec."Balance Receivable" := Rec."Receivable from the Tenant";
+                Rec."Payment Processed" := 0;
+                Rec.Modify();
+            end;
+
+            if Rec."Receivable Due Date" = Today() then begin
+                Rec."Receivable Payment Status" := PaymentStatus::Due;
+                Rec.Modify();
+            end;
+
+            if Rec."Receivable Due Date" < Today() then begin
+                Rec."Receivable Payment Status" := PaymentStatus::Overdue;
+                Rec.Modify();
+            end;
+
         end;
 
-        if Rec."Receivable Payment Status" <> PaymentStatus::Received then begin
-            Rec."PaymentStatus" := Rec."PaymentStatus"::Pending;
-            Rec."Balance Receivable" := Rec."Receivable from the Tenant";
-            Rec."Payment Processed" := 0;
-            Rec.Modify();
-        end;
 
-        ////////////////////////// Refund final settlement /////////////////////////////////////
-
-        if Rec."Refund Cheque No." = '' then
-            Rec."Refund Cheque No." := '-';
-        if Rec."Refund Payment mode" = '' then begin
-            if paymentTypeRec.FindFirst() then
-                Rec."Refund Payment mode" := paymentTypeRec."Payment Method";
-        end;
-
-        finalCalculationgrid.SetRange("Contract ID", Rec."Refund Contract ID");
-        // finalCalculationgrid.SetRange("Tenant ID", Rec."Refund Tenant ID");
-        if Rec."Refund Payment Status" = PaymentStatus::" " then // begin
-            Rec."Refund Payment Status" := PaymentStatus::Scheduled;
-
-
-        if Rec."Refund Payment Status" = PaymentStatus::Received then begin
-            Rec."Refund Status" := Rec."Refund Status"::Paid;
-            Rec."Balance Refundable" := 0;
-            Rec."Refund Processed" := Rec."Net Refund to the Tenant";
-            Rec.Modify();
-        end;
-
-        if Rec."Refund Payment Status" <> PaymentStatus::Received then begin
-            Rec."Refund Status" := Rec."Refund Status"::Pending;
-            Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
-            Rec."Refund Processed" := 0;
-            Rec.Modify();
-        end;
     end;
-
-
-
 
     trigger OnAfterGetCurrRecord()
     var
@@ -515,38 +341,11 @@ page 50938 "FinalSettlemtCard"
         PaymentStatus: Enum "Payment Status";
 
     begin
-        finalcalculationcard.SetRange("Contract ID", Rec."Refund Contract ID");
+
+        finalcalculationcard.SetRange("FC ID", Rec."FC ID");
         if finalcalculationcard.FindSet() then begin
             Rec."Contract ID" := finalcalculationcard."Contract ID";
-            Rec."Refund Tenant ID" := finalcalculationcard."Tenant ID";
-            Rec."Net Refund to the Tenant" := finalcalculationcard."Amount Refundable";
-            Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
-            Rec."Refund Total Amount" := Rec."Net Refund to the Tenant";
-
-            if Rec."Refund Payment Status" = PaymentStatus::Received then begin
-                Rec."Refund Status" := Rec."Refund Status"::Paid;
-                Rec."Balance Refundable" := 0;
-                Rec."Refund Processed" := Rec."Net Refund to the Tenant";
-                Rec.Modify();
-            end;
-
-            if Rec."Refund Payment Status" <> PaymentStatus::Received then begin
-                Rec."Refund Status" := Rec."Refund Status"::Pending;
-                Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
-                Rec."Refund Processed" := 0;
-                Rec.Modify();
-            end;
-
-            if finalcalculationcard."Amount Refundable" <> 0 then
-                IsRefundable := true
-            else
-                IsRefundable := false;
-            Rec.Modify();
-        end;
-
-        finalcalculationcard.SetRange("Contract ID", Rec."Receivable Contract ID");
-        if finalcalculationcard.FindSet() then begin
-            Rec."Receivable Tenant ID" := finalcalculationcard."Tenant ID";
+            Rec."Tenant ID" := finalcalculationcard."Tenant ID";
             Rec."Receivable from the Tenant" := finalcalculationcard."Net Receivable From The Tenant";
             Rec."Balance Receivable" := Rec."Receivable from the Tenant";
             Rec."Receivable Total Amount" := Rec."Receivable from the Tenant";
@@ -566,11 +365,11 @@ page 50938 "FinalSettlemtCard"
                 Rec.Modify();
             end;
 
-            if finalcalculationcard."Net Receivable From The Tenant" <> 0 then
-                IsReceivable := true
-            else
-                IsReceivable := false;
-            Rec.Modify();
+            // if finalcalculationcard."Net Receivable From The Tenant" <> 0 then
+            //     IsReceivable := true
+            // else
+            //     IsReceivable := false;
+            // Rec.Modify();
         end;
     end;
 
@@ -581,39 +380,10 @@ page 50938 "FinalSettlemtCard"
 
 
     begin
-        finalcalculationcard1.SetRange("Contract ID", Rec."Refund Contract ID");
+        finalcalculationcard1.SetRange("FC ID", Rec."FC ID");
         if finalcalculationcard1.FindSet() then begin
             Rec."Contract ID" := finalcalculationcard1."Contract ID";
-            Rec."Refund Tenant ID" := finalcalculationcard1."Tenant ID";
-            Rec."Net Refund to the Tenant" := finalcalculationcard1."Amount Refundable";
-            Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
-            Rec."Refund Total Amount" := Rec."Net Refund to the Tenant";
-
-
-            if Rec."Refund Payment Status" = PaymentStatus::Received then begin
-                Rec."Refund Status" := Rec."Refund Status"::Paid;
-                Rec."Balance Refundable" := 0;
-                Rec."Refund Processed" := Rec."Net Refund to the Tenant";
-                Rec.Modify();
-            end;
-
-            if Rec."Refund Payment Status" <> PaymentStatus::Received then begin
-                Rec."Refund Status" := Rec."Refund Status"::Pending;
-                Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
-                Rec."Refund Processed" := 0;
-                Rec.Modify();
-            end;
-
-            if finalcalculationcard1."Amount Refundable" <> 0 then
-                IsRefundable := true
-            else
-                IsRefundable := false;
-            Rec.Modify();
-        end;
-
-        finalcalculationcard1.SetRange("Contract ID", Rec."Receivable Contract ID");
-        if finalcalculationcard1.FindSet() then begin
-            Rec."Receivable Tenant ID" := finalcalculationcard1."Tenant ID";
+            Rec."Tenant ID" := finalcalculationcard1."Tenant ID";
             Rec."Receivable from the Tenant" := finalcalculationcard1."Net Receivable From The Tenant";
             Rec."Balance Receivable" := Rec."Receivable from the Tenant";
             Rec."Receivable Total Amount" := Rec."Receivable from the Tenant";
@@ -633,17 +403,29 @@ page 50938 "FinalSettlemtCard"
                 Rec.Modify();
             end;
 
-            if finalcalculationcard1."Net Receivable From The Tenant" <> 0 then
-                IsReceivable := true
-            else
-                IsReceivable := false;
-            Rec.Modify();
+            // if finalcalculationcard1."Net Receivable From The Tenant" <> 0 then
+            //     IsReceivable := true
+            // else
+            //     IsReceivable := false;
+            // Rec.Modify();
         end;
     end;
 
 
+    procedure SetContractID(pContractID: Integer)
+    begin
+        contractID := pContractID;
+    end;
+
+    procedure SetTenantID(pTenantID: Code[20])
+    begin
+        tenantID := pTenantID;
+    end;
 
     var
+
+        contractID: Integer;
+        tenantID: Code[20];
         IsRefundable: Boolean;
         IsReceivable: Boolean;
 
