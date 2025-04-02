@@ -119,10 +119,17 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
 
 
             }
+
         }
 
         addlast(General)
         {
+            field("FC ID"; Rec."FC ID")
+            {
+                ApplicationArea = All;
+                Editable = false;
+
+            }
             field("View Document URL"; Rec."View Document URL")
             {
                 ApplicationArea = All;
