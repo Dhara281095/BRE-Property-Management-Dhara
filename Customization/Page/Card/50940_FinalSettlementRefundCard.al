@@ -161,6 +161,9 @@ page 50940 "FinalSettlemtRefundCard"
         if finalCalculationgrid.FindSet() then begin
             Rec."Contract ID" := finalCalculationgrid."Contract ID";
             Rec."Tenant ID" := finalCalculationgrid."Tenant ID";
+            Rec."Net Refund to the Tenant" := finalCalculationgrid."Amount Refundable";
+            Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
+            Rec."Refund Total Amount" := Rec."Net Refund to the Tenant";
             //   finalCalculationgrid.SetRange("Tenant ID", Rec."Refund Tenant ID");
             if Rec."Refund Payment Status" = PaymentStatus::" " then //begin
                 Rec."Refund Payment Status" := PaymentStatus::Scheduled;
@@ -213,6 +216,9 @@ page 50940 "FinalSettlemtRefundCard"
         if finalCalculationgrid.FindSet() then begin
             Rec."Contract ID" := finalCalculationgrid."Contract ID";
             Rec."Tenant ID" := finalCalculationgrid."Tenant ID";
+            Rec."Net Refund to the Tenant" := finalCalculationgrid."Amount Refundable";
+            Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
+            Rec."Refund Total Amount" := Rec."Net Refund to the Tenant";
             if Rec."Refund Payment Status" = PaymentStatus::" " then //begin
                 Rec."Refund Payment Status" := PaymentStatus::Scheduled;
 
@@ -267,6 +273,9 @@ page 50940 "FinalSettlemtRefundCard"
         if finalCalculationgrid.FindSet() then begin
             Rec."Contract ID" := finalCalculationgrid."Contract ID";
             Rec."Tenant ID" := finalCalculationgrid."Tenant ID";
+            Rec."Net Refund to the Tenant" := finalCalculationgrid."Amount Refundable";
+            Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
+            Rec."Refund Total Amount" := Rec."Net Refund to the Tenant";
             if Rec."Refund Payment Status" = PaymentStatus::" " then
                 Rec."Refund Payment Status" := PaymentStatus::Scheduled;
 
@@ -299,81 +308,81 @@ page 50940 "FinalSettlemtRefundCard"
 
 
 
-    trigger OnAfterGetCurrRecord()
-    var
-        finalcalculationcard: Record "Final Calculation";
-        PaymentStatus: Enum "Payment Status";
+    // trigger OnAfterGetCurrRecord()
+    // var
+    //     finalcalculationcard: Record "Final Calculation";
+    //     PaymentStatus: Enum "Payment Status";
 
-    begin
-        finalcalculationcard.SetRange("FC ID", Rec."FC ID");
-        if finalcalculationcard.FindSet() then begin
-            Rec."Contract ID" := finalcalculationcard."Contract ID";
-            Rec."Tenant ID" := finalcalculationcard."Tenant ID";
-            Rec."Net Refund to the Tenant" := finalcalculationcard."Amount Refundable";
-            Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
-            Rec."Refund Total Amount" := Rec."Net Refund to the Tenant";
+    // begin
+    //     finalcalculationcard.SetRange("FC ID", Rec."FC ID");
+    //     if finalcalculationcard.FindSet() then begin
+    //         Rec."Contract ID" := finalcalculationcard."Contract ID";
+    //         Rec."Tenant ID" := finalcalculationcard."Tenant ID";
+    //         Rec."Net Refund to the Tenant" := finalcalculationcard."Amount Refundable";
+    //         Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
+    //         Rec."Refund Total Amount" := Rec."Net Refund to the Tenant";
 
-            if Rec."Refund Payment Status" = PaymentStatus::Received then begin
-                Rec."Refund Status" := Rec."Refund Status"::Paid;
-                Rec."Balance Refundable" := 0;
-                Rec."Refund Processed" := Rec."Net Refund to the Tenant";
-                Rec.Modify();
-            end;
+    //         if Rec."Refund Payment Status" = PaymentStatus::Received then begin
+    //             Rec."Refund Status" := Rec."Refund Status"::Paid;
+    //             Rec."Balance Refundable" := 0;
+    //             Rec."Refund Processed" := Rec."Net Refund to the Tenant";
+    //             Rec.Modify();
+    //         end;
 
-            if Rec."Refund Payment Status" <> PaymentStatus::Received then begin
-                Rec."Refund Status" := Rec."Refund Status"::Pending;
-                Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
-                Rec."Refund Processed" := 0;
-                Rec.Modify();
-            end;
+    //         if Rec."Refund Payment Status" <> PaymentStatus::Received then begin
+    //             Rec."Refund Status" := Rec."Refund Status"::Pending;
+    //             Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
+    //             Rec."Refund Processed" := 0;
+    //             Rec.Modify();
+    //         end;
 
-            // if finalcalculationcard."Amount Refundable" <> 0 then
-            //     IsRefundable := true
-            // else
-            //     IsRefundable := false;
-            // Rec.Modify();
-        end;
-    end;
-
-
-    trigger OnOpenPage()
-    var
-        finalcalculationcard1: Record "Final Calculation";
-        PaymentStatus: Enum "Payment Status";
+    //         // if finalcalculationcard."Amount Refundable" <> 0 then
+    //         //     IsRefundable := true
+    //         // else
+    //         //     IsRefundable := false;
+    //         // Rec.Modify();
+    //     end;
+    // end;
 
 
-    begin
-        finalcalculationcard1.SetRange("FC ID", Rec."FC ID");
-        if finalcalculationcard1.FindSet() then begin
-            Rec."Contract ID" := finalcalculationcard1."Contract ID";
-            Rec."Tenant ID" := finalcalculationcard1."Tenant ID";
-            Rec."Net Refund to the Tenant" := finalcalculationcard1."Amount Refundable";
-            Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
-            Rec."Refund Total Amount" := Rec."Net Refund to the Tenant";
+    // trigger OnOpenPage()
+    // var
+    //     finalcalculationcard1: Record "Final Calculation";
+    //     PaymentStatus: Enum "Payment Status";
 
 
-            if Rec."Refund Payment Status" = PaymentStatus::Received then begin
-                Rec."Refund Status" := Rec."Refund Status"::Paid;
-                Rec."Balance Refundable" := 0;
-                Rec."Refund Processed" := Rec."Net Refund to the Tenant";
-                Rec.Modify();
-            end;
+    // begin
+    //     finalcalculationcard1.SetRange("FC ID", Rec."FC ID");
+    //     if finalcalculationcard1.FindSet() then begin
+    //         Rec."Contract ID" := finalcalculationcard1."Contract ID";
+    //         Rec."Tenant ID" := finalcalculationcard1."Tenant ID";
+    //         Rec."Net Refund to the Tenant" := finalcalculationcard1."Amount Refundable";
+    //         Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
+    //         Rec."Refund Total Amount" := Rec."Net Refund to the Tenant";
 
-            if Rec."Refund Payment Status" <> PaymentStatus::Received then begin
-                Rec."Refund Status" := Rec."Refund Status"::Pending;
-                Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
-                Rec."Refund Processed" := 0;
-                Rec.Modify();
-            end;
 
-            // if finalcalculationcard1."Amount Refundable" <> 0 then
-            //     IsRefundable := true
-            // else
-            //     IsRefundable := false;
-            // Rec.Modify();
-        end;
+    //         if Rec."Refund Payment Status" = PaymentStatus::Received then begin
+    //             Rec."Refund Status" := Rec."Refund Status"::Paid;
+    //             Rec."Balance Refundable" := 0;
+    //             Rec."Refund Processed" := Rec."Net Refund to the Tenant";
+    //             Rec.Modify();
+    //         end;
 
-    end;
+    //         if Rec."Refund Payment Status" <> PaymentStatus::Received then begin
+    //             Rec."Refund Status" := Rec."Refund Status"::Pending;
+    //             Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
+    //             Rec."Refund Processed" := 0;
+    //             Rec.Modify();
+    //         end;
+
+    //         // if finalcalculationcard1."Amount Refundable" <> 0 then
+    //         //     IsRefundable := true
+    //         // else
+    //         //     IsRefundable := false;
+    //         // Rec.Modify();
+    //     end;
+
+    // end;
 
 
 

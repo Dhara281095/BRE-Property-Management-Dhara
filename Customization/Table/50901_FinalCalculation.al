@@ -253,6 +253,8 @@ table 50901 "Final Calculation"
         RentCalculationGrid();
         RevenueStructureGrid();
         RevenueStructureyearlyBrokdownGrid();
+        finalsettlement();
+        finalsettlementrefund();
 
     end;
 
@@ -342,6 +344,30 @@ table 50901 "Final Calculation"
         if paymentdetails.FindSet() then begin
             paymentdetails.DeleteAll();
         end;
+
+    end;
+
+    procedure finalsettlement()
+    var
+        finalsettlement: Record FinalSettlement;
+
+    begin
+        finalsettlement.SetRange("FC Id", Rec."FC ID");
+        if finalsettlement.FindSet() then begin
+            finalsettlement.DeleteAll();
+        end
+
+    end;
+
+    procedure finalsettlementrefund()
+    var
+        finalsettlementrefund: Record FinalSettlementRefund;
+
+    begin
+        finalsettlementrefund.SetRange("FC Id", Rec."FC ID");
+        if finalsettlementrefund.FindSet() then begin
+            finalsettlementrefund.DeleteAll();
+        end
 
     end;
     //-----------------Delete record also delete subgrid -----------------//
