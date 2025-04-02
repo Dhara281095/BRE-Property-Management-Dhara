@@ -130,12 +130,12 @@ page 50940 "FinalSettlemtRefundCard"
                     Editable = false;
                     //   Visible = false;
                 }
-                field("Entry No."; Rec."Entry No.")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                    // Visible = false;
-                }
+                // field("Entry No."; Rec."Entry No.")
+                // {
+                //     ApplicationArea = All;
+                //     Editable = false;
+                //     // Visible = false;
+                // }
             }
         }
     }
@@ -181,13 +181,14 @@ page 50940 "FinalSettlemtRefundCard"
 
             if Rec."Refund Due Date" = Today() then begin
                 Rec."Refund Payment Status" := PaymentStatus::Due;
-                Rec.Modify();
-            end;
-
-            if Rec."Refund Due Date" < Today() then begin
+            end
+            else if Rec."Refund Due Date" < Today() then begin
+                Rec."Refund Payment Status" := PaymentStatus::Scheduled;
+            end
+            else if Rec."Refund Due Date" > Today() then begin
                 Rec."Refund Payment Status" := PaymentStatus::Overdue;
-                Rec.Modify();
             end;
+            Rec.Modify();
 
         end;
     end;
@@ -231,13 +232,14 @@ page 50940 "FinalSettlemtRefundCard"
 
             if Rec."Refund Due Date" = Today() then begin
                 Rec."Refund Payment Status" := PaymentStatus::Due;
-                Rec.Modify();
-            end;
-
-            if Rec."Refund Due Date" < Today() then begin
+            end
+            else if Rec."Refund Due Date" < Today() then begin
+                Rec."Refund Payment Status" := PaymentStatus::Scheduled;
+            end
+            else if Rec."Refund Due Date" > Today() then begin
                 Rec."Refund Payment Status" := PaymentStatus::Overdue;
-                Rec.Modify();
             end;
+            Rec.Modify();
         end;
     end;
 
@@ -284,13 +286,14 @@ page 50940 "FinalSettlemtRefundCard"
 
             if Rec."Refund Due Date" = Today() then begin
                 Rec."Refund Payment Status" := PaymentStatus::Due;
-                Rec.Modify();
-            end;
-
-            if Rec."Refund Due Date" < Today() then begin
+            end
+            else if Rec."Refund Due Date" < Today() then begin
+                Rec."Refund Payment Status" := PaymentStatus::Scheduled;
+            end
+            else if Rec."Refund Due Date" > Today() then begin
                 Rec."Refund Payment Status" := PaymentStatus::Overdue;
-                Rec.Modify();
             end;
+            Rec.Modify();
         end;
     end;
 

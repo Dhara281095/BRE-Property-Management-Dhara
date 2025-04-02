@@ -166,12 +166,12 @@ page 50938 "FinalSettlemtCard"
                     Editable = false;
                     //  Visible = false;
                 }
-                field("Entry No."; Rec."Entry No.")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                    //  Visible = false;
-                }
+                // field("Entry No."; Rec."Entry No.")
+                // {
+                //     ApplicationArea = All;
+                //     Editable = false;
+                //     //  Visible = false;
+                // }
             }
         }
     }
@@ -217,13 +217,14 @@ page 50938 "FinalSettlemtCard"
 
             if Rec."Receivable Due Date" = Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Due;
-                Rec.Modify();
-            end;
-
-            if Rec."Receivable Due Date" < Today() then begin
+            end
+            else if Rec."Receivable Due Date" < Today() then begin
+                Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
+            end
+            else if Rec."Receivable Due Date" > Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Overdue;
-                Rec.Modify();
             end;
+            Rec.Modify();
         end;
     end;
 
@@ -267,13 +268,14 @@ page 50938 "FinalSettlemtCard"
 
             if Rec."Receivable Due Date" = Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Due;
-                Rec.Modify();
-            end;
-
-            if Rec."Receivable Due Date" < Today() then begin
+            end
+            else if Rec."Receivable Due Date" < Today() then begin
+                Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
+            end
+            else if Rec."Receivable Due Date" > Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Overdue;
-                Rec.Modify();
             end;
+            Rec.Modify();
 
         end;
     end;
@@ -322,13 +324,14 @@ page 50938 "FinalSettlemtCard"
 
             if Rec."Receivable Due Date" = Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Due;
-                Rec.Modify();
-            end;
-
-            if Rec."Receivable Due Date" < Today() then begin
+            end
+            else if Rec."Receivable Due Date" < Today() then begin
+                Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
+            end
+            else if Rec."Receivable Due Date" > Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Overdue;
-                Rec.Modify();
             end;
+            Rec.Modify();
 
         end;
 
