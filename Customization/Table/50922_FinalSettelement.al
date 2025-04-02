@@ -121,29 +121,28 @@ table 50922 "FinalSettlement"
             DataClassification = ToBeClassified;
             Caption = 'Receivable Tenant ID';
         }
-        field(50118; "Entry No."; Integer)
-        {
-            DataClassification = ToBeClassified;
-            AutoIncrement = true;
-        }
+        // field(50118; "Entry No."; Integer)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     AutoIncrement = true;
+        // }
 
     }
 
-    keys
-    {
-        key(Key1; "Entry No.", "FC ID")
-        {
-            Clustered = true;
-        }
-    }
-
-    //   keys
+    // keys
     // {
-    //     key(PK; "Contract ID")
+    //     key(Key1; "Entry No.", "FC ID")
     //     {
     //         Clustered = true;
     //     }
     // }
+    keys
+    {
+        key(PK; "FC ID")
+        {
+            Clustered = true;
+        }
+    }
 
     trigger OnInsert()
     begin

@@ -79,11 +79,11 @@ table 50923 "FinalSettlementRefund"
             Caption = 'Payment Receipt/Proof document URL';
         }
 
-        field(50113; "Entry No."; Integer)
-        {
-            DataClassification = ToBeClassified;
-            AutoIncrement = true;
-        }
+        // field(50113; "Entry No."; Integer)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     AutoIncrement = true;
+        // }
 
         field(50114; "Tenant ID"; Code[50])
         {
@@ -92,22 +92,21 @@ table 50923 "FinalSettlementRefund"
         }
     }
 
+    // keys
+    // {
+    //     key(Key1; "Entry No.", "FC ID")
+    //     {
+    //         Clustered = true;
+    //     }
+    // }
+
     keys
     {
-        key(Key1; "Entry No.", "FC ID")
+        key(PK; "FC ID")
         {
             Clustered = true;
         }
     }
-
-    //   keys
-    // {
-    //     key(PK; "Contract ID")
-    //     {
-    //         Clustered = true;
-    //     }
-
-    // }
 
     trigger OnInsert()
     begin
