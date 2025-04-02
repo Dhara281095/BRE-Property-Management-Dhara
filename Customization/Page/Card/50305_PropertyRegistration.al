@@ -25,12 +25,12 @@ page 50305 "Property Registration Card"
                 field("Company ID"; rec."Company ID")
                 {
                     ApplicationArea = All;
-                    Visible = false;
+                    // Visible = false;
 
-                    // trigger OnValidate()
-                    // begin
-                    //     workflowfrequency();
-                    // end;
+                    trigger OnValidate()
+                    begin
+                        workflowfrequency();
+                    end;
                 }
 
                 field("Description"; rec."Description")

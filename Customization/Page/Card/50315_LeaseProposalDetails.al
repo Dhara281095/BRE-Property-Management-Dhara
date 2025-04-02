@@ -711,6 +711,16 @@ page 50315 "Lease Proposal Card"
                 }
             }
 
+              group("WorkflowFrequencys")
+            {
+                part("Workflow Frequency"; "Workflow Frequency PR Card")
+                {
+                    SubPageLink = "Property ID" = FIELD("Property ID"); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    // Visible = isVisible;
+                }
+            }
+
             // group("One Time Pay")
             // {
             //     part("Revenue2"; "Revenue Item SubPage Card2")

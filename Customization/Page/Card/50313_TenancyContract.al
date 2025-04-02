@@ -1784,6 +1784,16 @@ page 50313 "Tenancy Contract Card"
 
 
             }
+
+            group("WorkflowFrequencys")
+            {
+                part("Workflow Frequency"; "Workflow Frequency PR Card")
+                {
+                    SubPageLink = "Property ID" = FIELD("Property ID"); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    // Visible = isVisible;
+                }
+            }
         }
     }
     actions
