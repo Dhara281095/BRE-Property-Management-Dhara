@@ -67,6 +67,16 @@ tableextension 50504 PostedSalesInvoiceHeader extends "Sales Invoice Header"
             DataClassification = ToBeClassified;
             Caption = 'View Document URL';
         }
+        field(50113; "Overdue Invoice"; Text[20])
+        {
+            Caption = 'Overdue Invoice';
+            DataClassification = ToBeClassified;
+        }
+        field(50114; "FC ID"; Integer)
+        {
+            Caption = 'FC ID';
+            DataClassification = ToBeClassified;
+        }
 
     }
     trigger OnAfterInsert()
@@ -75,6 +85,7 @@ tableextension 50504 PostedSalesInvoiceHeader extends "Sales Invoice Header"
         paymentschedule2: Record "Payment Schedule2";
         paymentmode2: Record "Payment Mode2";
         paymentschedule2grid: Record "Payment Schedule2";
+        finasettlement: Record FinalSettlement;
     begin
         paymentschedule2.SetRange("Contract ID", Rec."Contract ID");
         paymentschedule2.SetRange("Invoice ID", Rec."Pre-Assigned No.");
@@ -83,6 +94,15 @@ tableextension 50504 PostedSalesInvoiceHeader extends "Sales Invoice Header"
                 paymentschedule2."Invoice ID" := Rec."No.";
                 paymentschedule2.Modify();
             until paymentschedule2.Next() = 0;
+
+        finasettlement.SetRange("FC ID", Rec."FC ID");
+        finasettlement.SetRange("Invoice ID", Rec."Pre-Assigned No.");
+        if finasettlement.FindSet() then
+            repeat
+                finasettlement."Invoice ID" := Rec."No.";
+                finasettlement.Modify();
+            until finasettlement.Next() = 0;
+
 
         // paymentmode2.SetRange("Contract ID", paymentschedule2grid."Contract ID");
         // paymentmode2.SetRange("Payment Series", paymentschedule2grid."Payment Series");

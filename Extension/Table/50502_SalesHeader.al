@@ -86,6 +86,11 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
             Caption = 'Overdue Invoice';
             DataClassification = ToBeClassified;
         }
+        field(50114; "FC ID"; Integer)
+        {
+            Caption = 'FC ID';
+            DataClassification = ToBeClassified;
+        }
     }
 
 }

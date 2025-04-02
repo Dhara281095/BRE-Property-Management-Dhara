@@ -6,7 +6,12 @@ tableextension 50503 SalesLineExt extends "Sales Line"
         {
             Caption = 'Contract ID';
         }
+        field(50102; "FC ID"; Integer)
+        {
+            Caption = 'FC ID';
+            DataClassification = ToBeClassified;
 
+        }
     }
 
 }

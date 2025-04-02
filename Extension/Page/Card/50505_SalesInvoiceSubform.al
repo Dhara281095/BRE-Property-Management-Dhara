@@ -8,6 +8,11 @@ pageextension 50505 SalesInvoiceSubformExt extends "Sales Invoice Subform"
             {
                 ApplicationArea = All;
             }
+            field("FC ID"; Rec."FC ID")
+            {
+                ApplicationArea = All;
+                Editable = false;
+            }
 
         }
 

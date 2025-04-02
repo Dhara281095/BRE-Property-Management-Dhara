@@ -166,6 +166,15 @@ page 50938 "FinalSettlemtCard"
                     Editable = false;
                     //  Visible = false;
                 }
+                field(Invoiced; Rec.Invoiced)
+                {
+                    ApplicationArea = All;
+                }
+                field("Invoice ID"; Rec."Invoice ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
                 // field("Entry No."; Rec."Entry No.")
                 // {
                 //     ApplicationArea = All;
@@ -175,8 +184,6 @@ page 50938 "FinalSettlemtCard"
             }
         }
     }
-
-
     trigger OnModifyRecord(): Boolean
     var
         finalCalculationgrid: Record "Final Calculation";

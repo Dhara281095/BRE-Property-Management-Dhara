@@ -121,6 +121,16 @@ table 50922 "FinalSettlement"
             DataClassification = ToBeClassified;
             Caption = 'Receivable Tenant ID';
         }
+        field(50118; "Invoiced"; Boolean)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Invoiced';
+        }
+        field(50119; "Invoice ID"; Code[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Invoice ID';
+        }
         // field(50118; "Entry No."; Integer)
         // {
         //     DataClassification = ToBeClassified;
