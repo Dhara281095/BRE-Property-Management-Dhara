@@ -147,7 +147,7 @@ page 50938 "FinalSettlemtCard"
                 {
                     ApplicationArea = All;
                     Caption = 'Payment Receipt document URL';
-                    Visible = false;
+                    // Visible = false;
                 }
                 field("View Invoice"; Rec."View Invoice")
                 {
