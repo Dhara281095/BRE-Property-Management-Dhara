@@ -188,6 +188,71 @@ page 50305 "Property Registration Card"
                 }
             }
 
+            group("VendorDetails")
+            {
+                Caption = 'Management Vendor Details';
+
+                field("Vendor ID"; Rec."Vendor ID")
+                {
+                    ApplicationArea = All;
+                    Lookup = true;
+                }
+
+                field("Vendor Name"; Rec."Vendor Name")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
+                field("Vendor Contact No."; Rec."Vendor Contact No.")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
+                field("Start Date"; Rec."Start Date")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
+                field("End Date"; Rec."End Date")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
+                field("Calculation Method"; Rec."Calculation Method")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
+                field("Percentage Type"; Rec."Percentage Type")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
+                field("Base Amount"; Rec."Base Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
+                field("Frequency Of Payment"; Rec."Frequency Of Payment")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
+                field("Contract Status"; Rec."Contract Status")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+            }
+
         }
 
 
