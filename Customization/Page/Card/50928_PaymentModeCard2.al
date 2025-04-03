@@ -379,6 +379,11 @@ page 50928 "Payment Mode Card2"
                 ApplicationArea = All;
                 Caption = 'View Reciept document URL';
             }
+                field("Payment Reminder"; rec."Payment Reminder")
+                {
+                    ApplicationArea = All;
+                    Editable = true;
+                }
 
 
             }
@@ -402,6 +407,8 @@ page 50928 "Payment Mode Card2"
                     Caption = 'Total Amount Including VAT';
                     Editable = false;
                 }
+
+              
 
             }
 

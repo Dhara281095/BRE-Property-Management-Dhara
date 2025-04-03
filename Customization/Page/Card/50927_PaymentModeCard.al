@@ -74,6 +74,12 @@ page 50927 "Payment Mode Card"
                     // end;
 
                 }
+
+                field("Payment Reminder"; rec."Payment Reminder")
+                {
+                    ApplicationArea = All;
+                    Editable = true;
+                }
                 field("On-hold"; Rec."On-hold")
                 {
                     ApplicationArea = All;

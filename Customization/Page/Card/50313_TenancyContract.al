@@ -576,6 +576,26 @@ page 50313 "Tenancy Contract Card"
                 {
                     ApplicationArea = All;
                 }
+
+                field("Renewal Notification to Tenant"; rec."Renewal Notification to Tenant")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Tenant Loyalty Check Reminder"; rec."Tenant Loyalty Check Reminder")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Payment Reminder"; rec."Payment Reminder")
+                {
+                    ApplicationArea = All;
+                }
+
+
+
+
+
                 // field("Suspended Reason list"; Rec."Suspended Reason list")
                 // {
                 //     ApplicationArea = All;
@@ -1869,6 +1889,10 @@ page 50313 "Tenancy Contract Card"
     // end;
 
     trigger OnAfterGetRecord()
+
+    var
+        workflowfrequency: Record "Workflow Frequency PR";
+
     begin
 
         CurrPage."Revenues".Page.SetContractID(Rec."Contract ID");
@@ -1910,6 +1934,33 @@ page 50313 "Tenancy Contract Card"
         // if Rec.Status = 'End Contract' then
         //     Rec."Termination Of Contract" := Rec."Termination Of Contract"::"Regular Termination";
         // Rec.Modify();
+
+        workflowfrequency.SetRange("Property ID", Rec."Property ID");
+        workflowfrequency.SetFilter(Workflow, '%1|%2|%3',
+            workflowfrequency.Workflow::"Payment Reminder",
+            workflowfrequency.Workflow::"Renewal Notification to Tenant",
+            workflowfrequency.Workflow::"Tenant Loyalty Check Reminder");
+
+        if workflowfrequency.FindSet() then begin
+            repeat
+                case workflowfrequency.Workflow of
+                    workflowfrequency.Workflow::"Payment Reminder":
+                        Rec."Payment Reminder" := workflowfrequency."No. of Days";
+
+                    workflowfrequency.Workflow::"Renewal Notification to Tenant":
+                        Rec."Renewal Notification to Tenant" := workflowfrequency."No. of Days";
+
+                    workflowfrequency.Workflow::"Tenant Loyalty Check Reminder":
+                        Rec."Tenant Loyalty Check Reminder" := workflowfrequency."No. of Days";
+                end;
+            until workflowfrequency.Next() = 0;
+
+            Rec.Modify();
+        end;
+
+
+
+
 
     end;
 
