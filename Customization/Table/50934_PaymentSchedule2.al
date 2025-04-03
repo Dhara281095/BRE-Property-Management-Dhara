@@ -163,6 +163,23 @@ table 50934 "Payment Schedule2"
             DataClassification = ToBeClassified;
             Caption = 'Contract Start date';
         }
+        field(50925; "Property ID"; Code[40])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Property ID';
+
+        }
+        field(50926; "No of Days"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'No of Days';
+
+        }
+        field(50927; "Workflow frequency date"; Date)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Workflow Frequency Date';
+        }
 
     }
 
