@@ -43,6 +43,7 @@ page 50940 "FinalSettlemtRefundCard"
             repeater(RefundPaymentDetails)
             {
                 Caption = 'Refund Payment Details';
+               // Editable = (Rec."Refund Payment Status" <> PaymentStatus::Received);
 
                 field("FC ID"; Rec."FC ID")
                 {
@@ -185,9 +186,9 @@ page 50940 "FinalSettlemtRefundCard"
             if Rec."Refund Due Date" = Today() then begin
                 Rec."Refund Payment Status" := PaymentStatus::Due;
             end
-            else if Rec."Refund Due Date" < Today() then begin
-                Rec."Refund Payment Status" := PaymentStatus::Scheduled;
-            end
+            // else if Rec."Refund Due Date" < Today() then begin
+            //     Rec."Refund Payment Status" := PaymentStatus::Scheduled;
+            // end
             else if Rec."Refund Due Date" > Today() then begin
                 Rec."Refund Payment Status" := PaymentStatus::Overdue;
             end;
@@ -239,9 +240,9 @@ page 50940 "FinalSettlemtRefundCard"
             if Rec."Refund Due Date" = Today() then begin
                 Rec."Refund Payment Status" := PaymentStatus::Due;
             end
-            else if Rec."Refund Due Date" < Today() then begin
-                Rec."Refund Payment Status" := PaymentStatus::Scheduled;
-            end
+            // else if Rec."Refund Due Date" < Today() then begin
+            //     Rec."Refund Payment Status" := PaymentStatus::Scheduled;
+            // end
             else if Rec."Refund Due Date" > Today() then begin
                 Rec."Refund Payment Status" := PaymentStatus::Overdue;
             end;
@@ -296,9 +297,9 @@ page 50940 "FinalSettlemtRefundCard"
             if Rec."Refund Due Date" = Today() then begin
                 Rec."Refund Payment Status" := PaymentStatus::Due;
             end
-            else if Rec."Refund Due Date" < Today() then begin
-                Rec."Refund Payment Status" := PaymentStatus::Scheduled;
-            end
+            // else if Rec."Refund Due Date" < Today() then begin
+            //     Rec."Refund Payment Status" := PaymentStatus::Scheduled;
+            // end
             else if Rec."Refund Due Date" > Today() then begin
                 Rec."Refund Payment Status" := PaymentStatus::Overdue;
             end;
@@ -400,4 +401,5 @@ page 50940 "FinalSettlemtRefundCard"
     var
         contractID: Integer;
         tenantID: Code[20];
+        PaymentStatus: Enum "Payment Status";
 }

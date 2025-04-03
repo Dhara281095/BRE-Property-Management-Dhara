@@ -42,6 +42,7 @@ page 50938 "FinalSettlemtCard"
             repeater(ReceivablePaymentDetails)
             {
                 Caption = 'Receivable Payment Details';
+                //  Editable = (Rec."Receivable Payment Status" <> PaymentStatus::Received);
                 field("FC ID"; Rec."FC ID")
                 {
                     ApplicationArea = All;
@@ -228,9 +229,9 @@ page 50938 "FinalSettlemtCard"
             if Rec."Receivable Due Date" = Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Due;
             end
-            else if Rec."Receivable Due Date" < Today() then begin
-                Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
-            end
+            // else if Rec."Receivable Due Date" < Today() then begin
+            //     Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
+            // end
             else if Rec."Receivable Due Date" > Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Overdue;
             end;
@@ -282,9 +283,9 @@ page 50938 "FinalSettlemtCard"
             if Rec."Receivable Due Date" = Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Due;
             end
-            else if Rec."Receivable Due Date" < Today() then begin
-                Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
-            end
+            // else if Rec."Receivable Due Date" < Today() then begin
+            //     Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
+            // end
             else if Rec."Receivable Due Date" > Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Overdue;
             end;
@@ -341,9 +342,9 @@ page 50938 "FinalSettlemtCard"
             if Rec."Receivable Due Date" = Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Due;
             end
-            else if Rec."Receivable Due Date" < Today() then begin
-                Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
-            end
+            // else if Rec."Receivable Due Date" < Today() then begin
+            //     Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
+            // end
             else if Rec."Receivable Due Date" > Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Overdue;
             end;
@@ -447,6 +448,7 @@ page 50938 "FinalSettlemtCard"
         tenantID: Code[20];
         IsRefundable: Boolean;
         IsReceivable: Boolean;
+        PaymentStatus: Enum "Payment Status";
 
 
 }
