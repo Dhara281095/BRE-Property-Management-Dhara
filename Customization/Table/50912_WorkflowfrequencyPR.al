@@ -20,7 +20,7 @@ table 50912 "Workflow Frequency PR"
 
         field(50102; "Workflow"; Option)
         {
-            OptionMembers = " ","Payment Reminder","Invoice","90 days before Mail are send to tenant","100 days before mail send to lease manager";
+            OptionMembers = " ","Payment Reminder","Invoice","Renewal Notification to Tenant","Tenant Loyalty Check Reminder";
             Caption = 'Workflow';
         }
 

@@ -21,7 +21,7 @@ table 50909 "Workflow Frequency"
 
         field(50102; "Workflow"; Option)
         {
-            OptionMembers = " ","Payment Reminder","Invoice","90 days before Mail are send to tenant","100 days before mail send to lease manager";
+            OptionMembers = " ","Payment Reminder","Invoice","Renewal Notification to Tenant","Tenant Loyalty Check Reminder";
             Caption = 'Workflow';
         }
 
@@ -34,6 +34,24 @@ table 50909 "Workflow Frequency"
         field(50104; "No. of Days"; Integer)
         {
             DataClassification = ToBeClassified;
+
+            // trigger OnValidate()
+            // var
+            //     RenewalDays: Integer;
+            //     LoyaltyCheckDays: Integer;
+            // begin
+            //     // Store "No of Days" when Workflow is "Renewal Notification to Tenant"
+            //     if Rec."Workflow" = Rec."Workflow"::"Renewal Notification to Tenant" then
+            //         RenewalDays := Rec."No. of Days";
+
+            //     // Store "No of Days" when Workflow is "Tenant Loyalty Check Reminder"
+            //     if Rec."Workflow" = Rec."Workflow"::"Tenant Loyalty Check Reminder" then
+            //         LoyaltyCheckDays := Rec."No. of Days";
+
+            //     // Compare the values and show an error if condition is not met
+            //     if (RenewalDays > LoyaltyCheckDays) then
+            //         Error('Renewal Notification to Tenant must have fewer days than Tenant Loyalty Check Reminder.');
+            // end;
         }
 
     }
