@@ -214,6 +214,92 @@ table 50303 "Property Registration"
             TableRelation = "Business Unit".Code;
         }
 
+        field(50137; "Vendor ID"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Vendor ID';
+            TableRelation = "Vendor Profile"."Vendor ID";
+
+            trigger OnValidate()
+            var
+                VendorDetails: Record "Vendor Profile";
+            begin
+                VendorDetails.SetRange("Vendor ID", Rec."Vendor ID");
+                if VendorDetails.FindSet() then begin
+                    "Vendor ID" := VendorDetails."Vendor ID";
+                    "Vendor Name" := VendorDetails."Vendor Name"; // Convert Integer to Text
+                    "Vendor Contact No." := VendorDetails."Vendor Contact No.";
+                    "Start Date" := "VendorDetails"."Start Date";
+                    "End Date" := "VendorDetails"."End Date";
+                    "Calculation Method" := VendorDetails."Calculation Method";
+                    "Percentage Type" := VendorDetails."Percentage Type";
+                    "Base Amount" := VendorDetails."Base Amount";
+                    "Frequency Of Payment" := VendorDetails."Frequency Of Payment";
+                    "Contract Status" := VendorDetails."Contract Status";
+                end else begin // Clear the fields if no record is found
+                    "Vendor ID" := 0;
+                    "Vendor Name" := '';
+                    "Vendor Contact No." := '';
+                    "Start Date" := 0D;
+                    "End Date" := 0D;
+                end;
+
+            end;
+        }
+
+        field(50128; "Vendor Name"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Vendor Name';
+        }
+        field(50129; "Vendor Contact No."; Text[30])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Vendor Contact No.';
+        }
+        field(50130; "Start Date"; Date)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Start Date';
+        }
+        field(50131; "End Date"; Date)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'End Date';
+        }
+        field(50132; "Calculation Method"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Calculation Method';
+            OptionMembers = " ","Percentage Method","Fixed Amount";
+        }
+
+        field(50133; "Percentage Type"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Percentage Type';
+            OptionMembers = " ","Fixed","Variable";
+        }
+        field(50134; "Base Amount"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Base Amount';
+            OptionMembers = " ","Revenue","Collection","Annual Rent","Monthly Rent";
+        }
+        field(50135; "Frequency Of Payment"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Frequency Of Payment';
+            OptionMembers = " ","Monthly","Quaterly","Half Yearly","Yearly";
+        }
+
+        field(50136; "Contract Status"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Contract Status';
+            OptionMembers = " ","Active","Terminate";
+        }
+
     }
 
 
