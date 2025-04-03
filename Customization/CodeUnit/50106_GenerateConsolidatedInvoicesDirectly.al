@@ -115,8 +115,8 @@ codeunit 50106 GenerateConsolidatedInvoices
             until paymentScheudle2.Next() = 0 else begin
 
             /////////////////////////// Below code FOR WORKFLOW FREQUENCY ////////////////////////////////////
-
-            paymentschedule2grid.SetRange("Due Date", todaydate);
+            paymentschedule2grid.SetRange("Workflow frequency date", todaydate);
+            //paymentschedule2grid.SetRange("Due Date", todaydate);
             if paymentschedule2grid.FindSet() then
                 repeat
                     if paymentschedule2grid."Contract Status" = 'Terminated' then begin

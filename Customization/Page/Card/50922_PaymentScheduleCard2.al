@@ -128,6 +128,21 @@ page 50922 "Payment Schedule Card2"
                     Caption = 'Overdue Invoice';
                     //Editable = false;
                 }
+                field("Property ID"; Rec."Property ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("No of Days"; Rec."No of Days")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Workflow frequency date"; Rec."Workflow frequency date")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
                 field("Contract start date"; Rec."Contract start date")
                 {
                     ApplicationArea = All;
@@ -213,6 +228,7 @@ page 50922 "Payment Schedule Card2"
     trigger OnAfterGetRecord()
     var
         PaymentSchedule: Record "Payment Schedule";
+        workflowfrequency: Record "Workflow Frequency PR";
     begin
         InvoicedField := NotAccessInvoicedFieldFinanceManager();
 
@@ -224,6 +240,49 @@ page 50922 "Payment Schedule Card2"
         if PaymentSchedule.Get(Rec."Contract ID")
           then begin
             Rec."Contract start date" := PaymentSchedule."Contract Start date";
+            Rec.Modify();
+        end;
+
+        workflowfrequency.SetRange("Property ID", Rec."Property ID");
+        workflowfrequency.SetRange(Workflow, workflowfrequency.Workflow::Invoice);
+        if workflowfrequency.FindSet() then begin
+            Rec."No of Days" := workflowfrequency."No. of Days";
+            Rec.Modify();
+        end;
+
+        if Rec."No of Days" = '0' then begin
+            Rec."Workflow frequency date" := Rec."Due Date";
+            Rec.Modify();
+        end else begin
+            Rec."Workflow frequency date" := CalcDate('-' + Format(Rec."No of Days") + 'D', Rec."Due Date");
+            Rec.Modify();
+        end;
+    end;
+
+
+    trigger OnAfterGetCurrRecord()
+    var
+        PaymentSchedule1: Record "Payment Schedule";
+        workflowfrequency1: Record "Workflow Frequency PR";
+    begin
+        if PaymentSchedule1.Get(Rec."Contract ID")
+          then begin
+            Rec."Contract start date" := PaymentSchedule1."Contract Start date";
+            Rec.Modify();
+        end;
+
+        workflowfrequency1.SetRange("Property ID", Rec."Property ID");
+        workflowfrequency1.SetRange(Workflow, workflowfrequency1.Workflow::Invoice);
+        if workflowfrequency1.FindSet() then begin
+            Rec."No of Days" := workflowfrequency1."No. of Days";
+            Rec.Modify();
+        end;
+
+        if Rec."No of Days" = '0' then begin
+            Rec."Workflow frequency date" := Rec."Due Date";
+            Rec.Modify();
+        end else begin
+            Rec."Workflow frequency date" := CalcDate('-' + Format(Rec."No of Days") + 'D', Rec."Due Date");
             Rec.Modify();
         end;
     end;

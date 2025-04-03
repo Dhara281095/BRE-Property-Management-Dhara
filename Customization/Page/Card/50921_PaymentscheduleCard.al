@@ -55,7 +55,11 @@ page 50921 "Payment Schedule Card"
                     ApplicationArea = All;
                     Editable = false;
                 }
-
+                field("Property ID"; Rec."Property ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
 
             }
 
