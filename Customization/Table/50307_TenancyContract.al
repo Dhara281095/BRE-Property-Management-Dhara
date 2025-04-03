@@ -17,7 +17,7 @@ table 50307 "Tenancy Contract"
         field(50101; "Lessor's Name"; Text[100])
         {
             DataClassification = ToBeClassified;
-            Caption = 'Lessor Name'; 
+            Caption = 'Lessor Name';
         }
 
         field(50102; "Lessor's Emirates ID"; Code[15])
@@ -1577,6 +1577,28 @@ table 50307 "Tenancy Contract"
         {
             DataClassification = ToBeClassified;
             Caption = 'Final Calculation Link';
+            Editable = false;
+
+        }
+
+        field(50193; "Renewal Notification to Tenant"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Renewal Notification to Tenant';
+            Editable = false;
+
+        }
+        field(50194; "Tenant Loyalty Check Reminder"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Tenant Loyalty Check Reminder';
+            Editable = false;
+
+        }
+        field(50195; "Payment Reminder"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Payment Reminder';
             Editable = false;
 
         }

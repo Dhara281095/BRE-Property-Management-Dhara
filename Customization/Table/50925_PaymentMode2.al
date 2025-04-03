@@ -562,6 +562,14 @@ table 50925 "Payment Mode2"
             Caption = 'View Document URL';
         }
 
+        field(50134; "Payment Reminder"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Payment Reminder';
+            Editable = false;
+
+        }
+
 
     }
 

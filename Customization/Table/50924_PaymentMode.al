@@ -29,6 +29,8 @@ table 50924 "Payment Mode"
                 if Tenancycontract.FindFirst() then begin
                     "Tenant Name" := Tenancycontract."Customer Name";
                     "Tenant Email" := Tenancycontract."Email Address";
+                    "Payment Reminder" := Tenancycontract."Payment Reminder";
+
                 end else begin
                     "Tenant Name" := '';
                     "Tenant Email" := '';
@@ -388,6 +390,14 @@ table 50924 "Payment Mode"
             end;
         }
 
+        field(50150; "Payment Reminder"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Payment Reminder';
+            Editable = false;
+
+        }
+
 
     }
 
@@ -407,6 +417,7 @@ table 50924 "Payment Mode"
         PaymentScheduleRec: Record "Payment Schedule2";
         PaymentScheduleRec2: Record "Payment Schedule2";
         MergedRecord: Record "Payment Mode2";
+
         TotalAmount: Decimal;
         TotalVAT: Decimal;
         GrandTotal: Decimal;
@@ -497,6 +508,7 @@ table 50924 "Payment Mode"
                 MergedRecord."Amount Including VAT" := GrandTotal;
                 MergedRecord."Due Date" := MinDueDate;
                 MergedRecord."Payment Status" := PaymentStatus::Scheduled;
+                MergedRecord."Payment Reminder" := Rec."Payment Reminder";
 
                 MergedRecord.Insert();
                 Clear(MergedRecord);
