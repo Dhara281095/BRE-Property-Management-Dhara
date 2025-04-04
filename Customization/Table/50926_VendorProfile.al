@@ -64,6 +64,12 @@ table 50926 "Vendor Profile"
             Caption = 'Contract Status';
             OptionMembers = " ","Active","Terminate";
         }
+        field(50110; "Contract Document Upload"; Text[2000])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Contract Document Upload';
+            InitValue = 'Contract Upload';
+        }
     }
 
 

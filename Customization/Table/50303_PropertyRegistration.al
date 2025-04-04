@@ -244,6 +244,11 @@ table 50303 "Property Registration"
                     "Vendor Contact No." := '';
                     "Start Date" := 0D;
                     "End Date" := 0D;
+                    "Calculation Method" := "Calculation Method"::" ";
+                    "Percentage Type" := "Percentage Type"::" ";
+                    "Base Amount" := "Base Amount"::" ";
+                    "Frequency Of Payment" := "Frequency Of Payment"::" ";
+                    "Contract Status" := "Contract Status"::" ";
                 end;
 
             end;
