@@ -236,6 +236,8 @@ table 50303 "Property Registration"
                     "Base Amount" := VendorDetails."Base Amount";
                     "Frequency Of Payment" := VendorDetails."Frequency Of Payment";
                     "Contract Status" := VendorDetails."Contract Status";
+
+                    ManagementFeeMasterDetailsFetch();
                 end else begin // Clear the fields if no record is found
                     "Vendor ID" := 0;
                     "Vendor Name" := '';
@@ -338,6 +340,40 @@ table 50303 "Property Registration"
     end;
 
     //-------------Record Insert--------------//
+
+
+    procedure ManagementFeeMasterDetailsFetch()
+    var
+        managementfee: Record "Management Fee MasterData";
+    begin
+        // Check if record already exists for same Vendor ID and Property ID to avoid duplicates (optional but good)
+        managementfee.SetRange("Vendor ID", Rec."Vendor ID");
+        managementfee.SetRange("Property ID", Rec."Property ID");
+
+        if not managementfee.IsEmpty() then
+            exit; // Record already exists, avoid duplicate insert
+
+        // Now insert new record
+        managementfee.Init();
+        managementfee."Property ID" := Rec."Property ID";
+        managementfee."Company ID" := Rec."Company ID";
+        managementfee."Vendor ID" := Rec."Vendor ID";
+        managementfee."Vendor Name" := Rec."Vendor Name";
+        managementfee."Property Name" := Rec."Property Name";
+        managementfee."Start Date" := Rec."Start Date";
+        managementfee."End Date" := Rec."End Date";
+        managementfee."Property Type" := Rec."Property Classification";
+        managementfee."Calculation Method" := Rec."Calculation Method";
+        managementfee."Percentage Type" := Rec."Percentage Type";
+        managementfee."Base Amount" := Rec."Base Amount";
+        // managementfee."Percentage/Amount" := Rec."Percentage/Amount"; // Uncomment if needed
+        managementfee."Frequency Of Payment" := Rec."Frequency Of Payment";
+        managementfee."Contract Status" := Rec."Contract Status";
+        managementfee.Insert();
+        Clear(managementfee);
+    end;
+
+
 
     trigger OnDelete()
     var
