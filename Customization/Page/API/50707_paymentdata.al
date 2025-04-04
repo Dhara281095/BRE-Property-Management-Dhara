@@ -165,6 +165,12 @@ page 50707 paymentdata
                 {
                     Caption = 'Payment Received Date';
                 }
+
+                field("PaymentReminder"; Rec."Payment Reminder")
+                {
+                    Caption = 'Payment Reminder';
+                }
+
             }
         }
     }
