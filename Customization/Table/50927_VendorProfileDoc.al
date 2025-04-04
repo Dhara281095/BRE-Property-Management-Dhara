@@ -31,11 +31,13 @@ table 50927 "Vendor Contract Document"
         {
             DataClassification = ToBeClassified;
             Caption = 'Invoice Document Upload';
+            InitValue = 'Invoice Upload';
         }
         field(50105; "Receipt Document Upload"; Text[2000])
         {
             DataClassification = ToBeClassified;
             Caption = 'Receipt Document Upload';
+            InitValue = 'Receipt Upload';
         }
         field(50106; "Receipt ID"; Code[100])
         {
@@ -47,11 +49,13 @@ table 50927 "Vendor Contract Document"
         {
             DataClassification = ToBeClassified;
             Caption = 'Invoice Document View';
+            InitValue = 'Invoice View';
         }
         field(50108; "Receipt Document View"; Text[30])
         {
             DataClassification = ToBeClassified;
             Caption = 'Receipt Document View';
+            InitValue = 'Receipt View';
         }
         field(50109; "Entry No."; Integer)
         {
