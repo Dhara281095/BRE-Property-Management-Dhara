@@ -90,6 +90,46 @@ page 50709 paymentSchedule2
                 {
                     Caption = 'Contract ID';
                 }
+                field("PaymentStatus"; Rec."Payment Status")
+                {
+                    Caption = 'Payment Status';
+                }
+                field("ContractStatus"; Rec."Contract Status")
+                {
+                    Caption = 'Contract Status';
+                }
+                field("InvoiceID"; Rec."Invoice ID")
+                {
+                    Caption = 'Invoice ID';
+                }
+                field("OverdueInvoice"; Rec."Overdue Invoice")
+                {
+                    Caption = 'Overdue Invoice';
+                }
+                field("PaymentRecievedDate"; Rec."Payment Recieved Date")
+                {
+                    Caption = 'Payment Recieved Date';
+                }
+                field("PaymentMode"; Rec."Payment Mode")
+                {
+                    Caption = 'Payment Mode';
+                }
+                field("ChequeNumber"; Rec."Cheque Number")
+                {
+                    Caption = 'Cheque Number';
+                }
+                field("Contractstartdate"; Rec."Contract start date")
+                {
+                    Caption = 'Contract start date';
+                }
+                field("PropertyID"; Rec."Property ID")
+                {
+                    Caption = 'Property ID';
+                }
+                field("NoofDays"; Rec."No of Days")
+                {
+                    Caption = 'No of Days';
+                }
                 // field("TotalAmountIncludingVAT"; Rec."Total Amount Including VAT")
                 // {
                 //     Caption = 'Total Amount Including Vat';
