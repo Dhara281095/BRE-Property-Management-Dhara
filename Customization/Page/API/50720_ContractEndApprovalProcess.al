@@ -88,6 +88,11 @@ page 50720 ContractEndApprovalProcess
                 {
                     Caption = 'Value';
                 }
+
+                field("RenewalNotificationtoTenant"; Rec."Renewal Notification to Tenant")
+                {
+                    Caption = 'Renewal Notification to Tenant';
+                }
             }
         }
     }
