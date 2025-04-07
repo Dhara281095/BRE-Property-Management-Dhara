@@ -83,6 +83,13 @@ table 50704 "ContractEndProcessApproval"
             //Editable = false;
         }
 
+        field(50113; "Renewal Notification to Tenant"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Value';
+            //Editable = false;
+        }
+
     }
     keys
     {

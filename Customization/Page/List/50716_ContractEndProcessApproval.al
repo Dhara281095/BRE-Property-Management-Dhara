@@ -77,6 +77,13 @@ page 50719 "Contract End Process Approval"
                     Visible = false;
                 }
 
+                field("Renewal Notification to Tenant"; Rec."Renewal Notification to Tenant")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+
+                }
+
             }
         }
     }
@@ -172,7 +179,8 @@ page 50719 "Contract End Process Approval"
                                     // Calculate remaining days until contract end date
                                     DaysRemaining := SelectedRecs."End Date" - TodayDate;
 
-                                    if DaysRemaining <= 90 then begin
+                                    if DaysRemaining <= SelectedRecs."Renewal Notification to Tenant" then begin
+
                                         SelectedRecs."Value" := 'true'; // Set Value to text 'true'
                                         SendTenantMail.SendEmailToTenant(SelectedRecs); // Send email to tenant
                                     end else
