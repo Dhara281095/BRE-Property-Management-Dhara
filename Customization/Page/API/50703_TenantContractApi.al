@@ -82,6 +82,23 @@ page 50703 "tenantContractApi"
             field("RenewalContractStatus"; Rec."Renewal Contract Status") { }
             field("YesOrNo"; Rec."Yes/No") { }
 
+            field("RenewalNotificationtoTenant"; rec."Renewal Notification to Tenant")
+            {
+                Caption = 'Renewal Notification to Tenant';
+            }
+
+            field("TenantLoyaltyCheckReminder"; rec."Tenant Loyalty Check Reminder")
+            {
+
+                Caption = 'Tenant Loyalty Check Reminder';
+            }
+
+            field("PaymentReminder"; rec."Payment Reminder")
+            {
+                Caption = 'Payment Reminder';
+            }
+
+
 
 
         }
