@@ -106,6 +106,11 @@ pageextension 50506 PostedSalesInvoiceHeader extends "Posted Sales Invoice"
                 ApplicationArea = All;
                 Caption = 'View Document URL';
             }
+            field("FC ID"; Rec."FC ID")
+            {
+                ApplicationArea = All;
+                Editable = false;
+            }
         }
     }
     procedure OpenFileInBrowser(URL: Text)

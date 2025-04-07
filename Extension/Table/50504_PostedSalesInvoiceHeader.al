@@ -100,6 +100,8 @@ tableextension 50504 PostedSalesInvoiceHeader extends "Sales Invoice Header"
         if finasettlement.FindSet() then
             repeat
                 finasettlement."Invoice ID" := Rec."No.";
+                finasettlement."View Invoice" := Rec."View Invoice";
+                finasettlement."Invoice URL" := Rec."View Document URL";
                 finasettlement.Modify();
             until finasettlement.Next() = 0;
 
