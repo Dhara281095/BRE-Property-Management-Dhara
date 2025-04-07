@@ -153,6 +153,22 @@ page 50938 "FinalSettlemtCard"
                 {
                     ApplicationArea = All;
                     Caption = 'View Invoice';
+                    Editable = false;
+                    DrillDown = true;
+                    trigger OnDrillDown()
+                    var
+                        FileURL: Text;
+                    begin
+
+                        FileURL := Rec."Invoice URL";
+
+
+                        if FileURL = '' then
+                            Error('No document is available to view.');
+
+
+                        OpenFileInBrowser(FileURL);
+                    end;
 
                 }
                 field("Invoice URL"; Rec."Invoice URL")
@@ -185,6 +201,109 @@ page 50938 "FinalSettlemtCard"
             }
         }
     }
+    actions
+    {
+        area(Processing)
+        {
+            action(Invoice)
+            {
+                ApplicationArea = All;
+                Caption = 'Generate Invoice';
+                Image = NewInvoice;
+                trigger OnAction()
+                var
+                    newsalesHeader: Record "Sales Header";
+                    salesReciveable: Record "Sales & Receivables Setup";
+                    noseries: Codeunit "No. Series";
+                    salesline: Record "Sales Line";
+                    customer: Integer;
+                    itemNo: Code[20];
+                    finalsettlementpage: Record FinalSettlement;
+
+                begin
+                    CurrPage.SetSelectionFilter(Rec);
+                    if not Rec.FindFirst() then
+                        Error('No record');
+
+                    finalsettlementpage.Reset();
+                    finalsettlementpage.SetRange("FC ID", Rec."FC ID");
+                    if finalsettlementpage.FindSet() then begin
+                        if finalsettlementpage.Invoiced = true then begin
+                            Message('Already created invoice for the contract');
+                        end else begin
+                            newsalesHeader := psalesheader(Rec."Contract ID", Rec."Tenant ID", Rec."Receivable Due Date", Rec."FC ID");
+                            psalesline(newsalesHeader, Rec);
+                            Rec.Invoiced := true;
+                            Rec."Invoice ID" := newsalesHeader."No.";
+                            Rec.Modify(true);
+                        end;
+                    end;
+
+                end;
+            }
+        }
+    }
+    procedure OpenFileInBrowser(URL: Text)
+    begin
+
+        if URL <> '' then
+            Hyperlink(URL)
+        else
+            Error('The file URL is invalid.');
+    end;
+
+    /////////////////////////// SALES INVOICE //////////////////////////////////////
+    procedure psalesheader(pcontractid: Integer; pTenantID: Code[20]; pDuedate: Date; pfcid: Integer): Record "Sales Header"
+    var
+        salesHeader: Record "Sales Header";
+        SalesHeader1: Record "Sales Header";
+        salesReciveable: Record "Sales & Receivables Setup";
+        noseries: Codeunit "No. Series";
+    begin
+        salesHeader.Init();
+        if salesReciveable.FindSet() then
+            salesHeader."No." := noseries.GetNextNo(salesReciveable."Invoice Nos.", Today, true);
+        salesHeader."Document Type" := SalesHeader1."Document Type"::Invoice;
+        salesHeader.Validate("Sell-to Customer No.", pTenantID);
+        salesHeader.Validate("Contract ID", pcontractid);
+        salesHeader.Validate("Due Date", pDuedate);
+        salesHeader."FC ID" := pfcid;
+        salesHeader.Insert(true);
+        exit(salesHeader);
+    end;
+
+    procedure psalesline(saleheadeline: Record "Sales Header"; finalsettlment: Record FinalSettlement)
+    var
+        saleline: Record "Sales Line";
+        newSaleslines: Record "Sales Line";
+        itemNo: Code[20];
+    begin
+        itemNo := '92';
+        saleline.Init();
+        saleline."Document Type" := saleline."Document Type"::Invoice;
+
+        newSaleslines.SetRange("Document No.", saleheadeline."No.");
+        newSaleslines.SetRange("Document Type", Enum::"Sales Document Type"::Invoice);
+        newSaleslines.SetRange("Contract ID", saleheadeline."Contract ID");
+        newSaleslines.SetCurrentKey("Line No.");
+        if newSaleslines.FindLast() then begin
+            saleline."Line No." := newSaleslines."Line No." + 1000;
+        end
+        else begin
+            saleline."Line No." := 1000;
+        end;
+        saleline."Document No." := saleheadeline."No.";
+        saleline."Contract ID" := saleheadeline."Contract ID";
+        saleline.Validate(Type, saleline.Type::Item);
+        saleline.Validate("Sell-to Customer No.", saleline."Sell-to Customer No.");
+        saleline.Validate("No.", itemNo);
+        saleline.Validate("Quantity (Base)", 1);
+        saleline.Validate("Unit Price", finalsettlment."Receivable Total Amount");
+        saleline."FC ID" := saleheadeline."FC ID";
+        saleline.Insert(true);
+        Clear(saleline);
+    end;
+
     trigger OnModifyRecord(): Boolean
     var
         finalCalculationgrid: Record "Final Calculation";
