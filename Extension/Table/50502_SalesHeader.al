@@ -91,6 +91,11 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
             Caption = 'FC ID';
             DataClassification = ToBeClassified;
         }
+        field(50115; "Property Classification"; Text[40])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Property Classification';
+        }
     }
 
 }
