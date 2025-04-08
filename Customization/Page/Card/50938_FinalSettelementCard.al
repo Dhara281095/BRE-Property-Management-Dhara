@@ -225,23 +225,29 @@ page 50938 "FinalSettlemtCard"
                     customer: Integer;
                     itemNo: Code[20];
                     finalsettlementpage: Record FinalSettlement;
+                    item: Record Item;
 
                 begin
-                    CurrPage.SetSelectionFilter(Rec);
-                    if not Rec.FindFirst() then
-                        Error('No record');
+                    item.SetRange(Description, 'Final Settlement Charge');
+                    if not item.FindSet() then begin
+                        Error('You must need to create item ''Final Settlement Charge'' before creating an invoice. Name of the item should be ''Final Settlement Charge''');
+                    end else begin
+                        CurrPage.SetSelectionFilter(Rec);
+                        if not Rec.FindFirst() then
+                            Error('No record');
 
-                    finalsettlementpage.Reset();
-                    finalsettlementpage.SetRange("FC ID", Rec."FC ID");
-                    if finalsettlementpage.FindSet() then begin
-                        if finalsettlementpage.Invoiced = true then begin
-                            Message('Already created invoice for the contract');
-                        end else begin
-                            newsalesHeader := psalesheader(Rec."Contract ID", Rec."Tenant ID", Rec."Receivable Due Date", Rec."FC ID");
-                            psalesline(newsalesHeader, Rec);
-                            Rec.Invoiced := true;
-                            Rec."Invoice ID" := newsalesHeader."No.";
-                            Rec.Modify(true);
+                        finalsettlementpage.Reset();
+                        finalsettlementpage.SetRange("FC ID", Rec."FC ID");
+                        if finalsettlementpage.FindSet() then begin
+                            if finalsettlementpage.Invoiced = true then begin
+                                Message('Already created invoice for the contract');
+                            end else begin
+                                newsalesHeader := psalesheader(Rec."Contract ID", Rec."Tenant ID", Rec."Receivable Due Date", Rec."FC ID");
+                                psalesline(newsalesHeader, Rec);
+                                Rec.Invoiced := true;
+                                Rec."Invoice ID" := newsalesHeader."No.";
+                                Rec.Modify(true);
+                            end;
                         end;
                     end;
 
@@ -282,9 +288,9 @@ page 50938 "FinalSettlemtCard"
     var
         saleline: Record "Sales Line";
         newSaleslines: Record "Sales Line";
-        itemNo: Code[20];
+        itemname: Text[100];
     begin
-        itemNo := '92';
+        itemname := 'Final Settlement Charge';
         saleline.Init();
         saleline."Document Type" := saleline."Document Type"::Invoice;
 
@@ -302,7 +308,8 @@ page 50938 "FinalSettlemtCard"
         saleline."Contract ID" := saleheadeline."Contract ID";
         saleline.Validate(Type, saleline.Type::Item);
         saleline.Validate("Sell-to Customer No.", saleline."Sell-to Customer No.");
-        saleline.Validate("No.", itemNo);
+        // saleline.Validate("No.", itemNo);
+        saleline.Validate(Description, itemname);
         saleline.Validate("Quantity (Base)", 1);
         saleline.Validate("Unit Price", finalsettlment."Receivable Total Amount");
         saleline."FC ID" := saleheadeline."FC ID";

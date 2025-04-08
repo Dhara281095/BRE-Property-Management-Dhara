@@ -115,121 +115,81 @@ pageextension 50503 salesinvoiceext extends "Sales Invoice List"
 
                 end;
             }
-            // action(SendInvoiceLeaserManager)
-            // {
-            //     Caption = 'Lease Manager Send Mail';
-            //     ApplicationArea = All;
-            //     trigger OnAction()
-            //     var
-            //         sendmail: Codeunit 50508;
-            //     begin
-            //         sendmail.sendmail();
-
-            //     end;
-            // }
-
-
         }
         modify(Post)
         {
             trigger OnBeforeAction()
             var
-
-                TempBlob: Codeunit "Temp Blob";
-                OutStream: OutStream;
+                AzureBlobUploader: Codeunit "Azure Blob Management";
                 InStream: InStream;
                 FileName: Text;
-                FileExtension: Text;
-                DocumentAttachment: Record "Document Attachment";
+                SASUrlBase: Text;
+                SASUrlWithFileName: Text;
+                UploadResult: Text;
+                TempBlob: Codeunit "Temp Blob";
+                ValidFormats: List of [Text];
+                FileExtension: Text[10];
+                FileSize: Decimal;
+                ConfigRecord: Record AzureConfiguration;
                 ReportID: Integer; // Your report ID
                 RecRef: RecordRef;
-                FieldRef: FieldRef;
-                MIMEType: Text[250];
-                SystemIdFieldNo: Integer;
-
+                FieldRef1: FieldRef;
+                FieldRef2: FieldRef;
+                OutStream: OutStream;
+                documentattachment: Codeunit UploadAttachment;
+                SalesHeader1: Record "Sales Header";
+                customercard: Record Customer;
             begin
 
+                customercard.SetRange("No.", Rec."Sell-to Customer No.");
+                if customercard.FindSet() then begin
+                    if Rec."Property Classification" <> '' then begin
+                        customercard.Validate("Customer Posting Group", Rec."Property Classification");
+                        customercard.Modify();
+                    end
+                end;
+                if Rec."Property Classification" <> '' then begin
+                    Rec."Customer Posting Group" := Rec."Property Classification";
+                    Rec.Modify();
+                end;
+
+                if not ConfigRecord.FindFirst() then
+                    Error('Azure configuration is missing. Please set up the SAS URL in the Azure Configuration table.');
+                ValidFormats.Add('.png');
+                ValidFormats.Add('.jpg');
+                ValidFormats.Add('.jpeg');
+
+                SASUrlBase := ConfigRecord."SAS URL";
                 FileExtension := '.pdf';
                 ReportID := 50104;
-                RecRef.Open(DATABASE::"Sales Header"); // Open the table reference
-                RecRef.GetTable(Rec);
+                //  RecRef.Open(DATABASE::"Sales Header"); // Open the table reference
+                // RecRef.GetTable(Rec);
+                SalesHeader1.Reset();
+                SalesHeader1.SetRange("No.", Rec."No.");
+                if not SalesHeader1.FindFirst() then
+                    Error('Sales Invoice record not found.');
+
+                // Open the correct record in RecRef
+                RecRef.GetTable(SalesHeader1);
+                // RecRef.GetTable(Rec);
                 TempBlob.CreateOutStream(OutStream);
                 Report.SaveAs(ReportID, '', ReportFormat::Pdf, OutStream, RecRef);
 
+
+
                 TempBlob.CreateInStream(InStream);
                 FileName := 'Invoice_' + Rec."No." + FileExtension;
-                MIMEType := GetMimeTypeFromFileName(FileName);
-                SystemIdFieldNo := RecRef.SystemIdNo();
-                FieldRef := RecRef.Field(SystemIdFieldNo);
-                DocumentAttachment.Init();
-                DocumentAttachment.SaveAttachmentFromStream(InStream, RecRef, FileName);
-                DocumentAttachment."Record Id" := FieldRef.Value;
-                DocumentAttachment."Table ID" := DATABASE::"Sales Header"; // Set to your table ID, for Sales Header
-                DocumentAttachment."No." := Rec."No.";
-                DocumentAttachment."Document Type" := DocumentAttachment."Document Type"::Invoice;
-                DocumentAttachment."File Name" := FileName;
-                DocumentAttachment."DocumentMedia".ImportStream(InStream, FileName);
-                DocumentAttachment."Document BLOB".CreateInStream(InStream);
-                DocumentAttachment."MIME Type" := MIMEType;
-                DocumentAttachment.Modify();
+                SASUrlWithFileName := StrSubstNo('%1/%2?%3', CopyStr(SASUrlBase, 1, StrPos(SASUrlBase, '?') - 1), FileName, CopyStr(SASUrlBase, StrPos(SASUrlBase, '?') + 1));
+                UploadResult := documentattachment.UploadDocumentToBlobStorage(SASUrlWithFileName, FileName, InStream);
+                Rec."View Invoice" := FileName;
+                Rec."View Document URL" := UploadResult;
+                Rec.Modify();
+
             end;
         }
 
 
     }
-
-    procedure GetMimeTypeFromFileName(FileName: Text): Text
-    var
-        FileExtension: Text;
-    begin
-        // Extract the file extension from the file name
-        FileExtension := LowerCase(CopyStr(FileName, StrPos(FileName, '.'), StrLen(FileName) - StrPos(FileName, '.') + 1));
-
-        case FileExtension of
-            '.pdf':
-                exit('application/pdf');
-            '.jpg', '.jpeg':
-                exit('image/jpeg');
-            '.png':
-                exit('image/png');
-            '.gif':
-                exit('image/gif');
-            '.txt':
-                exit('text/plain');
-            '.doc', '.docx':
-                exit('application/msword');
-            '.xls', '.xlsx':
-                exit('application/vnd.ms-excel');
-            '.ppt', '.pptx':
-                exit('application/vnd.ms-powerpoint');
-            '.zip':
-                exit('application/zip');
-            '.rar':
-                exit('application/x-rar-compressed');
-            '.csv':
-                exit('text/csv');
-            '.json':
-                exit('application/json');
-            '.xml':
-                exit('application/xml');
-            '.html', '.htm':
-                exit('text/html');
-            '.mp4':
-                exit('video/mp4');
-            '.mp3':
-                exit('audio/mpeg');
-            '.wav':
-                exit('audio/wav');
-            '.avi':
-                exit('video/x-msvideo');
-            '.exe':
-                exit('application/x-msdownload');
-            else
-                exit('application/octet-stream'); // Default MIME type for unknown files
-        end;
-    end;
-
-
 
 
     trigger OnAfterGetRecord()

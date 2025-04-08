@@ -23,14 +23,15 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                             Rec."Property Name" := tenancyContract."Property Name";
                             Rec."Unit Name" := tenancyContract."Unit Name";
                             Rec."Contract Tenure" := tenancyContract."Contract Tenor";
-                            Rec."Contract Period" := Format(tenancyContract."Contract Start Date", 0, '<Day,2>/<Month,2>/<Year4>') + ' To ' + Format(tenancyContract."Contract End Date", 0, '<Day,2>/<Month,2>/<Year4>')
-
+                            Rec."Contract Period" := Format(tenancyContract."Contract Start Date", 0, '<Day,2>/<Month,2>/<Year4>') + ' To ' + Format(tenancyContract."Contract End Date", 0, '<Day,2>/<Month,2>/<Year4>');
+                            Rec."Property Classification" := tenancyContract."Property Classification";
                         end else begin
                             Rec."Tenant Name" := '';
                             rec."Property Name" := '';
                             Rec."Unit Name" := '';
                             Rec."Contract Tenure" := '';
-                            Rec."Contract Period" := ''
+                            Rec."Contract Period" := '';
+                            Rec."Property Classification" := '';
 
                             // Rec."Tenant Name" := '';
 
@@ -116,6 +117,11 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field("Property Classification"; Rec."Property Classification")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
 
 
             }
@@ -197,6 +203,29 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                     ResendInvoiceMail.ResendUpdateInvoice(Rec);
                 end;
             }
+            // action(ChangeCustomerPostingGroup)
+            // {
+            //     ApplicationArea = All;
+            //     Caption = 'Customer Posting Group';
+
+            //     trigger OnAction()
+            //     var
+            //         customercard: Record Customer;
+            //     begin
+            //         customercard.SetRange("No.", Rec."Sell-to Customer No.");
+            //         if customercard.FindSet() then begin
+            //             if Rec."Property Classification" <> '' then begin
+            //                 customercard.Validate("Customer Posting Group", Rec."Property Classification");
+            //                 customercard.Modify();
+            //             end else begin
+            //                 if Rec."Property Classification" = '' then begin
+            //                     exit;
+            //                 end;
+            //             end;
+            //         end;
+
+            //     end;
+            // }
 
 
 
@@ -224,7 +253,20 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 OutStream: OutStream;
                 documentattachment: Codeunit UploadAttachment;
                 SalesHeader1: Record "Sales Header";
+                customercard: Record Customer;
             begin
+
+                customercard.SetRange("No.", Rec."Sell-to Customer No.");
+                if customercard.FindSet() then begin
+                    if Rec."Property Classification" <> '' then begin
+                        customercard.Validate("Customer Posting Group", Rec."Property Classification");
+                        customercard.Modify();
+                    end
+                end;
+                if Rec."Property Classification" <> '' then begin
+                    Rec."Customer Posting Group" := Rec."Property Classification";
+                    Rec.Modify();
+                end;
 
                 if not ConfigRecord.FindFirst() then
                     Error('Azure configuration is missing. Please set up the SAS URL in the Azure Configuration table.');
@@ -257,6 +299,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 Rec."View Invoice" := FileName;
                 Rec."View Document URL" := UploadResult;
                 Rec.Modify();
+
             end;
         }
 
@@ -360,6 +403,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
             Rec."Unit Name" := '';
             Rec."Contract Tenure" := '';
             Rec."Contract Period" := '';
+
         end;
 
     end;
