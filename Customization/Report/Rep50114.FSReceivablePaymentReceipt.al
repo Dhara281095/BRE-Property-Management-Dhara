@@ -1,19 +1,15 @@
 namespace BREPropertyManagementMargi.BREPropertyManagementMargi;
-using Microsoft.Finance.GeneralLedger.Journal;
-using Microsoft.Sales.Customer;
-using Microsoft.Sales.Receivables;
-using Microsoft.Sales.History;
 using Microsoft.Foundation.Company;
-report 50112 PaymentReceipt
+using Microsoft.Sales.Customer;
+report 50114 FS_Receivable_PaymentReceipt
 {
     ApplicationArea = All;
-    Caption = 'Payment Receipt';
+    Caption = 'FS_Receivable_PaymentReceipt';
     UsageCategory = ReportsAndAnalysis;
-    DefaultRenderingLayout = "PaymentReceipt.docx";
+    DefaultRenderingLayout = "FS_Receivable_PaymentReceipt.docx";
     dataset
     {
-
-        dataitem("Payment Mode2"; "Payment Mode2")
+        dataitem(FinalSettlement; FinalSettlement)
         {
             column(CompanyPicture; CompanyInfo.Picture)
             {
@@ -42,111 +38,43 @@ report 50112 PaymentReceipt
             column(CompanyTRN; CompanyInfo."VAT Registration No.")
             {
             }
-            column(Contract_ID; "Contract ID")
-            {
-            }
-            column(Tenant_Name; "Tenant Name")
-            {
-            }
-            column(Tenant_Email; "Tenant Email")
-            {
-            }
             column(CurrentDate; Format(CurrentDateTime, 0, '<Day,2>/<Month,2>/<Year4>'))  // Add a column to hold the current date
             {
             }
-            // column(Pay_S; "Payment Series")
-            // {
-            // }
-            // column(Inv; "Invoice #")
-            // {
-            // }
-            // column(Pay_M; "Payment Mode")
-            // {
-            // }
-            // column(Ch_N; "Cheque Number")
-            // {
-            // }
-            dataitem("Payment Schedule2"; "Payment Schedule2")
+            column(Contract_ID; "Contract ID")
             {
-                DataItemLink = "Contract ID" = field("Contract ID");
-                DataItemTableView = SORTING("Payment Series");
-
-                column(Pay_S; "Payment Series")
-                {
-                }
-                column(I_ID; "Invoice ID")  // Add this if it exists
-                {
-                }
-                column(Pay_M; "Payment Mode")  // Add this if it exists
-                {
-                }
-                column(Che_N; "Cheque Number")  // Add this if it exists
-                {
-                }
-                column(Secondary_Item_Type; "Secondary Item Type")  // Changed from "Secondary Item Type"
-                {
-                }
-                // column(Payment_Method; "Payment Method")  // Add this field
-                // {
-                // }
-                // column(Cheque_No; "Cheque No")  // Add this field
-                // {
-                // }
-                column(Amount; Amount)
-                {
-                }
-                column(V_A; "VAT Amount")
-                {
-                }
-                column(A_I_V; "Amount Including VAT")
-                {
-                }
-
-                trigger OnPreDataItem()
-                begin
-                    // Filter to only show Payment Schedule entries that match the received Payment Series
-                    SetRange("Payment Series", "Payment Mode2"."Payment Series");
-                end;
-
-                trigger OnAfterGetRecord()
-                begin
-                    // Calculate running totals
-                    TotalAmount += Amount;
-                    TotalVATAmount += "VAT Amount";
-                    TotalAmountIncludingVAT += "Amount Including VAT";
-                end;
             }
-            dataitem(TotalSection; System.Utilities.Integer)
+            column(Payment_mode; "Receivable Payment mode")
             {
-                DataItemTableView = sorting(Number) where(Number = const(1));
-                column(T_A; TotalAmount)
-                {
-                }
-                column(T_V_A; TotalVATAmount)
-                {
-                }
-                column(T_AIV; TotalAmountIncludingVAT)
-                {
-                }
-                column(AmountInWords; AmountInWordsText)
-                {
-                }
-                trigger OnAfterGetRecord()
-                begin
-                    // Convert amount to words and store in variable
-                    AmountToWords(TotalAmountIncludingVAT);
-                end;
             }
+            column(Cheque_No_; "Receivable Cheque No.")
+            {
+            }
+            column(Total_Amount; "Receivable Total Amount")
+            {
+            }
+            // column(Contract_Start_Date; "Contract Start Date")
+            // {
+            // }
+            // column(Contract_End_Date; "Contract End Date")
+            // {
+            // }
             dataitem(Customer; Customer)
             {
-                DataItemLink = "No." = field("Tenant Id");
+                DataItemLink = "No." = field("Tenant ID");
+                column(Name; Name)
+                {
+                }
                 column(Address; Address)
                 {
                 }
                 column(Phone_No_; "Phone No.")
                 {
                 }
-                column(Cus_TRN; "VAT Registration No.")
+                column(E_Mail; "E-Mail")
+                {
+                }
+                column(VAT_Registration_No_; "VAT Registration No.")
                 {
                 }
             }
@@ -162,16 +90,35 @@ report 50112 PaymentReceipt
                 column(Contract_Tenor; "Contract Tenor")
                 {
                 }
+            }
+            dataitem("Final Calculation"; "Final Calculation")
+            {
+                DataItemLink = "Contract ID" = field("Contract ID");
                 column(Contract_Start_Date; "Contract Start Date")
                 {
                 }
                 column(Contract_End_Date; "Contract End Date")
                 {
                 }
+                // column(Payment_mode; "Receivable Payment mode")
+                // {
+                // }
+                // column(Cheque_No_; "Receivable Cheque No.")
+                // {
+                // }
+                // column(Total_Amount; "Receivable Total Amount")
+                // {
+                // }
+                // column(AmountInWords; AmountInWordsText)
+                // {
+                // }
+                // trigger OnAfterGetRecord()
+                // begin
+                //     // Convert amount to words and store in variable
+                //     AmountToWords("Receivable Total Amount");
+                // end;
             }
-
         }
-
     }
     requestpage
     {
@@ -193,12 +140,12 @@ report 50112 PaymentReceipt
     }
     rendering
     {
-        layout("PaymentReceipt.docx")
+        layout("FS_Receivable_PaymentReceipt.docx")
         {
             Type = Word;
-            LayoutFile = './PaymentReceipt.docx';
-            Caption = 'PaymentReceipt (Word)';
-            Summary = 'The PaymentReceipt (Word) provides a simple layout that is also relatively easy for an end-user to modify.';
+            LayoutFile = './FS_Receivable_PaymentReceipt.docx';
+            Caption = 'FS_Receivable_PaymentReceipt (Word)';
+            Summary = 'The FS_Receivable_PaymentReceipt (Word) provides a simple layout that is also relatively easy for an end-user to modify.';
         }
     }
     trigger OnInitReport()
@@ -213,9 +160,6 @@ report 50112 PaymentReceipt
 
     var
         CompanyInfo: Record "Company Information";
-        TotalAmount: Decimal;
-        TotalVATAmount: Decimal;
-        TotalAmountIncludingVAT: Decimal;
         AmountInWordsText: Text;
         NoText: array[2] of Text[80];
 
@@ -414,4 +358,5 @@ report 50112 PaymentReceipt
         // Finalize the text
         AmountInWordsText := FinalText + ' Only';
     end;
+
 }
