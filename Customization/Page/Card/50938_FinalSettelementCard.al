@@ -196,7 +196,7 @@ page 50938 "FinalSettlemtCard"
                 field("Invoice ID"; Rec."Invoice ID")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    // Editable = false;
                 }
                 // field("Entry No."; Rec."Entry No.")
                 // {
