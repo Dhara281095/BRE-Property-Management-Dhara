@@ -60,6 +60,15 @@ table 50922 "FinalSettlement"
         {
             DataClassification = ToBeClassified;
             Caption = 'Payment Status';
+
+            trigger OnValidate()
+            var
+                emailrec: Codeunit "FS_Receivable Payment Receipt";
+            begin
+                if Rec."Receivable Payment Status" = Enum::"Payment Status"::Received then begin
+                    emailrec.SendEmail(Rec);
+                end;
+            end;
         }
 
         field(50110; "Receivable Cheque No."; Text[300])
@@ -120,6 +129,11 @@ table 50922 "FinalSettlement"
         {
             DataClassification = ToBeClassified;
             Caption = 'Receivable Tenant ID';
+        }
+        field(50120; "Tenant Email"; Text[50])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Tenant Email';
         }
         field(50118; "Invoiced"; Boolean)
         {

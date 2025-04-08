@@ -115,6 +115,12 @@ page 50903 "Final Calculation Card"
                     Lookup = true;
                     Editable = false;
                 }
+                field("Tenant Email"; Rec."Tenant Email")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Tenant Email';
+                    Editable = false;
+                }
                 field("Original Contract Tenure"; Rec."Original Contract Tenure")
                 {
                     ApplicationArea = All;
@@ -402,6 +408,7 @@ page 50903 "Final Calculation Card"
                                 IsRefundable := true
                             else
                                 IsReceivable := true;
+                            UpdateCanPost();
                         end;
                     }
                     field("Net Receivable From The Tenant"; Rec."Net Receivable From The Tenant")
@@ -415,6 +422,7 @@ page 50903 "Final Calculation Card"
                                 IsReceivable := true
                             else
                                 IsRefundable := true;
+                            UpdateCanPost();
                         end;
                     }
                 }
@@ -461,7 +469,7 @@ page 50903 "Final Calculation Card"
                 Promoted = true;
                 PromotedCategory = Process;
                 PromotedIsBig = true;
-
+                Enabled = CanPost;
                 trigger OnAction()
                 var
                     SecurityDepositEntry: Record "Approval Final Calculation";
@@ -850,6 +858,7 @@ page 50903 "Final Calculation Card"
             IsReceivable := true
         else
             IsRefundable := true;
+        UpdateCanPost();
     end;
 
     trigger OnModifyRecord(): Boolean
@@ -1038,7 +1047,13 @@ page 50903 "Final Calculation Card"
 
     //////////// END //////////////////////////////////////////
 
+    procedure UpdateCanPost()
+    begin
+        CanPost := (Rec."Amount Refundable" <> 0) or (Rec."Net Receivable From The Tenant" <> 0);
+    end;
+
     var
         IsReceivable: Boolean;
         IsRefundable: Boolean;
+        CanPost: Boolean;
 }

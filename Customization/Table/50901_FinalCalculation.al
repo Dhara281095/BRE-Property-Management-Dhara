@@ -219,6 +219,11 @@ table 50901 "Final Calculation"
             DataClassification = ToBeClassified;
             Caption = 'Final Calculaion URL';
         }
+        field(50133; "Tenant Email"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Tenant Email';
+        }
 
 
     }

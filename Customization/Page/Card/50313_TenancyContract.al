@@ -1636,6 +1636,7 @@ page 50313 "Tenancy Contract Card"
                                 FinalCalculation."Contract End Date" := Rec."Contract End Date";
                                 FinalCalculation."Unit Type" := Rec."Usage Type";
                                 FinalCalculation."Contract Amount" := Rec."Annual Rent Amount";
+                                FinalCalculation."Tenant Email" := Rec."Email Address";
                                 // Add security deposit information
                                 // FinalCalculation."Security Deposit" := Rec."Security Deposit Amount";
                                 // FinalCalculation."Adjustment Security Deposit" := Rec."Security Balanced Amount";
@@ -1650,6 +1651,7 @@ page 50313 "Tenancy Contract Card"
                                 FinalCalculation."Contract Start Date" := Rec."Contract Start Date";
                                 FinalCalculation."Contract End Date" := Rec."Contract End Date";
                                 FinalCalculation."Contract Amount" := Rec."Annual Rent Amount";
+                                FinalCalculation."Tenant Email" := Rec."Email Address";
                                 // Add security deposit information
                                 // FinalCalculation."Security Deposit" := Rec."Security Deposit Amount";
                                 // FinalCalculation."Adjustment Security Deposit" := Rec."Security Balanced Amount";
@@ -1702,6 +1704,7 @@ page 50313 "Tenancy Contract Card"
                             if FinalSettlement.FindSet() then begin
                                 repeat
                                     FinalSettlement."Contract ID" := Rec."Contract ID";
+                                    FinalSettlement."Tenant Email" := Rec."Email Address";
                                     FinalSettlement.Modify(true);
                                 until FinalSettlement.Next() = 0;
                             end else begin
@@ -1709,6 +1712,7 @@ page 50313 "Tenancy Contract Card"
                                 FinalSettlement.Init();
                                 FinalSettlement."FC ID" := FinalCalculationid;
                                 FinalSettlement."Contract ID" := Rec."Contract ID";
+                                FinalSettlement."Tenant Email" := Rec."Email Address";
                                 FinalSettlement.Insert(true);
                                 Clear(FinalSettlement);
                             end;

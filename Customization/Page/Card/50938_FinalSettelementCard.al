@@ -183,6 +183,12 @@ page 50938 "FinalSettlemtCard"
                     Editable = false;
                     //  Visible = false;
                 }
+                field("Tenant Email"; Rec."Tenant Email")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    //  Visible = false;
+                }
                 field(Invoiced; Rec.Invoiced)
                 {
                     ApplicationArea = All;
