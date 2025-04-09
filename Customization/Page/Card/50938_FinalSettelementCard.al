@@ -140,7 +140,7 @@ page 50938 "FinalSettlemtCard"
                 {
                     ApplicationArea = All;
                     Caption = 'Payment Receipt';
-                    Editable = false;
+                    //  Editable = false;
                     DrillDown = true;
                     trigger OnDrillDown()
                     var
@@ -244,7 +244,7 @@ page 50938 "FinalSettlemtCard"
                 begin
                     item.SetRange(Description, 'Final Settlement Charge');
                     if not item.FindSet() then begin
-                        Error('You must need to create item ''Final Settlement Charge'' before creating an invoice. Name of the item should be ''Final Settlement Charge''');
+                        Error('You must create item with the name "Final Settlement Charge" before creating invoice.');
                     end else begin
                         CurrPage.SetSelectionFilter(Rec);
                         if not Rec.FindFirst() then
