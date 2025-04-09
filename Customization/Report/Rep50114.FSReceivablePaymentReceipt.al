@@ -53,6 +53,9 @@ report 50114 FS_Receivable_PaymentReceipt
             column(Total_Amount; "Receivable Total Amount")
             {
             }
+            column(Invoice_ID; "Invoice ID")
+            {
+            }
             // column(Contract_Start_Date; "Contract Start Date")
             // {
             // }
