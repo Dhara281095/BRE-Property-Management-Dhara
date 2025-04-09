@@ -20,7 +20,6 @@ page 50906 "Additional Charges Sub Card"
                     ToolTip = 'Enter the Secondary Item Type.';
                     ShowMandatory = true;
                     NotBlank = true;
-
                 }
                 field("Amount"; Rec.Amount)
                 {
@@ -28,7 +27,6 @@ page 50906 "Additional Charges Sub Card"
                     Caption = 'Amount';
                     ShowMandatory = true;
                     NotBlank = true;
-
                 }
 
                 field("VAT %"; Rec."VAT %")
@@ -38,7 +36,6 @@ page 50906 "Additional Charges Sub Card"
                     begin
                         CurrPage.Update(); // Refresh the page to apply changes immediately
                     end;
-
                 }
 
                 field("VAT Amount"; Rec."VAT Amount")
@@ -51,8 +48,6 @@ page 50906 "Additional Charges Sub Card"
                 {
                     ApplicationArea = All;
                     Caption = 'Amount Including VAT';
-
-
                 }
 
                 field("Start Date"; Rec."Start Date")
@@ -60,6 +55,7 @@ page 50906 "Additional Charges Sub Card"
                     ApplicationArea = All;
                     Caption = 'Start Date';
                     Lookup = true;
+                    Editable = false;
                 }
 
                 field("End Date"; Rec."End Date")
@@ -67,6 +63,7 @@ page 50906 "Additional Charges Sub Card"
                     ApplicationArea = All;
                     Caption = 'End Date';
                     Lookup = true;
+                    Editable = false;
                 }
 
                 field("Contract ID"; Rec."Contract ID")
@@ -94,9 +91,6 @@ page 50906 "Additional Charges Sub Card"
             }
         }
     }
-
-
-
 
     procedure SetContractID(pContractID: Integer)
     begin

@@ -51,16 +51,19 @@ page 50953 "Payment Details"
                 {
                     ApplicationArea = All;
                     Editable = false;
+                    Visible = false;
                 }
                 field("Entry No."; Rec."Entry No.")
                 {
                     ApplicationArea = All;
                     Editable = false;
+                    Visible = false;
                 }
                 field("Termination Date"; Rec."Termination Date")
                 {
                     ApplicationArea = All;
                     Editable = false;
+                    Visible = false;
                 }
             }
         }
