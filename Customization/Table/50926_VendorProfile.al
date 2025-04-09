@@ -70,9 +70,160 @@ table 50926 "Vendor Profile"
             Caption = 'Contract Document Upload';
             InitValue = 'Contract Upload';
         }
+        field(50111; "Blocked"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Blocked';
+            OptionMembers = " ","Payment","All";
+        }
+        field(50112; "Balance (LCY)"; Decimal)
+        {
+            Caption = 'Balance (LCY)';
+        }
+        field(50113; "Balance Due (LCY) As Customer"; Decimal)
+        {
+            Caption = 'Balance Due (LCY) As Customer';
+        }
+        field(50114; "Balance Due (LCY)"; Decimal)
+        {
+            Caption = 'Balance Due (LCY)';
+        }
+        field(50115; Address; Text[100])
+        {
+            Caption = 'Address';
+            OptimizeForTextSearch = true;
+        }
+        field(50116; "Address 2"; Text[50])
+        {
+            Caption = 'Address 2';
+            OptimizeForTextSearch = true;
+        }
+        field(50117; "Country/Region Code"; Code[10])
+        {
+            Caption = 'Country/Region Code';
+        }
+        field(50118; City; Text[30])
+        {
+            Caption = 'City';
+        }
+        field(50119; Country; Text[30])
+        {
+            Caption = 'Country';
+        }
+        field(50120; "Post Code"; Code[80])
+        {
+            Caption = 'Post Code';
+        }
+        field(50121; "Phone No."; Text[30])
+        {
+            Caption = 'Phone No.';
+        }
+        field(50122; "Mobile Phone No."; Text[30])
+        {
+            Caption = 'Mobile Phone No.';
+        }
+        field(50123; "E-Mail"; Text[80])
+        {
+            Caption = 'Email';
+        }
+        field(50124; "Home Page"; Text[80])
+        {
+            Caption = 'Home Page';
+        }
+        field(50125; "Our Account No."; Text[20])
+        {
+            Caption = 'Our Account No.';
+        }
+        field(50126; "Primary Contact Code"; Code[80])
+        {
+            Caption = 'Primary Contact Code';
+        }
+        field(50127; "Contact"; Code[80])
+        {
+            Caption = 'Contact';
+        }
+
+        field(50128; "VAT Registration No."; Text[20])
+        {
+            Caption = 'VAT Registration No.';
+        }
+        field(50129; "Price Calculation Method"; Enum "Price Calculation Method")
+        {
+            Caption = 'Price Calculation Method';
+        }
+        field(50130; "Price Including VAT"; Boolean)
+        {
+            Caption = 'Price Including VAT';
+        }
+
+        field(50131; "Application Method"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Blocked';
+            OptionMembers = " ","Company","Person","Government";
+        }
+        field(50132; "Payment Terms Code"; Code[10])
+        {
+            Caption = 'Payment Terms Code';
+        }
+        field(50133; "Payment Method Code"; Code[10])
+        {
+            Caption = 'Payment Method Code';
+        }
+        field(50134; Priority; Integer)
+        {
+            Caption = 'Priority';
+        }
+        field(50135; "Block Payment Tolerance"; Boolean)
+        {
+            Caption = 'Block Payment Tolerance';
+        }
+        field(50136; "Preferred Bank Account Code"; Code[100])
+        {
+            Caption = 'Preferred Bank Account Code';
+        }
+        field(50137; "Partner Type"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Blocked';
+            OptionMembers = "Manual","Apply to Oldest";
+        }
+        field(50138; "Cash Flow Payment Terms Code"; Code[100])
+        {
+            Caption = 'Cash Flow Payment Terms Code';
+        }
+        field(50139; "Creditor No."; Code[100])
+        {
+            Caption = 'Creditor No.';
+        }
+        field(50140; "Location Code"; Code[10])
+        {
+            Caption = 'Location Code';
+        }
+        field(50141; "Shipment Method Code"; Code[10])
+        {
+            Caption = 'Shipment Method Code';
+        }
+        field(50142; "Lead Time Calculation"; DateFormula)
+        {
+            Caption = 'Lead Time Calculation';
+        }
+        field(50143; "Base Calendar Code"; Code[10])
+        {
+            Caption = 'Base Calendar Code';
+        }
+        field(50144; "Over-Receipt Code"; Code[20])
+        {
+            Caption = 'Over-Receipt Code';
+        }
+        field(50145; "Receive E-Document To"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Blocked';
+            OptionMembers = " ","Purchase Order","Purchase Invoice";
+        }
+
     }
-
-
     keys
     {
         key(PK; "Vendor ID", "Vendor Name")

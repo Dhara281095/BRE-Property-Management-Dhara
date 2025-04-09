@@ -499,7 +499,7 @@ page 50928 "Payment Mode Card2"
                             end;
 
                         until PaymentModeRec.Next() = 0;
-
+                        CreateChequeEntry();
                         Message('PDC Transaction records successfully created for Cheque payment modes.');
                     end else
                         Message('No payment modes with "Cheque" found for the given Contract ID and Tenant ID.');
@@ -507,8 +507,6 @@ page 50928 "Payment Mode Card2"
                     approvalflow.SendPaymentModeApprovalToFinanceManger(Format(Rec."Contract ID"), Rec."Tenant Id", Rec."Contract ID", Isupdate);
 
                 end;
-
-
             }
 
             action(UpdateData)
@@ -572,11 +570,7 @@ page 50928 "Payment Mode Card2"
                     end
                     else
                         Message('No new cheque payments found.');
-
-                       
-
                 end;
-
             }
         }
     }
@@ -601,7 +595,7 @@ page 50928 "Payment Mode Card2"
 
         if Rec."Invoice #" = '' then
             Rec."Invoice #" := '-';
-
+       
 
         if Rec."Payment mode" = '' then begin
             // Retrieve the first available Payment Method from the Payment Type table
@@ -720,11 +714,10 @@ page 50928 "Payment Mode Card2"
         if PermissionSet.FindSet() then begin
             if PermissionSet."Profile ID" = 'LEASE_MANAGER' then
                 IsLeaseManager := true;
-        end
+        end;
         // else if PermissionSet."Profile ID" = 'FINANCE MANAGER' then
         //         IsFinanceManager := true;
-        
- 
+       
     end;
 
     trigger OnModifyRecord(): Boolean
@@ -732,7 +725,51 @@ page 50928 "Payment Mode Card2"
         IsApproved:= (Rec."Approval Status" <> Rec."Approval Status"::Approved);
     end;
 
+procedure CreateChequeEntry()
+var
+    NextEntryNo: Integer;
+    GenJournalLine: Record "Gen. Journal Line";
+    GenJournalAccountType: Enum "Gen. Journal Account Type";
+    GenJournalDocumentType: Enum "Gen. Journal Document Type";
+    ChequeStatus: Enum "PDC Status Type Enum";
+    GenJnlPostLine: Codeunit "Gen. Jnl.-Post Line";
+begin
+    if Rec."Cheque Status" <> ChequeStatus::"Cheque Received" then
+        exit;
 
+    // Filter to specific batch
+    GenJournalLine.Reset();
+    GenJournalLine.SetRange("Journal Template Name", 'CASH RECE');
+    GenJournalLine.SetRange("Journal Batch Name", 'DEFAULT');
+
+    if GenJournalLine.FindLast() then
+        NextEntryNo := GenJournalLine."Line No." + 1
+    else
+        NextEntryNo := 1;
+
+    Clear(GenJournalLine);
+    GenJournalLine.Init();
+    GenJournalLine."Journal Template Name" := 'CASH RECE';
+    GenJournalLine."Journal Batch Name" := 'DEFAULT';
+    GenJournalLine."Line No." := NextEntryNo;
+    GenJournalLine."Posting Date" := Today;
+    GenJournalLine."Document Type" := GenJournalDocumentType::Payment;
+    GenJournalLine."Document No." := Rec."Cheque Number";
+    GenJournalLine."Account Type" := GenJournalAccountType::Customer;
+    GenJournalLine."Account No." := Rec."Tenant Id";
+    GenJournalLine."Description" := Rec."Tenant Name";
+    GenJournalLine.Amount := -(Rec."Amount Including VAT");
+    GenJournalLine."Amount (LCY)" := GenJournalLine.Amount;
+    GenJournalLine."Bal. Account Type" := GenJournalAccountType::"G/L Account";
+    GenJournalLine."Bal. Account No." := '2001';
+    GenJournalLine.Insert(true);
+
+    // Optional: Post line
+    GenJnlPostLine.RunWithCheck(GenJournalLine);
+    Clear(GenJournalLine);
+
+    Message('Cash Receipt journal created successfully.');
+end;
 }
     
 
