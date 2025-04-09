@@ -63,11 +63,59 @@ table 50922 "FinalSettlement"
 
             trigger OnValidate()
             var
-                emailrec: Codeunit "FS_Receivable Payment Receipt";
+                Email: Codeunit "FS_Receivable Payment Receipt";
+                AzureBlobUploader: Codeunit "Azure Blob Management";
+                InStream: InStream;
+                FileName: Text;
+                SASUrlBase: Text;
+                SASUrlWithFileName: Text;
+                UploadResult: Text;
+                TempBlob: Codeunit "Temp Blob";
+                ValidFormats: List of [Text];
+                FileExtension: Text[10];
+                FileSize: Decimal;
+                ConfigRecord: Record AzureConfiguration;
+                ReportID: Integer; // Your report ID
+                RecRef: RecordRef;
+                FieldRef1: FieldRef;
+                FieldRef2: FieldRef;
+                OutStream: OutStream;
+                documentattachment: Codeunit UploadAttachment;
+                paymentmode2Grid: Record FinalSettlement;
             begin
                 if Rec."Receivable Payment Status" = Enum::"Payment Status"::Received then begin
-                    emailrec.SendEmail(Rec);
-                end;
+                    Email.SendEmail(Rec);
+
+                    if not ConfigRecord.FindFirst() then
+                        Error('Azure configuration is missing. Please set up the SAS URL in the Azure Configuration table.');
+                    ValidFormats.Add('.png');
+                    ValidFormats.Add('.jpg');
+                    ValidFormats.Add('.jpeg');
+
+                    SASUrlBase := ConfigRecord."SAS URL";
+                    FileExtension := '.pdf';
+                    ReportID := 50114;
+                    //  RecRef.Open(DATABASE::"Sales Header"); // Open the table reference
+                    // RecRef.GetTable(Rec);
+                    paymentmode2Grid.Reset();
+                    paymentmode2Grid.SetRange("Tenant ID", Rec."Tenant ID");
+                    paymentmode2Grid.SetRange("Contract ID", Rec."Contract ID"); // Ensure filtering on unique ID
+
+                    if not paymentmode2Grid.FindFirst() then
+                        Error('Not avavilable');
+                    RecRef.GetTable(paymentmode2Grid);
+                    // RecRef.GetTable(Rec);
+                    TempBlob.CreateOutStream(OutStream);
+                    Report.SaveAs(ReportID, '', ReportFormat::Pdf, OutStream, RecRef);
+
+                    TempBlob.CreateInStream(InStream);
+                    FileName := 'Receipt_' + Format(Rec."Contract ID") + Format(Rec."FC ID") + FileExtension;
+                    SASUrlWithFileName := StrSubstNo('%1/%2?%3', CopyStr(SASUrlBase, 1, StrPos(SASUrlBase, '?') - 1), FileName, CopyStr(SASUrlBase, StrPos(SASUrlBase, '?') + 1));
+                    UploadResult := documentattachment.UploadDocumentToBlobStorage(SASUrlWithFileName, FileName, InStream);
+                    Rec."Payment Receipt" := FileName;
+                    Rec."Payment Receipt document URL" := UploadResult;
+                    Rec.Modify();
+                end
             end;
         }
 
@@ -106,7 +154,7 @@ table 50922 "FinalSettlement"
         {
             DataClassification = ToBeClassified;
             Caption = 'Payment Receipt';
-            InitValue = 'View';
+            // InitValue = 'View';
         }
         field(50114; "Payment Receipt document URL"; Text[250])
         {
@@ -141,6 +189,11 @@ table 50922 "FinalSettlement"
             Caption = 'Invoiced';
         }
         field(50119; "Invoice ID"; Code[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Invoice ID';
+        }
+        field(50121; "View Reciept document URL"; Text[250])
         {
             DataClassification = ToBeClassified;
             Caption = 'Invoice ID';

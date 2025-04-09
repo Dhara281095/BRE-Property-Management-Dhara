@@ -142,6 +142,20 @@ page 50938 "FinalSettlemtCard"
                     Caption = 'Payment Receipt';
                     Editable = false;
                     DrillDown = true;
+                    trigger OnDrillDown()
+                    var
+                        FileURL: Text;
+                    begin
+
+                        FileURL := Rec."Payment Receipt document URL";
+
+
+                        if FileURL = '' then
+                            Error('No document is available to view.');
+
+
+                        OpenFileInBrowser1(FileURL);
+                    end;
                 }
                 field("Payment Receipt document URL"; Rec."Payment Receipt document URL")
                 {
@@ -258,6 +272,15 @@ page 50938 "FinalSettlemtCard"
     procedure OpenFileInBrowser(URL: Text)
     begin
 
+        if URL <> '' then
+            Hyperlink(URL)
+        else
+            Error('The file URL is invalid.');
+    end;
+
+    procedure OpenFileInBrowser1(URL: Text)
+    begin
+        // Use the Hyperlink method to open the file in the browser
         if URL <> '' then
             Hyperlink(URL)
         else
