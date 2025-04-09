@@ -396,6 +396,8 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
             Rec."Property Name" := tenancyContract."Property Name";
             Rec."Unit Name" := tenancyContract."Unit Name";
             Rec."Contract Tenure" := tenancyContract."Contract Tenor";
+            Rec."Tenant Name" := tenancyContract."Customer Name";
+            Rec."Property Classification" := tenancyContract."Property Classification";
             Rec."Contract Period" := Format(tenancyContract."Contract Start Date", 0, '<Day,2>/<Month,2>/<Year4>') + '  To  ' + Format(tenancyContract."Contract End Date", 0, '<Day,2>/<Month,2>/<Year4>')
         end else begin
 
