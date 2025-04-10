@@ -374,19 +374,9 @@ page 50938 "FinalSettlemtCard"
                 Rec.Modify();
             end;
 
-            if Rec."Receivable Payment Status" <> PaymentStatus::Received then begin
-                Rec."PaymentStatus" := Rec."PaymentStatus"::Pending;
-                Rec."Balance Receivable" := Rec."Receivable from the Tenant";
-                Rec."Payment Processed" := 0;
-                Rec.Modify();
-            end;
-
             if Rec."Receivable Due Date" = Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Due;
             end
-            // else if Rec."Receivable Due Date" < Today() then begin
-            //     Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
-            // end
             else if Rec."Receivable Due Date" > Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Overdue;
             end;
@@ -428,19 +418,9 @@ page 50938 "FinalSettlemtCard"
                 Rec.Modify();
             end;
 
-            if Rec."Receivable Payment Status" <> PaymentStatus::Received then begin
-                Rec."PaymentStatus" := Rec."PaymentStatus"::Pending;
-                Rec."Balance Receivable" := Rec."Receivable from the Tenant";
-                Rec."Payment Processed" := 0;
-                Rec.Modify();
-            end;
-
             if Rec."Receivable Due Date" = Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Due;
             end
-            // else if Rec."Receivable Due Date" < Today() then begin
-            //     Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
-            // end
             else if Rec."Receivable Due Date" > Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Overdue;
             end;
@@ -487,19 +467,9 @@ page 50938 "FinalSettlemtCard"
                 Rec.Modify();
             end;
 
-            if Rec."Receivable Payment Status" <> PaymentStatus::Received then begin
-                Rec."PaymentStatus" := Rec."PaymentStatus"::Pending;
-                Rec."Balance Receivable" := Rec."Receivable from the Tenant";
-                Rec."Payment Processed" := 0;
-                Rec.Modify();
-            end;
-
             if Rec."Receivable Due Date" = Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Due;
             end
-            // else if Rec."Receivable Due Date" < Today() then begin
-            //     Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
-            // end
             else if Rec."Receivable Due Date" > Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Overdue;
             end;
