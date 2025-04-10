@@ -1,6 +1,7 @@
 namespace BREPropertyManagementMargi.BREPropertyManagementMargi;
 using Microsoft.Foundation.Company;
 using Microsoft.Sales.Customer;
+using System.Text;
 report 50114 FS_Receivable_PaymentReceipt
 {
     ApplicationArea = All;
@@ -54,6 +55,9 @@ report 50114 FS_Receivable_PaymentReceipt
             {
             }
             column(Invoice_ID; "Invoice ID")
+            {
+            }
+            column(Final_Settlement_Words; ConvertFinalSettlementToWords("Receivable Total Amount"))
             {
             }
             // column(Contract_Start_Date; "Contract Start Date")
@@ -163,27 +167,63 @@ report 50114 FS_Receivable_PaymentReceipt
 
     var
         CompanyInfo: Record "Company Information";
-        AmountInWordsText: Text;
-        NoText: array[2] of Text[80];
+        TotalAmountInclVAT: Decimal;
+        AutoFormat: Codeunit "Auto Format";
 
     // Function to convert number to words
-    procedure AmountToWords(Amount: Decimal)
+    procedure ConvertFinalSettlementToWords(Amount: Decimal): Text
     var
-        AmtInWords: Text;
-        Ones: array[20] of Text[30];
-        Tens: array[10] of Text[30];
-        Thousands: array[5] of Text[30];
-        DecimalPart: Integer;
-        IntegerPart: Integer;
-        TensValue: Integer;
-        OnesValue: Integer;
-        ExponentVal: Integer;
-        Hundreds: Integer;
-        TensOnes: Integer;
-        DecimalText: Text;
+        WholeNumber: Integer;
+        Decimals: Integer;
+        WholePart: Text;
+        DecimalPart: Text;
         FinalText: Text;
     begin
-        // Initialize the arrays with text representations (Changed to Title Case)
+        // Take absolute value to handle negative amounts
+        Amount := Abs(Amount);
+
+        // Split into whole number and decimal parts
+        WholeNumber := Round(Amount, 1, '<');  // Rounds down to nearest integer
+        Decimals := Round((Amount - WholeNumber) * 100, 1);
+
+        // Convert whole number to words
+        WholePart := ConvertNumberToWords(WholeNumber);
+
+        // Convert decimal part to words if exists
+        if Decimals > 0 then begin
+            DecimalPart := ' and ' + ConvertNumberToWords(Decimals) + ' fils';
+        end;
+
+        // Combine whole and decimal parts, and add 'Only'
+        FinalText := WholePart + DecimalPart + ' Only';
+
+        // Ensure first letter is capitalized
+        exit(UpperCaseFirstLetter(FinalText));
+    end;
+
+    local procedure UpperCaseFirstLetter(InputText: Text): Text
+    var
+        FirstChar: Text[1];
+        RemainingText: Text;
+    begin
+        if StrLen(InputText) = 0 then
+            exit(InputText);
+
+        FirstChar := UpperCase(InputText[1]);
+        RemainingText := CopyStr(InputText, 2);
+
+        exit(FirstChar + RemainingText);
+    end;
+
+    local procedure ConvertNumberToWords(Number: Integer): Text
+    var
+        Ones: array[20] of Text;
+        Tens: array[10] of Text;
+        Thousands: array[5] of Text;
+        N: Integer;
+        Result: Text;
+    begin
+        // Initialize arrays for number words
         Ones[1] := 'One';
         Ones[2] := 'Two';
         Ones[3] := 'Three';
@@ -218,148 +258,48 @@ report 50114 FS_Receivable_PaymentReceipt
         Thousands[3] := 'Million';
         Thousands[4] := 'Billion';
 
-        // Handle zero amount
-        if Amount = 0 then begin
-            AmountInWordsText := 'Zero AED Only';
-            exit;
-        end;
+        N := Number;
 
-        AmtInWords := '';
-
-        // Split into integer and decimal parts
-        IntegerPart := Round(Amount, 1, '<');
-        DecimalPart := Round((Amount - IntegerPart) * 100, 1);
+        // Handle zero
+        if N = 0 then
+            exit('Zero');
 
         // Process billions
-        if IntegerPart >= 1000000000 then begin
-            ExponentVal := IntegerPart div 1000000000;
-            IntegerPart := IntegerPart mod 1000000000;
-
-            // Get hundreds
-            Hundreds := ExponentVal div 100;
-            ExponentVal := ExponentVal mod 100;
-
-            if Hundreds > 0 then
-                AmtInWords += Ones[Hundreds] + ' Hundred ';
-
-            if ExponentVal > 0 then begin
-                if ExponentVal < 20 then
-                    AmtInWords += Ones[ExponentVal] + ' '
-                else begin
-                    TensValue := ExponentVal div 10;
-                    OnesValue := ExponentVal mod 10;
-
-                    AmtInWords += Tens[TensValue];
-                    if OnesValue > 0 then
-                        AmtInWords += ' ' + Ones[OnesValue];
-                    AmtInWords += ' ';
-                end;
-            end;
-
-            AmtInWords += 'Billion ';
+        if N div 1000000000 > 0 then begin
+            Result += ConvertNumberToWords(N div 1000000000) + ' Billion ';
+            N := N mod 1000000000;
         end;
 
         // Process millions
-        if IntegerPart >= 1000000 then begin
-            ExponentVal := IntegerPart div 1000000;
-            IntegerPart := IntegerPart mod 1000000;
-
-            // Get hundreds
-            Hundreds := ExponentVal div 100;
-            ExponentVal := ExponentVal mod 100;
-
-            if Hundreds > 0 then
-                AmtInWords += Ones[Hundreds] + ' Hundred ';
-
-            if ExponentVal > 0 then begin
-                if ExponentVal < 20 then
-                    AmtInWords += Ones[ExponentVal] + ' '
-                else begin
-                    TensValue := ExponentVal div 10;
-                    OnesValue := ExponentVal mod 10;
-
-                    AmtInWords += Tens[TensValue];
-                    if OnesValue > 0 then
-                        AmtInWords += ' ' + Ones[OnesValue];
-                    AmtInWords += ' ';
-                end;
-            end;
-
-            AmtInWords += 'Million ';
+        if N div 1000000 > 0 then begin
+            Result += ConvertNumberToWords(N div 1000000) + ' Million ';
+            N := N mod 1000000;
         end;
 
         // Process thousands
-        if IntegerPart >= 1000 then begin
-            ExponentVal := IntegerPart div 1000;
-            IntegerPart := IntegerPart mod 1000;
-
-            // Get hundreds
-            Hundreds := ExponentVal div 100;
-            ExponentVal := ExponentVal mod 100;
-
-            if Hundreds > 0 then
-                AmtInWords += Ones[Hundreds] + ' Hundred ';
-
-            if ExponentVal > 0 then begin
-                if ExponentVal < 20 then
-                    AmtInWords += Ones[ExponentVal] + ' '
-                else begin
-                    TensValue := ExponentVal div 10;
-                    OnesValue := ExponentVal mod 10;
-
-                    AmtInWords += Tens[TensValue];
-                    if OnesValue > 0 then
-                        AmtInWords += ' ' + Ones[OnesValue];
-                    AmtInWords += ' ';
-                end;
-            end;
-
-            AmtInWords += 'Thousand ';
+        if N div 1000 > 0 then begin
+            Result += ConvertNumberToWords(N div 1000) + ' Thousand ';
+            N := N mod 1000;
         end;
 
         // Process hundreds
-        Hundreds := IntegerPart div 100;
-        TensOnes := IntegerPart mod 100;
-
-        if Hundreds > 0 then
-            AmtInWords += Ones[Hundreds] + ' Hundred ';
+        if N div 100 > 0 then begin
+            Result += Ones[N div 100] + ' Hundred ';
+            N := N mod 100;
+        end;
 
         // Process tens and ones
-        if TensOnes > 0 then begin
-            if TensOnes < 20 then
-                AmtInWords += Ones[TensOnes] + ' '
+        if N > 0 then begin
+            if N <= 19 then
+                Result += Ones[N]
             else begin
-                TensValue := TensOnes div 10;
-                OnesValue := TensOnes mod 10;
-
-                AmtInWords += Tens[TensValue];
-                if OnesValue > 0 then
-                    AmtInWords += ' ' + Ones[OnesValue];
-                AmtInWords += ' ';
+                Result += Tens[N div 10];
+                if N mod 10 > 0 then
+                    Result += ' ' + Ones[N mod 10];
             end;
         end;
 
-        // Format the final text - ensure there's no trailing space
-        FinalText := DelChr(AmtInWords, '>', ' ');
-
-        // Add decimal part if any, using the word "Fils" instead of fractions
-        // Adding a space before "and"
-        if DecimalPart > 0 then begin
-            if DecimalPart < 20 then
-                FinalText += ' and ' + Ones[DecimalPart] + ' Fils'
-            else begin
-                TensValue := DecimalPart div 10;
-                OnesValue := DecimalPart mod 10;
-
-                FinalText += ' and ' + Tens[TensValue];
-                if OnesValue > 0 then
-                    FinalText += ' ' + Ones[OnesValue];
-                FinalText += ' Fils';
-            end;
-        end;
-
-        // Finalize the text
-        AmountInWordsText := FinalText + ' Only';
+        exit(Result.Trim());
     end;
 
 }
