@@ -64,6 +64,7 @@ table 50920 "Payment Schedule"
                     "Contract Status" := Format(leaserec."Tenant Contract Status");
                     "Contract Start date" := leaserec."Contract Start Date";
                     "Property ID" := leaserec."Property ID";
+                    "Property Classification" := leaserec."Property Classification";
                 end else begin
                     // Clear the field if no record is found
                     // "Proposal Id" := '';
@@ -71,6 +72,7 @@ table 50920 "Payment Schedule"
                     "Tenant Name" := '';
                     "Contract Status" := '';
                     "Property ID" := '';
+                    "Property Classification" := '';
 
                 end;
                 UpdatePaymentSchedule2();
