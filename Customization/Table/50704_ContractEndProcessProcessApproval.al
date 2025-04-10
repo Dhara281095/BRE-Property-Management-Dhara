@@ -86,7 +86,7 @@ table 50704 "ContractEndProcessApproval"
         field(50113; "Renewal Notification to Tenant"; Integer)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Value';
+            Caption = 'Renewal Notification to Tenant';
             //Editable = false;
         }
 
