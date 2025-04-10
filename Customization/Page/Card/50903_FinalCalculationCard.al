@@ -387,6 +387,7 @@ page 50903 "Final Calculation Card"
                     {
                         ApplicationArea = All;
                         Editable = false;
+                        Visible = false;
                     }
                     field("Total Refund"; Rec."Total Refund")
                     {
