@@ -16,6 +16,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                     trigger OnValidate()
                     var
                         tenancyContract: Record "Tenancy Contract";
+                        customercard: Record Customer;
                     begin
                         tenancyContract.SetRange("Contract ID", Rec."Contract ID");
                         if tenancyContract.FindFirst() then begin
@@ -35,6 +36,21 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
 
                             // Rec."Tenant Name" := '';
 
+                        end;
+
+                        customercard.SetRange("No.", Rec."Sell-to Customer No.");
+                        if customercard.FindSet() then begin
+                            if Rec."Property Classification" <> '' then begin
+                                customercard.Validate("Gen. Bus. Posting Group", Rec."Property Classification");
+                                customercard.Validate("Customer Posting Group", Rec."Property Classification");
+                                customercard.Modify();
+                            end
+                        end;
+                        if Rec."Property Classification" <> '' then begin
+                            //  Rec."Gen. Bus. Posting Group" := Rec."Property Classification";
+                            Rec.Validate("Gen. Bus. Posting Group", Rec."Property Classification");
+                            Rec."Customer Posting Group" := Rec."Property Classification";
+                            Rec.Modify();
                         end;
                     end;
                 }
@@ -203,29 +219,30 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                     ResendInvoiceMail.ResendUpdateInvoice(Rec);
                 end;
             }
-            // action(ChangeCustomerPostingGroup)
-            // {
-            //     ApplicationArea = All;
-            //     Caption = 'Customer Posting Group';
+            action(ChangeCustomerPostingGroup)
+            {
+                ApplicationArea = All;
+                Caption = 'Customer Posting Group';
 
-            //     trigger OnAction()
-            //     var
-            //         customercard: Record Customer;
-            //     begin
-            //         customercard.SetRange("No.", Rec."Sell-to Customer No.");
-            //         if customercard.FindSet() then begin
-            //             if Rec."Property Classification" <> '' then begin
-            //                 customercard.Validate("Customer Posting Group", Rec."Property Classification");
-            //                 customercard.Modify();
-            //             end else begin
-            //                 if Rec."Property Classification" = '' then begin
-            //                     exit;
-            //                 end;
-            //             end;
-            //         end;
-
-            //     end;
-            // }
+                trigger OnAction()
+                var
+                    customercard: Record Customer;
+                begin
+                    customercard.SetRange("No.", Rec."Sell-to Customer No.");
+                    if customercard.FindSet() then begin
+                        if Rec."Property Classification" <> '' then begin
+                            customercard.Validate("Gen. Bus. Posting Group", Rec."Property Classification");
+                            customercard.Validate("Customer Posting Group", Rec."Property Classification");
+                            customercard.Modify();
+                        end
+                    end;
+                    if Rec."Property Classification" <> '' then begin
+                        Rec."Gen. Bus. Posting Group" := Rec."Property Classification";
+                        Rec."Customer Posting Group" := Rec."Property Classification";
+                        Rec.Modify();
+                    end;
+                end;
+            }
 
 
 
@@ -255,18 +272,6 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 SalesHeader1: Record "Sales Header";
                 customercard: Record Customer;
             begin
-
-                customercard.SetRange("No.", Rec."Sell-to Customer No.");
-                if customercard.FindSet() then begin
-                    if Rec."Property Classification" <> '' then begin
-                        customercard.Validate("Customer Posting Group", Rec."Property Classification");
-                        customercard.Modify();
-                    end
-                end;
-                if Rec."Property Classification" <> '' then begin
-                    Rec."Customer Posting Group" := Rec."Property Classification";
-                    Rec.Modify();
-                end;
 
                 if not ConfigRecord.FindFirst() then
                     Error('Azure configuration is missing. Please set up the SAS URL in the Azure Configuration table.');
@@ -360,6 +365,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
         customer: Record Customer;
         salesline: Record "Sales Line";
         VATPostingSetup: Record "VAT Posting Setup";
+        customercard: Record Customer;
     begin
         approvaleditable := GetUserEditableStatus();
         NotAccessFieldFM := NotAccessFieldFinanceManager();
@@ -397,7 +403,7 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
             Rec."Unit Name" := tenancyContract."Unit Name";
             Rec."Contract Tenure" := tenancyContract."Contract Tenor";
             Rec."Tenant Name" := tenancyContract."Customer Name";
-            Rec."Property Classification" := tenancyContract."Property Classification";
+            // Rec."Property Classification" := tenancyContract."Property Classification";
             Rec."Contract Period" := Format(tenancyContract."Contract Start Date", 0, '<Day,2>/<Month,2>/<Year4>') + '  To  ' + Format(tenancyContract."Contract End Date", 0, '<Day,2>/<Month,2>/<Year4>')
         end else begin
 
@@ -408,7 +414,10 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
 
         end;
 
+
+
     end;
+
 
     var
         approvaleditable: Boolean;
