@@ -16,6 +16,7 @@ codeunit 50106 GenerateConsolidatedInvoices
         paymentschedulcard: Record "Payment Schedule";
         salesreciveablesetup: Record "Sales & Receivables Setup";
         paymentschedule2grid: Record "Payment Schedule2";
+        customercard: Record Customer;
         salesheader1card: Record "Sales Header";
         slaesheader1card1: Record "Sales Header";
         paymentschedulecardpage: Record "Payment Schedule";
@@ -24,7 +25,7 @@ codeunit 50106 GenerateConsolidatedInvoices
         // todaydate := Today();
         //todaydate := 20250705D;
         // todaydate := 20260530D;
-        todaydate := 20261129D;
+        todaydate := 20260526D;
         //todaydate := 20251129D; // for first installment date
         currentdate := Today();
 
@@ -48,7 +49,20 @@ codeunit 50106 GenerateConsolidatedInvoices
                         createSalesLines(SalesHeader1, paymentScheudle3);
                     end
                     else begin
-                        newsalesheader1 := CreateSalesInvoice(paymentScheudle3."Tenant ID", currentdate, paymentScheudle3."Contract ID", paymentScheudle3."Tenant Name");
+                        newsalesheader1 := CreateSalesInvoice(paymentScheudle3."Tenant ID", currentdate, paymentScheudle3."Contract ID", paymentScheudle3."Tenant Name", paymentScheudle3."Property Classification");
+                        customercard.SetRange("No.", newsalesheader1."Sell-to Customer No.");
+                        if customercard.FindSet() then begin
+                            if newsalesheader1."Property Classification" <> '' then begin
+                                customercard.Validate("Gen. Bus. Posting Group", newsalesheader1."Property Classification");
+                                customercard.Validate("Customer Posting Group", newsalesheader1."Property Classification");
+                                customercard.Modify();
+                            end
+                        end;
+                        if newsalesheader1."Property Classification" <> '' then begin
+                            newsalesheader1."Gen. Bus. Posting Group" := newsalesheader1."Property Classification";
+                            newsalesheader1."Customer Posting Group" := newsalesheader1."Property Classification";
+                            newsalesheader1.Modify();
+                        end;
                         createSalesLines(newsalesheader1, paymentScheudle3);
                     end;
 
@@ -97,7 +111,20 @@ codeunit 50106 GenerateConsolidatedInvoices
                                 createSalesLines(SalesHeader, paymentScheudle2);
                             end
                             else begin
-                                newsalesheader := CreateSalesInvoice(paymentScheudle2."Tenant ID", paymentScheudle2."Due Date", paymentScheudle2."Contract ID", paymentScheudle2."Tenant Name");
+                                newsalesheader := CreateSalesInvoice(paymentScheudle2."Tenant ID", paymentScheudle2."Due Date", paymentScheudle2."Contract ID", paymentScheudle2."Tenant Name", paymentScheudle2."Property Classification");
+                                customercard.SetRange("No.", newsalesheader."Sell-to Customer No.");
+                                if customercard.FindSet() then begin
+                                    if newsalesheader."Property Classification" <> '' then begin
+                                        customercard.Validate("Gen. Bus. Posting Group", newsalesheader."Property Classification");
+                                        customercard.Validate("Customer Posting Group", newsalesheader."Property Classification");
+                                        customercard.Modify();
+                                    end
+                                end;
+                                if newsalesheader."Property Classification" <> '' then begin
+                                    newsalesheader."Gen. Bus. Posting Group" := newsalesheader."Property Classification";
+                                    newsalesheader."Customer Posting Group" := newsalesheader."Property Classification";
+                                    newsalesheader.Modify();
+                                end;
                                 createSalesLines(newsalesheader, paymentScheudle2);
                             end;
 
@@ -139,7 +166,20 @@ codeunit 50106 GenerateConsolidatedInvoices
                                     createSalesLines(salesheader1card, paymentschedule2grid);
                                 end
                                 else begin
-                                    slaesheader1card1 := CreateSalesInvoice(paymentschedule2grid."Tenant ID", paymentschedule2grid."Due Date", paymentschedule2grid."Contract ID", paymentschedule2grid."Tenant Name");
+                                    slaesheader1card1 := CreateSalesInvoice(paymentschedule2grid."Tenant ID", paymentschedule2grid."Due Date", paymentschedule2grid."Contract ID", paymentschedule2grid."Tenant Name", paymentschedule2grid."Property Classification");
+                                    customercard.SetRange("No.", slaesheader1card1."Sell-to Customer No.");
+                                    if customercard.FindSet() then begin
+                                        if slaesheader1card1."Property Classification" <> '' then begin
+                                            customercard.Validate("Gen. Bus. Posting Group", slaesheader1card1."Property Classification");
+                                            customercard.Validate("Customer Posting Group", slaesheader1card1."Property Classification");
+                                            customercard.Modify();
+                                        end
+                                    end;
+                                    if slaesheader1card1."Property Classification" <> '' then begin
+                                        slaesheader1card1."Gen. Bus. Posting Group" := slaesheader1card1."Property Classification";
+                                        slaesheader1card1."Customer Posting Group" := slaesheader1card1."Property Classification";
+                                        slaesheader1card1.Modify();
+                                    end;
                                     createSalesLines(slaesheader1card1, paymentschedule2grid);
                                 end;
 
@@ -163,11 +203,12 @@ codeunit 50106 GenerateConsolidatedInvoices
 
 
 
-    procedure CreateSalesInvoice(TenantID: Code[20]; DueDate: Date; ContractID: Integer; TenantName: Text[100]): Record "Sales Header"
+    procedure CreateSalesInvoice(TenantID: Code[20]; DueDate: Date; ContractID: Integer; TenantName: Text[100]; PropertyClassification: Text[100]): Record "Sales Header"
     var
         salesHeader: Record "Sales Header";
         salesReciveable: Record "Sales & Receivables Setup";
         noseries: Codeunit "No. Series";
+        customercard: Record Customer;
     begin
         salesHeader.Init();
         if salesReciveable.FindSet() then
@@ -184,7 +225,7 @@ codeunit 50106 GenerateConsolidatedInvoices
         salesHeader."Posting Date" := Today;
         salesHeader."Shipment Date" := Today;
         salesHeader."Posting No. Series" := salesReciveable."Posted Invoice Nos.";
-
+        salesHeader."Property Classification" := PropertyClassification;
         salesHeader.Insert();
 
         exit(salesHeader);

@@ -140,19 +140,6 @@ pageextension 50503 salesinvoiceext extends "Sales Invoice List"
                 SalesHeader1: Record "Sales Header";
                 customercard: Record Customer;
             begin
-
-                customercard.SetRange("No.", Rec."Sell-to Customer No.");
-                if customercard.FindSet() then begin
-                    if Rec."Property Classification" <> '' then begin
-                        customercard.Validate("Customer Posting Group", Rec."Property Classification");
-                        customercard.Modify();
-                    end
-                end;
-                if Rec."Property Classification" <> '' then begin
-                    Rec."Customer Posting Group" := Rec."Property Classification";
-                    Rec.Modify();
-                end;
-
                 if not ConfigRecord.FindFirst() then
                     Error('Azure configuration is missing. Please set up the SAS URL in the Azure Configuration table.');
                 ValidFormats.Add('.png');

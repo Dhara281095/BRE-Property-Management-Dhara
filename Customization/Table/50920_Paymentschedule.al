@@ -188,6 +188,7 @@ table 50920 "Payment Schedule"
                 PaymentSchedule2."Property ID" := Rec."Property ID";
                 PaymentSchedule2."Tenant Name" := Rec."Tenant Name";
                 PaymentSchedule2."Tenant ID" := RevenueSubpage."TenantId";
+                PaymentSchedule2."Property Classification" := Rec."Property Classification";
                 PaymentSchedule2."Secondary Item Type" := RevenueSubpage."Secondary Item Type";
                 PaymentSchedule2.Amount := RevenueSubpage.Amount;
                 PaymentSchedule2."VAT Amount" := RevenueSubpage."VAT Amount";
@@ -263,6 +264,7 @@ table 50920 "Payment Schedule"
                 PaymentSchedule3."Property ID" := Rec."Property ID";
                 PaymentSchedule3."Tenant Name" := Rec."Tenant Name";
                 PaymentSchedule3."Tenant ID" := RevenueStructureSubpage."Tenant Id";
+                PaymentSchedule3."Property Classification" := Rec."Property Classification";
                 PaymentSchedule3."Secondary Item Type" := RevenueStructureSubpage."Secondary Item Type";
                 PaymentSchedule3.Amount := RevenueStructureSubpage.Amount;
                 PaymentSchedule3."VAT Amount" := RevenueStructureSubpage."VAT Amount";
