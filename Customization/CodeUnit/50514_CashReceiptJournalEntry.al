@@ -152,7 +152,7 @@ codeunit 50514 "Cash Receipt Journal Entry"
                     GenJournalLineRec."Line No." := LineNumber;
                     GenJournalLineRec."Document Type" := GenJournalLineRec."Document Type"::Payment;
                     GenJournalLineRec."Account Type" := GenJournalLineRec."Account Type"::"G/L Account";
-                    GenJournalLineRec."Account No." := Format(1001); // Customer from Payment Series
+                    GenJournalLineRec."Account No." := Format(1501); // Customer from Payment Series
                     GenJournalLineRec.Description := PaymentSeriesRec."Invoice #";
                     GenJournalLineRec.Amount := -PaymentSeriesRec."Amount Including VAT";
                     GenJournalLineRec."Amount (LCY)" := GenJournalLineRec.Amount;
