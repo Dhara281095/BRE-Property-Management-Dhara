@@ -725,6 +725,64 @@ page 50928 "Payment Mode Card2"
         IsApproved:= (Rec."Approval Status" <> Rec."Approval Status"::Approved);
     end;
 
+// procedure CreateChequeEntry()
+// var
+//     NextEntryNo: Integer;
+//     GenJournalLine: Record "Gen. Journal Line";
+//     GenJournalAccountType: Enum "Gen. Journal Account Type";
+//     GenJournalDocumentType: Enum "Gen. Journal Document Type";
+//     ChequeStatus: Enum "PDC Status Type Enum";
+//     GenJnlPostLine: Codeunit "Gen. Jnl.-Post Line";
+// begin
+//     if Rec."Cheque Status" <> ChequeStatus::"Cheque Received" then
+//         exit;
+
+
+//     // Filter to specific batch
+//     GenJournalLine.Reset();
+//     GenJournalLine.SetRange("Journal Template Name", 'CASH RECE');
+//     GenJournalLine.SetRange("Journal Batch Name", 'DEFAULT');
+
+//     if GenJournalLine.FindLast() then
+//         NextEntryNo := GenJournalLine."Line No." + 1
+//     else
+//         NextEntryNo := 1;
+
+//     Clear(GenJournalLine);
+//     GenJournalLine.Init();
+//     GenJournalLine."Journal Template Name" := 'CASH RECE';
+//     GenJournalLine."Journal Batch Name" := 'DEFAULT';
+//     GenJournalLine."Line No." := NextEntryNo;
+//     GenJournalLine."Posting Date" := Today;
+//     GenJournalLine."Document Type" := GenJournalDocumentType::Payment;
+//     GenJournalLine."Document No." := Rec."Cheque Number";
+//     GenJournalLine."Account Type" := GenJournalAccountType::Customer;
+//     GenJournalLine."Account No." := Rec."Tenant Id";
+//     GenJournalLine."Description" := Rec."Tenant Name";
+//     GenJournalLine.Amount := -(Rec."Amount Including VAT");
+//     GenJournalLine."Amount (LCY)" := GenJournalLine.Amount;
+//     GenJournalLine."Bal. Account Type" := GenJournalAccountType::"G/L Account";
+//     GenJournalLine."Bal. Account No." := '2001';
+//     GenJournalLine.Insert(true);
+
+
+//     // Optional: Post line
+//     GenJnlPostLine.RunWithCheck(GenJournalLine);
+
+// // **Delete the Journal Line After Posting**
+//                         GenJournalLine.Reset();
+//                         GenJournalLine.SetRange("Journal Template Name", 'CASH RECE');
+//                         GenJournalLine.SetRange("Journal Batch Name", 'DEFAULT');
+                       
+
+//                         if GenJournalLine.FindSet() then begin
+//                             GenJournalLine.DeleteAll();
+//                         end;
+
+//     Message('Cash Receipt journal created successfully.');
+// end;
+
+
 procedure CreateChequeEntry()
 var
     NextEntryNo: Integer;
@@ -734,42 +792,56 @@ var
     ChequeStatus: Enum "PDC Status Type Enum";
     GenJnlPostLine: Codeunit "Gen. Jnl.-Post Line";
 begin
-    if Rec."Cheque Status" <> ChequeStatus::"Cheque Received" then
-        exit;
+    // Filter all records with Cheque Status = 'Cheque Received'
+    Rec.SetRange("Cheque Status", ChequeStatus::"Cheque Received");
+     
+    if Rec.FindSet() then
+        repeat
+            // Get next line number for journal
+            GenJournalLine.Reset();
+            GenJournalLine.SetRange("Journal Template Name", 'CASH RECE');
+            GenJournalLine.SetRange("Journal Batch Name", 'DEFAULT');
 
-    // Filter to specific batch
+            if GenJournalLine.FindLast() then
+                NextEntryNo := GenJournalLine."Line No." + 1
+            else
+                NextEntryNo := 1;
+
+            Clear(GenJournalLine);
+            GenJournalLine.Init();
+            GenJournalLine."Journal Template Name" := 'CASH RECE';
+            GenJournalLine."Journal Batch Name" := 'DEFAULT';
+            GenJournalLine."Line No." := NextEntryNo;
+            GenJournalLine."Posting Date" := Today;
+            GenJournalLine."Document Type" := GenJournalDocumentType::Payment;
+            GenJournalLine."Document No." := Rec."Cheque Number";
+            GenJournalLine."Account Type" := GenJournalAccountType::Customer;
+            GenJournalLine."Account No." := Rec."Tenant Id";
+            GenJournalLine."Description" := Rec."Tenant Name";
+            GenJournalLine.Amount := -Rec."Amount Including VAT";
+            GenJournalLine."Amount (LCY)" := GenJournalLine.Amount;
+            GenJournalLine."Bal. Account Type" := GenJournalAccountType::"G/L Account";
+            GenJournalLine."Bal. Account No." := '2001';
+            GenJournalLine.Insert(true);
+
+            // Optional: Post line
+            GenJnlPostLine.RunWithCheck(GenJournalLine);
+        until Rec.Next() = 0;
+
+    // Optional: Delete all posted lines in the batch
     GenJournalLine.Reset();
     GenJournalLine.SetRange("Journal Template Name", 'CASH RECE');
     GenJournalLine.SetRange("Journal Batch Name", 'DEFAULT');
+    if GenJournalLine.FindSet() then
+        GenJournalLine.DeleteAll();
+  
+    Message('Cash Receipt journal entries created successfully for all cheques received.');
+    Rec.SetRange("Cheque Status");
 
-    if GenJournalLine.FindLast() then
-        NextEntryNo := GenJournalLine."Line No." + 1
-    else
-        NextEntryNo := 1;
-
-    Clear(GenJournalLine);
-    GenJournalLine.Init();
-    GenJournalLine."Journal Template Name" := 'CASH RECE';
-    GenJournalLine."Journal Batch Name" := 'DEFAULT';
-    GenJournalLine."Line No." := NextEntryNo;
-    GenJournalLine."Posting Date" := Today;
-    GenJournalLine."Document Type" := GenJournalDocumentType::Payment;
-    GenJournalLine."Document No." := Rec."Cheque Number";
-    GenJournalLine."Account Type" := GenJournalAccountType::Customer;
-    GenJournalLine."Account No." := Rec."Tenant Id";
-    GenJournalLine."Description" := Rec."Tenant Name";
-    GenJournalLine.Amount := -(Rec."Amount Including VAT");
-    GenJournalLine."Amount (LCY)" := GenJournalLine.Amount;
-    GenJournalLine."Bal. Account Type" := GenJournalAccountType::"G/L Account";
-    GenJournalLine."Bal. Account No." := '2001';
-    GenJournalLine.Insert(true);
-
-    // Optional: Post line
-    GenJnlPostLine.RunWithCheck(GenJournalLine);
-    Clear(GenJournalLine);
-
-    Message('Cash Receipt journal created successfully.');
+// Refresh the page so all records are visible again
+CurrPage.Update(false);
 end;
+
 }
     
 
