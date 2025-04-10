@@ -25,7 +25,7 @@ codeunit 50106 GenerateConsolidatedInvoices
         // todaydate := Today();
         //todaydate := 20250705D;
         // todaydate := 20260530D;
-        todaydate := 20260526D;
+        todaydate := 20260224D;
         //todaydate := 20251129D; // for first installment date
         currentdate := Today();
 
@@ -262,23 +262,23 @@ codeunit 50106 GenerateConsolidatedInvoices
         saleline."Sell-to Customer No." := salesheader1."Sell-to Customer No.";
         item.SetRange(Description, newpaymentschedule2."Secondary Item Type");
         if item.FindSet() then begin
-            if newpaymentschedule2."Property Classification" <> '' then begin
-                item.SetRange(Description, newpaymentschedule2."Secondary Item Type");
-                item.SetRange("Primary Classification Type", newpaymentschedule2."Property Classification");
-                if item.FindSet() then begin
-                    saleline."No." := item."No.";
-                    saleline.Description := item.Description;
-                    saleline."Gen. Prod. Posting Group" := item."Gen. Prod. Posting Group";
-                    saleline."VAT Prod. Posting Group" := item."VAT Prod. Posting Group";
-                    saleline."Unit of Measure Code" := item."Base Unit of Measure";
-                end;
-            end else begin
-                saleline."No." := item."No.";
-                saleline.Description := item.Description;
-                saleline."Gen. Prod. Posting Group" := item."Gen. Prod. Posting Group";
-                saleline."VAT Prod. Posting Group" := item."VAT Prod. Posting Group";
-                saleline."Unit of Measure Code" := item."Base Unit of Measure";
-            end;
+            // if newpaymentschedule2."Property Classification" <> '' then begin
+            //     item.SetRange(Description, newpaymentschedule2."Secondary Item Type");
+            //     item.SetRange("Primary Classification Type", newpaymentschedule2."Property Classification");
+            //     if item.FindSet() then begin
+            //         saleline."No." := item."No.";
+            //         saleline.Description := item.Description;
+            //         saleline."Gen. Prod. Posting Group" := item."Gen. Prod. Posting Group";
+            //         saleline."VAT Prod. Posting Group" := item."VAT Prod. Posting Group";
+            //         saleline."Unit of Measure Code" := item."Base Unit of Measure";
+            //     end;
+            // end else begin
+            saleline."No." := item."No.";
+            saleline.Description := item.Description;
+            saleline."Gen. Prod. Posting Group" := item."Gen. Prod. Posting Group";
+            saleline."VAT Prod. Posting Group" := item."VAT Prod. Posting Group";
+            saleline."Unit of Measure Code" := item."Base Unit of Measure";
+            //end;
 
         end;
         saleline."Quantity (Base)" := 1;
