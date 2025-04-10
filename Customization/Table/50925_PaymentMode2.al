@@ -202,6 +202,11 @@ table 50925 "Payment Mode2"
                 CashReceiptJournalCodeunit: Codeunit 50514;
             begin
                 if Rec."Payment Status" = Rec."Payment Status"::Received then begin
+                    if Rec."Payment Mode" = 'Bank Transfer' then begin
+                        if Rec."Deposit Bank" = '' then begin
+                            Error('Deposite Bank must be filled when payment mode is bank transfer');
+                        end;
+                    end;
                     Email.SendEmail(Rec);
                     if Rec."Payment Status" = Rec."Payment Status"::Received then begin
                         emailrec.SendEmail(Rec);

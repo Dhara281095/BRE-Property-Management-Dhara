@@ -76,9 +76,11 @@ codeunit 50514 "Cash Receipt Journal Entry"
         // GenJournalBatchRec: Record "Gen. Journal Batch";
         GenJnlPostLine: Codeunit "Gen. Jnl.-Post Line";
         COACode: Record "COA Setup";
+        BankAccountRec: Record "Bank Account";
         LineNumber: Integer;
         BalAccountNo: Code[20];
         BatchName: Code[20];
+        ErrorMessage: Text[100];
     begin
         // Find the Payment Series Record
         // PaymentSeriesRec.Reset();
@@ -100,49 +102,89 @@ codeunit 50514 "Cash Receipt Journal Entry"
                 PaymentScheduleRec.SetRange("Contract ID", PaymentSeriesRec."Contract ID");
                 if PaymentScheduleRec.FindSet() then begin
                     LineNumber := 0;
-                    repeat
-                        COACode.Reset();
-                        COACode.SetRange(Item, PaymentScheduleRec."Secondary Item Type");
-                        if COACode.FindFirst() then begin
-                            BalAccountNo := COACode.COA_Account; // Get linked COA No.
-                        end else begin
-                            Error('No Chart of Account found for description: %1', PaymentScheduleRec."Secondary Item Type");
-                        end;
-                        LineNumber := GenJournalLineRec."Line No." + 10000;
-                        Clear(GenJournalLineRec);
-                        GenJournalLineRec.Init();
-                        GenJournalLineRec."Journal Template Name" := 'CASH RECE';
-                        GenJournalLineRec."Journal Batch Name" := 'DEFAULT';
-                        GenJournalLineRec."Document No." := Format(PaymentSeriesCode."Entry No.");
-                        GenJournalLineRec."Line No." := LineNumber;
-                        GenJournalLineRec."Posting Date" := Today;
-                        GenJournalLineRec."Document Type" := GenJournalLineRec."Document Type"::Payment;
-                        GenJournalLineRec."Account Type" := GenJournalLineRec."Account Type"::Customer;
-                        GenJournalLineRec."Account No." := PaymentSeriesRec."Tenant Id"; // Customer from Payment Series
-                        GenJournalLineRec."Applies-to Doc. Type" := GenJournalLineRec."Applies-to Doc. Type"::Invoice;
-                        GenJournalLineRec."Applies-to Doc. No." := PaymentSeriesRec."Invoice #";
-                        // GenJournalLineRec."Bal. Account Type" := GenJournalLineRec."Bal. Account Type"::"Bank Account";
-                        GenJournalLineRec."Bal. Account No." := BalAccountNo; // Bank from Payment Series
-                        GenJournalLineRec.Description := PaymentScheduleRec."Secondary Item Type";
-                        GenJournalLineRec.Amount := -PaymentSeriesRec."Amount Including VAT";
-                        GenJournalLineRec."Amount (LCY)" := GenJournalLineRec.Amount;
-                        GenJournalLineRec.Insert();
+                    // repeat
+                    //     COACode.Reset();
+                    //     COACode.SetRange(Item, PaymentScheduleRec."Secondary Item Type");
+                    //     if COACode.FindFirst() then begin
+                    //         BalAccountNo := COACode.COA_Account; // Get linked COA No.
+                    //     end else begin
+                    //         ErrorMessage := StrSubstNo('No Chart of Account found for description: %1', PaymentScheduleRec."Secondary Item Type");
+                    //         Error(ErrorMessage);
+                    //     end;
+                    //     LineNumber := GenJournalLineRec."Line No." + 10000;
+                    //     Clear(GenJournalLineRec);
+                    //     GenJournalLineRec.Init();
+                    //     GenJournalLineRec."Journal Template Name" := 'CASH RECE';
+                    //     GenJournalLineRec."Journal Batch Name" := 'DEFAULT';
+                    //     GenJournalLineRec."Document No." := Format(PaymentSeriesCode."Entry No.");
+                    //     GenJournalLineRec."Line No." := LineNumber;
+                    //     GenJournalLineRec."Posting Date" := Today;
+                    //     GenJournalLineRec."Document Type" := GenJournalLineRec."Document Type"::Payment;
+                    //     GenJournalLineRec."Account Type" := GenJournalLineRec."Account Type"::Customer;
+                    //     GenJournalLineRec."Account No." := PaymentSeriesRec."Tenant Id"; // Customer from Payment Series
+                    //     GenJournalLineRec."Applies-to Doc. Type" := GenJournalLineRec."Applies-to Doc. Type"::Invoice;
+                    //     GenJournalLineRec."Applies-to Doc. No." := PaymentSeriesRec."Invoice #";
+                    //     // GenJournalLineRec."Bal. Account Type" := GenJournalLineRec."Bal. Account Type"::"Bank Account";
+                    //     GenJournalLineRec."Bal. Account No." := BalAccountNo; // Bank from Payment Series
+                    //     GenJournalLineRec.Description := PaymentScheduleRec."Secondary Item Type";
+                    //     GenJournalLineRec.Amount := -PaymentScheduleRec."Amount Including VAT";
+                    //     GenJournalLineRec."Amount (LCY)" := GenJournalLineRec.Amount;
+                    //     // BankAccountRec.Reset();
+                    //     // BankAccountRec.SetRange("Search Name", PaymentSeriesRec."Deposit Bank");
+                    //     // if BankAccountRec.FindSet() then begin
+                    //     //     //GenJournalLineRec."Bal. Account No." := BankAccountRec."No.";
+                    //     //     GenJournalLineRec."Currency Code" := BankAccountRec."Currency Code";
+                    //     // end;
+                    //     GenJournalLineRec.Insert();
 
-                        // Optionally Post the Journal Entry
-                        GenJnlPostLine.RunWithCheck(GenJournalLineRec);
+                    //     // Optionally Post the Journal Entry
+                    //     GenJnlPostLine.RunWithCheck(GenJournalLineRec);
+
+                    // until PaymentScheduleRec.Next() = 0;
+
+                    LineNumber := GenJournalLineRec."Line No." + 10000;
+                    Clear(GenJournalLineRec);
+                    GenJournalLineRec.Init();
+                    GenJournalLineRec."Journal Template Name" := 'CASH RECE';
+                    GenJournalLineRec."Journal Batch Name" := 'DEFAULT';
+                    GenJournalLineRec."Document No." := Format(PaymentSeriesCode."Entry No.");
+                    GenJournalLineRec."Posting Date" := Today;
+                    GenJournalLineRec."Line No." := LineNumber;
+                    GenJournalLineRec."Document Type" := GenJournalLineRec."Document Type"::Payment;
+                    GenJournalLineRec."Account Type" := GenJournalLineRec."Account Type"::"G/L Account";
+                    GenJournalLineRec."Account No." := Format(1001); // Customer from Payment Series
+                    GenJournalLineRec.Description := PaymentSeriesRec."Invoice #";
+                    GenJournalLineRec.Amount := -PaymentSeriesRec."Amount Including VAT";
+                    GenJournalLineRec."Amount (LCY)" := GenJournalLineRec.Amount;
+
+                    // GenJournalLineRec."Bal. Account No." := PaymentSeriesRec."Deposit Bank";
+                    BankAccountRec.Reset();
+                    BankAccountRec.SetRange("Search Name", PaymentSeriesRec."Deposit Bank");
+                    if BankAccountRec.FindSet() then begin
+                        GenJournalLineRec."Bal. Account Type" := GenJournalLineRec."Bal. Account Type"::"Bank Account";
+                        GenJournalLineRec."Bal. Account No." := BankAccountRec."No.";
+                        // GenJournalLineRec."Currency Code" := BankAccountRec."Currency Code";
+                    end
+                    else begin
+                        GenJournalLineRec."Bal. Account Type" := GenJournalLineRec."Bal. Account Type"::"G/L Account";
+                        GenJournalLineRec."Bal. Account No." := '3001';
+                    end;
 
 
-                        // **Delete the Journal Line After Posting**
-                        GenJournalLineRec.Reset();
-                        GenJournalLineRec.SetRange("Journal Template Name", 'CASH RECE');
-                        GenJournalLineRec.SetRange("Journal Batch Name", 'DEFAULT');
-                        GenJournalLineRec.SetRange("Document No.", Format(PaymentSeriesCode."Entry No."));
+                    GenJournalLineRec.Insert();
 
-                        if GenJournalLineRec.FindSet() then begin
-                            GenJournalLineRec.DeleteAll();
-                        end;
+                    // Optionally Post the Journal Entry
+                    GenJnlPostLine.RunWithCheck(GenJournalLineRec);
 
-                    until PaymentScheduleRec.Next() = 0;
+                    // **Delete the Journal Line After Posting**
+                    GenJournalLineRec.Reset();
+                    GenJournalLineRec.SetRange("Journal Template Name", 'CASH RECE');
+                    GenJournalLineRec.SetRange("Journal Batch Name", 'DEFAULT');
+                    GenJournalLineRec.SetRange("Document No.", Format(PaymentSeriesCode."Entry No."));
+                    GenJournalLineRec."Posting Date" := Today;
+                    if GenJournalLineRec.FindSet() then begin
+                        GenJournalLineRec.DeleteAll();
+                    end;
                     Message('Cash Receipt journal created successfully.');
                 end;
                 // Message('1111');
