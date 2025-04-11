@@ -91,6 +91,23 @@ page 50906 "Additional Charges Sub Card"
             }
         }
     }
+    actions
+    {
+        area(Processing)
+        {
+            action(Invoice)
+            {
+                ApplicationArea = All;
+                Caption = 'Generate Invoice';
+                Image = NewInvoice;
+                trigger OnAction()
+                var
+                begin
+
+                end;
+            }
+        }
+    }
 
     procedure SetContractID(pContractID: Integer)
     begin
