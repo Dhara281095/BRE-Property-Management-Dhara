@@ -3,7 +3,7 @@ page 50954 "Management Fee MasterData List"
     PageType = List;
     SourceTable = "Management Fee MasterData";
     ApplicationArea = All;
-    Caption = 'Management Fee Master Data List';
+    Caption = 'Management Fee Master Data';
     UsageCategory = Lists;
 
     layout

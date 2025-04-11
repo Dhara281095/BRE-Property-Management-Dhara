@@ -14,7 +14,6 @@ table 50927 "Vendor Contract Document"
         {
             DataClassification = ToBeClassified;
             Caption = 'Amount';
-
         }
         field(50102; "Payment Status"; Enum "Payment Status")
         {
@@ -25,7 +24,6 @@ table 50927 "Vendor Contract Document"
         {
             DataClassification = ToBeClassified;
             Caption = 'Invoice ID';
-            Editable = false;
         }
         field(50104; "Invoice Document Upload"; Text[2000])
         {
@@ -43,7 +41,6 @@ table 50927 "Vendor Contract Document"
         {
             DataClassification = ToBeClassified;
             Caption = 'Receipt ID';
-            Editable = false;
         }
         field(50107; "Invoice Document View"; Text[100])
         {
@@ -75,9 +72,7 @@ table 50927 "Vendor Contract Document"
             DataClassification = ToBeClassified;
             Caption = 'Receipt Document URL';
         }
-
     }
-
 
     keys
     {
@@ -86,5 +81,4 @@ table 50927 "Vendor Contract Document"
             Clustered = true;
         }
     }
-
 }

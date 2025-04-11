@@ -123,18 +123,12 @@ page 50942 "Vendor Profile Card"
                         //    else Message('Upload Cheque cannot be access for Payment Status is Cancelled');
                     end;
                 }
-            }
-
-            group(General)
-            {
-                Caption = 'General';
 
                 field(Blocked; Rec.Blocked)
                 {
                     ApplicationArea = Basic, Suite;
                     ToolTip = 'Specifies which transactions with the vendor that cannot be processed, for example a vendor that is declared insolvent.';
                 }
-
                 field("Balance (LCY)"; Rec."Balance (LCY)")
                 {
                     ApplicationArea = Basic, Suite;
@@ -150,8 +144,8 @@ page 50942 "Vendor Profile Card"
                     ApplicationArea = Basic, Suite;
                     ToolTip = 'Specifies the total value of your unpaid purchases from the vendor in the current fiscal year. It is calculated from amounts including VAT on all open purchase invoices and credit memos.';
                 }
-
             }
+
             group("Address & Contact")
             {
                 Caption = 'Address & Contact';
@@ -186,7 +180,6 @@ page 50942 "Vendor Profile Card"
                     field("Post Code"; Rec."Post Code")
                     {
                         ApplicationArea = Basic, Suite;
-                        Importance = Promoted;
                         ToolTip = 'Specifies the postal code.';
                     }
                 }
@@ -198,15 +191,11 @@ page 50942 "Vendor Profile Card"
                 field(MobilePhoneNo; Rec."Mobile Phone No.")
                 {
                     Caption = 'Mobile Phone No.';
-                    ApplicationArea = Basic, Suite;
-                    ExtendedDatatype = PhoneNo;
                     ToolTip = 'Specifies the vendor''s mobile telephone number.';
                 }
                 field("E-Mail"; Rec."E-Mail")
                 {
                     ApplicationArea = Basic, Suite;
-                    ExtendedDatatype = EMail;
-                    Importance = Promoted;
                     ToolTip = 'Specifies the vendor''s email address.';
                 }
                 field("Home Page"; Rec."Home Page")
@@ -233,8 +222,6 @@ page 50942 "Vendor Profile Card"
             group(Invoicing)
             {
                 Caption = 'Invoicing';
-                AboutTitle = 'Manage invoicing from the vendor';
-                AboutText = 'Choose tax and other settings for the invoices you receive from this vendor. Assign posting groups to control how transactions with this vendor are grouped and posted, based on type of trade or market.';
 
                 field("VAT Registration No."; Rec."VAT Registration No.")
                 {
@@ -244,7 +231,6 @@ page 50942 "Vendor Profile Card"
                 field("Price Calculation Method"; Rec."Price Calculation Method")
                 {
                     ApplicationArea = Basic, Suite;
-                    Importance = Promoted;
                     ToolTip = 'Specifies the default price calculation method.';
                 }
                 field("Price Including VAT"; Rec."Price Including VAT")
@@ -257,8 +243,6 @@ page 50942 "Vendor Profile Card"
             group(Payments)
             {
                 Caption = 'Payments';
-                AboutTitle = 'Manage payments to the vendor';
-                AboutText = 'Choose the payments terms, payment method, priority, and other settings used when processing and suggesting payments to this vendor.';
 
                 field("Application Method"; Rec."Application Method")
                 {
@@ -268,13 +252,11 @@ page 50942 "Vendor Profile Card"
                 field("Payment Terms Code"; Rec."Payment Terms Code")
                 {
                     ApplicationArea = Basic, Suite;
-                    Importance = Promoted;
                     ToolTip = 'Specifies a formula that calculates the payment due date, payment discount date, and payment discount amount.';
                 }
                 field("Payment Method Code"; Rec."Payment Method Code")
                 {
                     ApplicationArea = Basic, Suite;
-                    Importance = Promoted;
                     ToolTip = 'Specifies how to make payment, such as with bank transfer, cash, or check.';
                 }
                 field(Priority; Rec.Priority)
@@ -286,7 +268,6 @@ page 50942 "Vendor Profile Card"
                 {
                     ApplicationArea = Basic, Suite;
                     ToolTip = 'Specifies if the vendor allows payment tolerance.';
-
                 }
                 field("Preferred Bank Account Code"; Rec."Preferred Bank Account Code")
                 {
@@ -315,25 +296,21 @@ page 50942 "Vendor Profile Card"
                 field("Location Code"; Rec."Location Code")
                 {
                     ApplicationArea = Location;
-                    Importance = Promoted;
                     ToolTip = 'Specifies the warehouse location where items from the vendor must be received by default.';
                 }
                 field("Shipment Method Code"; Rec."Shipment Method Code")
                 {
                     ApplicationArea = Suite;
-                    Importance = Promoted;
                     ToolTip = 'Specifies the delivery conditions of the related shipment, such as free on board (FOB).';
                 }
                 field("Lead Time Calculation"; Rec."Lead Time Calculation")
                 {
                     ApplicationArea = Basic, Suite;
-                    Importance = Promoted;
                     ToolTip = 'Specifies a date formula for the amount of time it takes to replenish the item.';
                 }
                 field("Base Calendar Code"; Rec."Base Calendar Code")
                 {
                     ApplicationArea = Basic, Suite;
-                    DrillDown = false;
                     ToolTip = 'Specifies a customizable calendar for delivery planning that holds the vendor''s working days and holidays.';
                 }
             }
@@ -350,6 +327,7 @@ page 50942 "Vendor Profile Card"
 
             group("Contract Document")
             {
+                Caption = 'Documents';
                 part("Contract Documents"; "Vendor Contract Document Sub")
                 {
                     SubPageLink = "Vendor ID" = FIELD("Vendor ID"); // Link to filter attachments for this owner only
