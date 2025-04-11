@@ -47,14 +47,14 @@ page 50938 "FinalSettlemtCard"
                 {
                     ApplicationArea = All;
                     Editable = false;
-                    // Visible = false;
+                    Visible = false;
                     Caption = 'FC ID';
                 }
                 field("Contract ID"; Rec."Contract ID")
                 {
                     ApplicationArea = All;
                     Editable = false;
-                    // Visible = false;
+                    Visible = false;
                     Caption = 'Contract ID';
                 }
                 field("Receivable Total Amount"; Rec."Receivable Total Amount")
@@ -195,13 +195,13 @@ page 50938 "FinalSettlemtCard"
                 {
                     ApplicationArea = All;
                     Editable = false;
-                    //  Visible = false;
+                    Visible = false;
                 }
                 field("Tenant Email"; Rec."Tenant Email")
                 {
                     ApplicationArea = All;
                     Editable = false;
-                    //  Visible = false;
+                    Visible = false;
                 }
                 field(Invoiced; Rec.Invoiced)
                 {
@@ -374,10 +374,19 @@ page 50938 "FinalSettlemtCard"
                 Rec.Modify();
             end;
 
+            if Rec."Receivable Payment Status" = PaymentStatus::Received then
+                exit;
+
             if Rec."Receivable Due Date" = Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Due;
             end
             else if Rec."Receivable Due Date" > Today() then begin
+                Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
+            end
+            else if Rec."Receivable Due Date" = 0D then begin
+                Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
+            end
+            else if Rec."Receivable Due Date" < Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Overdue;
             end;
             Rec.Modify();
@@ -418,10 +427,19 @@ page 50938 "FinalSettlemtCard"
                 Rec.Modify();
             end;
 
+            if Rec."Receivable Payment Status" = PaymentStatus::Received then
+                exit;
+
             if Rec."Receivable Due Date" = Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Due;
             end
             else if Rec."Receivable Due Date" > Today() then begin
+                Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
+            end
+            else if Rec."Receivable Due Date" = 0D then begin
+                Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
+            end
+            else if Rec."Receivable Due Date" < Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Overdue;
             end;
             Rec.Modify();
@@ -467,10 +485,19 @@ page 50938 "FinalSettlemtCard"
                 Rec.Modify();
             end;
 
+            if Rec."Receivable Payment Status" = PaymentStatus::Received then
+                exit;
+
             if Rec."Receivable Due Date" = Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Due;
             end
             else if Rec."Receivable Due Date" > Today() then begin
+                Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
+            end
+            else if Rec."Receivable Due Date" = 0D then begin
+                Rec."Receivable Payment Status" := PaymentStatus::Scheduled;
+            end
+            else if Rec."Receivable Due Date" < Today() then begin
                 Rec."Receivable Payment Status" := PaymentStatus::Overdue;
             end;
             Rec.Modify();
