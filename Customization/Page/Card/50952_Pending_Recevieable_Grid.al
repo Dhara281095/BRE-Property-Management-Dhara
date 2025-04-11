@@ -116,6 +116,24 @@ page 50952 "Pending Recevieable Grid"
             }
         }
     }
+    actions
+    {
+        area(Processing)
+        {
+            action(Invoice)
+            {
+                ApplicationArea = All;
+                Caption = 'Generate Invoice';
+                Image = NewInvoice;
+                trigger OnAction()
+                var
+                begin
+
+                end;
+            }
+        }
+    }
+
 
     trigger OnAfterGetRecord()
     var
