@@ -8,8 +8,7 @@ table 50926 "Vendor Profile"
         {
             DataClassification = ToBeClassified;
             Caption = 'Vendor ID';
-            AutoIncrement = true;
-            Editable = false;
+            TableRelation = Vendor."No.";
         }
 
         field(50101; "Vendor Name"; Text[100])
@@ -31,6 +30,12 @@ table 50926 "Vendor Profile"
         {
             DataClassification = ToBeClassified;
             Caption = 'End Date';
+        }
+        field(50146; "Vendor Category"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Vendor Category';
+            TableRelation = "Vendor Category"."Vendor Category Type";
         }
         field(50105; "Calculation Method"; Option)
         {
@@ -91,12 +96,10 @@ table 50926 "Vendor Profile"
         field(50115; Address; Text[100])
         {
             Caption = 'Address';
-            OptimizeForTextSearch = true;
         }
         field(50116; "Address 2"; Text[50])
         {
             Caption = 'Address 2';
-            OptimizeForTextSearch = true;
         }
         field(50117; "Country/Region Code"; Code[10])
         {
@@ -156,11 +159,10 @@ table 50926 "Vendor Profile"
             Caption = 'Price Including VAT';
         }
 
-        field(50131; "Application Method"; Option)
+        field(50131; "Application Method"; Enum "Application Method")
         {
             DataClassification = ToBeClassified;
-            Caption = 'Blocked';
-            OptionMembers = " ","Company","Person","Government";
+            Caption = 'Application Method';
         }
         field(50132; "Payment Terms Code"; Code[10])
         {
@@ -182,11 +184,10 @@ table 50926 "Vendor Profile"
         {
             Caption = 'Preferred Bank Account Code';
         }
-        field(50137; "Partner Type"; Option)
+        field(50137; "Partner Type"; Enum "Partner Type")
         {
             DataClassification = ToBeClassified;
-            Caption = 'Blocked';
-            OptionMembers = "Manual","Apply to Oldest";
+            Caption = 'Partner Type';
         }
         field(50138; "Cash Flow Payment Terms Code"; Code[100])
         {
@@ -219,7 +220,7 @@ table 50926 "Vendor Profile"
         field(50145; "Receive E-Document To"; Option)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Blocked';
+            Caption = 'Receive E-Document To';
             OptionMembers = " ","Purchase Order","Purchase Invoice";
         }
 
