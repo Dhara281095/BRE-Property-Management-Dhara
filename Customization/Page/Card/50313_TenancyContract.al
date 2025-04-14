@@ -1596,6 +1596,11 @@ page 50313 "Tenancy Contract Card"
                     end;
                 }
 
+                field("Previous Status"; Rec."Previous Status")
+                {
+                    ApplicationArea = All;
+                }
+
 
 
 
