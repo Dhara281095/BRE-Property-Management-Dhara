@@ -1602,7 +1602,7 @@ table 50307 "Tenancy Contract"
             Editable = false;
 
         }
-        field(50196; "Previous Status"; Code[30])
+        field(50196; "Previous Status"; Text[100])
         {
             DataClassification = ToBeClassified;
             Caption = 'Previous Status';
