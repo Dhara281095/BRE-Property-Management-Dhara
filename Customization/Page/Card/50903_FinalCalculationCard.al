@@ -983,6 +983,8 @@ page 50903 "Final Calculation Card"
                 RecvieableCalcGrid."Contract ID" := RentCalc2."Contract ID";
                 RecvieableCalcGrid."RevenueDescription" := RentCalc2."Secondary Item Type";
                 RecvieableCalcGrid."Termination Date" := Rec."Termination Date";
+                RecvieableCalcGrid."Tenant ID" := Rec."Tenant ID";
+                RecvieableCalcGrid."Unit Type" := Rec."Unit Type";
                 RecvieableCalcGrid.Insert();
                 Clear(RecvieableCalcGrid);
             until RentCalc2.Next() = 0;
