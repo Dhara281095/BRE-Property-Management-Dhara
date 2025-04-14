@@ -97,6 +97,10 @@ page 50703 "tenantContractApi"
             {
                 Caption = 'Payment Reminder';
             }
+            field("PreviousStatus"; Rec."Previous Status")
+            {
+                Caption = 'Payment Reminder';
+            }
 
 
 
