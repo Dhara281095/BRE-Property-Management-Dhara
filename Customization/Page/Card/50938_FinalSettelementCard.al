@@ -203,6 +203,12 @@ page 50938 "FinalSettlemtCard"
                     Editable = false;
                     Visible = false;
                 }
+                field("Tenant Name"; Rec."Tenant Name")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    // Visible = false;
+                }
                 field(Invoiced; Rec.Invoiced)
                 {
                     ApplicationArea = All;

@@ -39,7 +39,7 @@ codeunit 50103 "FS_Receivable Payment Receipt"
                                    'Payment Receipt Attached_' + Format(ConsolidatedInvoiceHeader."Contract ID"),
                                    '<html>' +
                                    '<body>' +
-                                   '<p>Dear ' + ConsolidatedInvoiceHeader."Tenant ID" + ',</p>' +
+                                    '<p>Dear ' + ConsolidatedInvoiceHeader."Tenant Name" + ',</p>' +
                                    '<p>Your payment has been received. Please find your receipt attached.</p>' +
                                    '</body>' +
                                    '</html>',
