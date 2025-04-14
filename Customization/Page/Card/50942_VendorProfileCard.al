@@ -15,6 +15,7 @@ page 50942 "Vendor Profile Card"
                 field("Vendor ID"; Rec."Vendor ID")
                 {
                     ApplicationArea = All;
+                    Lookup = true;
                 }
 
                 field("Vendor Name"; Rec."Vendor Name")
@@ -36,7 +37,10 @@ page 50942 "Vendor Profile Card"
                 {
                     ApplicationArea = All;
                 }
-
+                field("Vendor Category"; Rec."Vendor Category")
+                {
+                    ApplicationArea = All;
+                }
                 field("Calculation Method"; Rec."Calculation Method")
                 {
                     ApplicationArea = All;
