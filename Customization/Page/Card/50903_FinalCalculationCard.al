@@ -376,58 +376,58 @@ page 50903 "Final Calculation Card"
                         Editable = false;
                     }
                 }
-                group(Summary)
+
+            }
+            group("Summary")
+            {
+                field("Total Claim"; Rec."Total Claim")
                 {
-                    field("Total Claim"; Rec."Total Claim")
-                    {
-                        ApplicationArea = All;
-                        Editable = false;
-                    }
-                    field("Total Adjustment"; Rec."Total Adjustment")
-                    {
-                        ApplicationArea = All;
-                        Editable = false;
-                        Visible = false;
-                    }
-                    field("Total Refund"; Rec."Total Refund")
-                    {
-                        ApplicationArea = All;
-                        Editable = false;
-                    }
-                    field("Summery Net Balance"; Rec."Summery Net Balance")
-                    {
-                        ApplicationArea = All;
-                        Editable = false;
-                    }
-                    field("Amount Refundable"; Rec."Amount Refundable")
-                    {
-                        ApplicationArea = All;
-                        // Editable = false;
-                        trigger OnValidate()
-                        begin
-                            if Rec."Amount Refundable" <> 0 then
-                                IsRefundable := true
-                            else
-                                IsReceivable := true;
-                            UpdateCanPost();
-                        end;
-                    }
-                    field("Net Receivable From The Tenant"; Rec."Net Receivable From The Tenant")
-                    {
-                        ApplicationArea = All;
-                        // Editable = false;
-
-                        trigger OnValidate()
-                        begin
-                            if Rec."Net Receivable From The Tenant" <> 0 then
-                                IsReceivable := true
-                            else
-                                IsRefundable := true;
-                            UpdateCanPost();
-                        end;
-                    }
+                    ApplicationArea = All;
+                    Editable = false;
                 }
+                field("Total Adjustment"; Rec."Total Adjustment")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Visible = false;
+                }
+                field("Total Refund"; Rec."Total Refund")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Summery Net Balance"; Rec."Summery Net Balance")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Amount Refundable"; Rec."Amount Refundable")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    trigger OnValidate()
+                    begin
+                        if Rec."Amount Refundable" <> 0 then
+                            IsRefundable := true
+                        else
+                            IsReceivable := true;
+                        UpdateCanPost();
+                    end;
+                }
+                field("Net Receivable From The Tenant"; Rec."Net Receivable From The Tenant")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
 
+                    trigger OnValidate()
+                    begin
+                        if Rec."Net Receivable From The Tenant" <> 0 then
+                            IsReceivable := true
+                        else
+                            IsRefundable := true;
+                        UpdateCanPost();
+                    end;
+                }
             }
 
             group("FinalSettlemt")

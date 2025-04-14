@@ -1705,6 +1705,7 @@ page 50313 "Tenancy Contract Card"
                                 repeat
                                     FinalSettlement."Contract ID" := Rec."Contract ID";
                                     FinalSettlement."Tenant Email" := Rec."Email Address";
+                                    FinalSettlement."Tenant Name" := Rec."Customer Name";
                                     FinalSettlement.Modify(true);
                                 until FinalSettlement.Next() = 0;
                             end else begin
@@ -1713,6 +1714,7 @@ page 50313 "Tenancy Contract Card"
                                 FinalSettlement."FC ID" := FinalCalculationid;
                                 FinalSettlement."Contract ID" := Rec."Contract ID";
                                 FinalSettlement."Tenant Email" := Rec."Email Address";
+                                FinalSettlement."Tenant Name" := Rec."Customer Name";
                                 FinalSettlement.Insert(true);
                                 Clear(FinalSettlement);
                             end;

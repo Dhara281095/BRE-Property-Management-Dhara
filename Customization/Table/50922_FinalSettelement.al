@@ -154,6 +154,7 @@ table 50922 "FinalSettlement"
         {
             DataClassification = ToBeClassified;
             Caption = 'Payment Receipt';
+            Editable = false;
             // InitValue = 'View';
         }
         field(50114; "Payment Receipt document URL"; Text[250])
@@ -182,6 +183,11 @@ table 50922 "FinalSettlement"
         {
             DataClassification = ToBeClassified;
             Caption = 'Tenant Email';
+        }
+        field(50122; "Tenant Name"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Tenant Name';
         }
         field(50118; "Invoiced"; Boolean)
         {
