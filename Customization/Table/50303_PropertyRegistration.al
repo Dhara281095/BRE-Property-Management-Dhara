@@ -214,7 +214,7 @@ table 50303 "Property Registration"
             TableRelation = "Business Unit".Code;
         }
 
-        field(50137; "Vendor ID"; Integer)
+        field(50137; "Vendor ID"; Code[20])
         {
             DataClassification = ToBeClassified;
             Caption = 'Vendor ID';
@@ -239,7 +239,7 @@ table 50303 "Property Registration"
 
                     ManagementFeeMasterDetailsFetch();
                 end else begin // Clear the fields if no record is found
-                    "Vendor ID" := 0;
+                    "Vendor ID" := '';
                     "Vendor Name" := '';
                     "Vendor Contact No." := '';
                     "Start Date" := 0D;
