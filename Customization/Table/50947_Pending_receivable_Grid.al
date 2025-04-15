@@ -141,6 +141,27 @@ table 50947 "Pending Receviable Grid"
             Caption = 'Payment Type';
             DataClassification = ToBeClassified;
         }
+        field(50126; "Invoiced"; Boolean)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Invoiced';
+        }
+        field(50127; "Invoice ID"; Code[50])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Invoice ID';
+        }
+        field(50128; "Tenant ID"; Code[50])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Tenant ID';
+        }
+        field(50129; "Unit Type"; Text[50])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Unit Type';
+        }
+
 
     }
 
