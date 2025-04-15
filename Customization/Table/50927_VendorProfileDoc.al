@@ -4,7 +4,7 @@ table 50927 "Vendor Contract Document"
 
     fields
     {
-        field(50100; "Vendor ID"; Integer)
+        field(50100; "Vendor ID"; Code[20])
         {
             DataClassification = ToBeClassified;
             Caption = 'Vendor ID';

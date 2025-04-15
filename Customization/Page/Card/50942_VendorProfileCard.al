@@ -341,6 +341,25 @@ page 50942 "Vendor Profile Card"
             }
         }
     }
+
+
+
+
+    trigger OnAfterGetRecord()
+    begin
+        CurrPage."Contract Documents".Page.SetVendorID(Rec."Vendor ID");
+    end;
+
+    trigger OnModifyRecord(): Boolean
+    begin
+        CurrPage."Contract Documents".Page.SetVendorID(Rec."Vendor ID");
+    end;
+
+    trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    begin
+        CurrPage."Contract Documents".Page.SetVendorID(Rec."Vendor ID");
+    end;
+
 }
 
 
