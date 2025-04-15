@@ -99,7 +99,7 @@ page 50703 "tenantContractApi"
             }
             field("PreviousStatus"; Rec."Previous Status")
             {
-                Caption = 'Payment Reminder';
+                Caption = 'Previous Status';
             }
 
 
