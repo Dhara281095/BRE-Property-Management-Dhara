@@ -383,6 +383,7 @@ page 50928 "Payment Mode Card2"
                 {
                     ApplicationArea = All;
                     Editable = true;
+                    Visible = false;
                 }
 
 

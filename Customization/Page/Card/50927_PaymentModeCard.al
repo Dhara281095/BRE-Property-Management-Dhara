@@ -79,6 +79,7 @@ page 50927 "Payment Mode Card"
                 {
                     ApplicationArea = All;
                     Editable = true;
+                    Visible = false;
                 }
                 field("On-hold"; Rec."On-hold")
                 {
