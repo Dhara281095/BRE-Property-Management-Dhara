@@ -241,18 +241,6 @@ page 50943 "Vendor Contract Document Sub"
             Error('The file URL is invalid.');
     end;
 
-    // trigger OnAfterGetRecord()
-    // var
-    //     paysatatus: Enum "Payment Status";
-    // begin
-    //     if Rec."Payment Status" = paysatatus::" " then begin
-    //         // Retrieve the first available Payment Method from the Payment Type table
-    //         if Rec.FindFirst() then
-    //             Rec."Payment Status" := paysatatus::Scheduled; // Set the first Payment Method as default
-    //     end;
-    // end;
-
-
 
     procedure SetVendorID(pVendorID: Code[20])
     begin
@@ -261,12 +249,32 @@ page 50943 "Vendor Contract Document Sub"
 
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    var
+        vendor: Record "Vendor Profile";
+        PaymentStatus: Enum "Payment Status";
     begin
         Rec."Vendor ID" := VendorID;
+
+        vendor.SetRange("vendor ID", Rec."vendor ID");
+        if vendor.FindSet() then begin
+            if Rec."Payment Status" = PaymentStatus::" " then
+                Rec."Payment Status" := PaymentStatus::Scheduled;
+        end;
     end;
 
     var
         VendorID: Code[20];
 
+    trigger OnModifyRecord(): Boolean
+    var
+        vendor: Record "Vendor Profile";
+        PaymentStatus: Enum "Payment Status";
+    begin
+        vendor.SetRange("vendor ID", Rec."vendor ID");
+        if vendor.FindSet() then begin
+            if Rec."Payment Status" = PaymentStatus::" " then
+                Rec."Payment Status" := PaymentStatus::Scheduled;
+        end;
+    end;
 
 }

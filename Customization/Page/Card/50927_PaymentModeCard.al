@@ -358,7 +358,7 @@ page 50927 "Payment Mode Card"
             {
                 Caption = 'Request Send';
                 ApplicationArea = All;
-                Image = Send;
+                Image = SendTo;
 
 
                 trigger OnAction()
