@@ -87,7 +87,7 @@ table 50704 "ContractEndProcessApproval"
         {
             DataClassification = ToBeClassified;
             Caption = 'Renewal Notification to Tenant';
-            //Editable = false;
+            Editable = true;
         }
 
     }
