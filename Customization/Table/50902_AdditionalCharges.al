@@ -126,7 +126,21 @@ table 50902 "Additional Charges Sub"
             FieldClass = FlowField;
             CalcFormula = sum("Additional Charges Sub"."Amount Including VAT" where("Contract ID" = field("Contract ID"), "Tenant ID" = field("Tenant ID")));
         }
-
+        field(50116; "Invoiced"; Boolean)
+        {
+            Caption = 'Invoiced';
+            DataClassification = ToBeClassified;
+        }
+        field(50117; "Invoiced ID"; Code[50])
+        {
+            Caption = 'Invoice ID';
+            DataClassification = ToBeClassified;
+        }
+        field(50118; "Unit Type"; Text[20])
+        {
+            Caption = 'Unit Type';
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys

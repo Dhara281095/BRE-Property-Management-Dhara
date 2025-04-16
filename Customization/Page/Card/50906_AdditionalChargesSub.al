@@ -79,6 +79,18 @@ page 50906 "Additional Charges Sub Card"
                     Lookup = true;
                     Visible = false;
                 }
+                field(Invoiced; Rec.Invoiced)
+                {
+                    ApplicationArea = All;
+                }
+                field("Invoiced ID"; Rec."Invoiced ID")
+                {
+                    ApplicationArea = All;
+                }
+                field("Unit Type"; Rec."Unit Type")
+                {
+                    ApplicationArea = All;
+                }
             }
 
             group(TotalAmount)
@@ -127,6 +139,13 @@ page 50906 "Additional Charges Sub Card"
 
     end;
 
+    procedure SetUnitType(punittype: Text[20])
+
+    begin
+        unittype := punittype;
+
+    end;
+
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     begin
         Rec."Contract ID" := ContractID;
@@ -134,6 +153,7 @@ page 50906 "Additional Charges Sub Card"
 
         Rec."Start Date" := startDate;
         Rec."End Date" := endDate;
+        Rec."Unit Type" := unittype;
 
         // Add this call to update totals
         // CurrPage.UPDATE;
@@ -158,6 +178,8 @@ page 50906 "Additional Charges Sub Card"
         tenantID: Code[20];
         startDate: Date;
         endDate: Date;
+
+        unittype: Text[20];
 
 }
 

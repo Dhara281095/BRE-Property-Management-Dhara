@@ -127,6 +127,23 @@ page 50951 "Final Billing Calculation"
             }
         }
     }
+    actions
+    {
+        area(Processing)
+        {
+            action(Invoice)
+            {
+                ApplicationArea = All;
+                Caption = 'Generate Invoice';
+                Image = NewInvoice;
+                trigger OnAction()
+                var
+                begin
+
+                end;
+            }
+        }
+    }
     trigger OnAfterGetRecord()
     var
     begin
