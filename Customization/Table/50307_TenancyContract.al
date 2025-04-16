@@ -735,6 +735,7 @@ table 50307 "Tenancy Contract"
 
         field(50134; "Tenant Contract Status"; Option)
         {
+            Editable = true;
             DataClassification = ToBeClassified;
             Caption = 'Tenant Contract Status';
             OptionMembers = " ",Active,Terminated,Suspended,Inactive,"Under Suspension-Unit Released","Active-Contract Renewed","Contract Renewed";

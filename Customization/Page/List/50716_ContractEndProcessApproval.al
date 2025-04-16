@@ -80,7 +80,7 @@ page 50719 "Contract End Process Approval"
                 field("Renewal Notification to Tenant"; Rec."Renewal Notification to Tenant")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
 
                 }
 
