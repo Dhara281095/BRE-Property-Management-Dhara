@@ -141,6 +141,11 @@ table 50902 "Additional Charges Sub"
             Caption = 'Unit Type';
             DataClassification = ToBeClassified;
         }
+        field(50119; "Posted Invoice ID"; Code[50])
+        {
+            Caption = 'Posted Invoice ID';
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys
