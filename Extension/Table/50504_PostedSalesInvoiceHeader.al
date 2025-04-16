@@ -86,6 +86,7 @@ tableextension 50504 PostedSalesInvoiceHeader extends "Sales Invoice Header"
         paymentmode2: Record "Payment Mode2";
         paymentschedule2grid: Record "Payment Schedule2";
         finasettlement: Record FinalSettlement;
+        additionalcharges: Record "Additional Charges Sub";
     begin
         paymentschedule2.SetRange("Contract ID", Rec."Contract ID");
         paymentschedule2.SetRange("Invoice ID", Rec."Pre-Assigned No.");
@@ -104,6 +105,16 @@ tableextension 50504 PostedSalesInvoiceHeader extends "Sales Invoice Header"
                 finasettlement."Invoice URL" := Rec."View Document URL";
                 finasettlement.Modify();
             until finasettlement.Next() = 0;
+
+        additionalcharges.SetRange("Contract ID", Rec."Contract ID");
+        additionalcharges.SetRange("Invoiced ID", Rec."Pre-Assigned No.");
+        if additionalcharges.FindSet() then
+            repeat
+                additionalcharges."Invoiced ID" := Rec."No.";
+                additionalcharges."Posted Invoice ID" := Rec."No.";
+                additionalcharges.Modify();
+            until additionalcharges.Next() = 0;
+
 
 
         // paymentmode2.SetRange("Contract ID", paymentschedule2grid."Contract ID");

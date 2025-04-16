@@ -843,6 +843,7 @@ page 50903 "Final Calculation Card"
         CurrPage."Additional Charges".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."Additional Charges".Page.SetContractID(Rec."Contract ID");
         CurrPage."Additional Charges".Page.SetStartEndDate(Rec."Contract Start Date", Rec."Contract End Date");
+        CurrPage."Additional Charges".Page.SetUnitType(Rec."Unit Type");
         CurrPage."FinalSettelemts".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."FinalSettelemts".Page.SetContractID(Rec."Contract ID");
         CurrPage."FinalSettelemtss".Page.SetTenantID(Rec."Tenant ID");
@@ -867,6 +868,7 @@ page 50903 "Final Calculation Card"
         CurrPage."Additional Charges".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."Additional Charges".Page.SetContractID(Rec."Contract ID");
         CurrPage."Additional Charges".Page.SetStartEndDate(Rec."Contract Start Date", Rec."Contract End Date");
+        CurrPage."Additional Charges".Page.SetUnitType(Rec."Unit Type");
         CurrPage."FinalSettelemts".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."FinalSettelemts".Page.SetContractID(Rec."Contract ID");
         CurrPage."FinalSettelemtss".Page.SetTenantID(Rec."Tenant ID");
@@ -889,6 +891,7 @@ page 50903 "Final Calculation Card"
         CurrPage."Additional Charges".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."Additional Charges".Page.SetContractID(Rec."Contract ID");
         CurrPage."Additional Charges".Page.SetStartEndDate(Rec."Contract Start Date", Rec."Contract End Date");
+        CurrPage."Additional Charges".Page.SetUnitType(Rec."Unit Type");
         CurrPage."FinalSettelemts".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."FinalSettelemts".Page.SetContractID(Rec."Contract ID");
         CurrPage."FinalSettelemtss".Page.SetTenantID(Rec."Tenant ID");
