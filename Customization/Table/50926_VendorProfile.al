@@ -350,4 +350,22 @@ table 50926 "Vendor Profile"
         }
     }
 
+
+    trigger OnDelete()
+    var
+    begin
+        deleteWorkflowFrequencyPR();
+    end;
+
+    procedure deleteWorkflowFrequencyPR()
+    var
+        VendorDoc: Record "Vendor Contract Document";
+    begin
+        VendorDoc.SetRange("Vendor Id", Rec."Vendor ID");
+        if VendorDoc.FindSet() then begin
+            VendorDoc.DeleteAll();
+        end
+
+    end;
+
 }
