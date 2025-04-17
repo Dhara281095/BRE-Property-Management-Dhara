@@ -41,22 +41,40 @@ page 50942 "Vendor Profile Card"
                 {
                     ApplicationArea = All;
                 }
-                field("Calculation Method"; Rec."Calculation Method")
+
+                field("Privacy Blocked"; Rec."Privacy Blocked")
                 {
                     ApplicationArea = All;
                 }
-
-                field("Percentage Type"; Rec."Percentage Type")
+                field("Last Date Modified"; Rec."Last Date Modified")
                 {
                     ApplicationArea = All;
                 }
-
-                field("Base Amount"; Rec."Base Amount")
+                field("Document Sending Profile"; Rec."Document Sending Profile")
                 {
                     ApplicationArea = All;
                 }
-
-                field("Frequency Of Payment"; Rec."Frequency Of Payment")
+                field("Search Name"; Rec."Search Name")
+                {
+                    ApplicationArea = All;
+                }
+                field("IC Partner Code"; Rec."IC Partner Code")
+                {
+                    ApplicationArea = All;
+                }
+                field("Purchaser Code"; Rec."Purchaser Code")
+                {
+                    ApplicationArea = All;
+                }
+                field("Responsibility Center"; Rec."Responsibility Center")
+                {
+                    ApplicationArea = All;
+                }
+                field("Disable Search by Name"; Rec."Disable Search by Name")
+                {
+                    ApplicationArea = All;
+                }
+                field("Company Size Code"; Rec."Company Size Code")
                 {
                     ApplicationArea = All;
                 }
@@ -64,68 +82,6 @@ page 50942 "Vendor Profile Card"
                 field("Contract Status"; Rec."Contract Status")
                 {
                     ApplicationArea = All;
-                }
-
-                field("Contract Document Upload"; Rec."Contract Document Upload")
-                {
-                    ApplicationArea = All;
-                    DrillDown = true;
-                    Editable = false;
-
-                    trigger OnDrillDown()
-                    var
-                        AzureBlobUploader: Codeunit "Azure Blob Management";
-                        InStream: InStream;
-                        FileName: Text;
-                        SASUrlBase: Text;
-                        SASUrlWithFileName: Text;
-                        UploadResult: Text;
-                        TempBlob: Codeunit "Temp Blob";
-                        ValidFormats: List of [Text];
-                        FileExtension: Text[10];
-                        FileSize: Decimal;
-                        ConfigRecord: Record AzureConfiguration;
-                        documentattachment: Codeunit UploadAttachment;
-
-                    begin
-                        // Validate and retrieve the SAS URL from the configuration table
-                        if not ConfigRecord.FindFirst() then
-                            Error('Azure configuration is missing. Please set up the SAS URL in the Azure Configuration table.');
-
-                        ValidFormats.Add('.pdf');
-                        ValidFormats.Add('.docx');
-                        ValidFormats.Add('.jpg');
-                        ValidFormats.Add('.jpeg');
-                        // Get the SAS base URL (without the file name)
-                        SASUrlBase := ConfigRecord."SAS URL";
-
-                        // Load the file to be uploaded into an InStream
-                        if UploadIntoStream('Select a Document', '', '(*.pdf, *.docx,*.jpeg, *.jpg)|*.pdf;*.docx;*.jpeg;*.jpg', FileName, InStream) then begin
-
-                            FileExtension := LowerCase(CopyStr(FileName, StrPos(FileName, '.'), StrLen(FileName) - StrPos(FileName, '.') + 1));
-                            if not ValidFormats.Contains(FileExtension) then
-                                Error('Unsupported file format. Please upload PDF, DOCX, JPEG or JPG.');
-
-                            FileSize := InStream.Length / 1024 / 1024; // Convert to MB
-                            if FileSize > 5 then
-                                Error('File is too large. Maximum size allowed is 5MB.');
-                            // Append the file name to the base SAS URL to create a full SAS URL
-                            SASUrlWithFileName := StrSubstNo('%1/%2?%3', CopyStr(SASUrlBase, 1, StrPos(SASUrlBase, '?') - 1), FileName, CopyStr(SASUrlBase, StrPos(SASUrlBase, '?') + 1));
-
-                            // Call the upload function with the modified SAS URL
-                            UploadResult := documentattachment.UploadDocumentToBlobStorage(SASUrlWithFileName, FileName, InStream);
-
-
-                            Rec."Contract Document Upload" := FileName;// Truncate to fit field length
-                            // Rec."Invoice Document URL" := UploadResult; // Truncate to fit field length
-                            Rec.Modify();
-                            Message('Document uploaded successfully: %1', FileName);
-                        end else
-                            Message('No document was selected for upload.');
-
-                        // end 
-                        //    else Message('Upload Cheque cannot be access for Payment Status is Cancelled');
-                    end;
                 }
 
                 field(Blocked; Rec.Blocked)
@@ -329,10 +285,32 @@ page 50942 "Vendor Profile Card"
                 ToolTip = 'Specifies the policy that will be used for the vendor if more items than ordered are received.';
             }
 
+            group("Calculation Details")
+            {
+                Caption = 'Calculation Details';
+                part("Calculation Detail"; "Vendor Calculation Details Sub")
+                {
+                    SubPageLink = "Vendor ID" = FIELD("Vendor ID"); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    // Visible = isVisible;
+                }
+            }
+
+            group("Vendor Document")
+            {
+                Caption = 'Vendor Document';
+                part("Vendor Documents"; "Vendor Document Sub")
+                {
+                    SubPageLink = "Vendor ID" = FIELD("Vendor ID"); // Link to filter attachments for this owner only
+                    ApplicationArea = All;
+                    // Visible = isVisible;
+                }
+            }
+
             group("Contract Document")
             {
-                Caption = 'Documents';
-                part("Contract Documents"; "Vendor Contract Document Sub")
+                Caption = 'Invoice/Receipt Documents';
+                part("Contract Documents"; "Vendor I/R DocumentSub")
                 {
                     SubPageLink = "Vendor ID" = FIELD("Vendor ID"); // Link to filter attachments for this owner only
                     ApplicationArea = All;
@@ -342,22 +320,28 @@ page 50942 "Vendor Profile Card"
         }
     }
 
-
-
-
     trigger OnAfterGetRecord()
     begin
         CurrPage."Contract Documents".Page.SetVendorID(Rec."Vendor ID");
+        CurrPage."Calculation Detail".Page.SetVendorID(Rec."Vendor ID");
+        CurrPage."Calculation Detail".Page.SetStartEndDate(Rec."Start Date", Rec."End Date", Rec."Vendor Name");
+        CurrPage."Vendor Documents".Page.SetVendorID(Rec."Vendor ID");
     end;
 
     trigger OnModifyRecord(): Boolean
     begin
         CurrPage."Contract Documents".Page.SetVendorID(Rec."Vendor ID");
+        CurrPage."Calculation Detail".Page.SetVendorID(Rec."Vendor ID");
+        CurrPage."Calculation Detail".Page.SetStartEndDate(Rec."Start Date", Rec."End Date", Rec."Vendor Name");
+        CurrPage."Vendor Documents".Page.SetVendorID(Rec."Vendor ID");
     end;
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     begin
         CurrPage."Contract Documents".Page.SetVendorID(Rec."Vendor ID");
+        CurrPage."Calculation Detail".Page.SetVendorID(Rec."Vendor ID");
+        CurrPage."Calculation Detail".Page.SetStartEndDate(Rec."Start Date", Rec."End Date", Rec."Vendor Name");
+        CurrPage."Vendor Documents".Page.SetVendorID(Rec."Vendor ID");
     end;
 
 }

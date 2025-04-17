@@ -18,8 +18,17 @@ table 50926 "Vendor Profile"
                 if vendor.FindSet() then begin
                     Rec."Vendor ID" := vendor."No.";
                     "Vendor Name" := vendor."Name";
+                    "Search Name" := vendor."Search Name";
                     "Vendor Contact No." := Vendor.Contact;
                     "Blocked" := Vendor."Blocked";
+                    "Privacy Blocked" := Vendor."Privacy Blocked";
+                    "IC Partner Code" := Vendor."IC Partner Code";
+                    "Purchaser Code" := Vendor."Purchaser Code";
+                    "Responsibility Center" := Vendor."Responsibility Center";
+                    "Disable Search by Name" := Vendor."Disable Search by Name";
+                    "Company Size Code" := Vendor."Company Size Code";
+                    "Last Date Modified" := Vendor."Last Date Modified";
+                    "Document Sending Profile" := Vendor."Document Sending Profile";
                     "Balance (LCY)" := Vendor."Balance (LCY)";
                     "Balance Due (LCY)" := Vendor."Balance Due (LCY)";
                     Address := Vendor.Address;
@@ -54,8 +63,17 @@ table 50926 "Vendor Profile"
                 end else begin
                     "Vendor ID" := '';
                     "Vendor Name" := '';
+                    "Search Name" := '';
                     "Vendor Contact No." := '';
                     "Blocked" := "Blocked"::" ";
+                    "Privacy Blocked" := false;
+                    "IC Partner Code" := '';
+                    "Purchaser Code" := '';
+                    "Responsibility Center" := '';
+                    "Disable Search by Name" := false;
+                    "Company Size Code" := '';
+                    "Last Date Modified" := 0D;
+                    "Document Sending Profile" := '';
                     "Balance (LCY)" := 0;
                     "Balance Due (LCY)" := 0;
                     Address := '';
@@ -95,11 +113,13 @@ table 50926 "Vendor Profile"
         {
             DataClassification = ToBeClassified;
             Caption = 'Vendor Name';
+            Editable = false;
         }
         field(50102; "Vendor Contact No."; Text[30])
         {
             DataClassification = ToBeClassified;
             Caption = 'Vendor Contact No.';
+            Editable = false;
         }
         field(50103; "Start Date"; Date)
         {
@@ -117,43 +137,12 @@ table 50926 "Vendor Profile"
             Caption = 'Vendor Category';
             TableRelation = "Vendor Category"."Vendor Category Type";
         }
-        field(50105; "Calculation Method"; Option)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Calculation Method';
-            OptionMembers = " ","Percentage Method","Fixed Amount";
-        }
-
-        field(50106; "Percentage Type"; Option)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Percentage Type';
-            OptionMembers = " ","Fixed","Variable";
-        }
-        field(50107; "Base Amount"; Option)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Base Amount';
-            OptionMembers = " ","Revenue","Collection","Annual Rent","Monthly Rent";
-        }
-        field(50108; "Frequency Of Payment"; Option)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Frequency Of Payment';
-            OptionMembers = " ","Monthly","Quaterly","Half Yearly","Yearly";
-        }
 
         field(50109; "Contract Status"; Option)
         {
             DataClassification = ToBeClassified;
             Caption = 'Contract Status';
             OptionMembers = " ","Active","Terminate";
-        }
-        field(50110; "Contract Document Upload"; Text[2000])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Contract Document Upload';
-            InitValue = 'Contract Upload';
         }
         field(50111; "Blocked"; Enum "Vendor Blocked")
         {
@@ -330,6 +319,56 @@ table 50926 "Vendor Profile"
             DataClassification = ToBeClassified;
             Caption = 'Receive E-Document To';
             OptionMembers = " ","Purchase Order","Purchase Invoice";
+            Editable = false;
+        }
+
+        field(50147; "Privacy Blocked"; Boolean)
+        {
+            Caption = 'Privacy Blocked';
+            Editable = false;
+        }
+        field(50148; "Last Date Modified"; Date)
+        {
+            Caption = 'Last Date Modified';
+            Editable = false;
+        }
+
+        field(50149; "Document Sending Profile"; Code[20])
+        {
+            Caption = 'Document Sending Profile';
+            Editable = false;
+        }
+
+        field(50150; "Search Name"; Code[100])
+        {
+            Caption = 'Search Name';
+            Editable = false;
+        }
+        field(50151; "IC Partner Code"; Code[20])
+        {
+            Caption = 'IC Partner Code';
+            Editable = false;
+        }
+        field(50152; "Purchaser Code"; Code[20])
+        {
+            Caption = 'Purchaser Code';
+            Editable = false;
+        }
+
+        field(50153; "Responsibility Center"; Code[10])
+        {
+            Caption = 'Responsibility Center';
+            Editable = false;
+        }
+
+        field(50154; "Disable Search by Name"; Boolean)
+        {
+            Caption = 'Disable Search by Name';
+            Editable = false;
+        }
+        field(50155; "Company Size Code"; Code[20])
+        {
+            Caption = 'Company Size Code';
             Editable = false;
         }
 

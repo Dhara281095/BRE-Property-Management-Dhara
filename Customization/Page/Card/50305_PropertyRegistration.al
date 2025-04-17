@@ -222,30 +222,6 @@ page 50305 "Property Registration Card"
                     Editable = false;
                 }
 
-                field("Calculation Method"; Rec."Calculation Method")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
-
-                field("Percentage Type"; Rec."Percentage Type")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
-
-                field("Base Amount"; Rec."Base Amount")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
-
-                field("Frequency Of Payment"; Rec."Frequency Of Payment")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
-
                 field("Contract Status"; Rec."Contract Status")
                 {
                     ApplicationArea = All;
