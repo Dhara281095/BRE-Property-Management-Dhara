@@ -1,15 +1,15 @@
-page 50943 "Vendor Contract Document Sub"
+page 50943 "Vendor I/R DocumentSub"
 {
     PageType = ListPart;
     SourceTable = "Vendor Contract Document";
     ApplicationArea = All;
-    Caption = 'Vendor Contract Document';
+    Caption = 'Vendor Invoice/Receipt Documents';
 
     layout
     {
         area(content)
         {
-            repeater("Identification")
+            repeater("Documents")
             {
 
                 field("Vendor ID"; Rec."Vendor ID")

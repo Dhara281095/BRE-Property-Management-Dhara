@@ -231,10 +231,6 @@ table 50303 "Property Registration"
                     "Vendor Contact No." := VendorDetails."Vendor Contact No.";
                     "Start Date" := "VendorDetails"."Start Date";
                     "End Date" := "VendorDetails"."End Date";
-                    "Calculation Method" := VendorDetails."Calculation Method";
-                    "Percentage Type" := VendorDetails."Percentage Type";
-                    "Base Amount" := VendorDetails."Base Amount";
-                    "Frequency Of Payment" := VendorDetails."Frequency Of Payment";
                     "Contract Status" := VendorDetails."Contract Status";
 
                     ManagementFeeMasterDetailsFetch();
@@ -244,10 +240,6 @@ table 50303 "Property Registration"
                     "Vendor Contact No." := '';
                     "Start Date" := 0D;
                     "End Date" := 0D;
-                    "Calculation Method" := "Calculation Method"::" ";
-                    "Percentage Type" := "Percentage Type"::" ";
-                    "Base Amount" := "Base Amount"::" ";
-                    "Frequency Of Payment" := "Frequency Of Payment"::" ";
                     "Contract Status" := "Contract Status"::" ";
                 end;
 
@@ -274,32 +266,6 @@ table 50303 "Property Registration"
             DataClassification = ToBeClassified;
             Caption = 'End Date';
         }
-        field(50132; "Calculation Method"; Option)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Calculation Method';
-            OptionMembers = " ","Percentage Method","Fixed Amount";
-        }
-
-        field(50133; "Percentage Type"; Option)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Percentage Type';
-            OptionMembers = " ","Fixed","Variable";
-        }
-        field(50134; "Base Amount"; Option)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Base Amount';
-            OptionMembers = " ","Revenue","Collection","Annual Rent","Monthly Rent";
-        }
-        field(50135; "Frequency Of Payment"; Option)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Frequency Of Payment';
-            OptionMembers = " ","Monthly","Quaterly","Half Yearly","Yearly";
-        }
-
         field(50136; "Contract Status"; Option)
         {
             DataClassification = ToBeClassified;
@@ -368,11 +334,7 @@ table 50303 "Property Registration"
         managementfee."Start Date" := Rec."Start Date";
         managementfee."End Date" := Rec."End Date";
         managementfee."Property Type" := Rec."Property Classification";
-        managementfee."Calculation Method" := Rec."Calculation Method";
-        managementfee."Percentage Type" := Rec."Percentage Type";
-        managementfee."Base Amount" := Rec."Base Amount";
         // managementfee."Percentage/Amount" := Rec."Percentage/Amount"; // Uncomment if needed
-        managementfee."Frequency Of Payment" := Rec."Frequency Of Payment";
         managementfee."Contract Status" := Rec."Contract Status";
         managementfee.Insert();
         Clear(managementfee);

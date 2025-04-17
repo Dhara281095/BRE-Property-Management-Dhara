@@ -33,22 +33,6 @@ page 50944 "Vendor Profile List"
                 {
                     ApplicationArea = All;
                 }
-                field("Calculation Method"; Rec."Calculation Method")
-                {
-                    ApplicationArea = All;
-                }
-                field("Percentage Type"; Rec."Percentage Type")
-                {
-                    ApplicationArea = All;
-                }
-                field("Base Amount"; Rec."Base Amount")
-                {
-                    ApplicationArea = All;
-                }
-                field("Frequency Of Payment"; Rec."Frequency Of Payment")
-                {
-                    ApplicationArea = All;
-                }
                 field("Contract Status"; Rec."Contract Status")
                 {
                     ApplicationArea = All;
