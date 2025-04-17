@@ -191,7 +191,8 @@ page 50951 "Final Billing Calculation"
         Totalamount := 0;
         PaymentScheduleRec.Reset();
         PaymentScheduleRec.SetRange("Contract ID", Rec."Contract ID");
-        PaymentScheduleRec.SetFilter("Due Date", '<%1', Rec."Termination Date");
+        //PaymentScheduleRec.SetFilter("Due Date", '<%1', Rec."Termination Date");
+        PaymentScheduleRec.SetFilter("Workflow frequency date", '<%1', Rec."Termination Date");
         PaymentScheduleRec.SetRange(Invoiced, true);
         PaymentScheduleRec.SetRange("Secondary Item Type", Rec.RevenueDescription);
         if PaymentScheduleRec.FindSet() then begin
