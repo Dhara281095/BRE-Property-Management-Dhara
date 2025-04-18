@@ -12,7 +12,6 @@ page 50112 "Country List"
         area(content)
         {
             repeater(Group)
-
             {
                 field("ID"; Rec."ID")
                 {
