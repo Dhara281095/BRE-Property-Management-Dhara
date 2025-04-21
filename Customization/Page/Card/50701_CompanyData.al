@@ -130,6 +130,14 @@ page 50701 "Company Data"
                     ApplicationArea = All;
                     // Visible = isVisible;
                 }
+
+
+
+            }
+            field("Access Validity"; Rec."Access Validity")
+            {
+                ApplicationArea = All;
+                Caption = 'Access Validity (Days)';
             }
         }
     }
