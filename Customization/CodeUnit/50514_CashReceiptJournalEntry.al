@@ -78,6 +78,8 @@ codeunit 50514 "Cash Receipt Journal Entry"
         COACode: Record "COA Setup";
         BankAccountRec: Record "Bank Account";
         LineNumber: Integer;
+        ContractRec: Record "Tenancy Contract";
+        TenantReceivableGL: Code[20];
         BalAccountNo: Code[20];
         BatchName: Code[20];
         ErrorMessage: Text[100];
@@ -89,6 +91,19 @@ codeunit 50514 "Cash Receipt Journal Entry"
         if PaymentSeriesRec.FindFirst() then begin
             if PaymentSeriesCode."Payment Status" = PaymentSeriesCode."Payment Status"::Received then begin
 
+                //  Get Contract Info
+                if not ContractRec.Get(PaymentSeriesRec."Contract ID") then
+                    Error('Contract not found for Contract ID: %1', PaymentSeriesRec."Contract ID");
+
+                //  Dynamically set Tenant Receivable G/L Account based on Property Type
+                case UpperCase(ContractRec."Property Classification") of
+                    'RESIDENTIAL':
+                        TenantReceivableGL := '1501';
+                    'COMMERCIAL':
+                        TenantReceivableGL := '1506';
+                    else
+                        Error('Unsupported Property Classification: %1', ContractRec."Property Classification");
+                end;
                 // // Create a new Journal Batch (if not exist)
                 // if not GenJournalBatchRec.Get('CASH', 'REVENUE') then begin
                 //     GenJournalBatchRec.Init();
@@ -152,7 +167,7 @@ codeunit 50514 "Cash Receipt Journal Entry"
                     GenJournalLineRec."Line No." := LineNumber;
                     GenJournalLineRec."Document Type" := GenJournalLineRec."Document Type"::Payment;
                     GenJournalLineRec."Account Type" := GenJournalLineRec."Account Type"::"G/L Account";
-                    GenJournalLineRec."Account No." := Format(1501); // Customer from Payment Series
+                    GenJournalLineRec."Account No." := TenantReceivableGL; // Customer from Payment Series
                     GenJournalLineRec.Description := PaymentSeriesRec."Invoice #";
                     GenJournalLineRec.Amount := -PaymentSeriesRec."Amount Including VAT";
                     GenJournalLineRec."Amount (LCY)" := GenJournalLineRec.Amount;
@@ -187,11 +202,8 @@ codeunit 50514 "Cash Receipt Journal Entry"
                     end;
                     Message('Cash Receipt journal created successfully.');
                 end;
-                // Message('1111');
             end;
-            // Message('22222');
         end;
-        // Message('33333');
     end;
 
     var

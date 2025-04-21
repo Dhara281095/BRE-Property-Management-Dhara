@@ -202,15 +202,17 @@ table 50925 "Payment Mode2"
                 CashReceiptJournalCodeunit: Codeunit 50514;
             begin
                 if Rec."Payment Status" = Rec."Payment Status"::Received then begin
-                    if Rec."Payment Mode" = 'Bank Transfer' then begin
-                        if Rec."Deposit Bank" = '' then begin
-                            Error('Deposite Bank must be filled when payment mode is bank transfer');
-                        end;
-                    end;
+                    // if Rec."Payment Mode" = 'Bank Transfer' then begin
+                    //     if Rec."Deposit Bank" = '' then begin
+                    //         Error('Deposite Bank must be filled when payment mode is bank transfer');
+                    //     end;
+                    // end;
+                    CashReceiptJournalCodeunit.CreateCashReceiptJournal(Rec);
                     Email.SendEmail(Rec);
                     if Rec."Payment Status" = Rec."Payment Status"::Received then begin
+
                         emailrec.SendEmail(Rec);
-                        CashReceiptJournalCodeunit.CreateCashReceiptJournal(Rec);
+
 
                         if not ConfigRecord.FindFirst() then
                             Error('Azure configuration is missing. Please set up the SAS URL in the Azure Configuration table.');

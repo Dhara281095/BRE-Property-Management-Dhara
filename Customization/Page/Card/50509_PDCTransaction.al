@@ -11,6 +11,7 @@ page 50509 "PDC Transaction"
         {
             group(GroupName)
             {
+                Caption = 'General Information';
                 field("PDC ID"; Rec."PDC ID")
                 {
                     ApplicationArea = All;
