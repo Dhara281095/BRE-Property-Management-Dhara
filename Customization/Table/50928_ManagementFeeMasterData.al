@@ -50,7 +50,7 @@ table 50928 "Management Fee MasterData"
             OptionMembers = " ","Fixed","Variable";
         }
 
-        field(50107; "Percentage/Amount"; Code[100])
+        field(50107; "Percentage/Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Percentage/Amount';
@@ -91,6 +91,32 @@ table 50928 "Management Fee MasterData"
         {
             DataClassification = ToBeClassified;
             Caption = 'Company ID';
+            Editable = false;
+        }
+
+        field(50114; "Percentage"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Percentage';
+        }
+
+        field(50115; "Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Amount';
+        }
+
+        field(50116; "Vendor ID Link"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Vendor ID Link';
+            Editable = false;
+        }
+
+        field(50117; "Property ID Link"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Property ID Link';
             Editable = false;
         }
     }

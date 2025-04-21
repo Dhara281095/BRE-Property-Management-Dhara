@@ -155,11 +155,11 @@ table 50926 "Vendor Profile"
             Caption = 'Balance (LCY)';
             Editable = false;
         }
-        field(50113; "Balance Due (LCY) As Customer"; Decimal)
-        {
-            Caption = 'Balance Due (LCY) As Customer';
-            Editable = false;
-        }
+        // field(50113; "Balance Due (LCY) As Customer"; Decimal)
+        // {
+        //     Caption = 'Balance Due (LCY) As Customer';
+        //     Editable = false;
+        // }
         field(50114; "Balance Due (LCY)"; Decimal)
         {
             Caption = 'Balance Due (LCY)';
@@ -393,10 +393,12 @@ table 50926 "Vendor Profile"
     trigger OnDelete()
     var
     begin
-        deleteWorkflowFrequencyPR();
+        DeleteVendorContractDocument();
+        DeleteVendorDocument();
+        DeleteVendorCalculationDetails();
     end;
 
-    procedure deleteWorkflowFrequencyPR()
+    procedure DeleteVendorContractDocument()
     var
         VendorDoc: Record "Vendor Contract Document";
     begin
@@ -404,7 +406,26 @@ table 50926 "Vendor Profile"
         if VendorDoc.FindSet() then begin
             VendorDoc.DeleteAll();
         end
+    end;
 
+    procedure DeleteVendorDocument()
+    var
+        VendorDoc: Record "Vendor Document";
+    begin
+        VendorDoc.SetRange("Vendor Id", Rec."Vendor ID");
+        if VendorDoc.FindSet() then begin
+            VendorDoc.DeleteAll();
+        end
+    end;
+
+    procedure DeleteVendorCalculationDetails()
+    var
+        VendorDoc: Record "Vendor Calculation Details";
+    begin
+        VendorDoc.SetRange("Vendor Id", Rec."Vendor ID");
+        if VendorDoc.FindSet() then begin
+            VendorDoc.DeleteAll();
+        end
     end;
 
 }

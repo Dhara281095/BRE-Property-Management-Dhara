@@ -35,11 +35,37 @@ page 50957 "Vendor Calculation Details Sub"
                 field("Calculation Method"; Rec."Calculation Method")
                 {
                     ApplicationArea = All;
+
+                    trigger OnValidate()
+                    begin
+                        UpdatePercentageEditable();
+                    end;
                 }
 
                 field("Percentage Type"; Rec."Percentage Type")
                 {
                     ApplicationArea = All;
+                    trigger OnValidate()
+                    begin
+                        UpdatePercentageEditable();
+                    end;
+                }
+
+                field("Percentage"; Rec."Percentage")
+                {
+                    ApplicationArea = All;
+                    Editable = IsPercentageEditable;
+                }
+
+                field("Amount"; Rec."Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = IsFixedAmount;
+                }
+                field("Percentage/Amount"; Rec."Percentage/Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = IsPercentageamount;
                 }
 
                 field("Base Amount"; Rec."Base Amount")
@@ -52,11 +78,10 @@ page 50957 "Vendor Calculation Details Sub"
                     ApplicationArea = All;
                 }
 
-                field("Contract Status"; Rec."Contract Status")
-                {
-                    ApplicationArea = All;
-                }
-
+                // field("Contract Status"; Rec."Contract Status")
+                // {
+                //     ApplicationArea = All;
+                // }
             }
         }
     }
@@ -87,6 +112,39 @@ page 50957 "Vendor Calculation Details Sub"
         startDate: Date;
         endDate: Date;
         vendorName: Text[100];
+
+        IsPercentageEditable: Boolean;
+        IsFixedAmount: Boolean;
+
+        IsPercentageamount: Boolean;
+
+    procedure UpdatePercentageEditable()
+    begin
+        // Assume the enum or option values are "Percentage-Based" and "Fixed"
+        if (Rec."Calculation Method" = Rec."Calculation Method"::"Percentage Based") and
+           (Rec."Percentage Type" = Rec."Percentage Type"::Fixed) then begin
+            IsPercentageEditable := true;
+        end
+        else begin
+            IsPercentageEditable := false;
+        end;
+
+        if (Rec."Calculation Method" = Rec."Calculation Method"::"Fixed Amount") and
+          (Rec."Percentage Type" = Rec."Percentage Type"::" ") then begin
+            IsFixedAmount := true;
+        end
+        else begin
+            IsFixedAmount := false;
+        end;
+
+        if (Rec."Calculation Method" = Rec."Calculation Method"::"Percentage Based") and
+          (Rec."Percentage Type" = Rec."Percentage Type"::"Variable") then begin
+            IsPercentageamount := true;
+        end
+        else begin
+            IsPercentageamount := false;
+        end;
+    end;
 
 }
 
