@@ -64,6 +64,10 @@ page 50706 CompanyData
                 {
                     Caption = 'Environment Name';
                 }
+                field("AccessValidity"; Rec."Access Validity")
+                {
+                    Caption = 'Access Validity';
+                }
             }
         }
     }

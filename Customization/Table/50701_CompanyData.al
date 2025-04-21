@@ -45,6 +45,13 @@ table 50701 "testData"
             Caption = 'Environment Name';
             Editable = false;
         }
+
+        field(50111; "Access Validity"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Access Validity (Days)';
+            Editable = true;
+        }
     }
 
     keys
