@@ -12,6 +12,7 @@ page 50505 "Azure Configuration"
         {
             group(GroupName)
             {
+                Caption = 'General Information';
                 field(Id; Rec.Id)
                 {
                     ApplicationArea = All;
