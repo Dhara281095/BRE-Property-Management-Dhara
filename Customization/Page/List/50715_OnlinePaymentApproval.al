@@ -89,7 +89,7 @@ page 50715 "Online Payment Request"
             {
                 Caption = 'Received';
                 ApplicationArea = All;
-                Image = Received;
+                Image = Approve;
 
                 trigger OnAction()
                 var
@@ -161,7 +161,7 @@ page 50715 "Online Payment Request"
             {
                 Caption = 'Not Received';
                 ApplicationArea = All;
-                Image = "Not Received";
+                Image = Reject;
 
                 trigger OnAction()
                 var

@@ -37,7 +37,7 @@ table 50303 "Property Registration"
         }
 
         // Blocked field (Boolean toggle)
-        field(50103; "Blocked"; Boolean)
+        field(50103; "Blocked"; Enum "Vendor Blocked")
         {
             DataClassification = ToBeClassified;
             Caption = 'Blocked';
@@ -223,26 +223,73 @@ table 50303 "Property Registration"
             trigger OnValidate()
             var
                 VendorDetails: Record "Vendor Profile";
+                Calculationdeatils: Record "Vendor Calculation Details";
             begin
                 VendorDetails.SetRange("Vendor ID", Rec."Vendor ID");
                 if VendorDetails.FindSet() then begin
                     "Vendor ID" := VendorDetails."Vendor ID";
                     "Vendor Name" := VendorDetails."Vendor Name"; // Convert Integer to Text
-                    "Vendor Contact No." := VendorDetails."Vendor Contact No.";
-                    "Start Date" := "VendorDetails"."Start Date";
-                    "End Date" := "VendorDetails"."End Date";
+                    "Search Name" := VendorDetails."Search Name";
+                    "Start Date" := VendorDetails."Start Date";
+                    "End Date" := VendorDetails."End Date";
                     "Contract Status" := VendorDetails."Contract Status";
+                    "Vendor Category" := VendorDetails."Vendor Category";
+                    "Vendor Contact No." := VendorDetails."Vendor Contact No.";
+                    "Blocked" := VendorDetails."Blocked";
+                    "Privacy Blocked" := VendorDetails."Privacy Blocked";
+                    "IC Partner Code" := VendorDetails."IC Partner Code";
+                    "Purchaser Code" := VendorDetails."Purchaser Code";
+                    "Responsibility Center" := VendorDetails."Responsibility Center";
+                    "Disable Search by Name" := VendorDetails."Disable Search by Name";
+                    "Company Size Code" := VendorDetails."Company Size Code";
+                    "Last Date Modified" := VendorDetails."Last Date Modified";
+                    "Document Sending Profile" := VendorDetails."Document Sending Profile";
+                    "Balance (LCY)" := VendorDetails."Balance (LCY)";
+                    "Balance Due (LCY)" := VendorDetails."Balance Due (LCY)";
 
                     ManagementFeeMasterDetailsFetch();
                 end else begin // Clear the fields if no record is found
                     "Vendor ID" := '';
                     "Vendor Name" := '';
+                    "Search Name" := '';
                     "Vendor Contact No." := '';
                     "Start Date" := 0D;
                     "End Date" := 0D;
+                    "Vendor Category" := '';
+                    "Blocked" := "Blocked"::" ";
+                    "Privacy Blocked" := false;
+                    "IC Partner Code" := '';
+                    "Purchaser Code" := '';
+                    "Responsibility Center" := '';
+                    "Disable Search by Name" := false;
+                    "Company Size Code" := '';
+                    "Last Date Modified" := 0D;
+                    "Document Sending Profile" := '';
+                    "Balance (LCY)" := 0;
+                    "Balance Due (LCY)" := 0;
                     "Contract Status" := "Contract Status"::" ";
                 end;
 
+                Calculationdeatils.SetRange("Vendor ID", Rec."Vendor ID");
+                if Calculationdeatils.FindSet() then begin
+                    "Calculation Method" := Calculationdeatils."Calculation Method";
+                    "Percentage Type" := Calculationdeatils."Percentage Type";
+                    "Percentage" := Calculationdeatils."Percentage";
+                    "Amount" := Calculationdeatils."Amount";
+                    "Percentage/Amount" := Calculationdeatils."Percentage/Amount";
+                    "Base Amount" := Calculationdeatils."Base Amount";
+                    "Frequency Of Payment" := Calculationdeatils."Frequency Of Payment";
+
+                    ManagementFeeMasterDetailsFetch();
+                end else begin
+                    "Calculation Method" := "Calculation Method"::" ";
+                    "Percentage Type" := "Percentage Type"::" ";
+                    "Percentage" := 0;
+                    "Amount" := 0;
+                    "Percentage/Amount" := 0;
+                    "Base Amount" := "Base Amount"::" ";
+                    "Frequency Of Payment" := "Frequency Of Payment"::" ";
+                end;
             end;
         }
 
@@ -250,6 +297,11 @@ table 50303 "Property Registration"
         {
             DataClassification = ToBeClassified;
             Caption = 'Vendor Name';
+        }
+        field(50138; "Search Name"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Search Name';
         }
         field(50129; "Vendor Contact No."; Text[30])
         {
@@ -272,6 +324,109 @@ table 50303 "Property Registration"
             Caption = 'Contract Status';
             OptionMembers = " ","Active","Terminate";
         }
+
+        field(50139; "Balance (LCY)"; Decimal)
+        {
+            Caption = 'Balance (LCY)';
+        }
+        // field(50140; "Balance Due (LCY) As Customer"; Decimal)
+        // {
+        //     Caption = 'Balance Due (LCY) As Customer';
+        //     Editable = false;
+        // }
+        field(50141; "Balance Due (LCY)"; Decimal)
+        {
+            Caption = 'Balance Due (LCY)';
+        }
+
+        field(50142; "Privacy Blocked"; Boolean)
+        {
+            Caption = 'Privacy Blocked';
+        }
+        field(50143; "Last Date Modified"; Date)
+        {
+            Caption = 'Last Date Modified';
+        }
+
+        field(50144; "Document Sending Profile"; Code[20])
+        {
+            Caption = 'Document Sending Profile';
+        }
+
+        field(50145; "IC Partner Code"; Code[20])
+        {
+            Caption = 'IC Partner Code';
+        }
+        field(50146; "Purchaser Code"; Code[20])
+        {
+            Caption = 'Purchaser Code';
+        }
+
+        field(50147; "Responsibility Center"; Code[10])
+        {
+            Caption = 'Responsibility Center';
+        }
+
+        field(50148; "Disable Search by Name"; Boolean)
+        {
+            Caption = 'Disable Search by Name';
+        }
+        field(50149; "Company Size Code"; Code[20])
+        {
+            Caption = 'Company Size Code';
+        }
+        field(50150; "Vendor Category"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Vendor Category';
+        }
+
+        field(50151; "Percentage"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Percentage';
+        }
+
+        field(50152; "Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Amount';
+        }
+
+
+        field(50153; "Percentage/Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Percentage/Amount';
+        }
+
+
+        field(50154; "Calculation Method"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Calculation Method';
+            OptionMembers = " ","Percentage Based","Fixed Amount";
+        }
+
+        field(50155; "Percentage Type"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Percentage Type';
+            OptionMembers = " ","Fixed","Variable";
+        }
+        field(50156; "Base Amount"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Base Amount';
+            OptionMembers = " ","Revenue","Collection","Annual Rent","Monthly Rent";
+        }
+        field(50157; "Frequency Of Payment"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Frequency Of Payment';
+            OptionMembers = " ","Monthly","Quaterly","Half Yearly","Yearly";
+        }
+
 
     }
 
@@ -334,8 +489,15 @@ table 50303 "Property Registration"
         managementfee."Start Date" := Rec."Start Date";
         managementfee."End Date" := Rec."End Date";
         managementfee."Property Type" := Rec."Property Classification";
-        // managementfee."Percentage/Amount" := Rec."Percentage/Amount"; // Uncomment if needed
         managementfee."Contract Status" := Rec."Contract Status";
+
+        managementfee."Calculation Method" := Rec."Calculation Method";
+        managementfee."Percentage Type" := Rec."Percentage Type";
+        managementfee."Base Amount" := Rec."Base Amount";
+        managementfee."Frequency Of Payment" := Rec."Frequency Of Payment";
+        managementfee.Amount := Rec.Amount;
+        managementfee.Percentage := Rec.Percentage;
+        managementfee."Percentage/Amount" := Rec."Percentage/Amount";
         managementfee.Insert();
         Clear(managementfee);
     end;

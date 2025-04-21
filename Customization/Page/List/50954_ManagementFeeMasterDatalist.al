@@ -17,12 +17,22 @@ page 50954 "Management Fee MasterData List"
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field("Vendor IDs"; Rec."Vendor ID Link")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
                 field("Vendor Name"; Rec."Vendor Name")
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
                 field("Property ID"; Rec."Property ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Property IDs"; Rec."Property ID Link")
                 {
                     ApplicationArea = All;
                     Editable = false;
@@ -57,12 +67,23 @@ page 50954 "Management Fee MasterData List"
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field("Base Amount"; Rec."Base Amount")
+
+                field("Percentage"; Rec."Percentage")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Amount"; Rec."Amount")
                 {
                     ApplicationArea = All;
                     Editable = false;
                 }
                 field("Percentage/Amount"; Rec."Percentage/Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Base Amount"; Rec."Base Amount")
                 {
                     ApplicationArea = All;
                     Editable = false;

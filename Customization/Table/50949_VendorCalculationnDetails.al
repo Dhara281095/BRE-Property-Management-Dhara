@@ -18,23 +18,31 @@ table 50949 "Vendor Calculation Details"
             Editable = false;
         }
 
-        // field(50102; "Property Name"; Text[100])
-        // {
-        //     DataClassification = ToBeClassified;
-        //     Caption = 'Property Name';
-        // }
+        field(50102; "Percentage"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Percentage';
+        }
 
-        // field(50103; "Property Type"; Text[100])
-        // {
-        //     DataClassification = ToBeClassified;
-        //     Caption = 'Property Type';
-        // }
+        field(50103; "Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Amount';
+        }
+
+
+        field(50113; "Percentage/Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Percentage/Amount';
+        }
+
 
         field(50104; "Calculation Method"; Option)
         {
             DataClassification = ToBeClassified;
             Caption = 'Calculation Method';
-            OptionMembers = " ","Percentage Method","Fixed Amount";
+            OptionMembers = " ","Percentage Based","Fixed Amount";
         }
 
         field(50105; "Percentage Type"; Option)
@@ -44,11 +52,11 @@ table 50949 "Vendor Calculation Details"
             OptionMembers = " ","Fixed","Variable";
         }
 
-        field(50106; "Percentage Amount"; Text[100])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Percentage Amount';
-        }
+        // field(50106; "Percentage Amount"; Text[100])
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Percentage Amount';
+        // }
         field(50107; "Base Amount"; Option)
         {
             DataClassification = ToBeClassified;
@@ -75,25 +83,25 @@ table 50949 "Vendor Calculation Details"
             Editable = false;
         }
 
-        field(50111; "Contract Status"; Option)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Contract Status';
-            OptionMembers = " ","Active","Terminate";
-        }
+        // field(50111; "Contract Status"; Option)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Contract Status';
+        //     OptionMembers = " ","Active","Terminate";
+        // }
 
-        field(50112; "Entry No."; Integer)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Entry No.';
-            Editable = false;
-            AutoIncrement = true;
-        }
+        // field(50112; "Entry No."; Integer)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Entry No.';
+        //     Editable = false;
+        //     AutoIncrement = true;
+        // }
 
     }
     keys
     {
-        key(PK; "Entry No.", "Vendor ID")
+        key(PK; "Vendor ID")
         {
             Clustered = true;
         }

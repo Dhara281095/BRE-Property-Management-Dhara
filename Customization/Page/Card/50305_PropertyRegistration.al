@@ -227,6 +227,125 @@ page 50305 "Property Registration Card"
                     ApplicationArea = All;
                     Editable = false;
                 }
+
+                field("Vendor Category"; Rec."Vendor Category")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
+                field("Privacy Blocked"; Rec."Privacy Blocked")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Last Date Modified"; Rec."Last Date Modified")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Document Sending Profile"; Rec."Document Sending Profile")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Search Name"; Rec."Search Name")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("IC Partner Code"; Rec."IC Partner Code")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Purchaser Code"; Rec."Purchaser Code")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Responsibility Center"; Rec."Responsibility Center")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Disable Search by Name"; Rec."Disable Search by Name")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Company Size Code"; Rec."Company Size Code")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
+                field(Blocked; Rec.Blocked)
+                {
+                    ApplicationArea = Basic, Suite;
+                    Editable = false;
+                }
+                field("Balance (LCY)"; Rec."Balance (LCY)")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Editable = false;
+                }
+                // field("Balance Due (LCY) As Customer"; Rec."Balance Due (LCY) As Customer")
+                // {
+                //     ApplicationArea = Basic, Suite;
+                //     ToolTip = 'Specifies the total value of your completed purchases from the vendor in the current fiscal year. It is calculated from amounts including VAT on all completed purchase invoices and credit memos.';
+                // }
+                field("Balance Due (LCY)"; Rec."Balance Due (LCY)")
+                {
+                    ApplicationArea = Basic, Suite;
+                    Editable = false;
+                }
+
+                group(" ")
+                {
+
+                    field("Calculation Method"; Rec."Calculation Method")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                    }
+
+                    field("Percentage Type"; Rec."Percentage Type")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                    }
+
+                    field("Percentage"; Rec."Percentage")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                    }
+
+                    field("Amount"; Rec."Amount")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                    }
+                    field("Percentage/Amount"; Rec."Percentage/Amount")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                    }
+
+                    field("Base Amount"; Rec."Base Amount")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                    }
+
+                    field("Frequency Of Payment"; Rec."Frequency Of Payment")
+                    {
+                        ApplicationArea = All;
+                        Editable = false;
+                    }
+
+                }
             }
 
         }

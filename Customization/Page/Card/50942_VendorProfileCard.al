@@ -86,23 +86,20 @@ page 50942 "Vendor Profile Card"
 
                 field(Blocked; Rec.Blocked)
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies which transactions with the vendor that cannot be processed, for example a vendor that is declared insolvent.';
+                    ApplicationArea = All;
                 }
                 field("Balance (LCY)"; Rec."Balance (LCY)")
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies the total value of your completed purchases from the vendor in the current fiscal year. It is calculated from amounts including VAT on all completed purchase invoices and credit memos.';
+                    ApplicationArea = All;
                 }
-                field("Balance Due (LCY) As Customer"; Rec."Balance Due (LCY) As Customer")
-                {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies the total value of your completed purchases from the vendor in the current fiscal year. It is calculated from amounts including VAT on all completed purchase invoices and credit memos.';
-                }
+                // field("Balance Due (LCY) As Customer"; Rec."Balance Due (LCY) As Customer")
+                // {
+                //     ApplicationArea = All;
+                //     ToolTip = 'Specifies the total value of your completed purchases from the vendor in the current fiscal year. It is calculated from amounts including VAT on all completed purchase invoices and credit memos.';
+                // }
                 field("Balance Due (LCY)"; Rec."Balance Due (LCY)")
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies the total value of your unpaid purchases from the vendor in the current fiscal year. It is calculated from amounts including VAT on all open purchase invoices and credit memos.';
+                    ApplicationArea = All;
                 }
             }
 
@@ -114,68 +111,57 @@ page 50942 "Vendor Profile Card"
                     Caption = 'Address';
                     field(Address; Rec.Address)
                     {
-                        ApplicationArea = Basic, Suite;
-                        ToolTip = 'Specifies the vendor''s address.';
+                        ApplicationArea = All;
                     }
                     field("Address 2"; Rec."Address 2")
                     {
-                        ApplicationArea = Basic, Suite;
-                        ToolTip = 'Specifies additional address information.';
+                        ApplicationArea = All;
                     }
                     field("Country/Region Code"; Rec."Country/Region Code")
                     {
-                        ApplicationArea = Basic, Suite;
-                        ToolTip = 'Specifies the country/region of the address.';
+                        ApplicationArea = All;
                     }
                     field(City; Rec.City)
                     {
-                        ApplicationArea = Basic, Suite;
-                        ToolTip = 'Specifies the vendor''s city.';
+                        ApplicationArea = All;
                     }
                     field(Country; Rec.Country)
                     {
-                        ApplicationArea = Basic, Suite;
-                        ToolTip = 'Specifies the vendor''s city.';
+                        ApplicationArea = All;
                     }
                     field("Post Code"; Rec."Post Code")
                     {
-                        ApplicationArea = Basic, Suite;
-                        ToolTip = 'Specifies the postal code.';
+                        ApplicationArea = All;
                     }
                 }
                 field("Phone No."; Rec."Phone No.")
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies the vendor''s telephone number.';
+                    ApplicationArea = All;
                 }
                 field(MobilePhoneNo; Rec."Mobile Phone No.")
                 {
+                    ApplicationArea = All;
                     Caption = 'Mobile Phone No.';
-                    ToolTip = 'Specifies the vendor''s mobile telephone number.';
                 }
                 field("E-Mail"; Rec."E-Mail")
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies the vendor''s email address.';
+                    ApplicationArea = All;
                 }
                 field("Home Page"; Rec."Home Page")
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies the vendor''s web site.';
+                    ApplicationArea = All;
                 }
                 field("Our Account No."; Rec."Our Account No.")
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies your account number with the vendor, if you have one.';
+                    ApplicationArea = All;
                 }
                 group(Contact)
                 {
                     Caption = 'Contact';
                     field("Primary Contact Code"; Rec."Primary Contact Code")
                     {
-                        ApplicationArea = Basic, Suite;
+                        ApplicationArea = All;
                         Caption = 'Primary Contact Code';
-                        ToolTip = 'Specifies the primary contact number for the vendor.';
                     }
                 }
             }
@@ -185,18 +171,15 @@ page 50942 "Vendor Profile Card"
 
                 field("VAT Registration No."; Rec."VAT Registration No.")
                 {
-                    ApplicationArea = VAT;
-                    ToolTip = 'Specifies the vendor''s VAT registration number.';
+                    ApplicationArea = All;
                 }
                 field("Price Calculation Method"; Rec."Price Calculation Method")
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies the default price calculation method.';
+                    ApplicationArea = All;
                 }
                 field("Price Including VAT"; Rec."Price Including VAT")
                 {
-                    ApplicationArea = VAT;
-                    ToolTip = 'Specifies if the Unit Price and Line Amount fields on document lines should be shown with or without VAT.';
+                    ApplicationArea = All;
                 }
 
             }
@@ -206,48 +189,39 @@ page 50942 "Vendor Profile Card"
 
                 field("Application Method"; Rec."Application Method")
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies how to apply payments to entries for this vendor.';
+                    ApplicationArea = All;
                 }
                 field("Payment Terms Code"; Rec."Payment Terms Code")
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies a formula that calculates the payment due date, payment discount date, and payment discount amount.';
+                    ApplicationArea = All;
                 }
                 field("Payment Method Code"; Rec."Payment Method Code")
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies how to make payment, such as with bank transfer, cash, or check.';
+                    ApplicationArea = All;
                 }
                 field(Priority; Rec.Priority)
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies the importance of the vendor when suggesting payments using the Suggest Vendor Payments function.';
+                    ApplicationArea = All;
                 }
                 field("Block Payment Tolerance"; Rec."Block Payment Tolerance")
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies if the vendor allows payment tolerance.';
+                    ApplicationArea = All;
                 }
                 field("Preferred Bank Account Code"; Rec."Preferred Bank Account Code")
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies the vendor bank account that will be used by default on payment journal lines for export to a payment bank file.';
+                    ApplicationArea = All;
                 }
                 field("Partner Type"; Rec."Partner Type")
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies if the vendor is a person or a company.';
+                    ApplicationArea = All;
                 }
                 field("Cash Flow Payment Terms Code"; Rec."Cash Flow Payment Terms Code")
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies a payment term that will be used for calculating cash flow.';
+                    ApplicationArea = All;
                 }
                 field("Creditor No."; Rec."Creditor No.")
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies the number of the vendor.';
+                    ApplicationArea = All;
                 }
             }
             group(Receiving)
@@ -255,34 +229,28 @@ page 50942 "Vendor Profile Card"
                 Caption = 'Receiving';
                 field("Location Code"; Rec."Location Code")
                 {
-                    ApplicationArea = Location;
-                    ToolTip = 'Specifies the warehouse location where items from the vendor must be received by default.';
+                    ApplicationArea = All;
                 }
                 field("Shipment Method Code"; Rec."Shipment Method Code")
                 {
-                    ApplicationArea = Suite;
-                    ToolTip = 'Specifies the delivery conditions of the related shipment, such as free on board (FOB).';
+                    ApplicationArea = All;
                 }
                 field("Lead Time Calculation"; Rec."Lead Time Calculation")
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies a date formula for the amount of time it takes to replenish the item.';
+                    ApplicationArea = All;
                 }
                 field("Base Calendar Code"; Rec."Base Calendar Code")
                 {
-                    ApplicationArea = Basic, Suite;
-                    ToolTip = 'Specifies a customizable calendar for delivery planning that holds the vendor''s working days and holidays.';
+                    ApplicationArea = All;
                 }
             }
             field("Over-Receipt Code"; Rec."Over-Receipt Code")
             {
                 ApplicationArea = All;
-                ToolTip = 'Specifies the policy that will be used for the vendor if more items than ordered are received.';
             }
             field("Receive E-Document To"; Rec."Receive E-Document To")
             {
                 ApplicationArea = All;
-                ToolTip = 'Specifies the policy that will be used for the vendor if more items than ordered are received.';
             }
 
             group("Calculation Details")
