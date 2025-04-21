@@ -21,8 +21,8 @@ page 50955 "Vendor Category Card"
                 field("Vendor Category Type"; Rec."Vendor Category Type")
                 {
                     ApplicationArea = All;
-                    Caption = 'Primary Classification Name';
-                    ToolTip = 'Enter the primary classification name.';
+                    Caption = 'Vendor Category Name';
+                    ToolTip = 'Enter the Vendor Categoryname.';
                     ShowMandatory = true;
                     NotBlank = true;
                 }

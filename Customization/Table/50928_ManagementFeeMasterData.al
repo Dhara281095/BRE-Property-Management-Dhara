@@ -105,20 +105,6 @@ table 50928 "Management Fee MasterData"
             DataClassification = ToBeClassified;
             Caption = 'Amount';
         }
-
-        field(50116; "Vendor ID Link"; Code[20])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Vendor ID Link';
-            Editable = false;
-        }
-
-        field(50117; "Property ID Link"; Code[20])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Property ID Link';
-            Editable = false;
-        }
     }
 
 
