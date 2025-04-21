@@ -16,11 +16,18 @@ page 50954 "Management Fee MasterData List"
                 {
                     ApplicationArea = All;
                     Editable = false;
-                }
-                field("Vendor IDs"; Rec."Vendor ID Link")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
+                    DrillDown = true;
+
+                    trigger OnDrillDown()
+                    var
+                        VendorProfile: Record "Vendor Profile";
+                    begin
+                        VendorProfile.SetRange("Vendor ID", Rec."Vendor ID");
+                        if VendorProfile.FindSet() then
+                            PAGE.RunModal(PAGE::"Vendor Profile Card", VendorProfile)
+                        else
+                            Message('No Vendor Profile found using FindFirst either.');
+                    end;
                 }
                 field("Vendor Name"; Rec."Vendor Name")
                 {
@@ -31,11 +38,18 @@ page 50954 "Management Fee MasterData List"
                 {
                     ApplicationArea = All;
                     Editable = false;
-                }
-                field("Property IDs"; Rec."Property ID Link")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
+                    DrillDown = true;
+
+                    trigger OnDrillDown()
+                    var
+                        PropertyProfile: Record "Property Registration";
+                    begin
+                        PropertyProfile.SetRange("Property ID", Rec."Property ID");
+                        if PropertyProfile.FindSet() then
+                            PAGE.RunModal(PAGE::"Property Registration Card", PropertyProfile)
+                        else
+                            Message('No Property Registration found using FindFirst either.');
+                    end;
                 }
                 field("Property Name"; Rec."Property Name")
                 {
