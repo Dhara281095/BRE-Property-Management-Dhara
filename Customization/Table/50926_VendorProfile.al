@@ -383,11 +383,6 @@ table 50926 "Vendor Profile"
             DataClassification = ToBeClassified;
             Caption = 'Amount';
         }
-        field(50158; "Percentage/Amount"; Decimal)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Percentage/Amount';
-        }
         field(50159; "Calculation Method"; Text[100])
         {
             DataClassification = ToBeClassified;

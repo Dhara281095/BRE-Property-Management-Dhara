@@ -49,12 +49,6 @@ table 50951 "Brokerage Master Data"
             Caption = 'Percentage Type';
             OptionMembers = " ","Fixed","Variable";
         }
-
-        field(50107; "Percentage/Amount"; Decimal)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Percentage/Amount';
-        }
         field(50108; "Base Amount"; Option)
         {
             DataClassification = ToBeClassified;

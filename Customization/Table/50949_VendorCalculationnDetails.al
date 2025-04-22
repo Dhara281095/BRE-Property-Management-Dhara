@@ -29,15 +29,6 @@ table 50949 "Vendor Calculation Details"
             DataClassification = ToBeClassified;
             Caption = 'Amount';
         }
-
-
-        field(50113; "Percentage/Amount"; Decimal)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Percentage/Amount';
-        }
-
-
         field(50104; "Calculation Method"; Text[100])
         {
             DataClassification = ToBeClassified;

@@ -276,7 +276,6 @@ table 50303 "Property Registration"
                     "Percentage Type" := Calculationdeatils."Percentage Type";
                     "Percentage" := Calculationdeatils."Percentage";
                     "Amount" := Calculationdeatils."Amount";
-                    "Percentage/Amount" := Calculationdeatils."Percentage/Amount";
                     "Base Amount" := Calculationdeatils."Base Amount";
                     "Frequency Of Payment" := Calculationdeatils."Frequency Of Payment";
 
@@ -286,7 +285,6 @@ table 50303 "Property Registration"
                     "Percentage Type" := "Percentage Type"::" ";
                     "Percentage" := 0;
                     "Amount" := 0;
-                    "Percentage/Amount" := 0;
                     "Base Amount" := "Base Amount"::" ";
                     "Frequency Of Payment" := "Frequency Of Payment"::" ";
                 end;
@@ -393,14 +391,6 @@ table 50303 "Property Registration"
             Caption = 'Amount';
         }
 
-
-        field(50153; "Percentage/Amount"; Decimal)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Percentage/Amount';
-        }
-
-
         field(50154; "Calculation Method"; Text[100])
         {
             DataClassification = ToBeClassified;
@@ -497,7 +487,6 @@ table 50303 "Property Registration"
         managementfee."Frequency Of Payment" := Rec."Frequency Of Payment";
         managementfee.Amount := Rec.Amount;
         managementfee.Percentage := Rec.Percentage;
-        managementfee."Percentage/Amount" := Rec."Percentage/Amount";
         managementfee.Insert();
         Clear(managementfee);
     end;

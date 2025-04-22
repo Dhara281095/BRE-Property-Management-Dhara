@@ -50,11 +50,6 @@ table 50928 "Management Fee MasterData"
             OptionMembers = " ","Fixed","Variable";
         }
 
-        field(50107; "Percentage/Amount"; Decimal)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Percentage/Amount';
-        }
         field(50108; "Base Amount"; Option)
         {
             DataClassification = ToBeClassified;
