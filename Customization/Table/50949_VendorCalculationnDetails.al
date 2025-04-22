@@ -38,11 +38,11 @@ table 50949 "Vendor Calculation Details"
         }
 
 
-        field(50104; "Calculation Method"; Option)
+        field(50104; "Calculation Method"; Text[100])
         {
             DataClassification = ToBeClassified;
             Caption = 'Calculation Method';
-            OptionMembers = " ","Percentage Based","Fixed Amount";
+            TableRelation = "Calculation Type"."Calculation Type";
         }
 
         field(50105; "Percentage Type"; Option)

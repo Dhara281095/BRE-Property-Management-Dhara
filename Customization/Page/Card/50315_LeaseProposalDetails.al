@@ -713,11 +713,91 @@ page 50315 "Lease Proposal Card"
 
               group("WorkflowFrequencys")
             {
+                Visible = false;
                 part("Workflow Frequency"; "Workflow Frequency PR Card")
                 {
                     SubPageLink = "Property ID" = FIELD("Property ID"); // Link to filter attachments for this owner only
                     ApplicationArea = All;
                     // Visible = isVisible;
+                }
+            }
+
+             field("Is any Broker Involved?"; Rec."Is any Broker Involved?")
+                {
+                    ApplicationArea = All;
+                }
+
+            group("Brokers and Commission Agent Details")
+            {
+                 Visible = Rec."Is any Broker Involved?";
+
+                field("Vendor ID"; Rec."Vendor ID")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Vendor Name"; Rec."Vendor Name")
+                {
+                    ApplicationArea = All;
+                     Editable = false;
+                }
+
+                field("Start Date"; Rec."Start Date")
+                {
+                    ApplicationArea = All;
+                     Editable = false;
+                }
+
+                field("End Date"; Rec."End Date")
+                {
+                    ApplicationArea = All;
+                     Editable = false;
+                }
+
+                field("Calculation Method"; Rec."Calculation Method")
+                {
+                    ApplicationArea = All;
+                     Editable = false;
+                }
+
+                field("Percentage Type"; Rec."Percentage Type")
+                {
+                    ApplicationArea = All;
+                     Editable = false;
+                }
+
+                field("Percentage"; Rec."Percentage")
+                {
+                    ApplicationArea = All;
+                     Editable = false;
+                }
+
+                field("Amount"; Rec."Amount")
+                {
+                    ApplicationArea = All;
+                     Editable = false;
+                }
+                field("Percentage/Amount"; Rec."Percentage/Amount")
+                {
+                    ApplicationArea = All;
+                     Editable = false;
+                }
+
+                field("Base Amount"; Rec."Base Amount")
+                {
+                    ApplicationArea = All;
+                     Editable = false;
+                }
+                field("Frequency Of Payment"; Rec."Frequency Of Payment")
+                {
+                    ApplicationArea = All;
+                     Editable = false;
+                }
+                
+                field("Contract Status"; Rec."Contract Status")
+                {
+                    ApplicationArea = All;
+                     Editable = false;
                 }
             }
 

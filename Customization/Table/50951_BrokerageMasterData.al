@@ -1,4 +1,4 @@
-table 50928 "Management Fee MasterData"
+table 50951 "Brokerage Master Data"
 {
     DataClassification = ToBeClassified;
     DataCaptionFields = "Vendor ID";
@@ -87,13 +87,6 @@ table 50928 "Management Fee MasterData"
             OptionMembers = " ","Active","Terminate";
         }
 
-        field(50113; "Company ID"; Integer)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Company ID';
-            Editable = false;
-        }
-
         field(50114; "Percentage"; Integer)
         {
             DataClassification = ToBeClassified;
@@ -104,6 +97,37 @@ table 50928 "Management Fee MasterData"
         {
             DataClassification = ToBeClassified;
             Caption = 'Amount';
+        }
+        field(50117; "Owner Name"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Owner Name';
+            Editable = false;
+        }
+        field(50118; "Unit ID"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Unit ID';
+            Editable = false;
+        }
+
+        field(50119; "Unit Number"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Unit Number';
+            Editable = false;
+        }
+        field(50120; "Unit Name"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Unit Name';
+            Editable = false;
+        }
+        field(50121; "Contract ID"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Contract ID';
+            Editable = false;
         }
     }
 

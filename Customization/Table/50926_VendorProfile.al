@@ -372,6 +372,46 @@ table 50926 "Vendor Profile"
             Editable = false;
         }
 
+
+        field(50156; "Percentage"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Percentage';
+        }
+        field(50157; "Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Amount';
+        }
+        field(50158; "Percentage/Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Percentage/Amount';
+        }
+        field(50159; "Calculation Method"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Calculation Method';
+            TableRelation = "Calculation Type"."Calculation Type";
+        }
+        field(50160; "Percentage Type"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Percentage Type';
+            OptionMembers = " ","Fixed","Variable";
+        }
+        field(50161; "Base Amount"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Base Amount';
+            OptionMembers = " ","Revenue","Collection","Annual Rent","Monthly Rent";
+        }
+        field(50162; "Frequency Of Payment"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Frequency Of Payment';
+            OptionMembers = " ","Monthly","Quaterly","Half Yearly","Yearly";
+        }
     }
     keys
     {

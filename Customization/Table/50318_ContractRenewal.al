@@ -1162,6 +1162,119 @@ table 50318 "Contract Renewal"
         }
 
 
+        field(50184; "Vendor ID"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Vendor ID';
+
+            trigger OnLookup()
+            var
+                VendorProfileRec: Record "Vendor Profile";
+            begin
+                VendorProfileRec.SetRange("Vendor Category", 'Brokers and Commission Agent');
+                if Page.RunModal(Page::"Vendor Profile List", VendorProfileRec) = Action::LookupOK then begin
+                    "Vendor ID" := VendorProfileRec."Vendor ID";
+                    "Vendor Name" := VendorProfileRec."Vendor Name";
+                    "Start Date" := VendorProfileRec."Start Date";
+                    "End Date" := VendorProfileRec."End Date";
+                    "Contract Status" := VendorProfileRec."Contract Status";
+                    "Calculation Method" := VendorProfileRec."Calculation Method";
+                    "Percentage Type" := VendorProfileRec."Percentage Type";
+                    Percentage := VendorProfileRec.Percentage;
+                    Amount := VendorProfileRec.Amount;
+                    "Percentage/Amount" := VendorProfileRec."Percentage/Amount";
+                    "Base Amount" := VendorProfileRec."Base Amount";
+                    "Frequency Of Payment" := VendorProfileRec."Frequency Of Payment";
+                end else begin
+                    "Vendor ID" := '';
+                    "Vendor Name" := '';
+                    "Start Date" := 0D;
+                    "End Date" := 0D;
+                    "Contract Status" := "Contract Status"::" ";
+                    "Calculation Method" := ' ';
+                    "Percentage Type" := "Percentage Type"::" ";
+                    Percentage := 0;
+                    Amount := 0;
+                    "Percentage/Amount" := 0;
+                    "Base Amount" := "Base Amount"::" ";
+                    "Frequency Of Payment" := "Frequency Of Payment"::" ";
+                end;
+            end;
+        }
+        field(50185; "Vendor Name"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Vendor Name';
+            Editable = false;
+        }
+        field(50186; "Percentage"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Percentage';
+        }
+        field(50187; "Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Amount';
+        }
+        field(50188; "Percentage/Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Percentage/Amount';
+        }
+        field(50176; "Calculation Method"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Calculation Method';
+            TableRelation = "Calculation Type"."Calculation Type";
+        }
+
+        field(50177; "Percentage Type"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Percentage Type';
+            OptionMembers = " ","Fixed","Variable";
+        }
+        field(50178; "Base Amount"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Base Amount';
+            OptionMembers = " ","Revenue","Collection","Annual Rent","Monthly Rent";
+        }
+        field(50179; "Frequency Of Payment"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Frequency Of Payment';
+            OptionMembers = " ","Monthly","Quaterly","Half Yearly","Yearly";
+        }
+
+        field(50180; "Start Date"; Date)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Start Date';
+            Editable = false;
+        }
+        field(50181; "End Date"; Date)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'End Date';
+            Editable = false;
+        }
+
+        field(50182; "ContractStatus"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Contract Status';
+            OptionMembers = " ","Active","Terminate";
+        }
+
+        field(50183; "Is any Broker Involved?"; Boolean)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Is any Broker Involved?';
+        }
+
+
 
 
     }

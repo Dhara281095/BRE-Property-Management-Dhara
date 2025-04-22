@@ -150,6 +150,7 @@ table 50307 "Tenancy Contract"
                     "Contract Amount Including VAT" := LeaseProposalRec."Rent Amount Including VAT";
                     TenancyContractSubpage();
                     rentdatafetch();
+                    brokerdata();
                 end else begin
                     // Clear fields if no record is found
                     "Tenant ID" := '';
@@ -167,7 +168,6 @@ table 50307 "Tenancy Contract"
                     "Property Type" := '';
                     "Property Name" := '';
                     "Unit Number" := '';
-
                 end;
 
                 // if "Single Rent Calculation" = "Single Rent Calculation"::"Single Unit with square feet rate" then begin
@@ -1061,6 +1061,7 @@ table 50307 "Tenancy Contract"
 
                     TenancyContractSubpage2();
                     rentdatafetched();
+                    renewalbrokerdata();
                 end else begin
                     // Clear fields if no record is found
                     "Tenant ID" := '';
@@ -1609,6 +1610,79 @@ table 50307 "Tenancy Contract"
             Caption = 'Previous Status';
             Editable = true;
 
+        }
+
+        field(50197; "Vendor ID"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Vendor ID';
+            Editable = false;
+        }
+        field(50198; "Vendor Name"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Vendor Name';
+            Editable = false;
+        }
+        field(50199; "Percentage"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Percentage';
+        }
+        field(50200; "Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Amount';
+        }
+        field(50201; "Percentage/Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Percentage/Amount';
+        }
+        field(50202; "Calculation Method"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Calculation Method';
+            TableRelation = "Calculation Type"."Calculation Type";
+        }
+
+        field(50203; "Percentage Type"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Percentage Type';
+            OptionMembers = " ","Fixed","Variable";
+        }
+        field(50204; "Base Amount"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Base Amount';
+            OptionMembers = " ","Revenue","Collection","Annual Rent","Monthly Rent";
+        }
+        field(50205; "Frequency Of Payment"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Frequency Of Payment';
+            OptionMembers = " ","Monthly","Quaterly","Half Yearly","Yearly";
+        }
+
+        field(50206; "Start Date"; Date)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Start Date';
+            Editable = false;
+        }
+        field(50207; "End Date"; Date)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'End Date';
+            Editable = false;
+        }
+
+        field(50208; "Contract Status"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Contract Status';
+            OptionMembers = " ","Active","Terminate";
         }
     }
 
@@ -2506,4 +2580,86 @@ table 50307 "Tenancy Contract"
             otherpayments.DeleteAll();
 
     end;
+
+    procedure brokerdata()
+    var
+        leaseproposal: Record "Lease Proposal Details";
+    begin
+        leaseproposal.SetRange("Proposal ID", Rec."Proposal ID");
+        if leaseproposal.FindSet() then begin
+            Rec."Vendor ID" := leaseproposal."Vendor ID";
+            "Vendor Name" := leaseproposal."Vendor Name";
+            "Start Date" := leaseproposal."Start Date";
+            "End Date" := leaseproposal."End Date";
+            "Contract Status" := leaseproposal."Contract Status";
+            "Calculation Method" := leaseproposal."Calculation Method";
+            "Percentage Type" := leaseproposal."Percentage Type";
+            Percentage := leaseproposal.Percentage;
+            Amount := leaseproposal.Amount;
+            "Percentage/Amount" := leaseproposal."Percentage/Amount";
+            "Base Amount" := leaseproposal."Base Amount";
+            "Frequency Of Payment" := leaseproposal."Frequency Of Payment";
+            ManagementFeeMasterDetailsFetch();
+        end;
+    end;
+
+    procedure renewalbrokerdata()
+    var
+        leaseproposal: Record "Lease Proposal Details";
+    begin
+        leaseproposal.SetRange("Proposal ID", Rec."Proposal ID");
+        if leaseproposal.FindSet() then begin
+            Rec."Vendor ID" := leaseproposal."Vendor ID";
+            "Vendor Name" := leaseproposal."Vendor Name";
+            "Start Date" := leaseproposal."Start Date";
+            "End Date" := leaseproposal."End Date";
+            "Contract Status" := leaseproposal."Contract Status";
+            "Calculation Method" := leaseproposal."Calculation Method";
+            "Percentage Type" := leaseproposal."Percentage Type";
+            Percentage := leaseproposal.Percentage;
+            Amount := leaseproposal.Amount;
+            "Percentage/Amount" := leaseproposal."Percentage/Amount";
+            "Base Amount" := leaseproposal."Base Amount";
+            "Frequency Of Payment" := leaseproposal."Frequency Of Payment";
+            ManagementFeeMasterDetailsFetch();
+        end;
+    end;
+
+    procedure ManagementFeeMasterDetailsFetch()
+    var
+        managementfee: Record "Brokerage Master Data";
+    begin
+        // Check if record already exists for same Vendor ID and Property ID to avoid duplicates (optional but good)
+        managementfee.SetRange("Vendor ID", Rec."Vendor ID");
+        managementfee.SetRange("Contract ID", Rec."Contract ID");
+
+        if not managementfee.IsEmpty() then
+            exit; // Record already exists, avoid duplicate insert
+
+        // Now insert new record
+        managementfee.Init();
+        managementfee."Property ID" := Rec."Property ID";
+        managementfee."Vendor ID" := Rec."Vendor ID";
+        managementfee."Contract ID" := Rec."Contract ID";
+        managementfee."Unit ID" := Rec."Unit ID";
+        managementfee."Vendor Name" := Rec."Vendor Name";
+        managementfee."Unit Name" := Rec."Unit Name";
+        managementfee."Unit Number" := Rec."Unit Number";
+        managementfee."Property Name" := Rec."Property Name";
+        managementfee."Start Date" := Rec."Start Date";
+        managementfee."End Date" := Rec."End Date";
+        managementfee."Property Type" := Rec."Property Classification";
+        managementfee."Contract Status" := Rec."Contract Status";
+        managementfee."Calculation Method" := Rec."Calculation Method";
+        managementfee."Percentage Type" := Rec."Percentage Type";
+        managementfee."Base Amount" := Rec."Base Amount";
+        managementfee."Frequency Of Payment" := Rec."Frequency Of Payment";
+        managementfee.Amount := Rec.Amount;
+        managementfee.Percentage := Rec.Percentage;
+        managementfee."Percentage/Amount" := Rec."Percentage/Amount";
+        managementfee."Owner Name" := Rec."Owner's Name";
+        managementfee.Insert();
+        Clear(managementfee);
+    end;
+
 }
