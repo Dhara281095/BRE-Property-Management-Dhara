@@ -327,12 +327,6 @@ page 50305 "Property Registration Card"
                         ApplicationArea = All;
                         Editable = false;
                     }
-                    field("Percentage/Amount"; Rec."Percentage/Amount")
-                    {
-                        ApplicationArea = All;
-                        Editable = false;
-                    }
-
                     field("Base Amount"; Rec."Base Amount")
                     {
                         ApplicationArea = All;

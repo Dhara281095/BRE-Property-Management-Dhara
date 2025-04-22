@@ -1182,7 +1182,6 @@ table 50318 "Contract Renewal"
                     "Percentage Type" := VendorProfileRec."Percentage Type";
                     Percentage := VendorProfileRec.Percentage;
                     Amount := VendorProfileRec.Amount;
-                    "Percentage/Amount" := VendorProfileRec."Percentage/Amount";
                     "Base Amount" := VendorProfileRec."Base Amount";
                     "Frequency Of Payment" := VendorProfileRec."Frequency Of Payment";
                 end else begin
@@ -1195,7 +1194,6 @@ table 50318 "Contract Renewal"
                     "Percentage Type" := "Percentage Type"::" ";
                     Percentage := 0;
                     Amount := 0;
-                    "Percentage/Amount" := 0;
                     "Base Amount" := "Base Amount"::" ";
                     "Frequency Of Payment" := "Frequency Of Payment"::" ";
                 end;

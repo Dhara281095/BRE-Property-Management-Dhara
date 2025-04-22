@@ -136,12 +136,6 @@ page 50942 "Vendor Profile Card"
                     ApplicationArea = All;
                     Editable = IsFixedAmount;
                 }
-                field("Percentage/Amount"; Rec."Percentage/Amount")
-                {
-                    ApplicationArea = All;
-                    Editable = IsPercentageamount;
-                }
-
                 field("Base Amount"; Rec."Base Amount")
                 {
                     ApplicationArea = All;

@@ -97,11 +97,6 @@ page 50961 "Brokerage Master Data List"
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field("Percentage/Amount"; Rec."Percentage/Amount")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
                 field("Base Amount"; Rec."Base Amount")
                 {
                     ApplicationArea = All;

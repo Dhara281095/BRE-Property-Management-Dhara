@@ -1634,11 +1634,6 @@ table 50307 "Tenancy Contract"
             DataClassification = ToBeClassified;
             Caption = 'Amount';
         }
-        field(50201; "Percentage/Amount"; Decimal)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Percentage/Amount';
-        }
         field(50202; "Calculation Method"; Text[100])
         {
             DataClassification = ToBeClassified;
@@ -2596,7 +2591,6 @@ table 50307 "Tenancy Contract"
             "Percentage Type" := leaseproposal."Percentage Type";
             Percentage := leaseproposal.Percentage;
             Amount := leaseproposal.Amount;
-            "Percentage/Amount" := leaseproposal."Percentage/Amount";
             "Base Amount" := leaseproposal."Base Amount";
             "Frequency Of Payment" := leaseproposal."Frequency Of Payment";
             ManagementFeeMasterDetailsFetch();
@@ -2618,7 +2612,6 @@ table 50307 "Tenancy Contract"
             "Percentage Type" := leaseproposal."Percentage Type";
             Percentage := leaseproposal.Percentage;
             Amount := leaseproposal.Amount;
-            "Percentage/Amount" := leaseproposal."Percentage/Amount";
             "Base Amount" := leaseproposal."Base Amount";
             "Frequency Of Payment" := leaseproposal."Frequency Of Payment";
             ManagementFeeMasterDetailsFetch();
@@ -2656,7 +2649,6 @@ table 50307 "Tenancy Contract"
         managementfee."Frequency Of Payment" := Rec."Frequency Of Payment";
         managementfee.Amount := Rec.Amount;
         managementfee.Percentage := Rec.Percentage;
-        managementfee."Percentage/Amount" := Rec."Percentage/Amount";
         managementfee."Owner Name" := Rec."Owner's Name";
         managementfee.Insert();
         Clear(managementfee);

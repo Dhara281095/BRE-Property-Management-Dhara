@@ -1875,11 +1875,6 @@ page 50313 "Tenancy Contract Card"
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field("Percentage/Amount"; Rec."Percentage/Amount")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
 
                 field("Base Amount"; Rec."Base Amount")
                 {
@@ -1926,9 +1921,6 @@ page 50313 "Tenancy Contract Card"
                     // end;
                 end;
             }
-
-
-
         }
     }
 
@@ -1959,8 +1951,6 @@ page 50313 "Tenancy Contract Card"
     var
         ProposalIDEnabled: Boolean;
         RenewalProposalIDEnabled: Boolean;
-
-
 
 
     // trigger OnAfterGetRecord()
@@ -2042,11 +2032,6 @@ page 50313 "Tenancy Contract Card"
 
             Rec.Modify();
         end;
-
-
-
-
-
     end;
 
     trigger OnModifyRecord(): Boolean
@@ -2067,9 +2052,6 @@ page 50313 "Tenancy Contract Card"
         CurrPage."Merge Lum_AnnualAmount Rent (Renewal)".Page.SetContractIDs(Rec."Contract ID");
         UpdateVisibility();
         UpdateSecurityAmountReceived();
-
-
-
     end;
 
     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
@@ -2091,8 +2073,6 @@ page 50313 "Tenancy Contract Card"
         UpdateVisibility();
 
     end;
-
-
 
 
     local procedure UpdateFieldsEnable()
