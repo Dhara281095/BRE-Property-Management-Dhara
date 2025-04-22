@@ -282,7 +282,7 @@ table 50303 "Property Registration"
 
                     ManagementFeeMasterDetailsFetch();
                 end else begin
-                    "Calculation Method" := "Calculation Method"::" ";
+                    "Calculation Method" := ' ';
                     "Percentage Type" := "Percentage Type"::" ";
                     "Percentage" := 0;
                     "Amount" := 0;
@@ -401,11 +401,11 @@ table 50303 "Property Registration"
         }
 
 
-        field(50154; "Calculation Method"; Option)
+        field(50154; "Calculation Method"; Text[100])
         {
             DataClassification = ToBeClassified;
             Caption = 'Calculation Method';
-            OptionMembers = " ","Percentage Based","Fixed Amount";
+            TableRelation = "Calculation Type"."Calculation Type";
         }
 
         field(50155; "Percentage Type"; Option)

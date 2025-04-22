@@ -103,6 +103,57 @@ page 50942 "Vendor Profile Card"
                 }
             }
 
+            group("Brokers and Commission Agent Details")
+            {
+
+                field("Calculation Method"; Rec."Calculation Method")
+                {
+                    ApplicationArea = All;
+
+                    trigger OnValidate()
+                    begin
+                        UpdatePercentageEditable();
+                    end;
+                }
+
+                field("Percentage Type"; Rec."Percentage Type")
+                {
+                    ApplicationArea = All;
+                    trigger OnValidate()
+                    begin
+                        UpdatePercentageEditable();
+                    end;
+                }
+
+                field("Percentage"; Rec."Percentage")
+                {
+                    ApplicationArea = All;
+                    Editable = IsPercentageEditable;
+                }
+
+                field("Amount"; Rec."Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = IsFixedAmount;
+                }
+                field("Percentage/Amount"; Rec."Percentage/Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = IsPercentageamount;
+                }
+
+                field("Base Amount"; Rec."Base Amount")
+                {
+                    ApplicationArea = All;
+                }
+
+                field("Frequency Of Payment"; Rec."Frequency Of Payment")
+                {
+                    ApplicationArea = All;
+                }
+
+            }
+
             group("Address & Contact")
             {
                 Caption = 'Address & Contact';
@@ -310,6 +361,40 @@ page 50942 "Vendor Profile Card"
         CurrPage."Calculation Detail".Page.SetVendorID(Rec."Vendor ID");
         CurrPage."Calculation Detail".Page.SetStartEndDate(Rec."Start Date", Rec."End Date", Rec."Vendor Name");
         CurrPage."Vendor Documents".Page.SetVendorID(Rec."Vendor ID");
+    end;
+
+
+    var
+        IsPercentageEditable: Boolean;
+        IsFixedAmount: Boolean;
+        IsPercentageamount: Boolean;
+
+    procedure UpdatePercentageEditable()
+    begin
+        // Assume the enum or option values are "Percentage-Based" and "Fixed"
+        if (Rec."Calculation Method" = 'Percentage Based') and
+           (Rec."Percentage Type" = Rec."Percentage Type"::Fixed) then begin
+            IsPercentageEditable := true;
+        end
+        else begin
+            IsPercentageEditable := false;
+        end;
+
+        if (Rec."Calculation Method" = 'Fixed Amount') and
+          (Rec."Percentage Type" = Rec."Percentage Type"::" ") then begin
+            IsFixedAmount := true;
+        end
+        else begin
+            IsFixedAmount := false;
+        end;
+
+        if (Rec."Calculation Method" = 'Percentage Based') and
+          (Rec."Percentage Type" = Rec."Percentage Type"::"Variable") then begin
+            IsPercentageamount := true;
+        end
+        else begin
+            IsPercentageamount := false;
+        end;
     end;
 
 }
