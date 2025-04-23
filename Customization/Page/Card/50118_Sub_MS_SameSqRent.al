@@ -11,10 +11,6 @@ page 50118 "Merge SameSqure SubPage"
         {
             repeater(Group)
             {
-
-
-
-
                 field("Proposal ID"; rec."Proposal ID")
                 {
                     ApplicationArea = All;

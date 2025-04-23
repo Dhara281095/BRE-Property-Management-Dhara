@@ -26,13 +26,11 @@ page 50122 "Revenue Allocation Card"
                 field(Month; Rec.Month)
                 {
                     ApplicationArea = All;
-                    Caption = 'Month';
 
                 }
                 field("Financial Year"; Rec."Financial Year")
                 {
                     ApplicationArea = All;
-                    Caption = 'Financial Year';
                 }
             }
             group("Revenue Allocation Report Details")

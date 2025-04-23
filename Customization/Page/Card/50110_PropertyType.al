@@ -22,23 +22,13 @@ page 50110 "Property Type Card"
                 {
                     ApplicationArea = All;
                     Caption = 'Primary Classification';
-                    ToolTip = 'Select the associated primary classification.';
-                    // TableRelation = "Primary Classification";
-                    // Add a lookup to the Primary Classification table
-                    // Lookup = true;
                 }
                 field("Property Type"; Rec."Property Type")
                 {
                     ApplicationArea = All;
                     Caption = 'Property Type';
-                    ToolTip = 'Enter the property type.';
                 }
             }
         }
     }
-
-
-
-    // Adding navigation from the list page
-    // usagecategory = Lists;
 }
