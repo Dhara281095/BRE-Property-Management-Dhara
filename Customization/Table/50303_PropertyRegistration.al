@@ -218,7 +218,9 @@ table 50303 "Property Registration"
         {
             DataClassification = ToBeClassified;
             Caption = 'Vendor ID';
-            TableRelation = "Vendor Profile"."Vendor ID";
+            //TableRelation = "Vendor Profile"."Vendor ID";
+            TableRelation = "Vendor Profile"."Vendor ID" WHERE("Vendor Category" = FILTER(<> 'Brokers and Commission Agent'));
+
 
             trigger OnValidate()
             var

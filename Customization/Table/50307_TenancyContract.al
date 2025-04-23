@@ -2650,6 +2650,7 @@ table 50307 "Tenancy Contract"
         managementfee.Amount := Rec.Amount;
         managementfee.Percentage := Rec.Percentage;
         managementfee."Owner Name" := Rec."Owner's Name";
+        managementfee."Tenant Name" := Rec."Customer Name";
         managementfee.Insert();
         Clear(managementfee);
     end;

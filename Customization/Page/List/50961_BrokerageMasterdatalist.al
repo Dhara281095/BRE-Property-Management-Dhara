@@ -132,6 +132,11 @@ page 50961 "Brokerage Master Data List"
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field("Tenant Name"; Rec."Tenant Name")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
             }
         }
     }

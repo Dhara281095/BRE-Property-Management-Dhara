@@ -123,6 +123,11 @@ table 50951 "Brokerage Master Data"
             Caption = 'Contract ID';
             Editable = false;
         }
+        field(50122; "Tenant Name"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Tenant Name';
+        }
     }
 
 
