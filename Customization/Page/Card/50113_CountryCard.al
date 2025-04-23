@@ -21,24 +21,17 @@ page 50113 "Country Card"
                 field("Sl No."; Rec."Sl No.")
                 {
                     ApplicationArea = All;
-                    Caption = 'Sl No.';
                     Editable = false;
                 }
                 field("Country Name"; Rec."Country Name")
                 {
                     ApplicationArea = All;
-                    Caption = 'Country Name';
                     ShowMandatory = true;
                     NotBlank = true;
-                    // trigger OnValidate()
-                    // begin
-                    //     CurrPage.Update(true);
-                    // end;
                 }
                 field("Country Code"; Rec."Country Code")
                 {
                     ApplicationArea = All;
-                    Caption = 'Country Code';
                 }
 
             }

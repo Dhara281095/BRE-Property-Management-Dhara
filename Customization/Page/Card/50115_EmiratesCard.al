@@ -21,13 +21,11 @@ page 50115 "Emirate Card"
                 field("Sl No."; Rec."Sl No.")
                 {
                     ApplicationArea = All;
-                    Caption = 'Sl No.';
                     Editable = false;
                 }
                 field("Country Code"; Rec."Country Code")
                 {
                     ApplicationArea = All;
-                    Caption = 'Country Code';
                     ShowMandatory = true;
                     NotBlank = true;
 
@@ -35,7 +33,6 @@ page 50115 "Emirate Card"
                 field("Emirate Name"; Rec."Emirate Name")
                 {
                     ApplicationArea = All;
-                    Caption = 'Emirate Name';
                     ShowMandatory = true;
                     NotBlank = true;
                 }

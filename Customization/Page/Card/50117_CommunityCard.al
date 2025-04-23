@@ -21,34 +21,25 @@ page 50117 "Community Card"
                 field("Sl No."; Rec."Sl No.")
                 {
                     ApplicationArea = All;
-                    Caption = 'Sl No.';
                     Editable = false;
                 }
                 field("Emirate Name"; Rec."Emirate Name")
                 {
                     ApplicationArea = All;
-                    Caption = 'Emirate Name';
                     ShowMandatory = true;
                     NotBlank = true;
                 }
                 field("Community Code"; Rec."Community Code")
                 {
                     ApplicationArea = All;
-                    Caption = 'Community Code';
                 }
                 field("Community Name"; Rec."Community Name")
                 {
                     ApplicationArea = All;
-                    Caption = 'Community Name';
                     ShowMandatory = true;
                     NotBlank = true;
                 }
             }
         }
     }
-
-
-
-    // Adding navigation from the list page
-    // usagecategory = Lists;
 }
