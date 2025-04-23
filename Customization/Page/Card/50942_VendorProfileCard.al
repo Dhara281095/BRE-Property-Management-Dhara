@@ -44,10 +44,10 @@ page 50942 "Vendor Profile Card"
                     begin
                         if Rec."Vendor Category" = 'Brokers and Commission Agent' then begin
                             ShowBrokerageGroup := true;
-                            Message('Brokers and Commission Agent Section is Open');
+                            //   Message('Brokers and Commission Agent Section is Open');
                         end else begin
                             ShowBrokerageGroup := false;
-                            Message('Vendor is NOT a Brokers and Commission Agent - Section remains Closed');
+                            //  Message('Vendor is NOT a Brokers and Commission Agent - Section remains Closed');
                         end;
                     end;
                 }
@@ -352,10 +352,10 @@ page 50942 "Vendor Profile Card"
 
         if Rec."Vendor Category" = 'Brokers and Commission Agent' then begin
             ShowBrokerageGroup := true;
-            Message('Brokers and Commission Agent Section is Open');
+            //Message('Brokers and Commission Agent Section is Open');
         end else begin
             ShowBrokerageGroup := false;
-            Message('Vendor is NOT a Brokers and Commission Agent - Section remains Closed');
+            // Message('Vendor is NOT a Brokers and Commission Agent - Section remains Closed');
         end;
     end;
 

@@ -9,7 +9,7 @@ table 50952 "Brokerage Calculation"
         {
             DataClassification = ToBeClassified;
             Caption = 'Owner ID';
-            // TableRelation = "Customer";
+            TableRelation = "Owner Profile"."Owner ID";
 
             // trigger OnValidate()
             // var
