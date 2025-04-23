@@ -109,10 +109,8 @@ page 50963 "Brokerage Calculation Card"
                             SubDetailRec."Unit Number" := MasterDataRec."Unit Number";
                             SubDetailRec."Unit Name" := MasterDataRec."Unit Name";
                             SubDetailRec."Vendor Name" := MasterDataRec."Vendor Name";
-
-                            // Optional: Add brokerage calculation if needed
-                            // SubDetailRec."Brokerage %" := MasterDataRec."Brokerage %";
-                            // SubDetailRec."Calculation Amount" := MasterDataRec."Calculation Amount";
+                            SubDetailRec."Brokerage Percentage" := MasterDataRec.Percentage;
+                            SubDetailRec."Calculation Amount" := MasterDataRec."Amount";
 
                             // Insert
                             SubDetailRec.Insert(true);

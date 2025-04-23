@@ -77,13 +77,13 @@ table 50964 "Brokerage Calculation Sub"
             Caption = 'Vendor Name';
             Editable = false;
         }
-        field(50112; "Brokerage Percentage"; Code[20])
+        field(50112; "Brokerage Percentage"; Integer)
         {
             DataClassification = ToBeClassified;
             Caption = 'Brokerage Percentage';
             Editable = false;
         }
-        field(50113; "Calculation Amount"; Code[20])
+        field(50113; "Calculation Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Calculation Amount';
