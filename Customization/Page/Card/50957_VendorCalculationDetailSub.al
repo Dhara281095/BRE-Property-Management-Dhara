@@ -116,28 +116,18 @@ page 50957 "Vendor Calculation Details Sub"
     procedure UpdatePercentageEditable()
     begin
         // Assume the enum or option values are "Percentage-Based" and "Fixed"
-        if (Rec."Calculation Method" = 'Percentage Based') and
-           (Rec."Percentage Type" = Rec."Percentage Type"::Fixed) then begin
+        if (Rec."Percentage Type" <> Rec."Percentage Type"::" ") then begin
             IsPercentageEditable := true;
         end
         else begin
             IsPercentageEditable := false;
         end;
 
-        if (Rec."Calculation Method" = 'Fixed Amount') and
-          (Rec."Percentage Type" = Rec."Percentage Type"::" ") then begin
+        if (Rec."Percentage Type" = Rec."Percentage Type"::" ") then begin
             IsFixedAmount := true;
         end
         else begin
             IsFixedAmount := false;
-        end;
-
-        if (Rec."Calculation Method" = 'Percentage Based') and
-          (Rec."Percentage Type" = Rec."Percentage Type"::"Variable") then begin
-            IsPercentageamount := true;
-        end
-        else begin
-            IsPercentageamount := false;
         end;
     end;
 

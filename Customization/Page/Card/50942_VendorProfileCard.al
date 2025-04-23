@@ -40,6 +40,16 @@ page 50942 "Vendor Profile Card"
                 field("Vendor Category"; Rec."Vendor Category")
                 {
                     ApplicationArea = All;
+                    trigger OnValidate()
+                    begin
+                        if Rec."Vendor Category" = 'Brokers and Commission Agent' then begin
+                            ShowBrokerageGroup := true;
+                            Message('Brokers and Commission Agent Section is Open');
+                        end else begin
+                            ShowBrokerageGroup := false;
+                            Message('Vendor is NOT a Brokers and Commission Agent - Section remains Closed');
+                        end;
+                    end;
                 }
 
                 field("Privacy Blocked"; Rec."Privacy Blocked")
@@ -105,7 +115,7 @@ page 50942 "Vendor Profile Card"
 
             group("Brokers and Commission Agent Details")
             {
-
+                Visible = ShowBrokerageGroup;
                 field("Calculation Method"; Rec."Calculation Method")
                 {
                     ApplicationArea = All;
@@ -339,6 +349,14 @@ page 50942 "Vendor Profile Card"
         CurrPage."Calculation Detail".Page.SetVendorID(Rec."Vendor ID");
         CurrPage."Calculation Detail".Page.SetStartEndDate(Rec."Start Date", Rec."End Date", Rec."Vendor Name");
         CurrPage."Vendor Documents".Page.SetVendorID(Rec."Vendor ID");
+
+        if Rec."Vendor Category" = 'Brokers and Commission Agent' then begin
+            ShowBrokerageGroup := true;
+            Message('Brokers and Commission Agent Section is Open');
+        end else begin
+            ShowBrokerageGroup := false;
+            Message('Vendor is NOT a Brokers and Commission Agent - Section remains Closed');
+        end;
     end;
 
     trigger OnModifyRecord(): Boolean
@@ -362,32 +380,24 @@ page 50942 "Vendor Profile Card"
         IsPercentageEditable: Boolean;
         IsFixedAmount: Boolean;
         IsPercentageamount: Boolean;
+        ShowBrokerageGroup: Boolean;
+
 
     procedure UpdatePercentageEditable()
     begin
         // Assume the enum or option values are "Percentage-Based" and "Fixed"
-        if (Rec."Calculation Method" = 'Percentage Based') and
-           (Rec."Percentage Type" = Rec."Percentage Type"::Fixed) then begin
+        if (Rec."Percentage Type" <> Rec."Percentage Type"::" ") then begin
             IsPercentageEditable := true;
         end
         else begin
             IsPercentageEditable := false;
         end;
 
-        if (Rec."Calculation Method" = 'Fixed Amount') and
-          (Rec."Percentage Type" = Rec."Percentage Type"::" ") then begin
+        if (Rec."Percentage Type" = Rec."Percentage Type"::" ") then begin
             IsFixedAmount := true;
         end
         else begin
             IsFixedAmount := false;
-        end;
-
-        if (Rec."Calculation Method" = 'Percentage Based') and
-          (Rec."Percentage Type" = Rec."Percentage Type"::"Variable") then begin
-            IsPercentageamount := true;
-        end
-        else begin
-            IsPercentageamount := false;
         end;
     end;
 
