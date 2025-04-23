@@ -92,6 +92,12 @@ table 50951 "Brokerage Master Data"
             DataClassification = ToBeClassified;
             Caption = 'Amount';
         }
+        field(50116; "Owner ID"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Owner ID';
+            Editable = false;
+        }
         field(50117; "Owner Name"; Text[100])
         {
             DataClassification = ToBeClassified;

@@ -85,6 +85,10 @@ page 50965 "Brokerage Calculation Sub Card"
                 {
                     ApplicationArea = All;
                 }
+                field("ID"; Rec."ID")
+                {
+                    ApplicationArea = All;
+                }
             }
         }
     }

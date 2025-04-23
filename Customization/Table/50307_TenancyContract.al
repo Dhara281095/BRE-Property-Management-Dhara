@@ -12,6 +12,17 @@ table 50307 "Tenancy Contract"
             DataClassification = ToBeClassified;
             Caption = 'Owner Name';
             TableRelation = "Owner Profile"."Full Name";
+            trigger OnValidate()
+            var
+                OwnerRec: Record "Owner Profile";
+            begin
+                if "Owner's Name" <> '' then begin
+                    OwnerRec.Reset();
+                    OwnerRec.SetRange("Full Name", "Owner's Name");
+                    if OwnerRec.FindFirst() then
+                        "Owner ID" := OwnerRec."Owner ID"; // Assuming Owner ID is the primary key
+                end;
+            end;
         }
 
         field(50101; "Lessor's Name"; Text[100])
@@ -1679,6 +1690,13 @@ table 50307 "Tenancy Contract"
             Caption = 'Contract Status';
             OptionMembers = " ","Active","Terminate";
         }
+        field(50209; "Owner ID"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Owner ID';
+            Editable = false;
+            TableRelation = "Owner Profile"."Owner ID";
+        }
     }
 
     keys
@@ -2632,6 +2650,7 @@ table 50307 "Tenancy Contract"
         // Now insert new record
         managementfee.Init();
         managementfee."Property ID" := Rec."Property ID";
+        managementfee."Owner ID" := Rec."Owner ID";
         managementfee."Vendor ID" := Rec."Vendor ID";
         managementfee."Contract ID" := Rec."Contract ID";
         managementfee."Unit ID" := Rec."Unit ID";
