@@ -18,10 +18,10 @@ page 50962 "Brokerage Calculation List"
                     ApplicationArea = All;
                     Caption = 'ID';
                 }
-                field("Owner Name"; Rec."Owner Name")
+                field("Owner ID"; Rec."Owner ID")
                 {
                     ApplicationArea = All;
-                    Caption = 'Owner Name';
+                    Caption = 'Owner ID';
                 }
                 field("Property ID"; Rec."Property ID")
                 {

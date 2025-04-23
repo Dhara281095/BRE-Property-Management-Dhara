@@ -17,7 +17,7 @@ page 50963 "Brokerage Calculation Card"
                 {
                     ApplicationArea = All;
                 }
-                field("Owner Name"; Rec."Owner Name")
+                field("Owner ID"; Rec."Owner ID")
                 {
                     ApplicationArea = All;
                 }
@@ -65,28 +65,40 @@ page 50963 "Brokerage Calculation Card"
                 var
                     MasterDataRec: Record "Brokerage Master Data";
                     SubDetailRec: Record "Brokerage Calculation Sub";
-                    ExistingSubDetail: Record "Brokerage Calculation Sub";
+                    CalcHeaderRec: Record "Brokerage Calculation";
                 begin
-                    if Rec."Owner Name" = '' then
+                    // 1. Validation
+                    if Rec."Owner ID" = 0 then
                         Error('Owner Name is required.');
                     if Rec."Property ID" = '' then
                         Error('Property ID is required.');
 
-                    // Optional: Clear old records related to this Owner + Property
-                    ExistingSubDetail.SetRange("Owner Name", Rec."Owner Name");
-                    ExistingSubDetail.SetRange("Property ID", Rec."Property ID");
-                    if ExistingSubDetail.FindFirst() then
-                        ExistingSubDetail.DeleteAll();
+                    // 2. Clear previous sub-records linked to current header
+                    SubDetailRec.Reset();
+                    SubDetailRec.SetRange("Property ID", Rec."Property ID"); // Link field between header and sub
+                    if SubDetailRec.FindFirst() then
+                        SubDetailRec.DeleteAll();
 
-                    // Filter master data
-                    MasterDataRec.SetRange("Owner Name", Rec."Owner Name");
+                    // 3. Filter master data using Vendor Name = Owner Name, and Property ID
+                    MasterDataRec.Reset();
+                    // MasterDataRec.SetRange("Owner Name", Rec."Owner Name");
                     MasterDataRec.SetRange("Property ID", Rec."Property ID");
-                    //  MasterDataRec.SetRange("Start Date", Rec."Start Date");
+                    MasterDataRec.SetRange("Owner ID", Rec."Owner ID");
 
                     if MasterDataRec.FindSet() then begin
                         repeat
                             SubDetailRec.Init();
-                            SubDetailRec."Owner Name" := MasterDataRec."Owner Name";
+
+                            // Assign unique Entry No.
+                            SubDetailRec.Reset();
+                            if SubDetailRec.FindLast() then
+                                SubDetailRec."Entry No." := SubDetailRec."Entry No." + 1
+                            else
+                                SubDetailRec."Entry No." := 1;
+
+                            // Populate fields from master
+                            SubDetailRec.ID := Rec.ID;
+                            SubDetailRec."Owner ID" := MasterDataRec."Owner ID";
                             SubDetailRec."Vendor ID" := MasterDataRec."Vendor ID";
                             SubDetailRec."Start Date" := MasterDataRec."Start Date";
                             SubDetailRec."End Date" := MasterDataRec."End Date";
@@ -98,30 +110,20 @@ page 50963 "Brokerage Calculation Card"
                             SubDetailRec."Unit Name" := MasterDataRec."Unit Name";
                             SubDetailRec."Vendor Name" := MasterDataRec."Vendor Name";
 
-                            // Optional: Assign brokerage values
-                            // SubDetailRec."Brokerage Percentage" := MasterDataRec."Brokerage Percentage";
+                            // Optional: Add brokerage calculation if needed
+                            // SubDetailRec."Brokerage %" := MasterDataRec."Brokerage %";
                             // SubDetailRec."Calculation Amount" := MasterDataRec."Calculation Amount";
 
-                            // Insert record
-                            SubDetailRec.Insert(true); // true to force UI refresh
-                            Clear(SubDetailRec);
-
+                            // Insert
+                            SubDetailRec.Insert(true);
                         until MasterDataRec.Next() = 0;
 
-                        CurrPage.Update(); // Refresh UI
-                        Message('Brokerage data populated.');
+                        CurrPage.Update();
+                        Message('Matching brokerage data inserted.');
                     end else begin
-                        Message('No matching master data found.');
+                        Message('No matching data found in master for selected Owner and Property.');
                     end;
                 end;
-
-
-                // trigger OnAction()
-                // var
-                //     VendorRec: Record "Vendor Profile";
-                // begin
-                //     Message('hello');
-                // end;
             }
         }
     }

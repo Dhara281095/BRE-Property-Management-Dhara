@@ -59,6 +59,11 @@ page 50313 "Tenancy Contract Card"
                 {
                     ApplicationArea = All;
                 }
+                field("Owner ID"; rec."Owner ID")
+                {
+                    ApplicationArea = All;
+                    Visible = false;
+                }
 
                 field("Lessor's Name"; rec."Lessor's Name")
                 {

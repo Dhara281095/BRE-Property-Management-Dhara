@@ -137,6 +137,11 @@ page 50961 "Brokerage Master Data List"
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field("Owner ID"; Rec."Owner ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
             }
         }
     }

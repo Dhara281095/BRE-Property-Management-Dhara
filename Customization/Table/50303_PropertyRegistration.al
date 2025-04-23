@@ -249,7 +249,7 @@ table 50303 "Property Registration"
                     "Balance (LCY)" := VendorDetails."Balance (LCY)";
                     "Balance Due (LCY)" := VendorDetails."Balance Due (LCY)";
 
-                    ManagementFeeMasterDetailsFetch();
+                    // ManagementFeeMasterDetailsFetch();
                 end else begin // Clear the fields if no record is found
                     "Vendor ID" := '';
                     "Vendor Name" := '';

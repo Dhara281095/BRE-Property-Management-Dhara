@@ -5,7 +5,7 @@ table 50964 "Brokerage Calculation Sub"
     fields
     {
 
-        field(50100; "Owner ID"; Code[20])
+        field(50100; "Owner ID"; Integer)
         {
             DataClassification = ToBeClassified;
             Caption = 'Owner ID';
@@ -113,13 +113,19 @@ table 50964 "Brokerage Calculation Sub"
             Editable = false;
             AutoIncrement = true;
         }
+        field(50118; "ID"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'ID';
+            Editable = false;
+        }
 
     }
 
 
     keys
     {
-        key(PK; "Entry No.")
+        key(PK; "Entry No.", "ID")
         {
             Clustered = true;
         }
