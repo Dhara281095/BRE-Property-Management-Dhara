@@ -179,7 +179,7 @@ page 50129 "Security Deposit Entries"
                                 end;
 
                                 // Debug message to see what we found
-                                Message('Total Claim Amount calculated: %1', TotalClaimAmount);
+                                Message('Total Claim Amount calculated: %1', TotalClaimAmount + PendingReceivableGrid."Total Receivable");
 
                                 // Debug message to see what we found
                                 Message('Amount Including VAT from Adjustment Security Deposit: %1', AmountIncludingVAT);
@@ -197,7 +197,7 @@ page 50129 "Security Deposit Entries"
                                 // Update Total Refundable Deposit
                                 FinaCalculation."Total Refundable Deposit" := TotalRefundableDeposit;
                                 // Update Total Claim with the sum of Total Amount from Additional Charges Sub
-                                FinaCalculation."Total Claim" := TotalClaimAmount;
+                                FinaCalculation."Total Claim" := TotalClaimAmount + PendingReceivableGrid."Total Receivable";
                                 // Store the Amount Including VAT in the Total Adjustment field
                                 // FinaCalculation."Total Adjustment" := AmountIncludingVAT;
                                 FinaCalculation."Total Refund" := TotalRefundableAmount + FinaCalculation."Total Refundable Deposit";
