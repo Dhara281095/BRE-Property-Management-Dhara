@@ -43,7 +43,7 @@ page 50940 "FinalSettlemtRefundCard"
             repeater(RefundPaymentDetails)
             {
                 Caption = 'Refund Payment Details';
-                // Editable = (Rec."Refund Payment Status" <> PaymentStatus::Received);
+                Editable = (Rec."Refund Payment Status" <> PaymentStatus::Received);
 
                 field("FC ID"; Rec."FC ID")
                 {
