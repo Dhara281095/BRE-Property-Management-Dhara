@@ -42,7 +42,7 @@ page 50938 "FinalSettlemtCard"
             repeater(ReceivablePaymentDetails)
             {
                 Caption = 'Receivable Payment Details';
-                //  Editable = (Rec."Receivable Payment Status" <> PaymentStatus::Received);
+                Editable = (Rec."Receivable Payment Status" <> PaymentStatus::Received);
                 field("FC ID"; Rec."FC ID")
                 {
                     ApplicationArea = All;
