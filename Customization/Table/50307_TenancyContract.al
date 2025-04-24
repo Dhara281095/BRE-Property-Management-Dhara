@@ -1697,6 +1697,16 @@ table 50307 "Tenancy Contract"
             Editable = false;
             TableRelation = "Owner Profile"."Owner ID";
         }
+        field(50210; "Lessor's Nationality"; Text[50])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Nationality';
+        }
+        field(50211; "Lessor's Address"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Address';
+        }
     }
 
     keys

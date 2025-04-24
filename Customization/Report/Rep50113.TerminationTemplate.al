@@ -123,8 +123,7 @@ report 50113 "Termination Template"
             dataitem(Customer; Customer)
             {
                 DataItemLink = "No." = field("Tenant ID");
-                column(Name;
-                Name)
+                column(Name; Name)
                 {
                 }
                 column(Address; Address)
