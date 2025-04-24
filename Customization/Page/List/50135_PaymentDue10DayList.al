@@ -6,6 +6,9 @@ page 50135 "Upcoming Payments List" // Use an appropriate page number
     Caption = 'Payments Due Within 10 Days';
     UsageCategory = Lists;
 
+    InsertAllowed = false;
+    ModifyAllowed = false;
+    DeleteAllowed = false;
     layout
     {
         area(Content)

@@ -6,6 +6,10 @@ page 50136 "Overdue Payments List" // Use an appropriate page number
     Caption = 'Overdue Payments';
     UsageCategory = Lists;
 
+    InsertAllowed = false;
+    ModifyAllowed = false;
+    DeleteAllowed = false;
+
     layout
     {
         area(Content)

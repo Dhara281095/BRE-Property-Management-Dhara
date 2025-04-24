@@ -6,6 +6,10 @@ page 50138 "Business Suspended Contracts" // Use an appropriate page number
     Caption = 'Business Suspended Contracts';
     UsageCategory = Lists;
 
+    InsertAllowed = false;
+    ModifyAllowed = false;
+    DeleteAllowed = false;
+
     layout
     {
         area(Content)
