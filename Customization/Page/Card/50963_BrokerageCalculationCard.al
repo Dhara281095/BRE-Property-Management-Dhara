@@ -41,7 +41,7 @@ page 50963 "Brokerage Calculation Card"
                 Caption = 'Brokerage Calculation';
                 part("Brokerage Calculations"; "Brokerage Calculation Sub Card")
                 {
-                    SubPageLink = "Property ID" = FIELD("Property ID"); // Link to filter attachments for this owner only
+                    SubPageLink = "ID" = FIELD("ID"); // Link to filter attachments for this owner only
                     ApplicationArea = All;
                     // Visible = isVisible;
                 }
@@ -111,6 +111,7 @@ page 50963 "Brokerage Calculation Card"
                             SubDetailRec."Vendor Name" := MasterDataRec."Vendor Name";
                             SubDetailRec."Brokerage Percentage" := MasterDataRec.Percentage;
                             SubDetailRec."Calculation Amount" := MasterDataRec."Amount";
+                            SubDetailRec."Owner Name" := MasterDataRec."Owner Name";
 
                             // Insert
                             SubDetailRec.Insert(true);
