@@ -1,5 +1,7 @@
 namespace BREPropertyManagementMargi.BREPropertyManagementMargi;
 using Microsoft.Foundation.Company;
+using Microsoft.Inventory.Item;
+using Microsoft.Sales.Customer;
 report 50115 UmmAlQuwainContract
 {
     ApplicationArea = All;
@@ -46,7 +48,7 @@ report 50115 UmmAlQuwainContract
             column(Property_Size; "Property Size")
             {
             }
-            column(Base_Unit_of_Measure; "Base Unit of Measure")
+            column(B_U_o_M; "Base Unit of Measure")
             {
             }
             column(Unit_Number; "Unit Number")
@@ -60,6 +62,42 @@ report 50115 UmmAlQuwainContract
             }
             column(Property_Name; "Property Name")
             {
+            }
+            column(Property_Classification; "Property Classification")
+            {
+            }
+            column(Contract_Tenor; "Contract Tenor")
+            {
+            }
+            column(Lessor_s_Nationality; "Lessor's Nationality")
+            {
+            }
+            column(Lessor_s_Address; "Lessor's Address")
+            {
+            }
+            column(Rent_Amount; "Rent Amount")
+            {
+            }
+            dataitem(Customer; Customer)
+            {
+                DataItemLink = "No." = field("Tenant ID");
+                column(Nationality; Nationality)
+                {
+                }
+            }
+            dataitem(Item; Item)
+            {
+                DataItemLink = "No." = field("Unit ID");
+                column(Floor_Number; "Floor Number")
+                {
+                }
+            }
+            dataitem("Property Registration"; "Property Registration")
+            {
+                DataItemLink = "Property ID" = field("Property ID");
+                column(Address; Address)
+                {
+                }
             }
         }
     }

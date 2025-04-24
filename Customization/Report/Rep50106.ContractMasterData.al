@@ -77,6 +77,9 @@ report 50106 ContractMasterData
             column(Suspended_Reason_list; SuspensionReasonText)
             {
             }
+            column(Termination_Date; TerminationDateText)
+            {
+            }
             column(Grace_Start_Date; GraceStartDateText)
             {
             }
@@ -86,13 +89,35 @@ report 50106 ContractMasterData
             column(Grace_Period; "Grace Period")
             {
             }
+            dataitem("Final Calculation"; "Final Calculation")
+            {
+                DataItemLink = "Contract ID" = field("Contract ID"); // Link Final Calculation with Tenancy Contract using Contract ID
+
+                trigger OnAfterGetRecord()
+                begin
+                    // Check if Termination Date is null or 0D and set the display value accordingly
+                    if "Termination Date" = 0D then
+                        TerminationDateText := '-'
+                    else
+                        TerminationDateText := Format("Termination Date", 0, '<Day,2>/<Month,2>/<Year4>');
+                end;
+
+                trigger OnPreDataItem()
+                begin
+                    // If there are no records, this will ensure the termination date is properly set
+                    if IsEmpty then
+                        TerminationDateText := '-';
+                end;
+            }
 
             trigger OnAfterGetRecord()
             var
                 StartDateIsInRange: Boolean;
                 EndDateIsInRange: Boolean;
                 SuspensionReasonRec: Record SuspendReasonTable;
+                FinalCalc: Record "Final Calculation";
             begin
+                TerminationDateText := '-';
                 // Set the custom date range text
                 CustomDateRangeText :=
                     Format(CustomStartDate, 0, '<Day,2>/<Month,2>/<Year4>') + ' - ' +
@@ -104,6 +129,16 @@ report 50106 ContractMasterData
 
                 if not (StartDateIsInRange or EndDateIsInRange) then
                     CurrReport.SKIP(); // Skip record if neither date is in range
+
+                // Check if there's a termination date directly, in case the nested dataitem doesn't run
+                FinalCalc.Reset();
+                FinalCalc.SetRange("Contract ID", "Contract ID");
+                if FinalCalc.FindFirst() then begin
+                    if FinalCalc."Termination Date" = 0D then
+                        TerminationDateText := '-'
+                    else
+                        TerminationDateText := Format(FinalCalc."Termination Date", 0, '<Day,2>/<Month,2>/<Year4>');
+                end;
 
                 // Reset suspension start date before searching
                 SuspensionStartDate := 0D;
@@ -275,6 +310,8 @@ report 50106 ContractMasterData
         GraceEndDateText: Text;
         SuspensionDateText: Text;
         SuspensionReasonText: Text;
+        TerminationDateText: Text; // Variable to store formatted Termination Date
+
     // AnnualRentAmountText: Text;
     // RentAmountText: Text;
     // SecurityDepositAmountText: Text;
