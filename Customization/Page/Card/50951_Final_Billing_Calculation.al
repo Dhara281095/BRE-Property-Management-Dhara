@@ -49,13 +49,14 @@ page 50951 "Final Billing Calculation"
                 {
                     ApplicationArea = All;
                     Caption = 'Invoiced';
-                    Editable = false;
+                    // Editable = false;
                 }
                 field("Invoice ID"; Rec."Invoice ID")
                 {
                     ApplicationArea = All;
                     Caption = 'Invoice ID';
-                    Editable = false;
+                    //Editable = false;
+
                 }
             }
             group(" ")
@@ -142,6 +143,29 @@ page 50951 "Final Billing Calculation"
                             ApplicationArea = All;
                             Editable = false;
                             Caption = 'Posted Invoice ID';
+                            DrillDown = true;
+                            //  DrillDownPageId = "Sales Invoice";
+                            trigger OnDrillDown()
+                            var
+                                SalesHeader: Record "Sales Header";
+                                SalesLine: Record "Sales Line";
+                                SalesLine2: Record "Sales Line";
+                                postedsalesinvoice: Record "Sales Invoice Header";
+                            begin
+
+
+                                SalesHeader.SetRange("No.", Rec."Posted Invoice ID");
+                                if SalesHeader.FindFirst() then begin
+                                    PAGE.Run(PAGE::"Sales Invoice", SalesHeader);
+                                end else begin
+                                    postedsalesinvoice.SetRange("No.", Rec."Posted Invoice ID");
+                                    if postedsalesinvoice.FindFirst() then begin
+                                        PAGE.Run(PAGE::"Posted Sales Invoice", postedsalesinvoice);
+                                    end;
+                                end;
+
+                            end;
+
                         }
                         field("Invoice Document"; Rec."Invoice Document")
                         {
@@ -218,7 +242,7 @@ page 50951 "Final Billing Calculation"
 
 
                     end else begin
-                        Message('Already Create invoice for the contract id');
+                        Message('Already Invoiced is created');
                     end
                     // end;
 
