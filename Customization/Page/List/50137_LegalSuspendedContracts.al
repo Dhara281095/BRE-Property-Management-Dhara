@@ -6,6 +6,10 @@ page 50137 "Legal Suspended Contracts" // Use an appropriate page number
     Caption = 'Legally Suspended Contracts';
     UsageCategory = Lists;
 
+    InsertAllowed = false;
+    ModifyAllowed = false;
+    DeleteAllowed = false;
+
     layout
     {
         area(Content)
