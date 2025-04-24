@@ -16,6 +16,7 @@ page 50965 "Brokerage Calculation Sub Card"
                 field("Owner ID"; Rec."Owner ID")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
                 field("Owner Name"; Rec."Owner Name")
                 {
@@ -72,22 +73,27 @@ page 50965 "Brokerage Calculation Sub Card"
                 field("Property ID"; Rec."Property ID")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
                 field("Contract ID"; Rec."Contract ID")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
                 field("Vendor ID"; Rec."Vendor ID")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
                 field("Entry No."; Rec."Entry No.")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
                 field("ID"; Rec."ID")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
             }
         }
