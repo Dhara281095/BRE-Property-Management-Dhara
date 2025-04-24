@@ -159,6 +159,42 @@ table 50946 "Final Billing Calculation Grid"
             Caption = 'Payment Type';
             DataClassification = ToBeClassified;
         }
+        field(50126; "Property Classification"; Text[20])
+        {
+            Caption = 'Property Classification';
+            DataClassification = ToBeClassified;
+        }
+        field(50127; "Invoiced"; Boolean)
+        {
+            Caption = 'Invoiced';
+            DataClassification = ToBeClassified;
+        }
+        field(50128; "Tenant ID"; Code[50])
+        {
+            Caption = 'Tenant ID';
+            DataClassification = ToBeClassified;
+        }
+        field(50129; "Invoice ID"; Text[100])
+        {
+            Caption = 'Invoice ID';
+            DataClassification = ToBeClassified;
+        }
+        field(50130; "Posted Invoice ID"; Code[50])
+        {
+            Caption = 'Posted Invoice ID';
+            DataClassification = ToBeClassified;
+        }
+        field(50131; "Invoice Document"; Text[250])
+        {
+            Caption = 'Invoice Document';
+            DataClassification = ToBeClassified;
+        }
+        field(50132; "Invoice Document URL"; Text[250])
+        {
+            Caption = 'Invoice Document URL';
+            DataClassification = ToBeClassified;
+        }
+
     }
 
     keys

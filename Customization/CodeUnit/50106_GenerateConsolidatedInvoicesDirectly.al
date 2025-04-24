@@ -25,7 +25,7 @@ codeunit 50106 GenerateConsolidatedInvoices
         // todaydate := Today();
         //todaydate := 20250705D;
         // todaydate := 20260530D;
-        todaydate := 20260224D;
+        todaydate := 20260228D;
         //todaydate := 20251129D; // for first installment date
         currentdate := Today();
 

@@ -930,6 +930,8 @@ page 50903 "Final Calculation Card"
                 BillinCalcGrid."Contract ID" := RentCalc1."Contract ID";
                 BillinCalcGrid."RevenueDescription" := RentCalc1."Secondary Item Type";
                 BillinCalcGrid."Termination Date" := Rec."Termination Date";
+                BillinCalcGrid."Property Classification" := Rec."Unit Type";
+                BillinCalcGrid."Tenant ID" := Rec."Tenant ID";
                 BillinCalcGrid.Insert();
                 Clear(BillinCalcGrid);
             until RentCalc1.Next() = 0;
@@ -954,6 +956,8 @@ page 50903 "Final Calculation Card"
                 BillingCalc1."RevenueDescription" := TenancyContractLine2."Secondary Item Type";
                 BillingCalc1."Termination Date" := Rec."Termination Date";
                 BillingCalc1."Payment Type" := Format(TenancyContractLine2."Payment Type");
+                BillingCalc1."Property Classification" := Rec."Unit Type";
+                BillingCalc1."Tenant ID" := Rec."Tenant ID";
                 BillingCalc1.Insert();
                 Clear(BillingCalc1);
             until TenancyContractLine2.Next() = 0;
