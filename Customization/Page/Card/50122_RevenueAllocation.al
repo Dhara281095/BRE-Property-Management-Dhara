@@ -169,6 +169,7 @@ page 50122 "Revenue Allocation Card"
       PerDayRent: Decimal;
       TotalAnnualAmount: Decimal;
       OwnerShareAmount: Decimal;
+    TerminationDate: Date; // New parameter for Termination Date
       LineNo: Integer;
       MonthNo: Integer;
       FinancialYear: Integer)
@@ -212,6 +213,12 @@ page 50122 "Revenue Allocation Card"
         FilteredContractRec."Contract End Date" := ContractRec."Contract End Date";
         FilteredContractRec."Grace Days" := ContractRec."Grace Period";
 
+        // Add Termination Date
+        if TerminationDate = 0D then
+            FilteredContractRec."Termination Date" := 0D // Default to blank if no termination date
+        else
+            FilteredContractRec."Termination Date" := TerminationDate;
+
         SuspensionRec.Reset();
         SuspensionRec.SetRange("Contract ID", ContractRec."Contract ID");
         if SuspensionRec.FindFirst() then begin
@@ -251,11 +258,14 @@ page 50122 "Revenue Allocation Card"
         MergedSingleRent: Record "TC Merge SameSqure SubPage";
         MergedMultiRent: Record "TC Merge DifferentSq SubPage";
         SpecialRent: Record "TC Merge LumAnnualAmount SP";
+        FinalCalculationRec: Record "Final Calculation"; // New record for Final Calculation
         SelectedMonthStart: Date;
         SelectedMonthEnd: Date;
         MonthNo: Integer;
         FinancialYear: Integer;
         LineNo: Integer;
+        TerminationDate: Date; // Variable to store Termination Date
+
     begin
         ClearSubgridData();
 
@@ -271,6 +281,14 @@ page 50122 "Revenue Allocation Card"
                 if ((ContractRec."Contract Start Date" <= SelectedMonthEnd) and
                     (ContractRec."Contract End Date" >= SelectedMonthStart)) then begin
 
+                    // Retrieve Termination Date from Final Calculation
+                    FinalCalculationRec.Reset();
+                    FinalCalculationRec.SetRange("Contract ID", ContractRec."Contract ID");
+                    if FinalCalculationRec.FindFirst() then
+                        TerminationDate := FinalCalculationRec."Termination Date"
+                    else
+                        TerminationDate := 0D; // Default to blank if no termination date
+
                     // Check Single Unit Rent grid
                     SingleUnitRent.Reset();
                     SingleUnitRent.SetRange("Contract ID", ContractRec."Contract ID");
@@ -284,6 +302,7 @@ page 50122 "Revenue Allocation Card"
                                 SingleUnitRent."Per Day Rent",
                                 SingleUnitRent."Final Annual Amount",
                                 SingleUnitRent."Final Annual Amount",
+                                TerminationDate,
                                 LineNo,  // Use sequential number
                                 MonthNo,
                                 FinancialYear);
@@ -304,6 +323,7 @@ page 50122 "Revenue Allocation Card"
                                 MultiUnitRent."SL_Per Day Rent",
                                 MultiUnitRent."SL_Final Annual Amount",
                                 MultiUnitRent."SL_Final Annual Amount",
+                                TerminationDate,
                                 LineNo,  // Use sequential number
                                 MonthNo,
                                 FinancialYear);
@@ -324,6 +344,7 @@ page 50122 "Revenue Allocation Card"
                                 MergedSingleRent."MS_Per Day Rent",
                                 MergedSingleRent."MS_Final Annual Amount",
                                 MergedSingleRent."MS_Final Annual Amount",
+                                TerminationDate,
                                 LineNo,  // Use sequential number
                                 MonthNo,
                                 FinancialYear);
@@ -344,6 +365,7 @@ page 50122 "Revenue Allocation Card"
                                 MergedMultiRent."MD_Per Day Rent",
                                 MergedMultiRent."MD_Final Annual Amount",
                                 MergedMultiRent."MD_Final Annual Amount",
+                                TerminationDate,
                                 LineNo,  // Use sequential number
                                 MonthNo,
                                 FinancialYear);
@@ -364,6 +386,7 @@ page 50122 "Revenue Allocation Card"
                                 SpecialRent."ML_Per Day Rent",
                                 SpecialRent."ML_Final Annual Amount",
                                 SpecialRent."ML_Final Annual Amount",
+                                TerminationDate,
                                 LineNo,  // Use sequential number
                                 MonthNo,
                                 FinancialYear);
