@@ -50,12 +50,12 @@ table 50955 "Invoice-Credit Note"
         field(50108; "Remark"; Decimal)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Amount';
+            Caption = 'Remark';
         }
         field(50109; "Reference"; Decimal)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Amount';
+            Caption = 'Reference';
         }
         field(50110; "Entry No."; Integer)
         {
