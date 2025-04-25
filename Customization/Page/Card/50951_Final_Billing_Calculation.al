@@ -142,8 +142,9 @@ page 50951 "Final Billing Calculation"
                         {
                             ApplicationArea = All;
                             Editable = false;
-                            Caption = 'Posted Invoice ID';
+                            Caption = 'Invoice ID';
                             DrillDown = true;
+                            ToolTip = 'Click to view the invoice.';
                             //  DrillDownPageId = "Sales Invoice";
                             trigger OnDrillDown()
                             var
@@ -307,6 +308,8 @@ page 50951 "Final Billing Calculation"
         saleline.Validate("Quantity (Base)", 1);
         saleline.Validate(Quantity, 1);
         saleline.Validate("Unit Price", Abs(additionalchargessub.DifferenceAmount));
+        saleline."Contract ID" := additionalchargessub."Contract ID";
+        // saleline."FC ID" := additionalchargessub.;
         saleline.Insert();
         Clear(saleline);
     end;
