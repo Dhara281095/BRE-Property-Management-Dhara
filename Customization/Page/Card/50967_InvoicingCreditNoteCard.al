@@ -51,10 +51,18 @@ page 50967 "Invoice-Credit Note Card"
                     ApplicationArea = All;
                     Caption = 'Status';
                 }
-                field("Amount"; Rec."Amount")
+            }
+            group(" ")
+            {
+                field("Remark"; Rec."Remark")
                 {
                     ApplicationArea = All;
-                    Caption = 'Amount';
+                    Caption = 'Remark';
+                }
+                field("Reference"; Rec."Reference")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Reference';
                 }
             }
         }
