@@ -121,6 +121,12 @@ page 50903 "Final Calculation Card"
                     Caption = 'Tenant Email';
                     Editable = false;
                 }
+                field("Tenant Name"; Rec."Tenant Name")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Tenant Name';
+                    Editable = false;
+                }
                 field("Original Contract Tenure"; Rec."Original Contract Tenure")
                 {
                     ApplicationArea = All;
@@ -233,6 +239,76 @@ page 50903 "Final Calculation Card"
 
                         // end 
                         //    else Message('Upload Cheque cannot be access for Payment Status is Cancelled');
+                    end;
+                }
+
+                field("Credit Note"; Rec."Credit Note")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    DrillDown = true;
+                    trigger OnDrillDown()
+                    var
+                        finalcalculation: Record "Final Calculation";
+                        creditnote: Record "Credit Note";
+                        creditnoteid: Integer;
+                        creditnotecard: Page "Credit Note Card";
+                    begin
+                        creditnote.SetRange("Contract ID", Rec."Contract ID");
+
+                        if creditnote.FindSet() then begin
+                            creditnote."Contract ID" := Rec."Contract ID";
+                            creditnote."Contract Start Date" := Rec."Contract Start Date";
+                            creditnote."Contract End Date" := Rec."Contract End Date";
+                            creditnote."Contract Amount" := Rec."Contract Amount";
+                            creditnote."Unit Type" := Rec."Unit Type";
+                            creditnote."Tenant ID" := Rec."Tenant ID";
+                            creditnote."Tenant Email" := Rec."Tenant Email";
+                            creditnote."Tenant Name" := Rec."Tenant Name";
+                            creditnote."Credit Note Type" := creditnote."Credit Note Type"::"Termination Credit Note";
+                            creditnote.Modify();
+                            Message('Credit Note Modify Successfully');
+                        end else begin
+                            creditnote.Init();
+                            creditnote."Contract ID" := Rec."Contract ID";
+                            creditnote."Contract Start Date" := Rec."Contract Start Date";
+                            creditnote."Contract End Date" := Rec."Contract End Date";
+                            creditnote."Contract Amount" := Rec."Contract Amount";
+                            creditnote."Unit Type" := Rec."Unit Type";
+                            creditnote."Tenant ID" := Rec."Tenant ID";
+                            creditnote."Tenant Email" := Rec."Tenant Email";
+                            creditnote."Tenant Name" := Rec."Tenant Name";
+                            creditnote."Credit Note Type" := creditnote."Credit Note Type"::"Termination Credit Note";
+                            creditnote.Insert();
+                            Message('Credit Note Insert Successfully');
+                            Clear(creditnote);
+
+                            if creditnote.FindLast() then begin
+                                // If found, get the latest RS ID
+                                creditnoteid := creditnote."ID";
+                            end else begin
+                                // If no record is found, create a new Revenue Structure record
+                                creditnote.Init();
+                                creditnote.Insert(true);
+                                creditnote.Modify(true);  // Insert the new record and generate the RS ID
+                            end;
+                            Rec."Credit Note ID" := creditnoteid;
+                        end;
+                    end;
+                }
+                field("Credit Note ID"; Rec."Credit Note ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    DrillDown = true;
+                    trigger OnDrillDown()
+                    var
+                        creditnote: Record "Credit Note";
+                    begin
+                        if creditnote.Get(Rec."Credit Note ID") then
+                            PAGE.RUN(PAGE::"Credit Note Card", creditnote)
+                        else
+                            Message('The related Credit Note does not exist.');
                     end;
                 }
             }

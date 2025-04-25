@@ -1647,6 +1647,7 @@ page 50313 "Tenancy Contract Card"
                                 FinalCalculation."Unit Type" := Rec."Usage Type";
                                 FinalCalculation."Contract Amount" := Rec."Annual Rent Amount";
                                 FinalCalculation."Tenant Email" := Rec."Email Address";
+                                FinalCalculation."Tenant Name" := Rec."Customer Name";
                                 // Add security deposit information
                                 // FinalCalculation."Security Deposit" := Rec."Security Deposit Amount";
                                 // FinalCalculation."Adjustment Security Deposit" := Rec."Security Balanced Amount";
@@ -1662,6 +1663,7 @@ page 50313 "Tenancy Contract Card"
                                 FinalCalculation."Contract End Date" := Rec."Contract End Date";
                                 FinalCalculation."Contract Amount" := Rec."Annual Rent Amount";
                                 FinalCalculation."Tenant Email" := Rec."Email Address";
+                                FinalCalculation."Tenant Name" := Rec."Customer Name";
                                 // Add security deposit information
                                 // FinalCalculation."Security Deposit" := Rec."Security Deposit Amount";
                                 // FinalCalculation."Adjustment Security Deposit" := Rec."Security Balanced Amount";
