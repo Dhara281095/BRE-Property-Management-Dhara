@@ -149,6 +149,14 @@ page 50906 "Additional Charges Sub Card"
                         OpenFileInBrowser(FileURL);
                     end;
                 }
+                field("Invoice Document URL"; Rec."Invoice Document URL")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Invoice Document URL';
+                    ToolTip = 'Click to view the invoice document.';
+
+
+                }
 
             }
         }
