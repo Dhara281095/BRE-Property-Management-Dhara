@@ -94,6 +94,14 @@ page 50313 "Tenancy Contract Card"
                 {
                     ApplicationArea = All;
                 }
+                field("Lessor's Address"; Rec."Lessor's Address")
+                {
+                    ApplicationArea = All;
+                }
+                field("Lessor's Nationality"; Rec."Lessor's Nationality")
+                {
+                    ApplicationArea = All;
+                }
             }
 
             // Group for Tenant and Customer Information
