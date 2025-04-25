@@ -12,10 +12,10 @@ page 50729 "Additional Charges Sub Api"
     EntitySetName = 'additionalchargessubs';
     PageType = API;
     SourceTable = "Additional Charges Sub";
-     ODataKeyFields = SystemId;
+    ODataKeyFields = SystemId;
     DeleteAllowed = true;
     ModifyAllowed = true;
-    
+
     layout
     {
         area(Content)
@@ -85,6 +85,30 @@ page 50729 "Additional Charges Sub Api"
                 field(vatAmount; Rec."VAT Amount")
                 {
                     Caption = 'VAT Amount';
+                }
+                field(Invoiced; Rec.Invoiced)
+                {
+                    Caption = 'VAT Amount';
+                }
+                field("InvoicedID"; Rec."Invoiced ID")
+                {
+                    Caption = 'Invoiced ID';
+                }
+                field("UnitType"; Rec."Unit Type")
+                {
+                    Caption = 'Unit Type';
+                }
+                field("PostedInvoiceID"; Rec."Posted Invoice ID")
+                {
+                    Caption = 'Posted Invoice ID';
+                }
+                field("InvoiceDocument"; Rec."Invoice Document")
+                {
+                    Caption = 'Invoice Document';
+                }
+                field("InvoiceDocumentURL"; Rec."Invoice Document URL")
+                {
+                    Caption = 'Invoice Document URL';
                 }
             }
         }

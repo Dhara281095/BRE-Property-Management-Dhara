@@ -130,6 +130,46 @@ page 50724 finalbillinggrid
                 {
                     Caption = 'Total Invoiced Amount';
                 }
+                field("InvoiceToBeRaised"; Rec."Invoice To Be Raised")
+                {
+                    Caption = 'Invoice To Be Raised';
+                }
+                field("CreditNoteToBeRaised"; Rec."Credit Note To Be Raised")
+                {
+                    Caption = 'CreditNoteToBeRaised';
+                }
+                field("PaymentType"; Rec."Payment Type")
+                {
+                    Caption = 'Payment Type';
+                }
+                field("PropertyClassification"; Rec."Property Classification")
+                {
+                    Caption = 'Property Classification';
+                }
+                field(Invoiced; Rec.Invoiced)
+                {
+                    Caption = 'Invoiced';
+                }
+                field("TenantID"; Rec."Tenant ID")
+                {
+                    Caption = 'Tenant ID';
+                }
+                field("InvoiceID"; Rec."Invoice ID")
+                {
+                    Caption = 'Invoice ID';
+                }
+                field("PostedInvoiceID"; Rec."Posted Invoice ID")
+                {
+                    Caption = 'Posted Invoice ID';
+                }
+                field("InvoiceDocument"; Rec."Invoice Document")
+                {
+                    Caption = 'Invoice Document';
+                }
+                field("InvoiceDocumentURL"; Rec."Invoice Document URL")
+                {
+                    Caption = 'Invoice Document URL';
+                }
             }
         }
     }
