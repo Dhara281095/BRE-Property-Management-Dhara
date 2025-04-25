@@ -224,6 +224,22 @@ table 50901 "Final Calculation"
             DataClassification = ToBeClassified;
             Caption = 'Tenant Email';
         }
+        field(50134; "Tenant Name"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Tenant Name';
+        }
+        field(50136; "Credit Note"; Text[250])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Credit Note';
+            InitValue = 'Credit Note';
+        }
+        field(50137; "Credit Note ID"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Credit Note ID';
+        }
 
 
     }
