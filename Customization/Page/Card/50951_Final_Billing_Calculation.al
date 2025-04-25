@@ -186,6 +186,14 @@ page 50951 "Final Billing Calculation"
                                 OpenFileInBrowser(FileURL);
                             end;
                         }
+                        field("Invoice Document URL"; Rec."Invoice Document URL")
+                        {
+                            ApplicationArea = All;
+
+                            Caption = 'Invoice Document URL';
+                            //  DrillDown = true;
+
+                        }
                     }
                 }
 
