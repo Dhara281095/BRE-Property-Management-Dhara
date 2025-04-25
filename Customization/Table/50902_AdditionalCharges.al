@@ -143,7 +143,17 @@ table 50902 "Additional Charges Sub"
         }
         field(50119; "Posted Invoice ID"; Code[50])
         {
-            Caption = 'Posted Invoice ID';
+            Caption = 'Invoice ID';
+            DataClassification = ToBeClassified;
+        }
+        field(50120; "Invoice Document"; Text[250])
+        {
+            Caption = 'Invoice Document';
+            DataClassification = ToBeClassified;
+        }
+        field(50121; "Invoice Document URL"; Text[250])
+        {
+            Caption = 'Invoice Document URL';
             DataClassification = ToBeClassified;
         }
     }

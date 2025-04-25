@@ -113,6 +113,8 @@ tableextension 50504 PostedSalesInvoiceHeader extends "Sales Invoice Header"
             repeat
                 additionalcharges."Invoiced ID" := Rec."No.";
                 additionalcharges."Posted Invoice ID" := Rec."No.";
+                additionalcharges."Invoice Document" := Rec."View Invoice";
+                additionalcharges."Invoice Document URL" := Rec."View Document URL";
                 additionalcharges.Modify();
             until additionalcharges.Next() = 0;
 

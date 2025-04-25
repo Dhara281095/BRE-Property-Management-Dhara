@@ -37,17 +37,6 @@ page 50952 "Pending Recevieable Grid"
                     Editable = false;
 
                 }
-                field(Invoiced; Rec.Invoiced)
-                {
-                    ApplicationArea = All;
-                    Caption = 'Invoiced';
-                }
-                field("Invoice ID"; Rec."Invoice ID")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Invoiced ID';
-                }
-
             }
             group(" ")
             {

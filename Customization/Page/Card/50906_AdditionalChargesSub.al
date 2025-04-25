@@ -103,8 +103,53 @@ page 50906 "Additional Charges Sub Card"
                 field("Posted Invoice ID"; Rec."Posted Invoice ID")
                 {
                     ApplicationArea = All;
+                    DrillDown = true;
+                    Caption = 'Invoice ID';
+                    Editable = false;
+                    ToolTip = 'Click to view the invoice.';
+                    //  DrillDownPageId = "Sales Invoice";
+                    trigger OnDrillDown()
+                    var
+                        SalesHeader: Record "Sales Header";
+                        SalesLine: Record "Sales Line";
+                        SalesLine2: Record "Sales Line";
+                        postedsalesinvoice: Record "Sales Invoice Header";
+                    begin
+
+
+                        SalesHeader.SetRange("No.", Rec."Posted Invoice ID");
+                        if SalesHeader.FindFirst() then begin
+                            PAGE.Run(PAGE::"Sales Invoice", SalesHeader);
+                        end else begin
+                            postedsalesinvoice.SetRange("No.", Rec."Posted Invoice ID");
+                            if postedsalesinvoice.FindFirst() then begin
+                                PAGE.Run(PAGE::"Posted Sales Invoice", postedsalesinvoice);
+                            end;
+                        end;
+
+                    end;
+
 
                 }
+                field("Invoice Document"; Rec."Invoice Document")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                    Caption = 'Invoice Document';
+
+
+                    DrillDown = true;
+                    trigger OnDrillDown()
+                    var
+                        FileURL: Text;
+                    begin
+                        FileURL := Rec."Invoice Document URL";
+                        if FileURL = '' then
+                            Error('No document is available to view.');
+                        OpenFileInBrowser(FileURL);
+                    end;
+                }
+
             }
         }
     }
@@ -216,8 +261,19 @@ page 50906 "Additional Charges Sub Card"
         saleline.Validate("Quantity (Base)", 1);
         saleline.Validate(Quantity, 1);
         saleline.Validate("Unit Price", Abs(additionalchargessub.Amount));
+        saleline."Contract ID" := additionalchargessub."Contract ID";
+        saleline."FC ID" := salesheader1."FC ID";
         saleline.Insert();
         Clear(saleline);
+    end;
+
+    procedure OpenFileInBrowser(URL: Text)
+    begin
+
+        if URL <> '' then
+            Hyperlink(URL)
+        else
+            Error('The file URL is invalid.');
     end;
 
     procedure SetContractID(pContractID: Integer)
