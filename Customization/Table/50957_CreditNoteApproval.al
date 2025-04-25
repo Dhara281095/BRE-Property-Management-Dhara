@@ -1,4 +1,4 @@
-table 50954 "Credit Note"
+table 50957 "Credit Note Approval"
 {
     DataClassification = ToBeClassified;
 
@@ -8,7 +8,6 @@ table 50954 "Credit Note"
         {
             DataClassification = ToBeClassified;
             Caption = 'ID';
-            AutoIncrement = true;
             Editable = false;
         }
         field(50101; "Contract ID"; Integer)
@@ -27,29 +26,16 @@ table 50954 "Credit Note"
             DataClassification = ToBeClassified;
             Caption = 'Contract Start Date';
         }
-
         field(50104; "Contract End Date"; Date)
         {
             DataClassification = ToBeClassified;
             Caption = 'Contract End Date';
         }
-
-        field(50105; "Unit Type"; Text[100])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Unit Type';
-        }
-
         field(50106; "Contract Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Contract Amount';
 
-        }
-        field(50107; "Tenant Email"; Text[250])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Tenant Email';
         }
         field(50116; "Tenant Name"; Text[250])
         {
@@ -62,40 +48,13 @@ table 50954 "Credit Note"
             Caption = 'Credit Note Type';
             OptionMembers = " ","Standard Credit Note","Termination Credit Note";
         }
-        // field(50118; "TerminationCreditNoteType"; Option)
-        // {
-        //     DataClassification = ToBeClassified;
-        //     Caption = 'Credit Note Type';
-        //     OptionMembers = "Termination Credit Note";
-        // }
-        field(50119; "Invoice ID"; Integer)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Invoice ID';
-        }
-        field(50120; "Amount"; Decimal)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Amount';
-        }
         field(50121; "Status"; Option)
         {
             DataClassification = ToBeClassified;
             Caption = 'Status';
             OptionMembers = "Pending","Approved","Reject";
         }
-        field(50122; "Credit Note Document"; Text[500])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Credit Note Document';
-            InitValue = 'Credit Note Document';
-        }
-        field(50123; "Credit Note URL"; Text[250])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Credit Note URL';
-        }
-        field(50124; "FC ID"; Integer)
+        field(50122; "FC ID"; Integer)
         {
             DataClassification = ToBeClassified;
             Caption = 'FC ID';
@@ -108,7 +67,7 @@ table 50954 "Credit Note"
     {
         key(PK; "ID")
         {
-            Clustered = true;
+            Clustered = false;
         }
     }
 }

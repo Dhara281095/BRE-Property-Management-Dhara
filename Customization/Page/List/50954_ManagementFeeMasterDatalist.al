@@ -5,6 +5,8 @@ page 50954 "Management Fee MasterData List"
     ApplicationArea = All;
     Caption = 'Management Fee Master Data';
     UsageCategory = Lists;
+    InsertAllowed = false;
+    ModifyAllowed = false;
 
     layout
     {

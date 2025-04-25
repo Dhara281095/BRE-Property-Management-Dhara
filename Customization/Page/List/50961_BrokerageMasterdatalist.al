@@ -5,6 +5,8 @@ page 50961 "Brokerage Master Data List"
     ApplicationArea = All;
     Caption = 'Brokerage Master Data';
     UsageCategory = Lists;
+    InsertAllowed = false;
+    ModifyAllowed = false;
 
     layout
     {
