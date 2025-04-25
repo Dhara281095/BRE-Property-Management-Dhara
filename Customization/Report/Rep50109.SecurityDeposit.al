@@ -40,8 +40,13 @@ report 50109 "Security Deposit"
             column(Additions; Additions)
             {
             }
+            column(CarriedForwardIn; CarriedForwardInAmount)
+            {
+                Caption = 'Carried Forward In';
+            }
             column(CarriedForwardOut; CarriedForwardOutAmount)
             {
+                Caption = 'Carried Forward Out';
             }
             column(Refund; RefundAmount)
             {
@@ -56,6 +61,7 @@ report 50109 "Security Deposit"
                 EndDateIsInRange: Boolean;
                 SecurityDepositAmount: Decimal;
                 SecurityDepositTransferRec: Record "Security Deposit";
+                SecurityDepositTransfer: Record "Security Deposit";
             begin
                 // ------------------------------------custome start & end date ----------------------------------------------------------/
 
@@ -92,6 +98,27 @@ report 50109 "Security Deposit"
                 "OpeningBalance" := OpeningBalance;
                 "Additions" := Additions;
 
+                // -------------------------------------- carriedforwardin & carriedforwardout -------------------------------------------------------/
+                CarriedForwardInAmount := 0;
+                CarriedForwardOutAmount := 0;
+
+                // Calculate Carried Forward Out - Security deposits transferred FROM this contract
+                SecurityDepositTransfer.Reset();
+                SecurityDepositTransfer.SetRange("Contract ID", "Contract ID");  // This is the source contract
+                if SecurityDepositTransfer.FindSet() then
+                    repeat
+                        CarriedForwardOutAmount += SecurityDepositTransfer."New_Security Deposit Amount";
+                    until SecurityDepositTransfer.Next() = 0;
+
+                // Calculate Carried Forward In - Security deposits transferred TO this contract
+                SecurityDepositTransfer.Reset();
+                SecurityDepositTransfer.SetRange("New_Contract ID", "Contract ID");  // This is the destination contract
+                if SecurityDepositTransfer.FindSet() then
+                    repeat
+                        CarriedForwardInAmount += SecurityDepositTransfer."New_Security Deposit Amount";
+                    until SecurityDepositTransfer.Next() = 0;
+
+
 
                 // ------------------------------------------ Closing Balance -----------------------------------------------------------/
 
@@ -106,30 +133,34 @@ report 50109 "Security Deposit"
                 // Assign value to the ClosingBalance column
                 "ClosingBalance" := ClosingBalance;
 
+                // Calculate Refund amount - the remaining amount after transfers out
+                RefundAmount := SecurityDepositAmount - CarriedForwardOutAmount;
+                if RefundAmount < 0 then
+                    RefundAmount := 0;
 
                 // -------------------------------------- Refund & carriedforwardout -------------------------------------------------------/
-                SecurityDepositAmount := "Security Deposit Amount";
-                if SecurityDepositAmount = 0 then begin
-                    CarriedForwardOutAmount := 0;
-                    RefundAmount := 0;
-                    exit;
-                end;
+                // SecurityDepositAmount := "Security Deposit Amount";
+                // if SecurityDepositAmount = 0 then begin
+                //     CarriedForwardOutAmount := 0;
+                //     RefundAmount := 0;
+                //     exit;
+                // end;
 
-                if CustomEndDate >= "Contract End Date" then begin
-                    // CarriedForwardOutAmount := 0;
-                    // RefundAmount := 0;
+                // if CustomEndDate >= "Contract End Date" then begin
+                //     // CarriedForwardOutAmount := 0;
+                //     // RefundAmount := 0;
 
-                    SecurityDepositTransferRec.Reset();
-                    SecurityDepositTransferRec.SetRange("Contract ID", "Contract ID");  // Add this filter
+                //     SecurityDepositTransferRec.Reset();
+                //     SecurityDepositTransferRec.SetRange("Contract ID", "Contract ID");  // Add this filter
 
-                    if SecurityDepositTransferRec.FindFirst() then begin  // Changed to FindFirst since we only need one match
-                        CarriedForwardOutAmount := SecurityDepositAmount;
-                        RefundAmount := 0;
-                    end else begin
-                        CarriedForwardOutAmount := 0;
-                        RefundAmount := SecurityDepositAmount;
-                    end;
-                end;
+                //     if SecurityDepositTransferRec.FindFirst() then begin  // Changed to FindFirst since we only need one match
+                //         CarriedForwardOutAmount := SecurityDepositAmount;
+                //         RefundAmount := 0;
+                //     end else begin
+                //         CarriedForwardOutAmount := 0;
+                //         RefundAmount := SecurityDepositAmount;
+                //     end;
+                // end;
             end;
         }
     }
@@ -170,4 +201,5 @@ report 50109 "Security Deposit"
         ClosingBalance: Decimal;
         RefundAmount: Decimal;
         CarriedForwardOutAmount: Decimal;
+        CarriedForwardInAmount: Decimal;
 }

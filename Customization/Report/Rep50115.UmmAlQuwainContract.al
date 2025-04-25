@@ -78,6 +78,12 @@ report 50115 UmmAlQuwainContract
             column(Rent_Amount; "Rent Amount")
             {
             }
+            column(Community; Community)
+            {
+            }
+            column(DEWA_Number; "DEWA Number")
+            {
+            }
             dataitem(Customer; Customer)
             {
                 DataItemLink = "No." = field("Tenant ID");
