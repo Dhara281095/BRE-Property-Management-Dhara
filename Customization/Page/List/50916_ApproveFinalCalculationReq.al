@@ -5,6 +5,8 @@ page 50916 "Approval FinalCalculation List"
     ApplicationArea = All;
     Caption = 'Approval Final Calculation List';
     UsageCategory = Lists;
+    InsertAllowed = false;
+    ModifyAllowed = false;
 
     layout
     {
@@ -112,7 +114,7 @@ page 50916 "Approval FinalCalculation List"
 
                 trigger OnAction()
                 var
-                    AdjustSecurityDeposit: Record "Final Calculation";
+                    FinalCalculation: Record "Final Calculation";
                 begin
                     if Rec.Status = Rec.Status::Approved then
                         Error('This entry is already approved');
@@ -123,9 +125,9 @@ page 50916 "Approval FinalCalculation List"
                         Rec.Modify();
 
                         // Update main record status
-                        if AdjustSecurityDeposit.Get(Rec."ID") then begin
-                            AdjustSecurityDeposit.Status := AdjustSecurityDeposit.Status::Approved;
-                            AdjustSecurityDeposit.Modify();
+                        if FinalCalculation.Get(Rec."ID") then begin
+                            FinalCalculation.Status := FinalCalculation.Status::Approved;
+                            FinalCalculation.Modify();
                         end;
 
                         Message('Entry has been approved successfully!');

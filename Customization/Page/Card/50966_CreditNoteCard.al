@@ -32,6 +32,11 @@ page 50966 "Credit Note Card"
                 {
                     ApplicationArea = All;
                 }
+                field("FC ID"; Rec."FC ID")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
                 field("Contract ID"; Rec."Contract ID")
                 {
                     ApplicationArea = All;
@@ -96,6 +101,73 @@ page 50966 "Credit Note Card"
                 field("Status"; Rec."Status")
                 {
                     ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Credit Note Document"; Rec."Credit Note Document")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Credit Note Document';
+                    DrillDown = true;
+                    Editable = false;
+
+
+                    trigger OnDrillDown()
+                    var
+                        AzureBlobUploader: Codeunit "Azure Blob Management";
+                        InStream: InStream;
+                        FileName: Text;
+                        SASUrlBase: Text;
+                        SASUrlWithFileName: Text;
+                        UploadResult: Text;
+                        TempBlob: Codeunit "Temp Blob";
+                        ValidFormats: List of [Text];
+                        FileExtension: Text[10];
+                        FileSize: Decimal;
+                        ConfigRecord: Record AzureConfiguration;
+                        documentattachment: Codeunit UploadAttachment;
+
+                    begin
+
+                        // Validate and retrieve the SAS URL from the configuration table
+                        if not ConfigRecord.FindFirst() then
+                            Error('Azure configuration is missing. Please set up the SAS URL in the Azure Configuration table.');
+
+                        ValidFormats.Add('.pdf');
+                        ValidFormats.Add('.docx');
+                        ValidFormats.Add('.jpg');
+                        ValidFormats.Add('.jpeg');
+                        // Get the SAS base URL (without the file name)
+                        SASUrlBase := ConfigRecord."SAS URL";
+
+                        // Load the file to be uploaded into an InStream
+                        if UploadIntoStream('Select a Document', '', '(*.pdf, *.docx,*.jpeg, *.jpg)|*.pdf;*.docx;*.jpeg;*.jpg', FileName, InStream) then begin
+
+                            FileExtension := LowerCase(CopyStr(FileName, StrPos(FileName, '.'), StrLen(FileName) - StrPos(FileName, '.') + 1));
+                            if not ValidFormats.Contains(FileExtension) then
+                                Error('Unsupported file format. Please upload PDF, DOCX, JPEG or JPG.');
+
+                            FileSize := InStream.Length / 1024 / 1024; // Convert to MB
+                            if FileSize > 5 then
+                                Error('File is too large. Maximum size allowed is 5MB.');
+                            // Append the file name to the base SAS URL to create a full SAS URL
+                            SASUrlWithFileName := StrSubstNo('%1/%2?%3', CopyStr(SASUrlBase, 1, StrPos(SASUrlBase, '?') - 1), FileName, CopyStr(SASUrlBase, StrPos(SASUrlBase, '?') + 1));
+
+                            // Call the upload function with the modified SAS URL
+                            UploadResult := documentattachment.UploadDocumentToBlobStorage(SASUrlWithFileName, FileName, InStream);
+
+
+                            Rec."Credit Note Document" := FileName;
+                            Rec."Credit Note URL" := UploadResult;
+                            // Truncate to fit field length
+                            // Rec."View Document URL" := UploadResult; // Truncate to fit field length
+                            Rec.Modify();
+                            Message('Document uploaded successfully: %1', FileName);
+                        end else
+                            Message('No document was selected for upload.');
+
+                        // end 
+                        //    else Message('Upload Cheque cannot be access for Payment Status is Cancelled');
+                    end;
                 }
 
             }
@@ -120,18 +192,23 @@ page 50966 "Credit Note Card"
                     Editable = false;
                 }
             }
-            field("Invoice ID"; Rec."Invoice ID")
+            group(" ")
             {
-                ApplicationArea = All;
-                Caption = 'Invoice ID';
-            }
-            field("Amount"; Rec."Amount")
-            {
-                ApplicationArea = All;
-                Caption = 'Credit Note Amount';
+                Visible = IsStandardCreditNoteType;
+                field("Invoice ID"; Rec."Invoice ID")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Invoice ID';
+                }
+                field("Amount"; Rec."Amount")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Credit Note Amount';
+                }
             }
             group("Credit-Note Details")
             {
+                Visible = IsStandardCreditNoteType;
                 part("Invoice-CreditNote"; "Invoice-Credit Note Card")
                 {
                     SubPageLink = "ID" = FIELD("ID"); // Link to filter attachments for this owner only
@@ -141,6 +218,7 @@ page 50966 "Credit Note Card"
             }
             group("Generate Credit-Note Details")
             {
+                Visible = IsStandardCreditNoteType;
                 part("Final Invoice-CreditNote"; "Filtered Invoice Detail Card")
                 {
                     SubPageLink = "ID" = FIELD("ID"); // Link to filter attachments for this owner only
@@ -151,5 +229,83 @@ page 50966 "Credit Note Card"
         }
     }
 
+
+    actions
+    {
+        area(Processing)
+        {
+            action(FinalCalculation)
+            {
+                ApplicationArea = All;
+                Caption = 'Credit Note Approval';
+                Image = PostDocument;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+
+                trigger OnAction()
+                var
+                    ApprovalCreditNote: Record "Credit Note Approval";
+                    CreditNote: Record "Credit Note";
+                begin
+                    // Validate required fields
+                    if Rec."Contract ID" = 0 then
+                        Error('Contract ID must be specified');
+
+                    // Get the actual Credit Note record
+                    if not CreditNote.Get(Rec."ID") then
+                        Error('Credit Note record not found.');
+
+                    ApprovalCreditNote.SetRange("Contract ID", Rec."Contract ID");
+
+                    if ApprovalCreditNote.FindSet() then begin
+                        // Modify existing approval record
+                        ApprovalCreditNote."ID" := CreditNote."ID";
+                        ApprovalCreditNote."FC ID" := CreditNote."FC ID";
+                        ApprovalCreditNote."Contract ID" := CreditNote."Contract ID";
+                        ApprovalCreditNote."Tenant ID" := CreditNote."Tenant ID";
+                        ApprovalCreditNote."Status" := CreditNote."Status";
+                        ApprovalCreditNote."Contract Start Date" := CreditNote."Contract Start Date";
+                        ApprovalCreditNote."Contract End Date" := CreditNote."Contract End Date";
+                        ApprovalCreditNote."Tenant Name" := CreditNote."Tenant Name";
+                        ApprovalCreditNote."Contract Amount" := CreditNote."Contract Amount";
+                        ApprovalCreditNote."Credit Note Type" := CreditNote."Credit Note Type";
+                        ApprovalCreditNote.Modify();
+                        Message('Approval Request Modified successfully!');
+                    end else begin
+                        // Insert new approval record
+                        ApprovalCreditNote.Init();
+                        ApprovalCreditNote."ID" := CreditNote."ID";
+                        ApprovalCreditNote."FC ID" := CreditNote."FC ID";
+                        ApprovalCreditNote."Contract ID" := CreditNote."Contract ID";
+                        ApprovalCreditNote."Tenant ID" := CreditNote."Tenant ID";
+                        ApprovalCreditNote."Status" := CreditNote."Status";
+                        ApprovalCreditNote."Contract Start Date" := CreditNote."Contract Start Date";
+                        ApprovalCreditNote."Contract End Date" := CreditNote."Contract End Date";
+                        ApprovalCreditNote."Tenant Name" := CreditNote."Tenant Name";
+                        ApprovalCreditNote."Contract Amount" := CreditNote."Contract Amount";
+                        ApprovalCreditNote."Credit Note Type" := CreditNote."Credit Note Type";
+                        ApprovalCreditNote.Insert(true);
+                        Message('Approval Request Sent successfully!');
+                    end;
+                end;
+
+            }
+        }
+    }
+
+    var
+        IsStandardCreditNoteType: Boolean;
+
+    trigger OnAfterGetRecord()
+    begin
+        if Rec."Credit Note Type" = Rec."Credit Note Type"::"Standard Credit Note" then begin
+            IsStandardCreditNoteType := true;
+        end else begin
+            IsStandardCreditNoteType := false;
+        end;
+    end;
 }
+
+
 

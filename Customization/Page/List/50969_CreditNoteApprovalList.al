@@ -1,0 +1,223 @@
+page 50969 "Credit Note Approval List"
+{
+    PageType = List;
+    SourceTable = "Credit Note Approval";
+    ApplicationArea = All;
+    Caption = 'Credit Note Approval List';
+    UsageCategory = Lists;
+    InsertAllowed = false;
+    ModifyAllowed = false;
+
+
+    layout
+    {
+        area(content)
+        {
+            repeater(Group)
+            {
+                field("Status"; Rec."Status")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Status';
+                    Editable = false;
+                }
+                field("ID"; Rec."ID")
+                {
+                    ApplicationArea = All;
+                    Caption = 'ID';
+                    Editable = false;
+                    DrillDown = true;
+
+                    trigger OnDrillDown()
+                    var
+                        CreditNote: Record "Credit Note";
+                    begin
+                        CreditNote.SetRange("ID", Rec."ID");
+                        if CreditNote.FindSet() then
+                            PAGE.RunModal(PAGE::"Credit Note Card", CreditNote)
+                        else
+                            Message('No Credit Note found using FindFirst either.');
+                    end;
+                }
+                field("FC ID"; Rec."FC ID")
+                {
+                    ApplicationArea = All;
+                    Caption = 'FC ID';
+                    Editable = false;
+                    DrillDown = true;
+
+                    trigger OnDrillDown()
+                    var
+                        finalcalculation: Record "Final Calculation";
+                    begin
+                        finalcalculation.SetRange("FC ID", Rec."FC ID");
+                        if finalcalculation.FindSet() then
+                            PAGE.RunModal(PAGE::"Final Calculation Card", finalcalculation)
+                        else
+                            Message('No Final Calculation found using FindFirst either.');
+                    end;
+                }
+                field("Contract ID"; Rec."Contract ID")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Contract ID';
+                    Editable = false;
+                    DrillDown = true;
+
+                    trigger OnDrillDown()
+                    var
+                        tenancycontract: Record "Tenancy Contract";
+                    begin
+                        tenancycontract.SetRange("Contract ID", Rec."Contract ID");
+                        if tenancycontract.FindSet() then
+                            PAGE.RunModal(PAGE::"Tenancy Contract Card", tenancycontract)
+                        else
+                            Message('No Tenancy Contract found using FindFirst either.');
+                    end;
+                }
+                field("Contract Amount"; Rec."Contract Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
+                field("Contract Start Date"; Rec."Contract Start Date")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Contract End Date"; Rec."Contract End Date")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
+                field("Tenant ID"; Rec."Tenant ID")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Tenant ID';
+                    Editable = false;
+                }
+                field("Tenant Name"; Rec."Tenant Name")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Tenant Name';
+                    Editable = false;
+                }
+                field("Credit Note Type"; Rec."Credit Note Type")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Credit Note Type';
+                    Editable = false;
+                }
+
+            }
+        }
+    }
+
+    actions
+    {
+        area(Processing)
+        {
+            action(Approve)
+            {
+                ApplicationArea = All;
+                Caption = 'Approve';
+                Image = Approve;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                //Visible = IsFinanceManager;
+
+
+                trigger OnAction()
+                var
+                    CreditNote: Record "Credit Note";
+                begin
+                    if Rec.Status = Rec.Status::Approved then
+                        Error('This entry is already approved');
+
+                    if Confirm('Do you want to approve this entry?') then begin
+                        // Update entry status
+                        Rec.Status := Rec.Status::Approved;
+                        Rec.Modify();
+
+                        // Update main record status
+                        if CreditNote.Get(Rec."ID") then begin
+                            CreditNote.Status := CreditNote.Status::Approved;
+                            CreditNote.Modify();
+                        end;
+
+                        Message('Entry has been approved successfully!');
+                    end;
+                end;
+            }
+            action(Reject)
+            {
+                ApplicationArea = All;
+                Caption = 'Reject';
+                Image = Cancel;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                // Visible = IsFinanceManager;
+
+                trigger OnAction()
+                var
+                    CreditNote: Record "Credit Note";
+                begin
+                    if Rec.Status = Rec.Status::Reject then
+                        Error('This entry is already rejected');
+
+                    if Confirm('Do you want to reject this entry?') then begin
+                        // Update entry status
+                        Rec.Status := Rec.Status::Reject;
+                        Rec.Modify();
+
+                        // Update main record status
+                        if CreditNote.Get(Rec."ID") then begin
+                            CreditNote.Status := CreditNote.Status::Reject;
+                            CreditNote.Modify();
+                        end;
+
+                        Message('Entry has been rejected successfully!');
+                    end;
+                end;
+            }
+        }
+
+    }
+
+    trigger OnOpenPage()
+    var
+
+    begin
+        // Check if the current user has the 'LEASE_MANAGER' permission set
+
+        IsFinanceManager := VisibleApproveAction();
+    end;
+
+    procedure VisibleApproveAction(): Boolean
+    var
+        UserPersonalization: Record "User Personalization";
+    begin
+
+        if UserPersonalization.Get(UserSecurityId()) then begin
+
+            case UserPersonalization."Profile ID" of
+                'PROPERTY MANAGER':
+                    exit(false);
+                'LEASE_MANAGER':
+                    exit(false);
+                'finance manager':
+                    exit(true);
+            end;
+        end;
+
+        exit(false);
+    end;
+
+    var
+        IsFinanceManager: Boolean;
+        IsFieldEditable: Boolean;
+}
