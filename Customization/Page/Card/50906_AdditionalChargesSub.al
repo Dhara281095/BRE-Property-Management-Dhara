@@ -177,9 +177,12 @@ page 50906 "Additional Charges Sub Card"
                     additionalchargesgrid: Record "Additional Charges Sub";
                     customercard: Record Customer;
                     pendingrecevieable: Record "Additional Charges Sub";
+                    userConfirmed: Boolean;
                 begin
                     if Rec.Invoiced = false then begin
-
+                        userConfirmed := Confirm('Do you want to create the invoice?', false);
+                        if not userConfirmed then
+                            exit;
                         newsalesheader := CreateSalesHeader(Rec."Contract ID", Rec."Tenant ID", Rec."Unit Type");
                         customercard.SetRange("No.", newsalesheader."Sell-to Customer No.");
                         if customercard.FindSet() then begin

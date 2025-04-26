@@ -218,42 +218,47 @@ page 50951 "Final Billing Calculation"
                     additionalchargesgrid: Record "Final Billing Calculation Grid";
                     customercard: Record Customer;
                     pendingrecevieable: Record "Final Billing Calculation Grid";
+                    userConfirmed: Boolean;
 
                 begin
-                    //if Rec.DifferenceAmountInclVAT < 0 then begin
-                    if Rec.Invoiced = false then begin
-
-                        newsalesheader := CreateSalesHeader(Rec."Contract ID", Rec."Tenant ID", Rec."Property Classification");
-                        customercard.SetRange("No.", newsalesheader."Sell-to Customer No.");
-                        if customercard.FindSet() then begin
+                    if Rec.DifferenceAmountInclVAT < 0 then begin
+                        if Rec.Invoiced = false then begin
+                            userConfirmed := Confirm('Do you want to create the invoice?', false);
+                            if not userConfirmed then
+                                exit;
+                            newsalesheader := CreateSalesHeader(Rec."Contract ID", Rec."Tenant ID", Rec."Property Classification");
+                            customercard.SetRange("No.", newsalesheader."Sell-to Customer No.");
+                            if customercard.FindSet() then begin
+                                if newsalesheader."Property Classification" <> '' then begin
+                                    customercard.Validate("Gen. Bus. Posting Group", newsalesheader."Property Classification");
+                                    customercard.Validate("Customer Posting Group", newsalesheader."Property Classification");
+                                    customercard.Modify();
+                                end
+                            end;
                             if newsalesheader."Property Classification" <> '' then begin
-                                customercard.Validate("Gen. Bus. Posting Group", newsalesheader."Property Classification");
-                                customercard.Validate("Customer Posting Group", newsalesheader."Property Classification");
-                                customercard.Modify();
-                            end
-                        end;
-                        if newsalesheader."Property Classification" <> '' then begin
-                            newsalesheader."Gen. Bus. Posting Group" := newsalesheader."Property Classification";
-                            newsalesheader."Customer Posting Group" := newsalesheader."Property Classification";
-                            newsalesheader.Modify();
-                        end;
+                                newsalesheader."Gen. Bus. Posting Group" := newsalesheader."Property Classification";
+                                newsalesheader."Customer Posting Group" := newsalesheader."Property Classification";
+                                newsalesheader.Modify();
+                            end;
 
-                        additionalchargesgrid.SetRange("Contract ID", Rec."Contract ID");
-                        additionalchargesgrid.SetFilter("DifferenceAmountInclVAT", '<%1', 0);
-                        if additionalchargesgrid.FindSet() then
-                            repeat
-                                Saleslinecreate(newsalesheader, additionalchargesgrid);
-                                additionalchargesgrid.Invoiced := true;
-                                additionalchargesgrid."Invoice ID" := newsalesheader."No.";
-                                additionalchargesgrid."Posted Invoice ID" := newsalesheader."No.";
-                                additionalchargesgrid.Modify();
-                            until additionalchargesgrid.Next() = 0;
+                            additionalchargesgrid.SetRange("Contract ID", Rec."Contract ID");
+                            additionalchargesgrid.SetFilter("DifferenceAmountInclVAT", '<%1', 0);
+                            if additionalchargesgrid.FindSet() then
+                                repeat
+                                    Saleslinecreate(newsalesheader, additionalchargesgrid);
+                                    additionalchargesgrid.Invoiced := true;
+                                    additionalchargesgrid."Invoice ID" := newsalesheader."No.";
+                                    additionalchargesgrid."Posted Invoice ID" := newsalesheader."No.";
+                                    additionalchargesgrid.Modify();
+                                until additionalchargesgrid.Next() = 0;
+                            Message('Invoice Created Successfully');
 
-
+                        end else begin
+                            Message('Already Invoiced is created');
+                        end
                     end else begin
-                        Message('Already Invoiced is created');
-                    end
-                    // end;
+                        Message('Need to create Credit Note');
+                    end;
 
 
 
