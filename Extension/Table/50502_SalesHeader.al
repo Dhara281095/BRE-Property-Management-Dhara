@@ -127,7 +127,7 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
             DataClassification = ToBeClassified;
             Caption = 'Credit Memo ID';
         }
-        field(50119; "Credit Memo URL"; Code[1000])
+        field(50119; "Credit Memo URL"; Text[1000])
         {
             DataClassification = ToBeClassified;
             Caption = 'Credit Memo No';
