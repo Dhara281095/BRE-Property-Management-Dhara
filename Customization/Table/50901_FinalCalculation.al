@@ -229,17 +229,17 @@ table 50901 "Final Calculation"
             DataClassification = ToBeClassified;
             Caption = 'Tenant Name';
         }
-        field(50136; "Credit Note"; Text[250])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Credit Note';
-            InitValue = 'Credit Note';
-        }
-        field(50137; "Credit Note ID"; Integer)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Credit Note ID';
-        }
+        // field(50136; "Credit Note"; Text[250])
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Credit Note';
+        //     InitValue = 'Credit Note';
+        // }
+        // field(50137; "Credit Note ID"; Integer)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Credit Note ID';
+        // }
 
 
     }
@@ -256,7 +256,7 @@ table 50901 "Final Calculation"
 
     fieldgroups
     {
-        fieldgroup(DropDown; "Contract ID")
+        fieldgroup(DropDown; "Contract ID", "FC ID")
         {
 
         }

@@ -264,6 +264,20 @@ page 50951 "Final Billing Calculation"
 
                 end;
             }
+
+            action(GenerateCreditNote)
+            {
+                ApplicationArea = All;
+                Caption = 'Generate Credit Note';
+                Image = PostDocument;
+
+                trigger OnAction()
+                var
+                    CreditNoteListPage: Page "Credit Note List"; // Or use the correct Page ID/name if different
+                begin
+                    PAGE.Run(PAGE::"Credit Note List");
+                end;
+            }
         }
     }
     procedure CreateSalesHeader(pContractID: Integer; pTenantID: Code[50]; pUnitType: Text[50]): Record "Sales Header";

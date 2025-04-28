@@ -22,10 +22,10 @@ page 50735 creditnote
         {
             repeater(General)
             {
-                field(amount; Rec.Amount)
-                {
-                    Caption = 'Amount';
-                }
+                // field(amount; Rec.Amount)
+                // {
+                //     Caption = 'Amount';
+                // }
                 field(contractAmount; Rec."Contract Amount")
                 {
                     Caption = 'Contract Amount';
@@ -50,10 +50,10 @@ page 50735 creditnote
                 {
                     Caption = 'ID';
                 }
-                field(invoiceID; Rec."Invoice ID")
-                {
-                    Caption = 'Invoice ID';
-                }
+                // field(invoiceID; Rec."Invoice ID")
+                // {
+                //     Caption = 'Invoice ID';
+                // }
                 field(status; Rec.Status)
                 {
                     Caption = 'Status';
