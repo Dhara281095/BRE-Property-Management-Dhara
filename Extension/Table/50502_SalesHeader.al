@@ -76,7 +76,7 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
             DataClassification = ToBeClassified;
             Caption = 'View Invoice';
         }
-        field(50112; "View Document URL"; Text[250])
+        field(50112; "View Document URL"; Text[1000])
         {
             DataClassification = ToBeClassified;
             Caption = 'View Document URL';
@@ -122,12 +122,12 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
             DataClassification = ToBeClassified;
             Caption = 'Rejection Reason';
         }
-        field(50118; "Credit Memo Document"; Integer)
+        field(50118; "Credit Memo Document"; Text[250])
         {
             DataClassification = ToBeClassified;
             Caption = 'Credit Memo ID';
         }
-        field(50119; "Credit Memo URL"; Code[20])
+        field(50119; "Credit Memo URL"; Code[1000])
         {
             DataClassification = ToBeClassified;
             Caption = 'Credit Memo No';
