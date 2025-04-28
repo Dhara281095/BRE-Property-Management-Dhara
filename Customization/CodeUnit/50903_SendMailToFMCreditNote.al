@@ -26,15 +26,23 @@ codeunit 50903 "Send Mail to FM Credit Note"
 
     begin
         UserPersonalizationRec.SetRange("Profile ID", 'FINANCE MANAGER');
-        if UserPersonalizationRec.FindFirst() then begin
-            UserRec.Get(UserPersonalizationRec."User SID");
-            EmailAddress.Add(UserRec."Contact Email");
-            Username := UserRec."User Name";
-        end;
+        // if UserPersonalizationRec.FindFirst() then begin
+        //     UserRec.Get(UserPersonalizationRec."User SID");
+        //     EmailAddress.Add(UserRec."Contact Email");
+        //     Username := UserRec."User Name";
+        // end;
+        if UserPersonalizationRec.FindSet() then
+            repeat
+                if UserRec.Get(UserPersonalizationRec."User SID") then
+                    if UserRec."Contact Email" <> '' then
+                        EmailAddress.Add(UserRec."Contact Email");
+            until UserPersonalizationRec.Next() = 0;
+        if EmailAddress.Count() = 0 then
+            Error('No users with the "Finance Manager" profile have a valid email address.');
 
-        SalesHeader.SetRange("Document Type", Rec."Document Type"::"Credit Memo");
+
         SalesHeader.SetRange("No.", Rec."No.");
-
+        SalesHeader.SetRange("Document Type", Rec."Document Type"::"Credit Memo");
 
         if SalesHeader.FindSet() then
             repeat

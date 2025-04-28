@@ -66,11 +66,14 @@ pageextension 50508 SalesCreditMemo extends "Sales Credit Memo"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Approval status of the credit note.';
+                    Caption = 'Approval Status Credit Note';
+                    // Editable = approvaleditable;
                 }
                 field("Rejection Reason CreditNote"; Rec."Rejection Reason CreditNote")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Reason for rejection of the credit note.';
+                    // Editable = approvaleditable;
                 }
 
 
@@ -114,7 +117,7 @@ pageextension 50508 SalesCreditMemo extends "Sales Credit Memo"
     }
     actions
     {
-        addlast("&Credit Memo")
+        addafter(Action7)
         {
             action("Send Approval to Finance Manager")
             {
@@ -128,7 +131,36 @@ pageextension 50508 SalesCreditMemo extends "Sales Credit Memo"
                 end;
             }
         }
+
+
     }
+
+    trigger OnAfterGetRecord()
+    var
+    begin
+        approvaleditable := GetUserEditableStatus();
+    end;
+
+    procedure GetUserEditableStatus(): Boolean
+    var
+        UserPersonalization: Record "User Personalization";
+    begin
+
+        if UserPersonalization.Get(UserSecurityId()) then begin
+
+            case UserPersonalization."Profile ID" of
+                'PROPERTY MANAGER':
+                    exit(false);
+                'LEASE_MANAGER':
+                    exit(false);
+                'finance manager':
+                    exit(true);
+            end;
+        end;
+
+        exit(false);
+    end;
+
     procedure OpenFileInBrowser(URL: Text)
     begin
 
@@ -137,4 +169,7 @@ pageextension 50508 SalesCreditMemo extends "Sales Credit Memo"
         else
             Error('The file URL is invalid.');
     end;
+
+    var
+        approvaleditable: Boolean;
 }
