@@ -113,6 +113,10 @@ table 50100 "Owner Profile"
             Caption = 'RERA Owner ID';
             Tooltip = 'RERA (Real Estate Regulatory Agency) registration details for property owners';
         }
+        field(50120; "P.O.Box"; Code[50])
+        {
+            Caption = 'P.O.Box';
+        }
     }
 
 

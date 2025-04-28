@@ -412,7 +412,7 @@ pageextension 50102 UnitManagement extends "O365 Activities"
 
     procedure GetSuspendedContractsCount(): Integer;
     var
-        ContractRec: Record "Tenancy Contract"; // Replace with your actual Contract Table
+        ContractRec: Record SuspendReasonTable; // Replace with your actual Contract Table
     begin
         ContractRec.SetRange("Tenant Contract Status", ContractRec."Tenant Contract Status"::Suspended); // Using the Option value instead of text
         exit(ContractRec.Count()); // Return the count of active contracts

@@ -90,6 +90,9 @@ report 50115 UmmAlQuwainContract
                 column(Nationality; Nationality)
                 {
                 }
+                column(P_O_Box; "P.O.Box")
+                {
+                }
             }
             dataitem(Item; Item)
             {
@@ -102,6 +105,13 @@ report 50115 UmmAlQuwainContract
             {
                 DataItemLink = "Property ID" = field("Property ID");
                 column(Address; Address)
+                {
+                }
+            }
+            dataitem("Owner Profile"; "Owner Profile")
+            {
+                DataItemLink = "Owner ID" = field("Owner ID");
+                column(O_P_O_Box; "P.O.Box")
                 {
                 }
             }

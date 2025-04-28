@@ -47,6 +47,11 @@ page 50309 "Owner Profile Card"
                     ApplicationArea = All;
                 }
 
+                field("P.O.Box"; Rec."P.O.Box")
+                {
+                    ApplicationArea = All;
+                }
+
                 field("Mailing Address"; rec."Mailing Address")
                 {
                     ApplicationArea = All;
