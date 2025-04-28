@@ -1,7 +1,7 @@
 page 50133 "Suspended Contract List"
 {
     PageType = List;
-    SourceTable = "Tenancy Contract";
+    SourceTable = SuspendReasonTable;
     ApplicationArea = All;
     Caption = 'Suspended Contract List';
     UsageCategory = Lists;
@@ -31,51 +31,6 @@ page 50133 "Suspended Contract List"
                 {
                     ApplicationArea = All;
                     Caption = 'Renewal Proposal ID';
-                }
-                field("Property ID"; Rec."Property ID")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Property ID';
-                }
-                field("Unit ID"; Rec."Unit ID")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Single Unit ID';
-                }
-                field("Merge Unit ID"; Rec."Merge Unit ID")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Merge Unit ID';
-                }
-                field("Property Name"; Rec."Property Name")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Property Name';
-                }
-                field("Tenant ID"; Rec."Tenant ID")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Customer ID';
-                }
-                field("Customer Name"; Rec."Customer Name")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Customer Name';
-                }
-                field("Annual Rent Amount"; Rec."Annual Rent Amount")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Annual Rent Amount';
-                }
-                field("Contract Start Date"; Rec."Contract Start Date")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Contract Start Date';
-                }
-                field("Contract End Date"; Rec."Contract End Date")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Contract End Date';
                 }
                 field("Tenant Contract Status"; Rec."Tenant Contract Status")
                 {

@@ -226,6 +226,14 @@ pageextension 50105 Customers extends "Customer Card"
             }
 
         }
+        addafter("E-Mail")
+        {
+            field("P.O.Box"; Rec."P.O.Box")
+            {
+                ApplicationArea = All;
+                Caption = 'P.O.Box';
+            }
+        }
     }
 
     var

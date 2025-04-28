@@ -120,14 +120,18 @@ tableextension 50101 CustomerExtension extends Customer
             end;
         }
 
-        field(50517; "Customer Type"; Enum "Customer Type Enum")
+        field(50117; "Customer Type"; Enum "Customer Type Enum")
         {
             Caption = 'Customer Type';
             DataClassification = ToBeClassified;
         }
-        field(50518; "Business Unit"; Code[20])
+        field(50118; "Business Unit"; Code[20])
         {
             Caption = 'Business Unit';
+        }
+        field(50119; "P.O.Box"; Code[50])
+        {
+            Caption = 'P.O.Box';
         }
 
     }
