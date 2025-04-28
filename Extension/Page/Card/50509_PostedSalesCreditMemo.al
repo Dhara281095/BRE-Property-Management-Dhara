@@ -26,6 +26,11 @@ pageextension 50509 PostedSalesCreditMemo extends "Posted Sales Credit Memo"
                     ApplicationArea = All;
                     ToolTip = 'Tenure of the contract related to this credit memo.';
                 }
+                field("Contract Period"; Rec."Contract Period")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Period of the contract related to this credit memo.';
+                }
                 field("Approval Status"; Rec."Approval Status")
                 {
                     ApplicationArea = All;
