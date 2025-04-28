@@ -219,30 +219,30 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                     ResendInvoiceMail.ResendUpdateInvoice(Rec);
                 end;
             }
-            action(ChangeCustomerPostingGroup)
-            {
-                ApplicationArea = All;
-                Caption = 'Customer Posting Group';
+            // action(ChangeCustomerPostingGroup)
+            // {
+            //     ApplicationArea = All;
+            //     Caption = 'Customer Posting Group';
 
-                trigger OnAction()
-                var
-                    customercard: Record Customer;
-                begin
-                    customercard.SetRange("No.", Rec."Sell-to Customer No.");
-                    if customercard.FindSet() then begin
-                        if Rec."Property Classification" <> '' then begin
-                            customercard.Validate("Gen. Bus. Posting Group", Rec."Property Classification");
-                            customercard.Validate("Customer Posting Group", Rec."Property Classification");
-                            customercard.Modify();
-                        end
-                    end;
-                    if Rec."Property Classification" <> '' then begin
-                        Rec."Gen. Bus. Posting Group" := Rec."Property Classification";
-                        Rec."Customer Posting Group" := Rec."Property Classification";
-                        Rec.Modify();
-                    end;
-                end;
-            }
+            //     trigger OnAction()
+            //     var
+            //         customercard: Record Customer;
+            //     begin
+            //         customercard.SetRange("No.", Rec."Sell-to Customer No.");
+            //         if customercard.FindSet() then begin
+            //             if Rec."Property Classification" <> '' then begin
+            //                 customercard.Validate("Gen. Bus. Posting Group", Rec."Property Classification");
+            //                 customercard.Validate("Customer Posting Group", Rec."Property Classification");
+            //                 customercard.Modify();
+            //             end
+            //         end;
+            //         if Rec."Property Classification" <> '' then begin
+            //             Rec."Gen. Bus. Posting Group" := Rec."Property Classification";
+            //             Rec."Customer Posting Group" := Rec."Property Classification";
+            //             Rec.Modify();
+            //         end;
+            //     end;
+            // }
 
 
 

@@ -10,6 +10,32 @@ pageextension 50508 SalesCreditMemo extends "Sales Credit Memo"
                 {
                     ApplicationArea = All;
                     ToolTip = 'ID of the contract related to this credit memo.';
+                    trigger OnValidate()
+                    var
+                        tenancyContract: Record "Tenancy Contract";
+                        customercard: Record Customer;
+                    begin
+                        tenancyContract.SetRange("Contract ID", Rec."Contract ID");
+                        if tenancyContract.FindFirst() then begin
+                            Rec."Tenant Name" := tenancyContract."Customer Name";
+                            Rec."Property Name" := tenancyContract."Property Name";
+                            Rec."Unit Name" := tenancyContract."Unit Name";
+                            Rec."Contract Tenure" := tenancyContract."Contract Tenor";
+                            Rec."Contract Period" := Format(tenancyContract."Contract Start Date", 0, '<Day,2>/<Month,2>/<Year4>') + ' To ' + Format(tenancyContract."Contract End Date", 0, '<Day,2>/<Month,2>/<Year4>');
+                            Rec."Property Classification" := tenancyContract."Property Classification";
+                        end else begin
+                            Rec."Tenant Name" := '';
+                            rec."Property Name" := '';
+                            Rec."Unit Name" := '';
+                            Rec."Contract Tenure" := '';
+                            Rec."Contract Period" := '';
+                            Rec."Property Classification" := '';
+
+                            // Rec."Tenant Name" := '';
+
+                        end;
+                    end;
+
                 }
                 field("Property Name"; Rec."Property Name")
                 {
@@ -31,18 +57,25 @@ pageextension 50508 SalesCreditMemo extends "Sales Credit Memo"
                     ApplicationArea = All;
                     ToolTip = 'Period of the contract related to this credit memo.';
                 }
-                field("Approval Status"; Rec."Approval Status")
+                field("Property Classification"; Rec."Property Classification")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Status of the approval for this credit memo.';
+                    ToolTip = 'Classification of the property related to this credit memo.';
                 }
-                field("Reason for Rejection"; Rec."Reason for Rejection")
+                field("Approval Status for CreditNote"; Rec."Approval Status for CreditNote")
                 {
-                    Caption = 'Reason For Rejection';
                     ApplicationArea = All;
-                    // Editable = approvaleditable;
+                    ToolTip = 'Approval status of the credit note.';
                 }
+                field("Rejection Reason CreditNote"; Rec."Rejection Reason CreditNote")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Reason for rejection of the credit note.';
+                }
+
+
             }
+
 
 
         }
@@ -77,6 +110,24 @@ pageextension 50508 SalesCreditMemo extends "Sales Credit Memo"
             }
         }
 
+
+    }
+    actions
+    {
+        addlast("&Credit Memo")
+        {
+            action("Send Approval to Finance Manager")
+            {
+                ApplicationArea = All;
+                Caption = 'Send Approval to Finance Manager';
+                trigger OnAction()
+                var
+                    sendMailToFMCreditNote: Codeunit "Send Mail to FM Credit Note";
+                begin
+                    sendMailToFMCreditNote.SendMailToFM(Rec);
+                end;
+            }
+        }
     }
     procedure OpenFileInBrowser(URL: Text)
     begin
