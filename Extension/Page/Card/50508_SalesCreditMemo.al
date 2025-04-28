@@ -164,14 +164,14 @@ pageextension 50508 SalesCreditMemo extends "Sales Credit Memo"
 
                 SASUrlBase := ConfigRecord."SAS URL";
                 FileExtension := '.pdf';
-                ReportID := 50104;
+                ReportID := 50116;
                 //  RecRef.Open(DATABASE::"Sales Header"); // Open the table reference
                 // RecRef.GetTable(Rec);
                 SalesHeader1.Reset();
                 SalesHeader1.SetRange("No.", Rec."No.");
                 SalesHeader1.SetRange("Document Type", Rec."Document Type"::"Credit Memo");
                 if not SalesHeader1.FindFirst() then
-                    Error('Sales Invoice record not found.');
+                    Error('Sales Credit memo record not found.');
 
                 // Open the correct record in RecRef
                 RecRef.GetTable(SalesHeader1);
@@ -182,7 +182,7 @@ pageextension 50508 SalesCreditMemo extends "Sales Credit Memo"
 
 
                 TempBlob.CreateInStream(InStream);
-                FileName := 'Invoice_' + Rec."No." + FileExtension;
+                FileName := 'CreditNote' + Rec."No." + FileExtension;
                 SASUrlWithFileName := StrSubstNo('%1/%2?%3', CopyStr(SASUrlBase, 1, StrPos(SASUrlBase, '?') - 1), FileName, CopyStr(SASUrlBase, StrPos(SASUrlBase, '?') + 1));
                 UploadResult := documentattachment.UploadDocumentToBlobStorage(SASUrlWithFileName, FileName, InStream);
                 Rec."Credit Memo Document" := FileName;
