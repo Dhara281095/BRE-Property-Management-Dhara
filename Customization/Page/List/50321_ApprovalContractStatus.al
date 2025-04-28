@@ -106,6 +106,7 @@ page 50321 "Approval Contract Status List"
                         SelectedRec := Rec;
                         SelectedRec.Status := 'Approve';
                         SelectedRec.Modify();
+                        Message('Request Approved Successfully');
                         Commit();
                         CurrPage.Update();
                     end else

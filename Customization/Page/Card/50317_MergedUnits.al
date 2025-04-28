@@ -11,6 +11,7 @@ page 50317 "Merged Units Card"
         {
             group(Group)
             {
+                Caption = 'Merged Unit Information';
 
                 field(FixedNumber; Rec.FixedNumber)
                 {

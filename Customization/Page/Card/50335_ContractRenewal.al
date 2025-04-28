@@ -273,7 +273,7 @@ page 50335 "Contract Renewal Card"
 
             group("Lease Terms")
             {
-                Caption = 'Contract Details';
+                Caption = 'Lease Terms';
                 field("Contract Start Date"; rec."Contract Start Date")
                 {
                     ApplicationArea = All;
@@ -427,7 +427,7 @@ page 50335 "Contract Renewal Card"
 
             group("Special Conditions")
             {
-                Caption = 'Grace Period Information';
+                Caption = 'Special Conditions';
 
                 field("Early Termination Conditions"; rec."Early Termination Conditions")
                 {
