@@ -60,7 +60,7 @@ table 50954 "Credit Note"
         {
             DataClassification = ToBeClassified;
             Caption = 'Credit Note Type';
-            OptionMembers = " ","Standard Credit Note","Termination Credit Note";
+            OptionMembers = "Termination Credit Note";
         }
         // field(50118; "TerminationCreditNoteType"; Option)
         // {
@@ -68,16 +68,11 @@ table 50954 "Credit Note"
         //     Caption = 'Credit Note Type';
         //     OptionMembers = "Termination Credit Note";
         // }
-        field(50119; "Invoice ID"; Integer)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Invoice ID';
-        }
-        field(50120; "Amount"; Decimal)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Amount';
-        }
+        // field(50119; "Invoice ID"; Integer)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Invoice ID';
+        // }
         field(50121; "Status"; Option)
         {
             DataClassification = ToBeClassified;
