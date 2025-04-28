@@ -195,11 +195,16 @@ page 50966 "Credit Note Card"
                     Editable = false;
                 }
             }
+            field("Reason for Rejection"; Rec."Reason for Rejection")
+            {
+                Caption = 'Reason for Rejection';
+                Editable = false;
+            }
             group("Billing-Calculation")
             {
                 part("Billing-Calculations"; "Billing Calculation CN Card")
                 {
-                    SubPageLink = "ID" = FIELD("ID"); // Link to filter attachments for this owner only
+                    SubPageLink = "Contract ID" = FIELD("Contract ID"); // Link to filter attachments for this owner only
                     ApplicationArea = All;
                     // Visible = isVisible;
                 }
