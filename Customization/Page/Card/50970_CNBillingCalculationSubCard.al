@@ -12,11 +12,11 @@ page 50970 "Billing Calculation CN Card"
         {
             repeater("Contract Details")
             {
-                field("ID"; Rec."ID")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
+                // field("ID"; Rec."ID")
+                // {
+                //     ApplicationArea = All;
+                //     Editable = false;
+                // }
                 field("Contract ID"; Rec."Contract ID")
                 {
                     ApplicationArea = All;

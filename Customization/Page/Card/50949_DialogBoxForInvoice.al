@@ -10,7 +10,7 @@ page 50949 DialogBoxForInvoiceRejection
             {
                 Caption = 'Reason for Rejection';
                 ApplicationArea = All;
-                ToolTip = 'Enter the reason for rejecting this invoice.';
+                ToolTip = 'Enter the reason for rejection.';
             }
         }
     }

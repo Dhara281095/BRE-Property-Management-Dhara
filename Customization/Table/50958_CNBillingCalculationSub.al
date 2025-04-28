@@ -4,12 +4,12 @@ table 50958 "Billing Calculation CN"
 
     fields
     {
-        field(50100; "ID"; Integer)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'ID';
-            Editable = false;
-        }
+        // field(50100; "ID"; Integer)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'ID';
+        //     Editable = false;
+        // }
         field(50101; "Contract ID"; Integer)
         {
             DataClassification = ToBeClassified;
@@ -55,7 +55,7 @@ table 50958 "Billing Calculation CN"
 
     keys
     {
-        key(PK; "Entry No.", "ID")
+        key(PK; "Entry No.", "Contract ID")
         {
             Clustered = true;
         }

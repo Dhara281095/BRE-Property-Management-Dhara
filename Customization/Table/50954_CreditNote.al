@@ -95,6 +95,10 @@ table 50954 "Credit Note"
             DataClassification = ToBeClassified;
             Caption = 'FC ID';
         }
+        field(50125; "Reason for Rejection"; Text[250])
+        {
+            Caption = 'Reason for Rejection';
+        }
 
     }
 

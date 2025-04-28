@@ -133,6 +133,7 @@ page 50969 "Credit Note Approval List"
                 trigger OnAction()
                 var
                     CreditNote: Record "Credit Note";
+                    FinalcalculationBilling: Record "Final Billing Calculation Grid";
                 begin
                     if Rec.Status = Rec.Status::Approved then
                         Error('This entry is already approved');
@@ -146,6 +147,12 @@ page 50969 "Credit Note Approval List"
                         if CreditNote.Get(Rec."ID") then begin
                             CreditNote.Status := CreditNote.Status::Approved;
                             CreditNote.Modify();
+                        end;
+
+                        FinalcalculationBilling.SetRange("Contract ID", CreditNote."Contract ID");
+                        if FinalcalculationBilling.FindSet() then begin
+                            FinalcalculationBilling."Credit Note to be raised" := 0;
+                            FinalcalculationBilling.Modify(true);
                         end;
 
                         Message('Entry has been approved successfully!');
@@ -165,24 +172,37 @@ page 50969 "Credit Note Approval List"
                 trigger OnAction()
                 var
                     CreditNote: Record "Credit Note";
+                    DialogPage: Page DialogBoxForInvoiceRejection;
+                    ReasonForRejection: Text;
                 begin
                     if Rec.Status = Rec.Status::Reject then
                         Error('This entry is already rejected');
 
                     if Confirm('Do you want to reject this entry?') then begin
-                        // Update entry status
-                        Rec.Status := Rec.Status::Reject;
-                        Rec.Modify();
+                        if DialogPage.RunModal() = Action::OK then begin
+                            ReasonForRejection := DialogPage.GetReason();
 
-                        // Update main record status
-                        if CreditNote.Get(Rec."ID") then begin
-                            CreditNote.Status := CreditNote.Status::Reject;
-                            CreditNote.Modify();
-                        end;
+                            if (ReasonForRejection = '') then
+                                Error('Please enter a reason for rejection.');
 
-                        Message('Entry has been rejected successfully!');
+                            // Update current record
+                            Rec.Status := Rec.Status::Reject;
+                            // Rec."Reason for Rejection" := ReasonForRejection;
+                            Rec.Modify();
+
+                            // Update Credit Note record
+                            if CreditNote.Get(Rec."ID") then begin
+                                CreditNote.Status := CreditNote.Status::Reject;
+                                CreditNote."Reason for Rejection" := ReasonForRejection;
+                                CreditNote.Modify();
+                            end;
+
+                            Message('Entry has been rejected successfully!');
+                        end else
+                            Error('Rejection cancelled.');
                     end;
                 end;
+
             }
         }
 
