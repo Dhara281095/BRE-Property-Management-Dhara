@@ -30,6 +30,11 @@ tableextension 50506 "Posted Sales Credit Memo" extends "Sales Cr.Memo Header"
             OptionMembers = " ",Approved,Rejected;
             Caption = 'Approval Status';
         }
+        field(50109; "Contract Period"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Contract Period';
+        }
         field(50111; "View Invoice"; Text[250])
         {
             DataClassification = ToBeClassified;
