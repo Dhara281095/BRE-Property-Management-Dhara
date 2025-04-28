@@ -51,12 +51,12 @@ pageextension 50509 PostedSalesCreditMemo extends "Posted Sales Credit Memo"
         }
         addlast(General)
         {
-            field("View Document URL"; Rec."View Document URL")
+            field("Credit Memo URL"; Rec."Credit Memo URL")
             {
                 ApplicationArea = All;
                 Caption = 'View Document URL';
             }
-            field("View Invoice"; Rec."View Invoice")
+            field("Credit Memo Document"; Rec."Credit Memo Document")
             {
                 ApplicationArea = All;
                 Caption = 'View Invoice';
@@ -67,7 +67,7 @@ pageextension 50509 PostedSalesCreditMemo extends "Posted Sales Credit Memo"
                     FileURL: Text;
                 begin
 
-                    FileURL := Rec."View Document URL";
+                    FileURL := Rec."Credit Memo URL";
 
 
                     if FileURL = '' then
