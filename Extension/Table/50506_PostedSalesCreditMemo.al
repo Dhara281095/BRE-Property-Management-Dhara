@@ -35,11 +35,6 @@ tableextension 50506 "Posted Sales Credit Memo" extends "Sales Cr.Memo Header"
             DataClassification = ToBeClassified;
             Caption = 'View Invoice';
         }
-        field(50112; "View Document URL"; Text[250])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'View Document URL';
-        }
         field(50115; "Property Classification"; Text[40])
         {
             DataClassification = ToBeClassified;
@@ -55,6 +50,16 @@ tableextension 50506 "Posted Sales Credit Memo" extends "Sales Cr.Memo Header"
         {
             DataClassification = ToBeClassified;
             Caption = 'Rejection Reason CreditNote';
+        }
+        field(50118; "Credit Memo Document"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Credit Memo ID';
+        }
+        field(50119; "Credit Memo URL"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Credit Memo No';
         }
 
     }

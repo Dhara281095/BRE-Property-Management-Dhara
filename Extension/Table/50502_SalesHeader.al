@@ -122,6 +122,16 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
             DataClassification = ToBeClassified;
             Caption = 'Rejection Reason';
         }
+        field(50118; "Credit Memo Document"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Credit Memo ID';
+        }
+        field(50119; "Credit Memo URL"; Code[20])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Credit Memo No';
+        }
     }
 
 }

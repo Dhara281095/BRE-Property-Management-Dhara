@@ -548,9 +548,9 @@ page 50737 "Terminated credit note"
                 {
                     Caption = 'VAT Date';
                 }
-                field(viewDocumentURL; Rec."View Document URL")
+                field(viewDocumentURL; Rec."Credit Memo URL")
                 {
-                    Caption = 'View Document URL';
+                    Caption = 'Credit Memo Document URL';
                 }
                 field(viewInvoice; Rec."View Invoice")
                 {
