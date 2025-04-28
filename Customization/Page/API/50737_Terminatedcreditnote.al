@@ -56,7 +56,7 @@ page 50737 "Terminated credit note"
                 {
                     Caption = 'Applies-to Doc. Type';
                 }
-                field(approvalStatus; Rec."Approval Status")
+                field(approvalStatus; Rec."Approval Status for CreditNote")
                 {
                     Caption = 'Approval Status';
                 }

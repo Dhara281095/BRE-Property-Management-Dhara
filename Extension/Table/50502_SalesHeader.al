@@ -96,6 +96,31 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
             DataClassification = ToBeClassified;
             Caption = 'Property Classification';
         }
+        field(50116; "Approval Status for CreditNote"; Text[40])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Approval Status';
+
+            trigger OnValidate()
+            var
+                emailrecord: Codeunit "Send Credit Memo to Tenant";
+                Rejectionmail: Codeunit RejectSalesInvoice;
+                ShowDialogBox: Codeunit DialogboxRejectionCreditMemo;
+            begin
+                if "Approval Status" = "Approval Status"::Approved then begin
+                    emailrecord.SendMailToTenantForCreditMemo(Rec); // Pass the current record if needed
+                end else
+                    if "Approval Status" = "Approval Status"::Rejected then begin
+                        ShowDialogBox.Dialogboxcreditmemo(Rec);
+                        // Rejectionmail.SendInvoiceToLeaseManager(Rec);
+                    end;
+            end;
+        }
+        field(50117; "Rejection Reason CreditNote"; Text[1000])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Rejection Reason';
+        }
     }
 
 }

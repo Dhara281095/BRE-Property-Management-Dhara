@@ -24,12 +24,7 @@ tableextension 50506 "Posted Sales Credit Memo" extends "Sales Cr.Memo Header"
             DataClassification = ToBeClassified;
             Caption = 'Contract Tenure';
         }
-        field(50105; "Approval Status"; Option)
-        {
-            DataClassification = ToBeClassified;
-            OptionMembers = " ",Approved,Rejected;
-            Caption = 'Approval Status';
-        }
+
         field(50109; "Contract Period"; Text[100])
         {
             DataClassification = ToBeClassified;
@@ -44,6 +39,22 @@ tableextension 50506 "Posted Sales Credit Memo" extends "Sales Cr.Memo Header"
         {
             DataClassification = ToBeClassified;
             Caption = 'View Document URL';
+        }
+        field(50115; "Property Classification"; Text[40])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Property Classification';
+        }
+        field(50116; "Approval Status for CreditNote"; Option)
+        {
+            DataClassification = ToBeClassified;
+            OptionMembers = " ",Approved,Rejected;
+            Caption = 'Approval Status for CreditNote';
+        }
+        field(50117; "Rejection Reason CreditNote"; Text[1000])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Rejection Reason CreditNote';
         }
 
     }

@@ -31,11 +31,22 @@ pageextension 50509 PostedSalesCreditMemo extends "Posted Sales Credit Memo"
                     ApplicationArea = All;
                     ToolTip = 'Period of the contract related to this credit memo.';
                 }
-                field("Approval Status"; Rec."Approval Status")
+                field("Property Classification"; Rec."Property Classification")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Status of the approval for this credit memo.';
+                    ToolTip = 'Classification of the property related to this credit memo.';
                 }
+                field("Approval Status for CreditNote"; Rec."Approval Status for CreditNote")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Approval status for the credit note.';
+                }
+                field("Rejection Reason CreditNote"; Rec."Rejection Reason CreditNote")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Reason for rejection of the credit note.';
+                }
+
             }
         }
         addlast(General)
