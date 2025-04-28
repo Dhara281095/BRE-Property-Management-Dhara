@@ -1,6 +1,6 @@
 codeunit 50905 "DialogboxRejectionCreditMemo"
 {
-    procedure Dialogboxcreditmemo(Rec: Record "Sales Header")
+    procedure Dialogboxcreditmemo(var Rec: Record "Sales Header")
     var
         ReasonForRejection: Text;
         DialogConfirmed: Boolean;
@@ -11,10 +11,11 @@ codeunit 50905 "DialogboxRejectionCreditMemo"
     begin
         salesheader1.SetRange(salesheader1."Document Type", Rec."Document Type"::"Credit Memo");
         salesheader1.SetRange(salesheader1."No.", Rec."No.");
+
         if salesheader1.FindSet() then begin
             if dialogpage.RunModal() = Action::OK then begin
                 ReasonForRejection := dialogpage.GetReason();
-                Rec."Reason for Rejection" := ReasonForRejection;
+                Rec."Rejection Reason CreditNote" := ReasonForRejection;
                 Rec.Modify();
                 Rejectionmail.SendInvoiceToLeaseManager(Rec);
             end else begin

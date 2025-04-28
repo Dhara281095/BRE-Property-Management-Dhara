@@ -26,18 +26,26 @@ codeunit 50906 "Reject Credit Memo"
 
     begin
         UserPersonalizationRec.SetRange("Profile ID", 'LEASE_MANAGER'); // Accounting Manager
-        if UserPersonalizationRec.FindFirst() then begin
-            UserRec.Get(UserPersonalizationRec."User SID");
-            EmailAddress.Add(UserRec."Contact Email");
-            Username := UserRec."User Name";
-            //CCMail.Add('dhruvp6373@gmail.com');
-        end;
+        // if UserPersonalizationRec.FindFirst() then begin
+        //     UserRec.Get(UserPersonalizationRec."User SID");
+        //     EmailAddress.Add(UserRec."Contact Email");
+        //     Username := UserRec."User Name";
+        //     //CCMail.Add('dhruvp6373@gmail.com');
+        // end;
+        if UserPersonalizationRec.FindSet() then
+            repeat
+                if UserRec.Get(UserPersonalizationRec."User SID") then
+                    if UserRec."Contact Email" <> '' then
+                        EmailAddress.Add(UserRec."Contact Email");
+            until UserPersonalizationRec.Next() = 0;
+        if EmailAddress.Count() = 0 then
+            Error('No users with the "LEASE_MANAGER" profile have a valid email address.');
 
         SalesHeader.SetRange("No.", Rec."No.");
         SalesHeader.SetRange("Document Type", Rec."Document Type"::"Credit Memo");
 
 
-        if SalesHeader.FindSet() then
+        if SalesHeader.FindSet(true) then
             repeat
 
                 TotalAmount := 0;
