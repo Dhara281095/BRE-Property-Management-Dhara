@@ -97,15 +97,15 @@ tableextension 50504 PostedSalesInvoiceHeader extends "Sales Invoice Header"
                 paymentschedule2.Modify();
             until paymentschedule2.Next() = 0;
 
-        finasettlement.SetRange("FC ID", Rec."FC ID");
-        finasettlement.SetRange("Invoice ID", Rec."Pre-Assigned No.");
-        if finasettlement.FindSet() then
-            repeat
-                finasettlement."Invoice ID" := Rec."No.";
-                finasettlement."View Invoice" := Rec."View Invoice";
-                finasettlement."Invoice URL" := Rec."View Document URL";
-                finasettlement.Modify();
-            until finasettlement.Next() = 0;
+        // finasettlement.SetRange("FC ID", Rec."FC ID");
+        // finasettlement.SetRange("Invoice ID", Rec."Pre-Assigned No.");
+        // if finasettlement.FindSet() then
+        //     repeat
+        //         finasettlement."Invoice ID" := Rec."No.";
+        //         finasettlement."View Invoice" := Rec."View Invoice";
+        //         finasettlement."Invoice URL" := Rec."View Document URL";
+        //         finasettlement.Modify();
+        //     until finasettlement.Next() = 0;
 
         additionalcharges.SetRange("Contract ID", Rec."Contract ID");
         additionalcharges.SetRange("Invoiced ID", Rec."Pre-Assigned No.");

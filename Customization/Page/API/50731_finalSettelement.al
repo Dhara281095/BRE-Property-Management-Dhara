@@ -186,14 +186,7 @@ page 50731 finalSettelement
                 // {
                 //     Caption = 'Pay Receipt/Proof document URL';
                 // }
-                field("ViewInvoice"; Rec."View Invoice")
-                {
-                    Caption = 'View Invoice';
-                }
-                field("InvoiceURL"; Rec."Invoice URL")
-                {
-                    Caption = 'Invoice URL';
-                }
+
             }
         }
     }
