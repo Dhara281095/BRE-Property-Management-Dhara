@@ -84,6 +84,7 @@ page 50940 "FinalSettlemtRefundCard"
                     trigger OnValidate()
                     var
                         PaymentStatus: Enum "Payment Status";
+                        RefundPostingMgt: Codeunit "Refund Settlement Posting Mgt.";
                     begin
                         // Check if Receivable Payment Status is 'Received'
                         if Rec."Refund Payment Status" = PaymentStatus::Received then begin
@@ -97,6 +98,8 @@ page 50940 "FinalSettlemtRefundCard"
                             Rec."Refund Status" := Rec."Refund Status"::Pending;
                             Rec.Modify();  // Save changes to the current record
                         end;
+
+                        RefundPostingMgt.PostRefundSettlementAmount(Rec);
                     end;
                 }
                 field("Refund Cheque No."; Rec."Refund Cheque No.")
