@@ -78,6 +78,36 @@ page 50966 "Credit Note Card"
 
                     end;
                 }
+
+                field("Credit Note Document"; Rec."Credit Note Document")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Credit Note Document';
+                    DrillDown = true;
+                    Editable = false;
+
+                    trigger OnDrillDown()
+                    var
+                        FileURL: Text;
+                    begin
+                        // Get the URL of the uploaded document
+                        FileURL := Rec."Credit Note URL";
+
+                        // Check if the file URL is not empty
+                        if FileURL = '' then
+                            Error('No document is available to view.');
+
+                        // Open the file URL in the browser (new tab)
+                        OpenFileInBrowser(FileURL);
+
+                    end;
+                }
+
+                field("Credit Note URL"; Rec."Credit Note URL")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
                 field("Contract Start Date"; Rec."Contract Start Date")
                 {
                     ApplicationArea = All;
@@ -264,15 +294,61 @@ page 50966 "Credit Note Card"
                 var
                     CreditNotetable: Record "Credit Note";
                     CreditNote: Report "Terminated Credit Note";
+                    FinalCalculation: Record "Final Calculation";
+                    AzureBlobUploader: Codeunit "Azure Blob Management";
+                    InStream: InStream;
+                    FileName: Text;
+                    SASUrlBase: Text;
+                    SASUrlWithFileName: Text;
+                    UploadResult: Text;
+                    TempBlob: Codeunit "Temp Blob";
+                    ValidFormats: List of [Text];
+                    FileExtension: Text[10];
+                    FileSize: Decimal;
+                    ConfigRecord: Record AzureConfiguration;
+                    ReportID: Integer; // Your report ID
+                    RecRef: RecordRef;
+                    FieldRef1: FieldRef;
+                    FieldRef2: FieldRef;
+                    OutStream: OutStream;
+                    documentattachment: Codeunit UploadAttachment;
+                    creditmemo: Record "Credit Note";
                 begin
-                    // Filter the Sales Header record based on the current record
-                    CreditNotetable.SetRange("Contract ID", Rec."Contract ID");
+                    // 1. Preview report
+                    // CreditNotetable.SetRange("Contract ID", Rec."Contract ID");
+                    //  CreditNote.SetTableView(CreditNotetable);
+                    //CreditNote.RunModal();
 
-                    // Set the filtered Sales Header as the data source for the Credit Note report
-                    CreditNote.SetTableView(CreditNotetable);
+                    if not ConfigRecord.FindFirst() then
+                        Error('Azure configuration is missing. Please set up the SAS URL in the Azure Configuration table.');
+                    ValidFormats.Add('.png');
+                    ValidFormats.Add('.jpg');
+                    ValidFormats.Add('.jpeg');
 
-                    // Run the Credit Note report
-                    CreditNote.RunModal();
+                    SASUrlBase := ConfigRecord."SAS URL";
+                    FileExtension := '.pdf';
+                    ReportID := 50117;
+                    //  RecRef.Open(DATABASE::"Sales Header"); // Open the table reference
+                    // RecRef.GetTable(Rec);
+                    creditmemo.Reset();
+                    creditmemo.SetRange("Contract ID", Rec."Contract ID");
+                    //  Rec.SetRange("Document Type", Rec."Document Type"::"Credit Memo");
+                    if not Rec.FindFirst() then
+                        Error('Sales Credit memo record not found.');
+
+                    // Open the correct record in RecRef
+                    RecRef.GetTable(creditmemo);
+                    // RecRef.GetTable(Rec);
+                    TempBlob.CreateOutStream(OutStream);
+                    Report.SaveAs(ReportID, '', ReportFormat::Pdf, OutStream, RecRef);
+
+                    TempBlob.CreateInStream(InStream);
+                    FileName := 'CreditNote' + Format(Rec."ID") + FileExtension;
+                    SASUrlWithFileName := StrSubstNo('%1/%2?%3', CopyStr(SASUrlBase, 1, StrPos(SASUrlBase, '?') - 1), FileName, CopyStr(SASUrlBase, StrPos(SASUrlBase, '?') + 1));
+                    UploadResult := documentattachment.UploadDocumentToBlobStorage(SASUrlWithFileName, FileName, InStream);
+                    Rec."Credit Note Document" := FileName;
+                    Rec."Credit Note URL" := UploadResult;
+                    Rec.Modify();
                 end;
             }
         }
@@ -323,6 +399,15 @@ page 50966 "Credit Note Card"
             until BillingCalculationSubFC.Next() = 0;
         end;
 
+    end;
+
+    procedure OpenFileInBrowser(URL: Text)
+    begin
+        // Use the Hyperlink method to open the file in the browser
+        if URL <> '' then
+            Hyperlink(URL)
+        else
+            Error('The file URL is invalid.');
     end;
 }
 
