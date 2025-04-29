@@ -96,6 +96,10 @@ page 50965 "Brokerage Calculation Sub Card"
                     Visible = false;
                 }
             }
+            field("Total brokerage Amount"; Rec."Total brokerage Amount")
+            {
+                ApplicationArea = All;
+            }
         }
     }
 

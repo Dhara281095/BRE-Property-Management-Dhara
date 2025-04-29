@@ -119,6 +119,14 @@ table 50964 "Brokerage Calculation Sub"
             Caption = 'ID';
             Editable = false;
         }
+        field(50119; "Total brokerage Amount"; Decimal)
+        {
+            // DataClassification = ToBeClassified;
+            Caption = 'Total brokerage Amount';
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = sum("Brokerage Calculation Sub"."Calculation Amount" where("Contract ID" = field("Contract ID"), "Owner ID" = field("Owner ID")));
+        }
 
     }
 

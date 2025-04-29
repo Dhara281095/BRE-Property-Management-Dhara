@@ -120,35 +120,37 @@ page 50942 "Vendor Profile Card"
                 {
                     ApplicationArea = All;
 
-                    trigger OnValidate()
-                    begin
-                        UpdatePercentageEditable();
-                    end;
+                    // trigger OnValidate()
+                    // begin
+                    //     UpdatePercentageEditable();
+                    // end;
                 }
 
                 field("Percentage Type"; Rec."Percentage Type")
                 {
                     ApplicationArea = All;
-                    trigger OnValidate()
-                    begin
-                        UpdatePercentageEditable();
-                    end;
+                    Editable = not (Rec."Calculation Method" = 'Fixed Amount');
+                    // trigger OnValidate()
+                    // begin
+                    //     UpdatePercentageEditable();
+                    // end;
                 }
 
                 field("Percentage"; Rec."Percentage")
                 {
                     ApplicationArea = All;
-                    Editable = IsPercentageEditable;
+                    Editable = not (Rec."Calculation Method" = 'Fixed Amount');
                 }
 
                 field("Amount"; Rec."Amount")
                 {
                     ApplicationArea = All;
-                    Editable = IsFixedAmount;
+                    Editable = Rec."Calculation Method" = 'Fixed Amount';
                 }
                 field("Base Amount"; Rec."Base Amount")
                 {
                     ApplicationArea = All;
+                    Editable = not (Rec."Calculation Method" = 'Fixed Amount');
                 }
 
                 field("Frequency Of Payment"; Rec."Frequency Of Payment")
@@ -377,29 +379,29 @@ page 50942 "Vendor Profile Card"
 
 
     var
-        IsPercentageEditable: Boolean;
-        IsFixedAmount: Boolean;
-        IsPercentageamount: Boolean;
+        // IsPercentageEditable: Boolean;
+        // IsFixedAmount: Boolean;
+        // IsPercentageamount: Boolean;
         ShowBrokerageGroup: Boolean;
 
 
-    procedure UpdatePercentageEditable()
-    begin
-        // Assume the enum or option values are "Percentage-Based" and "Fixed"
-        if (Rec."Percentage Type" <> Rec."Percentage Type"::" ") then begin
-            IsPercentageEditable := true;
-        end
-        else begin
-            IsPercentageEditable := false;
-        end;
+    // procedure UpdatePercentageEditable()
+    // begin
+    //     // Assume the enum or option values are "Percentage-Based" and "Fixed"
+    //     if (Rec."Percentage Type" <> Rec."Percentage Type"::" ") then begin
+    //         IsPercentageEditable := true;
+    //     end
+    //     else begin
+    //         IsPercentageEditable := false;
+    //     end;
 
-        if (Rec."Percentage Type" = Rec."Percentage Type"::" ") then begin
-            IsFixedAmount := true;
-        end
-        else begin
-            IsFixedAmount := false;
-        end;
-    end;
+    //     if (Rec."Percentage Type" = Rec."Percentage Type"::" ") then begin
+    //         IsFixedAmount := true;
+    //     end
+    //     else begin
+    //         IsFixedAmount := false;
+    //     end;
+    // end;
 
 }
 
