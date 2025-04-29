@@ -78,17 +78,7 @@ table 50954 "Credit Note"
             Caption = 'Status';
             OptionMembers = "Pending","Approved","Reject";
         }
-        field(50122; "Credit Note Document"; Text[500])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Credit Note Document';
-            InitValue = 'Credit Note Document';
-        }
-        field(50123; "Credit Note URL"; Text[250])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Credit Note URL';
-        }
+
         field(50124; "FC ID"; Integer)
         {
             DataClassification = ToBeClassified;

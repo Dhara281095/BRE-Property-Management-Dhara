@@ -94,14 +94,14 @@ page 50735 creditnote
                 {
                     Caption = 'Unit Type';
                 }
-                field("CreditNoteDocument"; Rec."Credit Note Document")
-                {
-                    Caption = 'Credit Note Document';
-                }
-                field("CreditNoteURL"; Rec."Credit Note URL")
-                {
-                    Caption = 'Credit Note URL';
-                }
+                // field("CreditNoteDocument"; Rec."Credit Note Document")
+                // {
+                //     Caption = 'Credit Note Document';
+                // }
+                // field("CreditNoteURL"; Rec."Credit Note URL")
+                // {
+                //     Caption = 'Credit Note URL';
+                // }
                 field("FCID"; Rec."FC ID")
                 {
                     Caption = 'FC ID';
