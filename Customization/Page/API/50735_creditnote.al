@@ -106,6 +106,10 @@ page 50735 creditnote
                 {
                     Caption = 'FC ID';
                 }
+                field("CreditNoteNo"; Rec."Credit Note No.")
+                {
+                    Caption = 'Credit Note No.';
+                }
             }
         }
     }
