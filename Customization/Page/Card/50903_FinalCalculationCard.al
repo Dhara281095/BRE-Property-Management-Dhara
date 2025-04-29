@@ -992,6 +992,7 @@ page 50903 "Final Calculation Card"
 
         BillinCalcGrid: Record "Final Billing Calculation Grid";
         RentCalc1: Record "Rent Calculation";
+        vatper: Integer;
 
     begin
         // Clear existing lines in Final Revenue Calculation Grid for this contract
@@ -1011,7 +1012,12 @@ page 50903 "Final Calculation Card"
                 BillinCalcGrid."Termination Date" := Rec."Termination Date";
                 BillinCalcGrid."Property Classification" := Rec."Unit Type";
                 BillinCalcGrid."Tenant ID" := Rec."Tenant ID";
-                BillinCalcGrid."VAT %" := RentCalc1."VAT %";
+                // BillinCalcGrid."VAT %" := RentCalc1."VAT %";
+                if RentCalc1."VAT %" = RentCalc1."VAT %"::"5" then
+                    vatper := 5
+                else
+                    vatper := 0;
+                BillinCalcGrid."VAT %" := vatper;
                 BillinCalcGrid.Insert();
                 Clear(BillinCalcGrid);
             until RentCalc1.Next() = 0;
@@ -1024,9 +1030,9 @@ page 50903 "Final Calculation Card"
     var
         BillingCalc1: Record "Final Billing Calculation Grid";
         TenancyContractLine2: Record "Tenancy Contract Subpage";
+        vatper: Integer;
 
     begin
-
         // TenancyContractLine.Reset();
         TenancyContractLine2.SetRange("ContractID", Rec."Contract ID");
         if TenancyContractLine2.FindSet() then begin
@@ -1038,7 +1044,12 @@ page 50903 "Final Calculation Card"
                 BillingCalc1."Payment Type" := Format(TenancyContractLine2."Payment Type");
                 BillingCalc1."Property Classification" := Rec."Unit Type";
                 BillingCalc1."Tenant ID" := Rec."Tenant ID";
-                BillingCalc1."VAT %" := TenancyContractLine2."VAT %";
+                // BillingCalc1."VAT %" := TenancyContractLine2."VAT %";
+                if TenancyContractLine2."VAT %" = TenancyContractLine2."VAT %"::"5%" then
+                    vatper := 5
+                else
+                    vatper := 0;
+                BillingCalc1."VAT %" := vatper;
                 BillingCalc1.Insert();
                 Clear(BillingCalc1);
             until TenancyContractLine2.Next() = 0;

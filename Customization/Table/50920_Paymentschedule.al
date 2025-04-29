@@ -162,6 +162,7 @@ table 50920 "Payment Schedule"
     var
         RevenueSubpage: Record "Tenancy Contract Subpage";
         PaymentSchedule2: Record "Payment Schedule2";
+        vatper: Integer;
 
     begin
         PaymentSchedule2.SetRange("Contract ID", Rec."Contract ID");
@@ -199,7 +200,15 @@ table 50920 "Payment Schedule"
                 PaymentSchedule2."Installment End Date" := RevenueSubpage."End Date";
                 PaymentSchedule2."Due Date" := RevenueSubpage."Start Date";
                 PaymentSchedule2."Installment No." := 1;
-                PaymentSchedule2."VAT%" := RevenueSubpage."VAT %";
+                // if PaymentSchedule2."VAT%" = RevenueSubpage."VAT %"::"5%" then
+                //     vatper := 5
+                // else
+                //     vatper := 0;
+                if RevenueSubpage."VAT %" = RevenueSubpage."VAT %"::"5%" then
+                    vatper := 5
+                else
+                    vatper := 0;
+                PaymentSchedule2."VAT%" := vatper;
                 PaymentSchedule2.Insert();
                 Clear(PaymentSchedule2);
             until RevenueSubpage.Next() = 0;
@@ -212,6 +221,7 @@ table 50920 "Payment Schedule"
     var
         RentCalculationSubpage: Record "Rent Calculation Subpage2";
         PaymentSchedule: Record "Payment Schedule2";
+        vatper: Integer;
 
     begin
 
@@ -239,6 +249,11 @@ table 50920 "Payment Schedule"
                 PaymentSchedule."Amount Including VAT" := RentCalculationSubpage."Amount Including VAT";
                 PaymentSchedule."Due Date" := RentCalculationSubpage."Due Date";
                 PaymentSchedule."VAT%" := RentCalculationSubpage."VAT %";
+                // if RentCalculationSubpage."VAT %" = 5 then
+                //     vatper := 5
+                // else
+                //     vatper := 0;
+                // PaymentSchedule."VAT%" := vatper;
 
                 PaymentSchedule.Insert();
                 Clear(PaymentSchedule);

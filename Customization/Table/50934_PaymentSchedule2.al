@@ -182,6 +182,7 @@ table 50934 "Payment Schedule2"
         }
         field(50928; "VAT%"; Integer)
         {
+            //OptionMembers = "0%","5%";
             DataClassification = ToBeClassified;
             Caption = 'VAT%';
         }
