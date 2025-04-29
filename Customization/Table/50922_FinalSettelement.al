@@ -162,18 +162,6 @@ table 50922 "FinalSettlement"
             DataClassification = ToBeClassified;
             Caption = 'Payment Receipt Document URL';
         }
-
-        field(50115; "View Invoice"; Text[250])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'View Invoice';
-        }
-        field(50116; "Invoice URL"; Text[400])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Invoice URL';
-        }
-
         field(50117; "Tenant ID"; Code[50])
         {
             DataClassification = ToBeClassified;
