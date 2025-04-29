@@ -356,7 +356,6 @@ page 50966 "Credit Note Card"
                     BillingCalculationSubCN."Amount" := BillingCalculationSubFC."DifferenceAmount";
                     BillingCalculationSubCN."VAT Amount" := BillingCalculationSubFC."DifferenceVAT";
                     BillingCalculationSubCN."Amount Including VAT" := BillingCalculationSubFC."DifferenceAmountInclVAT";
-                    // BillingCalculationSubCN."VAT %" := BillingCalculationSubFC."VAT %";
                     BillingCalculationSubCN.Insert();
                     Clear(BillingCalculationSubCN);
                 end;

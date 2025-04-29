@@ -194,6 +194,12 @@ page 50951 "Final Billing Calculation"
                             //  DrillDown = true;
 
                         }
+                        field("VAT %"; Rec."VAT %")
+                        {
+                            ApplicationArea = All;
+                            Caption = 'VAT %';
+                            Editable = false;
+                        }
                     }
                 }
 

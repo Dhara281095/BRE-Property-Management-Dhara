@@ -180,6 +180,11 @@ table 50934 "Payment Schedule2"
             DataClassification = ToBeClassified;
             Caption = 'Workflow Frequency Date';
         }
+        field(50928; "VAT%"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'VAT%';
+        }
 
     }
 
