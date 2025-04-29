@@ -257,7 +257,7 @@ page 50966 "Credit Note Card"
     {
         area(Processing)
         {
-            action(FinalCalculation)
+            action(CreditNote)
             {
                 ApplicationArea = All;
                 Caption = 'Credit Note Approval';
@@ -265,6 +265,8 @@ page 50966 "Credit Note Card"
                 Promoted = true;
                 PromotedCategory = Process;
                 PromotedIsBig = true;
+                Enabled = Rec.Status = Rec.Status::Pending;
+
 
                 trigger OnAction()
                 var
