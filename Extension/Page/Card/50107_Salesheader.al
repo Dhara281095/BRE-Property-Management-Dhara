@@ -26,9 +26,6 @@ pageextension 50107 "Sales Header" extends "Sales Credit Memo"
 
                     // Run the Credit Note report
                     CreditNote.RunModal();
-
-                    // Display a success message
-                    Message('Credit Note has been created successfully for %1.', Rec."No.");
                 end;
             }
         }

@@ -37,12 +37,17 @@ page 50133 "Suspended Contract List"
                     ApplicationArea = All;
                     Caption = 'Tenant Contract Status';
                 }
+                field(Reason; Rec.Reason) // Adjust field name as needed
+                {
+                    ApplicationArea = All;
+                }
             }
         }
     }
 
     trigger OnOpenPage();
     begin
-        Rec.SetRange("Tenant Contract Status", Rec."Tenant Contract Status"::Suspended);  // Use option reference
+        Rec.SetRange("Tenant Contract Status", Rec."Tenant Contract Status"::Suspended);
+        Rec.SetFilter(SuspensionEndDate, '%1', 0D); // Filter for empty date
     end;
 }

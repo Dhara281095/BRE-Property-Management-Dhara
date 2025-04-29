@@ -415,6 +415,7 @@ pageextension 50102 UnitManagement extends "O365 Activities"
         ContractRec: Record SuspendReasonTable; // Replace with your actual Contract Table
     begin
         ContractRec.SetRange("Tenant Contract Status", ContractRec."Tenant Contract Status"::Suspended); // Using the Option value instead of text
+        ContractRec.SetFilter(SuspensionEndDate, '%1', 0D); // Filter for empty date
         exit(ContractRec.Count()); // Return the count of active contracts
     end;
 
@@ -461,6 +462,7 @@ pageextension 50102 UnitManagement extends "O365 Activities"
     begin
         ContractRec.SetRange("Tenant Contract Status", ContractRec."Tenant Contract Status"::Suspended);
         ContractRec.SetRange(Reason, ContractRec.Reason::"Legal Reason"); // Adjust the field name and value as per your table structure
+        ContractRec.SetFilter(SuspensionEndDate, '%1', 0D); // Filter for empty date
         exit(ContractRec.Count());
     end;
 
@@ -470,6 +472,7 @@ pageextension 50102 UnitManagement extends "O365 Activities"
     begin
         ContractRec.SetRange("Tenant Contract Status", ContractRec."Tenant Contract Status"::Suspended);
         ContractRec.SetRange(Reason, ContractRec.Reason::"Business Reason"); // Adjust the field name and value as per your table structure
+        ContractRec.SetFilter(SuspensionEndDate, '%1', 0D); // Filter for empty date
         exit(ContractRec.Count());
     end;
 }
