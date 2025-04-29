@@ -200,6 +200,13 @@ page 50951 "Final Billing Calculation"
                             Caption = 'VAT %';
                             Editable = false;
                         }
+                        field("Creditnote"; Rec."Creditnote")
+                        {
+                            ApplicationArea = All;
+                            Caption = 'Creditnote';
+                            Editable = false;
+                            Visible = false;
+                        }
                     }
                 }
 
@@ -433,9 +440,12 @@ page 50951 "Final Billing Calculation"
             Rec."Invoice To Be Raised" := Abs(Rec."Total DifferenceAmountIncl.VAT");
             Rec.Modify();
         end else begin
-            Rec."Credit Note To Be Raised" := Rec."Total DifferenceAmountIncl.VAT";
-            Rec.Modify();
-
+            if Rec."CreditNote" = true then begin
+                Rec."Credit Note To Be Raised" := 0;
+            end else begin
+                Rec."Credit Note To Be Raised" := Rec."Total DifferenceAmountIncl.VAT";
+                Rec.Modify();
+            end;
         end;
-    end;
+    END;
 }

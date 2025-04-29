@@ -151,9 +151,10 @@ page 50969 "Credit Note Approval List"
 
                         FinalcalculationBilling.SetRange("Contract ID", CreditNote."Contract ID");
                         if FinalcalculationBilling.FindSet() then begin
-                            FinalcalculationBilling."Credit Note to be raised" := 0;
+                            FinalcalculationBilling."Creditnote" := true;
                             FinalcalculationBilling.Modify(true);
-                        end;
+                        end else
+                            Error('No Final Billing Calculation record found for Contract ID %1', CreditNote."Contract ID");
 
                         Message('Entry has been approved successfully!');
                     end;
