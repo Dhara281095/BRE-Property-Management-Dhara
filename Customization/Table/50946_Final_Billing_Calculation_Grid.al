@@ -199,6 +199,11 @@ table 50946 "Final Billing Calculation Grid"
             Caption = 'VAT %';
             DataClassification = ToBeClassified;
         }
+        field(50134; "Creditnote"; Boolean)
+        {
+            Caption = 'Creditnote';
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys
