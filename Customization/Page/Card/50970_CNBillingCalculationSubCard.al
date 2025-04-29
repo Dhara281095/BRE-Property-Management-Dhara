@@ -52,6 +52,12 @@ page 50970 "Billing Calculation CN Card"
                     Caption = 'Amount Including VAT';
                     Editable = false;
                 }
+                field("VAT %"; Rec."VAT %")
+                {
+                    ApplicationArea = All;
+                    Caption = 'VAT %';
+                    Editable = false;
+                }
             }
         }
     }

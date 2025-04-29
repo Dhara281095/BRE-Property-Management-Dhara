@@ -48,6 +48,11 @@ table 50958 "Billing Calculation CN"
             AutoIncrement = true;
             Editable = false;
         }
+        field(50108; "VAT %"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'VAT %';
+        }
 
 
     }
