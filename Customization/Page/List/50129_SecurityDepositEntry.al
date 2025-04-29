@@ -181,7 +181,7 @@ page 50129 "Security Deposit Entries"
                                 end;
 
                                 // NEW CODE: Calculate adjusted Total Claim by adding Total Receivable and subtracting Total Refundable
-                                AdjustedTotalClaimAmount := FinaCalculation."Total Refund" + PendingReceivableGrid."Total Receivable" - PendingReceivableGrid."Total Refundable";
+                                // AdjustedTotalClaimAmount := FinaCalculation."Total Refund" + PendingReceivableGrid."Total Receivable" - PendingReceivableGrid."Total Refundable";
 
                                 // Debug message to see what we found
                                 Message('Total Claim Amount calculated: %1', TotalClaimAmount + PendingReceivableGrid."Total Receivable");
@@ -206,10 +206,10 @@ page 50129 "Security Deposit Entries"
                                 // Store the Amount Including VAT in the Total Adjustment field
                                 // FinaCalculation."Final Calculation Result" := TotalClaimAmount - TotalRefundableDeposit;
                                 // FinaCalculation."Total Adjustment" := AmountIncludingVAT;
-                                FinaCalculation."Total Refund" := TotalClaimAmount - TotalRefundableDeposit;
+                                FinaCalculation."Total Refund" := FinaCalculation."Total Claim" - FinaCalculation."Total Refundable Deposit";
                                 // Add this new line to calculate Net Balance as requested
                                 // FinaCalculation."Summery Net Balance" := FinaCalculation."Total Claim" + FinaCalculation."Total Adjustment" - FinaCalculation."Total Refund";
-                                FinaCalculation."Summery Net Balance" := AdjustedTotalClaimAmount;
+                                FinaCalculation."Summery Net Balance" := FinaCalculation."Total Refund" - PendingReceivableGrid."Total Refundable" + PendingReceivableGrid."Total Receivable";
                                 // NEW CODE: Check if Summary Net Balance is positive or negative and update respective fields
                                 if FinaCalculation."Summery Net Balance" > 0 then begin
                                     // Positive value goes to Net Receivable From The Tenant
