@@ -194,7 +194,11 @@ table 50946 "Final Billing Calculation Grid"
             Caption = 'Invoice Document URL';
             DataClassification = ToBeClassified;
         }
-
+        field(50133; "VAT %"; Integer)
+        {
+            Caption = 'VAT %';
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys

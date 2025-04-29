@@ -148,7 +148,12 @@ page 50922 "Payment Schedule Card2"
                     ApplicationArea = All;
                     Editable = false;
                 }
-
+                field("VAT%"; Rec."VAT%")
+                {
+                    ApplicationArea = All;
+                    Caption = 'VAT%';
+                    Editable = false;
+                }
                 field("Payment Status"; Rec."Payment Status")
                 {
                     ApplicationArea = All;

@@ -199,6 +199,7 @@ table 50920 "Payment Schedule"
                 PaymentSchedule2."Installment End Date" := RevenueSubpage."End Date";
                 PaymentSchedule2."Due Date" := RevenueSubpage."Start Date";
                 PaymentSchedule2."Installment No." := 1;
+                PaymentSchedule2."VAT%" := RevenueSubpage."VAT %";
                 PaymentSchedule2.Insert();
                 Clear(PaymentSchedule2);
             until RevenueSubpage.Next() = 0;
@@ -237,6 +238,7 @@ table 50920 "Payment Schedule"
                 PaymentSchedule."Installment No." := RentCalculationSubpage."Installment No.";
                 PaymentSchedule."Amount Including VAT" := RentCalculationSubpage."Amount Including VAT";
                 PaymentSchedule."Due Date" := RentCalculationSubpage."Due Date";
+                PaymentSchedule."VAT%" := RentCalculationSubpage."VAT %";
 
                 PaymentSchedule.Insert();
                 Clear(PaymentSchedule);
@@ -275,6 +277,7 @@ table 50920 "Payment Schedule"
                 PaymentSchedule3."Installment No." := RevenueStructureSubpage."Installment No.";
                 PaymentSchedule3."Amount Including VAT" := RevenueStructureSubpage."Amount Including VAT";
                 PaymentSchedule3."Due Date" := RevenueStructureSubpage."Due Date";
+                PaymentSchedule3."VAT%" := RevenueStructureSubpage."VAT %";
                 PaymentSchedule3.Insert();
                 Clear(PaymentSchedule3);
             until RevenueStructureSubpage.Next() = 0;
