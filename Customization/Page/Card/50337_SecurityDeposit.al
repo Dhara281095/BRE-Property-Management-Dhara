@@ -29,6 +29,12 @@ page 50337 "Security Deposit Card"
                     ApplicationArea = All;
                 }
 
+                field("Property Classification"; Rec."Property Classification")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
 
                 field("Contract Start Date"; rec."Contract Start Date")
                 {
@@ -121,6 +127,25 @@ page 50337 "Security Deposit Card"
                     Editable = false;
                     MultiLine = true;
                 }
+            }
+        }
+    }
+
+    actions
+    {
+        area(Processing)
+        {
+            action(PostSecurityDeposit)
+            {
+                ApplicationArea = All;
+                Caption = 'Post Security Deposit';
+                Image = Post;
+                trigger OnAction()
+                var
+                    SecurityDepositPostMgt: Codeunit "Security Deposit Posting Mgt."; // We will create this codeunit
+                begin
+                    SecurityDepositPostMgt.PostSecurityDepositAmount(Rec);
+                end;
             }
         }
     }

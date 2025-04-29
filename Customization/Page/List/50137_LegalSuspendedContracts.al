@@ -62,5 +62,6 @@ page 50137 "Legal Suspended Contracts" // Use an appropriate page number
     begin
         Rec.SetRange("Tenant Contract Status", Rec."Tenant Contract Status"::Suspended);
         Rec.SetRange(Reason, Rec.Reason::"Legal Reason"); // Adjust field name and value as needed
+        Rec.SetFilter(SuspensionEndDate, '%1', 0D); // Filter for empty date
     end;
 }

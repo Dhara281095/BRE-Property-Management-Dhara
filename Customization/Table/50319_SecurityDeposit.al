@@ -60,7 +60,7 @@ table 50319 "Security Deposit"
                 TenancyContractRec.SetRange("Customer Name", "Tenant Full Name");
                 if PAGE.RunModal(PAGE::"Tenancy Contract List", TenancyContractRec) = ACTION::LookupOK then
                     "Contract ID" := TenancyContractRec."Contract ID";
-
+                "Property Classification" := TenancyContractRec."Property Classification";
                 FetchContractDetails("Contract ID", false);
             end;
         }
@@ -172,7 +172,15 @@ table 50319 "Security Deposit"
             DataClassification = ToBeClassified;
             Caption = 'Security Deposit Amount Received';
         }
+        field(50179; "Property Classification"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Property Classification';
+            tableRelation = "Tenancy Contract"."Property Classification";
+        }
     }
+
+
 
     keys
     {
