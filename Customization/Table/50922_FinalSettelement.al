@@ -82,6 +82,7 @@ table 50922 "FinalSettlement"
                 OutStream: OutStream;
                 documentattachment: Codeunit UploadAttachment;
                 paymentmode2Grid: Record FinalSettlement;
+                FinalSettlementPosting: Codeunit "Final Settlement Posting Mgt.";
             begin
                 if Rec."Receivable Payment Status" = Enum::"Payment Status"::Received then begin
                     Email.SendEmail(Rec);
@@ -115,6 +116,9 @@ table 50922 "FinalSettlement"
                     Rec."Payment Receipt" := FileName;
                     Rec."Payment Receipt document URL" := UploadResult;
                     Rec.Modify();
+
+                    // Call the Final Settlement Posting codeunit to post the amount
+                    FinalSettlementPosting.PostFinalSettlementAmount(Rec);
                 end
             end;
         }

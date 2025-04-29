@@ -93,6 +93,8 @@ page 50129 "Security Deposit Entries"
                     TotalClaimAmount: Decimal;
                     AmountIncludingVAT: Decimal;
                     TotalRefundableAmount: Decimal;
+                    TotalReceivableAmount: Decimal;
+                    AdjustedTotalClaimAmount: Decimal; // New variable for adjusted total claim
                 begin
                     if Rec.Status = Rec.Status::Approved then
                         Error('This entry is already approved');
@@ -178,6 +180,9 @@ page 50129 "Security Deposit Entries"
                                     end;
                                 end;
 
+                                // NEW CODE: Calculate adjusted Total Claim by adding Total Receivable and subtracting Total Refundable
+                                AdjustedTotalClaimAmount := FinaCalculation."Total Refund" + PendingReceivableGrid."Total Receivable" - PendingReceivableGrid."Total Refundable";
+
                                 // Debug message to see what we found
                                 Message('Total Claim Amount calculated: %1', TotalClaimAmount + PendingReceivableGrid."Total Receivable");
 
@@ -197,13 +202,14 @@ page 50129 "Security Deposit Entries"
                                 // Update Total Refundable Deposit
                                 FinaCalculation."Total Refundable Deposit" := TotalRefundableDeposit;
                                 // Update Total Claim with the sum of Total Amount from Additional Charges Sub
-                                FinaCalculation."Total Claim" := TotalClaimAmount + PendingReceivableGrid."Total Receivable";
+                                FinaCalculation."Total Claim" := TotalClaimAmount;
                                 // Store the Amount Including VAT in the Total Adjustment field
+                                // FinaCalculation."Final Calculation Result" := TotalClaimAmount - TotalRefundableDeposit;
                                 // FinaCalculation."Total Adjustment" := AmountIncludingVAT;
-                                FinaCalculation."Total Refund" := TotalRefundableAmount + FinaCalculation."Total Refundable Deposit";
+                                FinaCalculation."Total Refund" := TotalClaimAmount - TotalRefundableDeposit;
                                 // Add this new line to calculate Net Balance as requested
                                 // FinaCalculation."Summery Net Balance" := FinaCalculation."Total Claim" + FinaCalculation."Total Adjustment" - FinaCalculation."Total Refund";
-                                FinaCalculation."Summery Net Balance" := FinaCalculation."Total Claim" - FinaCalculation."Total Refund";
+                                FinaCalculation."Summery Net Balance" := AdjustedTotalClaimAmount;
                                 // NEW CODE: Check if Summary Net Balance is positive or negative and update respective fields
                                 if FinaCalculation."Summery Net Balance" > 0 then begin
                                     // Positive value goes to Net Receivable From The Tenant

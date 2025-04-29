@@ -250,6 +250,31 @@ page 50966 "Credit Note Card"
                 end;
 
             }
+
+            action("Create Credit Note")
+            {
+                Caption = 'Create Credit Note';
+                ApplicationArea = All;
+                Image = NewDocument; // Use an appropriate icon for the action
+                Promoted = true; // Make the action visible in the header
+                PromotedCategory = Process; // Place it in the "Process" category
+                PromotedIsBig = true; // Make it a prominent action
+
+                trigger OnAction()
+                var
+                    CreditNotetable: Record "Credit Note";
+                    CreditNote: Report "Terminated Credit Note";
+                begin
+                    // Filter the Sales Header record based on the current record
+                    CreditNotetable.SetRange("Contract ID", Rec."Contract ID");
+
+                    // Set the filtered Sales Header as the data source for the Credit Note report
+                    CreditNote.SetTableView(CreditNotetable);
+
+                    // Run the Credit Note report
+                    CreditNote.RunModal();
+                end;
+            }
         }
     }
 
