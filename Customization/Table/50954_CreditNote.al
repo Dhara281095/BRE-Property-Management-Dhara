@@ -94,6 +94,18 @@ table 50954 "Credit Note"
             Editable = false;
 
         }
+        field(50135; "Credit Note Document"; Text[1000])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Credit Note Document';
+            InitValue = 'Credit Note Document';
+        }
+        field(50136; "Credit Note URL"; Text[1000])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Credit Note View';
+            InitValue = 'Credit Note View';
+        }
 
     }
 

@@ -241,13 +241,13 @@ table 50901 "Final Calculation"
         //     Caption = 'Credit Note ID';
         // }
 
-        field(50135; "Credit Note Document"; Text[500])
+        field(50135; "Credit Note Document"; Text[1000])
         {
             DataClassification = ToBeClassified;
             Caption = 'Credit Note Document';
             InitValue = 'Credit Note Document';
         }
-        field(50136; "Credit Note URL"; Text[250])
+        field(50136; "Credit Note URL"; Text[1000])
         {
             DataClassification = ToBeClassified;
             Caption = 'Credit Note View';
