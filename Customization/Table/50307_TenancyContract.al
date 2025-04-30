@@ -2541,10 +2541,65 @@ table 50307 "Tenancy Contract"
 
     //-------------Update Tenancy Contract Status on Contract End Date--------------//
     trigger OnModify()
+    var
+
     begin
         UpdateStatusesOnContractEnd();
+        populateTenantContractStatusPaymentschedule();
+
+
+
     end;
     //-------------Update Tenancy Contract Status on Contract End Date--------------//
+
+    procedure populateTenantContractStatusPaymentschedule()
+    var
+        paymentscheule: Record "Payment Schedule";
+        paymentschedule2: Record "Payment Schedule2";
+        paymentscheule1: Record "Payment Schedule";
+        paymentschedule3grid: Record "Payment Schedule2";
+        paymentscheulecard: Record "Payment Schedule";
+
+    begin
+        if Rec."Tenant Contract Status" = Rec."Tenant Contract Status"::Active then begin
+            if paymentscheule.Get(Rec."Contract ID") then begin
+                paymentscheule."Contract Status" := Format(Rec."Tenant Contract Status");
+                paymentscheule.Modify();
+            end;
+
+            paymentschedule2.SetRange("Contract ID", Rec."Contract ID");
+            if paymentschedule2.FindSet() then
+                repeat
+                    paymentschedule2."Contract Status" := Format(Rec."Tenant Contract Status");
+                    paymentschedule2.Modify();
+                until paymentschedule2.Next() = 0;
+
+        end;
+
+        ////////////////////// SUSPENDED STATUS ///////////////////////////////////
+        if Rec."Tenant Contract Status" = Rec."Tenant Contract Status"::Suspended then begin
+            if paymentscheule1.Get(Rec."Contract ID") then begin
+                paymentscheule1."Contract Status" := Format(Rec."Tenant Contract Status");
+                paymentscheule1.Modify();
+            end;
+        end;
+
+        //////////////////////////////// TERMINATED STATUS //////////////////
+        if Rec."Tenant Contract Status" = Rec."Tenant Contract Status"::Terminated then begin
+            if paymentscheulecard.Get(Rec."Contract ID") then begin
+                paymentscheulecard."Contract Status" := Format(Rec."Tenant Contract Status");
+                paymentscheulecard.Modify();
+            end;
+
+            paymentschedule3grid.SetRange("Contract ID", Rec."Contract ID");
+            if paymentschedule3grid.FindSet() then
+                repeat
+                    paymentschedule3grid."Contract Status" := Format(Rec."Tenant Contract Status");
+                    paymentschedule3grid.Modify();
+                until paymentschedule3grid.Next() = 0;
+
+        end;
+    end;
 
     trigger OnInsert()
     begin
