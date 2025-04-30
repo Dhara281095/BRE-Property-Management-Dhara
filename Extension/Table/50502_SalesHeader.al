@@ -132,6 +132,11 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
             DataClassification = ToBeClassified;
             Caption = 'Credit Memo No';
         }
+        field(50120; "Contract Amount"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Contract Amount';
+        }
     }
 
 }

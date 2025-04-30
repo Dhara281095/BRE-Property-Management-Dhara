@@ -21,6 +21,12 @@ pageextension 50509 PostedSalesCreditMemo extends "Posted Sales Credit Memo"
                     ApplicationArea = All;
                     ToolTip = 'Name of the unit related to this credit memo.';
                 }
+                field("Contract Amount"; Rec."Contract Amount")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Amount of the contract related to this credit memo.';
+                    Editable = false;
+                }
                 field("Contract Tenure"; Rec."Contract Tenure")
                 {
                     ApplicationArea = All;
