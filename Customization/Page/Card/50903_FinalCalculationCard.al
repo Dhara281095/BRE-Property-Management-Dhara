@@ -506,6 +506,11 @@ page 50903 "Final Calculation Card"
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field("Total Receive"; Rec."Total Receive")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
                 field("Summery Net Balance"; Rec."Summery Net Balance")
                 {
                     ApplicationArea = All;

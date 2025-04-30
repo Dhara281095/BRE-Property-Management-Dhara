@@ -201,6 +201,11 @@ table 50901 "Final Calculation"
             DataClassification = ToBeClassified;
             Caption = 'Net Receivable From The Tenant';
         }
+        field(50137; "Total Receive"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Total Receive';
+        }
 
         field(50130; "Final Calculation Document"; Text[500])
         {
