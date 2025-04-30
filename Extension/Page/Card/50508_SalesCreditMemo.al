@@ -41,38 +41,47 @@ pageextension 50508 SalesCreditMemo extends "Sales Credit Memo"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Name of the property related to this credit memo.';
+                    Editable = false;
                 }
                 field("Unit Name"; Rec."Unit Name")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Name of the unit related to this credit memo.';
+                    Editable = false;
                 }
                 field("Contract Tenure"; Rec."Contract Tenure")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Tenure of the contract related to this credit memo.';
+                    Editable = false;
+
                 }
                 field("Contract Period"; Rec."Contract Period")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Period of the contract related to this credit memo.';
+                    Editable = false;
                 }
                 field("Property Classification"; Rec."Property Classification")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Classification of the property related to this credit memo.';
+                    Editable = false;
                 }
                 field("Approval Status for CreditNote"; Rec."Approval Status for CreditNote")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Approval status of the credit note.';
                     Caption = 'Approval Status Credit Note';
+                    Editable = approvaleditable;
+
                     // Editable = approvaleditable;
                 }
                 field("Rejection Reason CreditNote"; Rec."Rejection Reason CreditNote")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Reason for rejection of the credit note.';
+                    Editable = false;
                     // Editable = approvaleditable;
                 }
 
@@ -155,6 +164,8 @@ pageextension 50508 SalesCreditMemo extends "Sales Credit Memo"
                 SalesHeader1: Record "Sales Header";
                 customercard: Record Customer;
             begin
+                if Rec."Approval Status for CreditNote" <> Rec."Approval Status for CreditNote"::Approved then
+                    Error('The Sales Credit Memo cannot be posted because the approval status is not "Approved".');
 
                 if not ConfigRecord.FindFirst() then
                     Error('Azure configuration is missing. Please set up the SAS URL in the Azure Configuration table.');
