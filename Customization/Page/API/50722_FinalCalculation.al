@@ -162,6 +162,14 @@ page 50722 "Final Calculation"
                 {
                     Caption = 'Final Calculation URL';
                 }
+                field("CreditNoteDocument"; Rec."Credit Note Document")
+                {
+                    Caption = 'Credit Note Document';
+                }
+                field("CreditNoteURL"; Rec."Credit Note URL")
+                {
+                    Caption = 'Credit Note URL';
+                }
             }
         }
     }
