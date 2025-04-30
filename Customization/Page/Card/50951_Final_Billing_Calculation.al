@@ -207,6 +207,13 @@ page 50951 "Final Billing Calculation"
                             Editable = false;
                             Visible = false;
                         }
+                        field("Credit Note Amount"; Rec."Credit Note Amount")
+                        {
+                            ApplicationArea = All;
+                            Caption = 'Credit Note Amount';
+                            Editable = false;
+                            // Visible = false;
+                        }
                     }
                 }
 
@@ -370,6 +377,7 @@ page 50951 "Final Billing Calculation"
         Receiptamountfrompaymentscheule();
         DifferenceAmountCalculation();
         GetPositiveAmount();
+        GetOnlyCreditNoteAmount();
     end;
 
     procedure FetchDataFromRevenueCalcGrid()
@@ -448,4 +456,23 @@ page 50951 "Final Billing Calculation"
             end;
         end;
     END;
+
+    procedure GetOnlyCreditNoteAmount()
+    var
+        TotalPositiveDifference: Decimal;
+        billingcalculationgird: Record "Final Billing Calculation Grid";
+    begin
+        billingcalculationgird.SetRange("Contract ID", Rec."Contract ID");
+        billingcalculationgird.SetFilter("DifferenceAmountInclVAT", '>%1', 0);
+        if billingcalculationgird.FindSet() then
+            repeat
+                TotalPositiveDifference += billingcalculationgird."DifferenceAmountInclVAT"
+            until billingcalculationgird.Next() = 0;
+        Rec."Credit Note Amount" := TotalPositiveDifference;
+        Rec.Modify();
+
+
+
+
+    end;
 }

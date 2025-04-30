@@ -204,6 +204,11 @@ table 50946 "Final Billing Calculation Grid"
             Caption = 'Creditnote';
             DataClassification = ToBeClassified;
         }
+        field(50135; "Credit Note Amount"; Decimal)
+        {
+            Caption = 'Credit Note Amount';
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys
