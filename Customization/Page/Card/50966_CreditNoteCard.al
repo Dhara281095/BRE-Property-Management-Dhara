@@ -332,9 +332,9 @@ page 50966 "Credit Note Card"
                     // RecRef.GetTable(Rec);
                     creditmemo.Reset();
                     creditmemo.SetRange("Contract ID", Rec."Contract ID");
-                    //  Rec.SetRange("Document Type", Rec."Document Type"::"Credit Memo");
-                    if not Rec.FindFirst() then
-                        Error('Sales Credit memo record not found.');
+                    creditmemo.SetRange("FC ID", Rec."FC ID");
+                    // if not Rec.FindFirst() then
+                    //     Error('Sales Credit memo record not found.');
 
                     // Open the correct record in RecRef
                     RecRef.GetTable(creditmemo);
@@ -349,6 +349,15 @@ page 50966 "Credit Note Card"
                     Rec."Credit Note Document" := FileName;
                     Rec."Credit Note URL" := UploadResult;
                     Rec.Modify();
+
+                    FinalCalculation.SetRange("Contract ID", Rec."Contract ID");
+                    if FinalCalculation.FindSet() then begin
+                        FinalCalculation."Credit Note Document" := Rec."Credit Note Document";
+                        FinalCalculation."Credit Note URL" := Rec."Credit Note URL";
+                        FinalCalculation.Modify(true);
+                    end else
+                        Error('No Final Calculation record found for Contract ID %1', FinalCalculation."Contract ID");
+
                 end;
             }
         }

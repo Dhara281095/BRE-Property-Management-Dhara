@@ -26,7 +26,7 @@ codeunit 50109 "Refund Settlement Posting Mgt."
         Amount := Round(Amount, GLSetup."Amount Rounding Precision");
 
         // Set Journal Template and Batch
-        GenJnlTemplate := 'GENERAL';
+        GenJnlTemplate := 'CASH RECE';
         GenJnlBatch := 'DEFAULT';
 
         // Get property type from Contract table
@@ -59,9 +59,9 @@ codeunit 50109 "Refund Settlement Posting Mgt."
         GenJnlLine.SetRange("Journal Template Name", GenJnlTemplate);
         GenJnlLine.SetRange("Journal Batch Name", GenJnlBatch);
         if GenJnlLine.FindLast() then
-            LineNo := GenJnlLine."Line No." + 10000
+            LineNo := GenJnlLine."Line No." + 1
         else
-            LineNo := 10000;
+            LineNo := 1;
 
         // 1st Line - Tenant Receivable (+Amount)
         Clear(GenJnlLine);

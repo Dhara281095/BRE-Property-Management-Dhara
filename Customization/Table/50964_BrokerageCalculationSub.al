@@ -125,7 +125,7 @@ table 50964 "Brokerage Calculation Sub"
             Caption = 'Total brokerage Amount';
             Editable = false;
             FieldClass = FlowField;
-            CalcFormula = sum("Brokerage Calculation Sub"."Calculation Amount" where("Contract ID" = field("Contract ID"), "Owner ID" = field("Owner ID")));
+            CalcFormula = sum("Brokerage Calculation Sub"."Calculation Amount" where("ID" = field("ID"), "Owner ID" = field("Owner ID")));
         }
 
     }

@@ -15,7 +15,7 @@ codeunit 50107 "Security Deposit Posting Mgt."
         DocNo: Code[20];
     begin
         // Set Cash Receipt Journal Template and Batch
-        GenJnlTemplate := 'GENERAL';
+        GenJnlTemplate := 'CASH RECE';
         GenJnlBatch := 'DEFAULT';
 
         Amount := SecurityDeposit."New_Balance Amount";
@@ -45,9 +45,9 @@ codeunit 50107 "Security Deposit Posting Mgt."
         GenJnlLine.SetRange("Journal Template Name", GenJnlTemplate);
         GenJnlLine.SetRange("Journal Batch Name", GenJnlBatch);
         if GenJnlLine.FindLast() then
-            LineNo := GenJnlLine."Line No." + 10000
+            LineNo := GenJnlLine."Line No." + 1
         else
-            LineNo := 10000;
+            LineNo := 1;
 
         // 1st Line - Tenant Receivable (-Amount)
         Clear(GenJnlLine);
