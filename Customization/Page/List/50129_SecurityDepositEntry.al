@@ -107,6 +107,8 @@ page 50129 "Security Deposit Entries"
                     TenantReceivableComAcc: Code[20];
                     SecurityDepositRefundAcc: Code[20];
                     ChillerDepositRefundAcc: Code[20];
+                    NetAmount: Decimal;
+                    SummeryNetAmount: Decimal;
                 begin
                     if Rec.Status = Rec.Status::Approved then
                         Error('This entry is already approved');
@@ -226,9 +228,53 @@ page 50129 "Security Deposit Entries"
                                 FinaCalculation."Total Refundable Deposit" := TotalRefundableDeposit;
                                 // Update Total Claim with the sum of Total Amount from Additional Charges Sub
                                 FinaCalculation."Total Claim" := TotalClaimAmount;
-                                FinaCalculation."Total Refund" := FinaCalculation."Total Claim" - FinaCalculation."Total Refundable Deposit";
-                                // Add this new line to calculate Net Balance as requested
-                                FinaCalculation."Summery Net Balance" := FinaCalculation."Total Refund" - PendingReceivableGrid."Total Refundable" + PendingReceivableGrid."Total Receivable";
+
+                                NetAmount := FinaCalculation."Total Claim" - FinaCalculation."Total Refundable Deposit";
+                                if NetAmount < 0 then begin
+                                    FinaCalculation."Total Refund" := ABS(NetAmount); // negative value
+                                    FinaCalculation."Total Receive" := 0;
+                                end else begin
+                                    FinaCalculation."Total Receive" := ABS(NetAmount); // positive value
+                                    FinaCalculation."Total Refund" := 0;
+                                end;
+
+
+                                if (FinaCalculation."Total Receive" <> 0) and (PendingReceivableGrid."Total Receivable" <> 0) then begin
+                                    // Sum receivables
+                                    SummeryNetAmount := FinaCalculation."Total Receive" + ABS(PendingReceivableGrid."Total Receivable");
+                                    FinaCalculation."Summery Net Balance" := SummeryNetAmount;
+                                end else
+                                    if (FinaCalculation."Total Refund" <> 0) and (PendingReceivableGrid."Total Refundable" <> 0) then begin
+                                        // Sum refunds
+                                        SummeryNetAmount := FinaCalculation."Total Refund" + ABS(PendingReceivableGrid."Total Refundable");
+                                        FinaCalculation."Summery Net Balance" := SummeryNetAmount;
+                                    end else
+                                        if (FinaCalculation."Total Refund" <> 0) and (PendingReceivableGrid."Total Receivable" <> 0) then begin
+                                            // Sum refunds
+                                            SummeryNetAmount := FinaCalculation."Total Refund" - PendingReceivableGrid."Total Receivable";
+                                            FinaCalculation."Summery Net Balance" := ABS(SummeryNetAmount);
+                                            if SummeryNetAmount < 0 then begin
+                                                FinaCalculation."Amount Refundable" := SummeryNetAmount; // positive value
+                                                FinaCalculation."Net Receivable From The Tenant" := 0;
+                                            end else begin
+                                                FinaCalculation."Net Receivable From The Tenant" := SummeryNetAmount; // negative value
+                                                FinaCalculation."Amount Refundable" := 0;
+                                            end;
+                                        end else
+                                            if (FinaCalculation."Total Receive" <> 0) and (PendingReceivableGrid."Total Refundable" <> 0) then begin
+                                                // Mixed logic: Total Refund - Total Refundable + Total Receivable
+                                                SummeryNetAmount := FinaCalculation."Total Receive" - PendingReceivableGrid."Total Refundable";
+                                                FinaCalculation."Summery Net Balance" := ABS(SummeryNetAmount);
+                                                if SummeryNetAmount < 0 then begin
+                                                    FinaCalculation."Net Receivable From The Tenant" := SummeryNetAmount; // positive value
+                                                    FinaCalculation."Amount Refundable" := 0;
+                                                end else begin
+                                                    FinaCalculation."Amount Refundable" := SummeryNetAmount; // negative value
+                                                    FinaCalculation."Net Receivable From The Tenant" := 0;
+                                                end;
+                                            end;
+
+                                //  FinaCalculation."Summery Net Balance" := FinaCalculation."Total Refund" - PendingReceivableGrid."Total Refundable" + PendingReceivableGrid."Total Receivable";
                                 // NEW CODE: Check if Summary Net Balance is positive or negative and update respective fields
                                 if FinaCalculation."Summery Net Balance" > 0 then begin
                                     // Positive value goes to Net Receivable From The Tenant
