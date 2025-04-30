@@ -59,6 +59,10 @@ page 50970 "Billing Calculation CN Card"
                     Editable = false;
                 }
             }
+            field("Total Amount"; Rec."Total Amount")
+            {
+                ApplicationArea = All;
+            }
         }
     }
     actions

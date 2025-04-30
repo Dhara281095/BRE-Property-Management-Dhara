@@ -53,6 +53,14 @@ table 50958 "Billing Calculation CN"
             DataClassification = ToBeClassified;
             Caption = 'VAT %';
         }
+        field(50109; "Total Amount"; Decimal)
+        {
+            // DataClassification = ToBeClassified;
+            Caption = 'Total Amount';
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = sum("Billing Calculation CN"."Amount Including VAT" where("Contract ID" = field("Contract ID"), "Tenant ID" = field("Tenant ID")));
+        }
 
 
     }
