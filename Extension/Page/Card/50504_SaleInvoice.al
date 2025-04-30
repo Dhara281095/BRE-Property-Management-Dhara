@@ -272,7 +272,8 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                 SalesHeader1: Record "Sales Header";
                 customercard: Record Customer;
             begin
-
+                if Rec."Approval Status" <> Rec."Approval Status"::Approved then
+                    Error('The Sales Credit Memo cannot be posted because the approval status is not "Approved".');
                 if not ConfigRecord.FindFirst() then
                     Error('Azure configuration is missing. Please set up the SAS URL in the Azure Configuration table.');
                 ValidFormats.Add('.png');
