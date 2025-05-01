@@ -1403,6 +1403,7 @@ table 50308 "Lease Proposal Details"
             trigger OnLookup()
             var
                 VendorProfileRec: Record "Vendor Profile";
+                AnnualAmount: Decimal;
             begin
                 VendorProfileRec.SetRange("Vendor Category", 'Brokers and Commission Agent');
                 if Page.RunModal(Page::"Vendor Profile List", VendorProfileRec) = Action::LookupOK then begin
@@ -1414,8 +1415,16 @@ table 50308 "Lease Proposal Details"
                     "Calculation Method" := VendorProfileRec."Calculation Method";
                     "Percentage Type" := VendorProfileRec."Percentage Type";
                     Percentage := VendorProfileRec.Percentage;
-                    Amount := VendorProfileRec.Amount;
                     "Base Amount" := VendorProfileRec."Base Amount";
+
+                    case "Base Amount" of
+                        "Base Amount"::"Annual Rent":
+                            AnnualAmount := Rec."Rent Amount";
+                        "Base Amount"::"Monthly Rent":
+                            AnnualAmount := Rec."Rent Amount" / 12;
+                    end;
+
+                    Amount := AnnualAmount;
                     "Frequency Of Payment" := VendorProfileRec."Frequency Of Payment";
                 end else begin
                     "Vendor ID" := '';

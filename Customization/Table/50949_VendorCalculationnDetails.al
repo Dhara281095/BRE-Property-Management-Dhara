@@ -51,7 +51,7 @@ table 50949 "Vendor Calculation Details"
         field(50107; "Base Amount"; Option)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Base Amount';
+            Caption = 'Base Amount Type';
             OptionMembers = " ","Revenue","Collection","Annual Rent","Monthly Rent";
         }
         field(50108; "Frequency Of Payment"; Option)

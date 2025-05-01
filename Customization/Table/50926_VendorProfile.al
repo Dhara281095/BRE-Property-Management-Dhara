@@ -398,7 +398,7 @@ table 50926 "Vendor Profile"
         field(50161; "Base Amount"; Option)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Base Amount';
+            Caption = 'Base Amount Type';
             OptionMembers = " ","Revenue","Collection","Annual Rent","Monthly Rent";
         }
         field(50162; "Frequency Of Payment"; Option)
