@@ -31,10 +31,10 @@ table 50957 "Credit Note Approval"
             DataClassification = ToBeClassified;
             Caption = 'Contract End Date';
         }
-        field(50106; "Contract Amount"; Decimal)
+        field(50106; "Credit Note Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Contract Amount';
+            Caption = 'Credit Note Amount';
 
         }
         field(50116; "Tenant Name"; Text[250])

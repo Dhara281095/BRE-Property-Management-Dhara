@@ -75,7 +75,7 @@ page 50969 "Credit Note Approval List"
                             Message('No Tenancy Contract found using FindFirst either.');
                     end;
                 }
-                field("Contract Amount"; Rec."Contract Amount")
+                field("Credit Note Amount"; Rec."Credit Note Amount")
                 {
                     ApplicationArea = All;
                     Editable = false;
