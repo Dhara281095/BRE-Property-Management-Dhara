@@ -64,6 +64,7 @@ page 50966 "Credit Note Card"
                             Rec."Tenant Email" := TenancyContract."Tenant Email"; // Convert Integer to Text
                             Rec."FC ID" := TenancyContract."FC ID";
                             BillingCalculationSub();
+
                         end else begin // Clear the fields if no record is found
                             Rec."Credit Note Type" := Rec."Credit Note Type"::"Termination Credit Note";
                             Rec."Contract Start Date" := 0D;
@@ -296,6 +297,7 @@ page 50966 "Credit Note Card"
                     CreditNote: Report "Terminated Credit Note";
                     FinalCalculation: Record "Final Calculation";
                     AzureBlobUploader: Codeunit "Azure Blob Management";
+                    Billingcalculationgrid: Record "Final Billing Calculation Grid";
                     InStream: InStream;
                     FileName: Text;
                     SASUrlBase: Text;
@@ -350,11 +352,11 @@ page 50966 "Credit Note Card"
                     Rec."Credit Note URL" := UploadResult;
                     Rec.Modify();
 
-                    FinalCalculation.SetRange("Contract ID", Rec."Contract ID");
-                    if FinalCalculation.FindSet() then begin
-                        FinalCalculation."Credit Note Document" := Rec."Credit Note Document";
-                        FinalCalculation."Credit Note URL" := Rec."Credit Note URL";
-                        FinalCalculation.Modify(true);
+                    Billingcalculationgrid.SetRange("Contract ID", Rec."Contract ID");
+                    if Billingcalculationgrid.FindSet() then begin
+                        Billingcalculationgrid."Credit Note Document" := Rec."Credit Note Document";
+                        Billingcalculationgrid."Credit Note Document URL" := Rec."Credit Note URL";
+                        Billingcalculationgrid.Modify(true);
                     end else
                         Error('No Final Calculation record found for Contract ID %1', FinalCalculation."Contract ID");
 
@@ -410,6 +412,19 @@ page 50966 "Credit Note Card"
 
     end;
 
+    procedure ShowCreditNoteInBillingCalculationGrid()
+    var
+        Billingcalculationgrid: Record "Final Billing Calculation Grid";
+    begin
+        Billingcalculationgrid.SetRange("Contract ID", Rec."Contract ID");
+        if Billingcalculationgrid.FindSet() then begin
+            Billingcalculationgrid."Credit Note ID" := Rec."Credit Note No.";
+            // Billingcalculationgrid."Credit Note Document" := Rec."Credit Note Document";
+            // Billingcalculationgrid."Credit Note Document URL" := Rec."Credit Note URL";
+            Billingcalculationgrid.Modify();
+        end;
+    end;
+
     procedure OpenFileInBrowser(URL: Text)
     begin
         // Use the Hyperlink method to open the file in the browser
@@ -417,6 +432,12 @@ page 50966 "Credit Note Card"
             Hyperlink(URL)
         else
             Error('The file URL is invalid.');
+    end;
+
+    trigger OnAfterGetRecord()
+    var
+    begin
+        ShowCreditNoteInBillingCalculationGrid();
     end;
 }
 

@@ -208,7 +208,7 @@ page 50906 "Additional Charges Sub Card"
                                 additionalchargesgrid.Modify();
                             until additionalchargesgrid.Next() = 0;
 
-
+                        Message('Invoice has been generated, please click on the Invoice ID to proceed further');
                     end else begin
                         Message('Already Create invoice for the contract id');
                     end;

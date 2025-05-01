@@ -51,13 +51,7 @@ page 50951 "Final Billing Calculation"
                     Caption = 'Invoiced';
                     // Editable = false;
                 }
-                field("Invoice ID"; Rec."Invoice ID")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Invoice ID';
-                    //Editable = false;
 
-                }
             }
             group(" ")
             {
@@ -126,17 +120,52 @@ page 50951 "Final Billing Calculation"
                             Editable = false;
                             Caption = 'Total Difference Amount Incl. VAT';
                         }
+
+
+
+
+                        field("Creditnote"; Rec."Creditnote")
+                        {
+                            ApplicationArea = All;
+                            Caption = 'Creditnote';
+                            Editable = false;
+                            Visible = false;
+                        }
+
+                    }
+                    group("")
+                    {
                         field("Invoice To Be Raised"; Rec."Invoice To Be Raised")
                         {
                             ApplicationArea = All;
-                            Editable = false;
                             Caption = 'Invoice To Be Raised';
+                            Editable = false;
                         }
                         field("Credit Note To Be Raised"; Rec."Credit Note To Be Raised")
                         {
                             ApplicationArea = All;
-                            Editable = false;
                             Caption = 'Credit Note To Be Raised';
+                            Editable = false;
+                        }
+                    }
+                }
+
+
+
+            }
+            group("Final Billing Details")
+            {
+                grid(BillingDetail)
+                {
+                    GridLayout = Columns;
+
+                    group("Invoice Details")
+                    {
+                        field("Invoice Amount"; Rec."Invoice Amount")
+                        {
+                            ApplicationArea = All;
+                            Caption = 'Invoice Amount';
+                            Editable = false;
                         }
                         field("Posted Invoice ID"; Rec."Posted Invoice ID")
                         {
@@ -194,31 +223,49 @@ page 50951 "Final Billing Calculation"
                             //  DrillDown = true;
 
                         }
-                        field("VAT %"; Rec."VAT %")
-                        {
-                            ApplicationArea = All;
-                            Caption = 'VAT %';
-                            Editable = false;
-                        }
-                        field("Creditnote"; Rec."Creditnote")
-                        {
-                            ApplicationArea = All;
-                            Caption = 'Creditnote';
-                            Editable = false;
-                            Visible = false;
-                        }
+                    }
+                    group("Credit Note Details")
+                    {
                         field("Credit Note Amount"; Rec."Credit Note Amount")
                         {
                             ApplicationArea = All;
                             Caption = 'Credit Note Amount';
                             Editable = false;
-                            // Visible = false;
                         }
+                        field("Credit Note ID"; Rec."Credit Note ID")
+                        {
+                            ApplicationArea = All;
+                            Caption = 'Credit Note ID';
+                            Editable = false;
+                        }
+                        field("Credit Note Document"; Rec."Credit Note Document")
+                        {
+                            ApplicationArea = All;
+                            Editable = false;
+                            Caption = 'Credit Note Document';
+
+
+                            DrillDown = true;
+                            trigger OnDrillDown()
+                            var
+                                FileURL: Text;
+                            begin
+                                FileURL := Rec."Credit Note Document URL";
+                                if FileURL = '' then
+                                    Error('No document is available to view.');
+                                OpenFileInBrowser(FileURL);
+                            end;
+                        }
+                        field("Credit Note Document URL"; Rec."Credit Note Document URL")
+                        {
+                            ApplicationArea = All;
+                            Caption = 'Credit Note Document URL';
+                            //  DrillDown = true;
+
+                        }
+
                     }
                 }
-
-
-
             }
         }
     }
@@ -271,7 +318,7 @@ page 50951 "Final Billing Calculation"
                                     additionalchargesgrid."Posted Invoice ID" := newsalesheader."No.";
                                     additionalchargesgrid.Modify();
                                 until additionalchargesgrid.Next() = 0;
-                            Message('Invoice Created Successfully');
+                            Message('Invoice has been generated, please click on the Invoice ID to proceed further');
 
                         end else begin
                             Message('Already Invoiced is created');
@@ -378,6 +425,7 @@ page 50951 "Final Billing Calculation"
         DifferenceAmountCalculation();
         GetPositiveAmount();
         GetOnlyCreditNoteAmount();
+        GetOnlyInvoiceAmount();
     end;
 
     procedure FetchDataFromRevenueCalcGrid()
@@ -470,9 +518,21 @@ page 50951 "Final Billing Calculation"
             until billingcalculationgird.Next() = 0;
         Rec."Credit Note Amount" := TotalPositiveDifference;
         Rec.Modify();
-
-
-
-
     end;
+
+    procedure GetOnlyInvoiceAmount()
+    var
+        TotalNegativeDifference: Decimal;
+        billingcalculationgird: Record "Final Billing Calculation Grid";
+    begin
+        billingcalculationgird.SetRange("Contract ID", Rec."Contract ID");
+        billingcalculationgird.SetFilter("DifferenceAmountInclVAT", '<%1', 0);
+        if billingcalculationgird.FindSet() then
+            repeat
+                TotalNegativeDifference += billingcalculationgird."DifferenceAmountInclVAT"
+            until billingcalculationgird.Next() = 0;
+        Rec."Invoice Amount" := Abs(TotalNegativeDifference);
+        Rec.Modify();
+    end;
+
 }
