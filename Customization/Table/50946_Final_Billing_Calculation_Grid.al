@@ -209,6 +209,26 @@ table 50946 "Final Billing Calculation Grid"
             Caption = 'Credit Note Amount';
             DataClassification = ToBeClassified;
         }
+        field(50136; "Invoice Amount"; Decimal)
+        {
+            Caption = 'Invoice Amount';
+            DataClassification = ToBeClassified;
+        }
+        field(50137; "Credit Note ID"; Code[1000])
+        {
+            Caption = 'Credit Note ID';
+            DataClassification = ToBeClassified;
+        }
+        field(50138; "Credit Note Document"; Text[250])
+        {
+            Caption = 'Credit Note Document';
+            DataClassification = ToBeClassified;
+        }
+        field(50139; "Credit Note Document URL"; Text[250])
+        {
+            Caption = 'Credit Note Document URL';
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys
