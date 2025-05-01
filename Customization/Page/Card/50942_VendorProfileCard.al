@@ -120,10 +120,12 @@ page 50942 "Vendor Profile Card"
                 {
                     ApplicationArea = All;
 
-                    // trigger OnValidate()
-                    // begin
-                    //     UpdatePercentageEditable();
-                    // end;
+                    trigger OnValidate()
+                    begin
+                        IsEditableBasedOnCalcMethod := not (UpperCase(Rec."Calculation Method") = 'FIXED AMOUNT');
+
+                        IsFixedAmount := UpperCase(Rec."Calculation Method") = 'FIXED AMOUNT';
+                    end;
                 }
 
                 field("Percentage Type"; Rec."Percentage Type")
@@ -152,8 +154,6 @@ page 50942 "Vendor Profile Card"
                 field("Base Amount"; Rec."Base Amount")
                 {
                     ApplicationArea = All;
-                    Editable = IsEditableBasedOnCalcMethod;
-
                 }
 
                 field("Frequency Of Payment"; Rec."Frequency Of Payment")
@@ -362,10 +362,6 @@ page 50942 "Vendor Profile Card"
             ShowBrokerageGroup := false;
             // Message('Vendor is NOT a Brokers and Commission Agent - Section remains Closed');
         end;
-
-        IsEditableBasedOnCalcMethod := not (UpperCase(Rec."Calculation Method") = 'FIXED AMOUNT');
-
-        IsFixedAmount := UpperCase(Rec."Calculation Method") = 'FIXED AMOUNT';
     end;
 
     trigger OnModifyRecord(): Boolean

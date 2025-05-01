@@ -2666,7 +2666,8 @@ table 50307 "Tenancy Contract"
         leaseproposal.SetRange("Proposal ID", Rec."Proposal ID");
         if leaseproposal.FindSet() then begin
             if leaseproposal."Vendor ID" = '' then
-                Error('Vendor ID cannot be blank. Please check the lease proposal details.');
+                Message('Vendor ID cannot be blank. Please check the lease proposal details.');
+            exit;
 
             Rec."Vendor ID" := leaseproposal."Vendor ID";
             "Vendor Name" := leaseproposal."Vendor Name";
@@ -2690,7 +2691,8 @@ table 50307 "Tenancy Contract"
         leaseproposal.SetRange("Proposal ID", Rec."Proposal ID");
         if leaseproposal.FindSet() then begin
             if leaseproposal."Vendor ID" = '' then
-                Error('Vendor ID cannot be blank. Please check the lease proposal details.');
+                Message('Vendor ID cannot be blank. Please check the lease proposal details.');
+            exit;
 
             Rec."Vendor ID" := leaseproposal."Vendor ID";
             "Vendor Name" := leaseproposal."Vendor Name";

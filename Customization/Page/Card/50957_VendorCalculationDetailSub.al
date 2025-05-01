@@ -36,10 +36,12 @@ page 50957 "Vendor Calculation Details Sub"
                 {
                     ApplicationArea = All;
 
-                    // trigger OnValidate()
-                    // begin
-                    //     UpdatePercentageEditable();
-                    // end;
+                    trigger OnValidate()
+                    begin
+                        IsEditableBasedOnCalcMethod := not (UpperCase(Rec."Calculation Method") = 'FIXED AMOUNT');
+
+                        IsFixedAmount := UpperCase(Rec."Calculation Method") = 'FIXED AMOUNT';
+                    end;
                 }
 
                 field("Percentage Type"; Rec."Percentage Type")
@@ -67,7 +69,6 @@ page 50957 "Vendor Calculation Details Sub"
                 field("Base Amount"; Rec."Base Amount")
                 {
                     ApplicationArea = All;
-                    Editable = IsEditableBasedOnCalcMethod;
                 }
 
                 field("Frequency Of Payment"; Rec."Frequency Of Payment")
@@ -111,15 +112,6 @@ page 50957 "Vendor Calculation Details Sub"
         vendorName: Text[100];
         IsEditableBasedOnCalcMethod: Boolean;
         IsFixedAmount: Boolean;
-
-
-
-    trigger OnAfterGetRecord()
-    begin
-        IsEditableBasedOnCalcMethod := not (UpperCase(Rec."Calculation Method") = 'FIXED AMOUNT');
-
-        IsFixedAmount := UpperCase(Rec."Calculation Method") = 'FIXED AMOUNT';
-    end;
 
     // IsPercentageEditable: Boolean;
     // IsFixedAmount: Boolean;
