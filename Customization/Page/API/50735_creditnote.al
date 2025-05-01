@@ -110,6 +110,10 @@ page 50735 creditnote
                 {
                     Caption = 'Credit Note No.';
                 }
+                field("ReasonforRejection"; Rec."Reason for Rejection")
+                {
+                    Caption = 'Reason for Rejection';
+                }
             }
         }
     }
