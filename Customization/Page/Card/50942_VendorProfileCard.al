@@ -129,7 +129,8 @@ page 50942 "Vendor Profile Card"
                 field("Percentage Type"; Rec."Percentage Type")
                 {
                     ApplicationArea = All;
-                    Editable = not (Rec."Calculation Method" = 'Fixed Amount');
+                    Editable = IsEditableBasedOnCalcMethod;
+
                     // trigger OnValidate()
                     // begin
                     //     UpdatePercentageEditable();
@@ -139,18 +140,20 @@ page 50942 "Vendor Profile Card"
                 field("Percentage"; Rec."Percentage")
                 {
                     ApplicationArea = All;
-                    Editable = not (Rec."Calculation Method" = 'Fixed Amount');
+                    Editable = IsEditableBasedOnCalcMethod;
+
                 }
 
                 field("Amount"; Rec."Amount")
                 {
                     ApplicationArea = All;
-                    Editable = Rec."Calculation Method" = 'Fixed Amount';
+                    Editable = IsFixedAmount;
                 }
                 field("Base Amount"; Rec."Base Amount")
                 {
                     ApplicationArea = All;
-                    Editable = not (Rec."Calculation Method" = 'Fixed Amount');
+                    Editable = IsEditableBasedOnCalcMethod;
+
                 }
 
                 field("Frequency Of Payment"; Rec."Frequency Of Payment")
@@ -359,6 +362,10 @@ page 50942 "Vendor Profile Card"
             ShowBrokerageGroup := false;
             // Message('Vendor is NOT a Brokers and Commission Agent - Section remains Closed');
         end;
+
+        IsEditableBasedOnCalcMethod := not (UpperCase(Rec."Calculation Method") = 'FIXED AMOUNT');
+
+        IsFixedAmount := UpperCase(Rec."Calculation Method") = 'FIXED AMOUNT';
     end;
 
     trigger OnModifyRecord(): Boolean
@@ -383,6 +390,8 @@ page 50942 "Vendor Profile Card"
         // IsFixedAmount: Boolean;
         // IsPercentageamount: Boolean;
         ShowBrokerageGroup: Boolean;
+        IsEditableBasedOnCalcMethod: Boolean;
+        IsFixedAmount: Boolean;
 
 
     // procedure UpdatePercentageEditable()

@@ -63,6 +63,11 @@ table 50112 "Termination Charges Sub"
             Caption = 'Tenant ID';
             Editable = false;
         }
+        field(50119; "Posted Invoice ID"; Code[50])
+        {
+            Caption = 'Invoice ID';
+            DataClassification = ToBeClassified;
+        }
     }
     keys
     {

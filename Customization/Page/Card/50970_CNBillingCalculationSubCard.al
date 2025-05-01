@@ -65,24 +65,4 @@ page 50970 "Billing Calculation CN Card"
             }
         }
     }
-    actions
-    {
-        area(Processing)
-        {
-            action(GenerateCreditNote)
-            {
-                ApplicationArea = All;
-                Caption = 'Generate Credit Note';
-                Image = PostDocument;
-
-                trigger OnAction()
-                var
-
-                begin
-                    Message('Generate Credit Note');
-                end;
-            }
-
-        }
-    }
 }
