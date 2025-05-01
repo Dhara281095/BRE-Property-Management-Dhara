@@ -36,25 +36,26 @@ page 50957 "Vendor Calculation Details Sub"
                 {
                     ApplicationArea = All;
 
-                    trigger OnValidate()
-                    begin
-                        UpdatePercentageEditable();
-                    end;
+                    // trigger OnValidate()
+                    // begin
+                    //     UpdatePercentageEditable();
+                    // end;
                 }
 
                 field("Percentage Type"; Rec."Percentage Type")
                 {
                     ApplicationArea = All;
-                    trigger OnValidate()
-                    begin
-                        UpdatePercentageEditable();
-                    end;
+                    Editable = IsEditableBasedOnCalcMethod;
+                    // trigger OnValidate()
+                    // begin
+                    //     UpdatePercentageEditable();
+                    // end;
                 }
 
                 field("Percentage"; Rec."Percentage")
                 {
                     ApplicationArea = All;
-                    Editable = IsPercentageEditable;
+                    Editable = IsEditableBasedOnCalcMethod;
                 }
 
                 field("Amount"; Rec."Amount")
@@ -66,6 +67,7 @@ page 50957 "Vendor Calculation Details Sub"
                 field("Base Amount"; Rec."Base Amount")
                 {
                     ApplicationArea = All;
+                    Editable = IsEditableBasedOnCalcMethod;
                 }
 
                 field("Frequency Of Payment"; Rec."Frequency Of Payment")
@@ -107,29 +109,40 @@ page 50957 "Vendor Calculation Details Sub"
         startDate: Date;
         endDate: Date;
         vendorName: Text[100];
-
-        IsPercentageEditable: Boolean;
+        IsEditableBasedOnCalcMethod: Boolean;
         IsFixedAmount: Boolean;
 
-        IsPercentageamount: Boolean;
 
-    procedure UpdatePercentageEditable()
+
+    trigger OnAfterGetRecord()
     begin
-        // Assume the enum or option values are "Percentage-Based" and "Fixed"
-        if (Rec."Percentage Type" <> Rec."Percentage Type"::" ") then begin
-            IsPercentageEditable := true;
-        end
-        else begin
-            IsPercentageEditable := false;
-        end;
+        IsEditableBasedOnCalcMethod := not (UpperCase(Rec."Calculation Method") = 'FIXED AMOUNT');
 
-        if (Rec."Percentage Type" = Rec."Percentage Type"::" ") then begin
-            IsFixedAmount := true;
-        end
-        else begin
-            IsFixedAmount := false;
-        end;
+        IsFixedAmount := UpperCase(Rec."Calculation Method") = 'FIXED AMOUNT';
     end;
+
+    // IsPercentageEditable: Boolean;
+    // IsFixedAmount: Boolean;
+
+    // IsPercentageamount: Boolean;
+
+    // procedure UpdatePercentageEditable()
+    // begin
+    //     // Assume the enum or option values are "Percentage-Based" and "Fixed"
+    //     if (Rec."Percentage Type" <> Rec."Percentage Type"::" ") then begin
+    //         IsPercentageEditable := true;
+    //     end
+    //     else begin
+    //         IsPercentageEditable := false;
+    //     end;
+
+    //     if (Rec."Percentage Type" = Rec."Percentage Type"::" ") then begin
+    //         IsFixedAmount := true;
+    //     end
+    //     else begin
+    //         IsFixedAmount := false;
+    //     end;
+    // end;
 
 }
 

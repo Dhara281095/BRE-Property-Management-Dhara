@@ -58,6 +58,11 @@ page 50128 "Termination Charges Sub Card"
                     Lookup = true;
                     Visible = false;
                 }
+                field("Posted Invoice ID"; Rec."Posted Invoice ID")
+                {
+                    ApplicationArea = All;
+                }
+
             }
         }
     }
