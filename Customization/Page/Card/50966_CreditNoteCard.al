@@ -237,6 +237,8 @@ page 50966 "Credit Note Card"
                 var
                     ApprovalCreditNote: Record "Credit Note Approval";
                     CreditNote: Record "Credit Note";
+                    billingcalculation: Record "Billing Calculation CN";
+                    creditnoteamount: Decimal;
                 begin
                     // Validate required fields
                     if Rec."Contract ID" = 0 then
@@ -258,7 +260,6 @@ page 50966 "Credit Note Card"
                         ApprovalCreditNote."Contract Start Date" := CreditNote."Contract Start Date";
                         ApprovalCreditNote."Contract End Date" := CreditNote."Contract End Date";
                         ApprovalCreditNote."Tenant Name" := CreditNote."Tenant Name";
-                        ApprovalCreditNote."Contract Amount" := CreditNote."Contract Amount";
                         ApprovalCreditNote."Credit Note Type" := CreditNote."Credit Note Type";
                         ApprovalCreditNote.Modify();
                         Message('Approval Request Modified successfully!');
@@ -273,10 +274,17 @@ page 50966 "Credit Note Card"
                         ApprovalCreditNote."Contract Start Date" := CreditNote."Contract Start Date";
                         ApprovalCreditNote."Contract End Date" := CreditNote."Contract End Date";
                         ApprovalCreditNote."Tenant Name" := CreditNote."Tenant Name";
-                        ApprovalCreditNote."Contract Amount" := CreditNote."Contract Amount";
                         ApprovalCreditNote."Credit Note Type" := CreditNote."Credit Note Type";
                         ApprovalCreditNote.Insert(true);
                         Message('Approval Request Sent successfully!');
+                    end;
+
+                    billingcalculation.SetRange("Contract ID", Rec."Contract ID");
+                    if billingcalculation.FindSet() then begin
+                        // Modify existing approval record
+                        creditnoteamount += billingcalculation."Amount Including VAT";
+                        ApprovalCreditNote."Credit Note Amount" := creditnoteamount;
+                        ApprovalCreditNote.Modify();
                     end;
                 end;
 

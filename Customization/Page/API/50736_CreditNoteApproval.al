@@ -22,9 +22,9 @@ page 50736 "Credit Note Approval"
         {
             repeater(General)
             {
-                field(contractAmount; Rec."Contract Amount")
+                field(creditnoteamount; Rec."Credit Note Amount")
                 {
-                    Caption = 'Contract Amount';
+                    Caption = 'Credit Note Amount';
                 }
                 field(contractEndDate; Rec."Contract End Date")
                 {
