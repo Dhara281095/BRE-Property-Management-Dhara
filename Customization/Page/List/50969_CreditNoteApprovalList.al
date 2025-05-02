@@ -134,6 +134,7 @@ page 50969 "Credit Note Approval List"
                 var
                     CreditNote: Record "Credit Note";
                     FinalcalculationBilling: Record "Final Billing Calculation Grid";
+                    createSalescreditmemo: Codeunit "Create Sales Credit Memo";
                 begin
                     if Rec.Status = Rec.Status::Approved then
                         Error('This entry is already approved');
@@ -142,7 +143,7 @@ page 50969 "Credit Note Approval List"
                         // Update entry status
                         Rec.Status := Rec.Status::Approved;
                         Rec.Modify();
-
+                        createSalescreditmemo.CreateSalesCreditMemo(Rec);
                         // Update main record status
                         if CreditNote.Get(Rec."ID") then begin
                             CreditNote.Status := CreditNote.Status::Approved;

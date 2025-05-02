@@ -433,6 +433,20 @@ page 50966 "Credit Note Card"
         end;
     end;
 
+    procedure ShowCreditNoteInBillingCalculationSubGrid()
+    var
+        Billingcalculationgrid: Record "Billing Calculation CN";
+    begin
+        Billingcalculationgrid.SetRange("Contract ID", Rec."Contract ID");
+        if Billingcalculationgrid.FindSet() then begin
+            repeat
+                Billingcalculationgrid."Credit Note ID" := Rec.ID;
+                Billingcalculationgrid.Modify();
+            until Billingcalculationgrid.Next() = 0;
+
+        end;
+    end;
+
     procedure OpenFileInBrowser(URL: Text)
     begin
         // Use the Hyperlink method to open the file in the browser
@@ -446,6 +460,7 @@ page 50966 "Credit Note Card"
     var
     begin
         ShowCreditNoteInBillingCalculationGrid();
+        ShowCreditNoteInBillingCalculationSubGrid();
     end;
 }
 

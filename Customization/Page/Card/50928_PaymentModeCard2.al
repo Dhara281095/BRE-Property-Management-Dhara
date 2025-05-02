@@ -500,7 +500,7 @@ page 50928 "Payment Mode Card2"
                             end;
 
                         until PaymentModeRec.Next() = 0;
-                        CreateChequeEntry();
+                        // CreateChequeEntry();
                         Message('PDC Transaction records successfully created for Cheque payment modes.');
                     end else
                         Message('No payment modes with "Cheque" found for the given Contract ID and Tenant ID.');
