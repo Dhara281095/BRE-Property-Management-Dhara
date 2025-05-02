@@ -282,7 +282,7 @@ page 50951 "Final Billing Calculation"
                 var
                     newsalesheader: Record "Sales Header";
                     salesheader1card: Record "Sales Header";
-                    additionalchargesgrid: Record "Final Billing Calculation Grid";
+                    BillingCalculationGrid: Record "Final Billing Calculation Grid";
                     customercard: Record Customer;
                     pendingrecevieable: Record "Final Billing Calculation Grid";
                     userConfirmed: Boolean;
@@ -308,16 +308,16 @@ page 50951 "Final Billing Calculation"
                                 newsalesheader.Modify();
                             end;
 
-                            additionalchargesgrid.SetRange("Contract ID", Rec."Contract ID");
-                            additionalchargesgrid.SetFilter("DifferenceAmountInclVAT", '<%1', 0);
-                            if additionalchargesgrid.FindSet() then
+                            BillingCalculationGrid.SetRange("Contract ID", Rec."Contract ID");
+                            BillingCalculationGrid.SetFilter("DifferenceAmountInclVAT", '<%1', 0);
+                            if BillingCalculationGrid.FindSet() then
                                 repeat
-                                    Saleslinecreate(newsalesheader, additionalchargesgrid);
-                                    additionalchargesgrid.Invoiced := true;
-                                    additionalchargesgrid."Invoice ID" := newsalesheader."No.";
-                                    additionalchargesgrid."Posted Invoice ID" := newsalesheader."No.";
-                                    additionalchargesgrid.Modify();
-                                until additionalchargesgrid.Next() = 0;
+                                    Saleslinecreate(newsalesheader, BillingCalculationGrid);
+                                    BillingCalculationGrid.Invoiced := true;
+                                    BillingCalculationGrid."Invoice ID" := newsalesheader."No.";
+                                    BillingCalculationGrid."Posted Invoice ID" := newsalesheader."No.";
+                                    BillingCalculationGrid.Modify();
+                                until BillingCalculationGrid.Next() = 0;
                             Message('Invoice has been generated, please click on the Invoice ID to proceed further');
 
                         end else begin
@@ -371,7 +371,7 @@ page 50951 "Final Billing Calculation"
     end;
 
 
-    procedure Saleslinecreate(salesheader1: Record "Sales Header"; additionalchargessub: Record "Final Billing Calculation Grid")
+    procedure Saleslinecreate(salesheader1: Record "Sales Header"; Billingcalculation: Record "Final Billing Calculation Grid")
     var
         saleline: Record "Sales Line";
         newSaleslines: Record "Sales Line";
@@ -394,16 +394,16 @@ page 50951 "Final Billing Calculation"
         saleline."Contract ID" := salesheader1."Contract ID";
         saleline.Type := saleline.Type::Item;
         saleline."Sell-to Customer No." := salesheader1."Sell-to Customer No.";
-        item.SetRange(Description, additionalchargessub.RevenueDescription);
+        item.SetRange(Description, Billingcalculation.RevenueDescription);
         if item.FindSet() then begin
 
             saleline.Validate("No.", item."No.");
         end;
         saleline.Validate("Quantity (Base)", 1);
         saleline.Validate(Quantity, 1);
-        saleline.Validate("Unit Price", Abs(additionalchargessub.DifferenceAmount));
-        saleline."Contract ID" := additionalchargessub."Contract ID";
-        // saleline."FC ID" := additionalchargessub.;
+        saleline.Validate("Unit Price", Abs(Billingcalculation.DifferenceAmount));
+        saleline."Contract ID" := Billingcalculation."Contract ID";
+        // saleline."FC ID" := Billingcalculation.;
         saleline.Insert();
         Clear(saleline);
     end;
