@@ -107,7 +107,7 @@ page 50509 "PDC Transaction"
                     var
                         PaymentSeriesRec: Record "Payment Mode2";
                         oldStatus: Enum "PDC Status Type Enum";
-
+                        CashReceiptJournalCodeunit: Codeunit "Cash Receipt Journal Entry";
                     begin
 
                         oldStatus := xRec."Cheque Status";
@@ -191,6 +191,8 @@ page 50509 "PDC Transaction"
                                 PaymentSeriesRec."Cheque Status" := PaymentSeriesRec."Cheque Status"::Cleared;
                                 PaymentSeriesRec."Deposit Status" := PaymentSeriesRec."Deposit Status"::Y;
                                 PaymentSeriesRec.Modify(); // Save the changes
+
+                                CashReceiptJournalCodeunit.CreateCashReceiptJournal(PaymentSeriesRec);
                             end else
                                 Error('The related Payment Series record was not found.');
                         end

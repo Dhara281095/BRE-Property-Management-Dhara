@@ -40,7 +40,6 @@ table 50507 "PDC Transaction"
         field(50507; "Cheque Status"; Enum "PDC Status Type Enum")
         {
             DataClassification = ToBeClassified;
-
         }
         field(50508; "Contract ID"; Integer)
         {
@@ -125,11 +124,14 @@ table 50507 "PDC Transaction"
     trigger OnInsert()
     var
         NoSeriesMgt: Codeunit "No. Series";
+        PDCReceivedCashReceiptJournal: Codeunit 50514;
 
     begin
         if "PDC ID" = '' then begin
             "PDC ID" := NoSeriesMgt.GetNextNo('PDCTRANID', Today(), true);
         end;
+
+        PDCReceivedCashReceiptJournal.ProcessPDCTransaction(Rec);
 
     end;
 

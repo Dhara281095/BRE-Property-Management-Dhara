@@ -62,6 +62,12 @@ table 50958 "Billing Calculation CN"
             CalcFormula = sum("Billing Calculation CN"."Amount Including VAT" where("Contract ID" = field("Contract ID"), "Tenant ID" = field("Tenant ID")));
         }
 
+        field(50110; "Credit Note ID"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Credit Note ID';
+        }
+
 
     }
 

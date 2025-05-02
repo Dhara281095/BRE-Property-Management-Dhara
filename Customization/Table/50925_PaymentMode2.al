@@ -207,6 +207,7 @@ table 50925 "Payment Mode2"
                     //         Error('Deposite Bank must be filled when payment mode is bank transfer');
                     //     end;
                     // end;
+                    Rec."Cheque Status" := Rec."Cheque Status"::Cleared;
                     CashReceiptJournalCodeunit.CreateCashReceiptJournal(Rec);
                     Email.SendEmail(Rec);
                     if Rec."Payment Status" = Rec."Payment Status"::Received then begin
@@ -306,6 +307,7 @@ table 50925 "Payment Mode2"
                 pdcTransRec.SetRange("payment Series", Rec."Payment Series");
                 pdcTransRec.SetRange("Contract ID", Rec."Contract ID");
                 if pdcTransRec.FindSet() then begin
+                    // pdcTransRec.Validate("Cheque Status", Rec."Cheque Status");
                     pdcTransRec."Cheque Status" := Rec."Cheque Status";
                     pdcTransRec.Modify();
                 end;
