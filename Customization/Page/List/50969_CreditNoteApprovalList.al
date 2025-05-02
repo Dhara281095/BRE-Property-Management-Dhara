@@ -5,8 +5,8 @@ page 50969 "Credit Note Approval List"
     ApplicationArea = All;
     Caption = 'Credit Note Approval List';
     UsageCategory = Lists;
-    InsertAllowed = true;
-    ModifyAllowed = true;
+    InsertAllowed = false;
+    ModifyAllowed = false;
 
 
     layout
@@ -19,7 +19,7 @@ page 50969 "Credit Note Approval List"
                 {
                     ApplicationArea = All;
                     Caption = 'Status';
-                    Editable = true;
+                    Editable = false;
                 }
                 field("ID"; Rec."ID")
                 {
