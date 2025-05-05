@@ -40,6 +40,18 @@ page 50961 "Brokerage Master Data List"
                 {
                     ApplicationArea = All;
                     Editable = false;
+                    DrillDown = true;
+
+                    trigger OnDrillDown()
+                    var
+                        tenancycontract: Record "Tenancy Contract";
+                    begin
+                        tenancycontract.SetRange("Contract ID", Rec."Contract ID");
+                        if tenancycontract.FindSet() then
+                            PAGE.RunModal(PAGE::"Tenancy Contract Card", tenancycontract)
+                        else
+                            Message('No Property Registration found using FindFirst either.');
+                    end;
                 }
                 field("Property ID"; Rec."Property ID")
                 {

@@ -2666,7 +2666,7 @@ table 50307 "Tenancy Contract"
         leaseproposal.SetRange("Proposal ID", Rec."Proposal ID");
         if leaseproposal.FindSet() then begin
             if leaseproposal."Vendor ID" = '' then
-                Message('Vendor ID cannot be blank. Please check the lease proposal details.');
+                Message('Broker is not included.');
             exit;
 
             Rec."Vendor ID" := leaseproposal."Vendor ID";
@@ -2691,7 +2691,7 @@ table 50307 "Tenancy Contract"
         leaseproposal.SetRange("Proposal ID", Rec."Proposal ID");
         if leaseproposal.FindSet() then begin
             if leaseproposal."Vendor ID" = '' then
-                Message('Vendor ID cannot be blank. Please check the lease proposal details.');
+                Message('Broker is not included.');
             exit;
 
             Rec."Vendor ID" := leaseproposal."Vendor ID";
