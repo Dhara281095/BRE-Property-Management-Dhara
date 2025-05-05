@@ -266,14 +266,16 @@ page 50125 "Adjustment Security Deposit"
     end;
 
 
-
     procedure Additinalchargescashreceipt()
     var
         GenJnlLine: Record "Gen. Journal Line";
         finalcalculation: Record "Final Calculation";
         TerminationCharges: Record "Termination Charges Sub";
-        GenJnlTemplate: Code[10];
-        GenJnlBatch: Code[10];
+        GenJnlTemplate: Record "Gen. Journal Template";
+        GenJnlBatch: Record "Gen. Journal Batch";
+        TenancyContract: Record "Tenancy Contract"; // Added to get property classification
+        SelectedTemplate: Code[10];
+        SelectedBatch: Code[10];
         PostingDate: Date;
         DocumentNo: Code[20];
         InvoiceNo: Code[20];
@@ -287,9 +289,15 @@ page 50125 "Adjustment Security Deposit"
         chillerdeposit: Decimal;
         otherdeposit: Decimal;
         Totaladdtionalcharges: Decimal;
+        SecurityDepositAccount: Code[20]; // For storing the G/L account based on property classification
+        ChillerDepositAccount: Code[20]; // Account for chiller deposit
+        OtherDepositAccount: Code[20]; // Account for other deposit
+
     begin
-        GenJnlTemplate := 'CASH RACE';
-        GenJnlBatch := 'DEFAULT';
+        // Find a valid General Journal Template for cash receipts
+        if not FindCashReceiptTemplate(SelectedTemplate, SelectedBatch) then
+            Error('No suitable journal template and batch found. Please create a cash receipt journal template and batch.');
+
         PostingDate := Today();
         DocumentNo := 'REFUND-' + Format(Rec."Contract ID");
 
@@ -320,12 +328,33 @@ page 50125 "Adjustment Security Deposit"
 
         // 4. Get last line number
         GenJnlLine.Reset();
-        GenJnlLine.SetRange("Journal Template Name", GenJnlTemplate);
-        GenJnlLine.SetRange("Journal Batch Name", GenJnlBatch);
+        GenJnlLine.SetRange("Journal Template Name", SelectedTemplate);
+        GenJnlLine.SetRange("Journal Batch Name", SelectedBatch);
         if GenJnlLine.FindLast() then
             LastLineNo := GenJnlLine."Line No." + 1
         else
             LastLineNo := 1;
+
+        // 5. Get property classification from Tenancy Contract
+        TenancyContract.Reset();
+        TenancyContract.SetRange("Contract ID", Rec."Contract ID");
+        if not TenancyContract.FindFirst() then
+            Error('Tenancy Contract not found for Contract ID %1', Rec."Contract ID");
+
+        // 6. Determine G/L accounts based on property classification
+        // Default account for security deposit
+        SecurityDepositAccount := '4502';
+        // Specific accounts for chiller deposit and other deposit
+        ChillerDepositAccount := '4508'; // Chiller deposit refund account
+        OtherDepositAccount := '4508';   // Using same account for other deposit
+
+        // Check the property classification and set appropriate account for security deposit
+        if TenancyContract.Get(Rec."Contract ID") then begin
+            if HasResidentialClassification(TenancyContract) then
+                SecurityDepositAccount := '1501' // Residential tenant receivable G/L account
+            else if HasCommercialClassification(TenancyContract) then
+                SecurityDepositAccount := '1506'; // Commercial tenant receivable G/L account
+        end;
 
         // === Apply to Security Deposit ===
         if RemainingCharges > 0 then begin
@@ -335,8 +364,8 @@ page 50125 "Adjustment Security Deposit"
                 AppliedAmount := securitydeposit;
 
             if AppliedAmount > 0 then begin
-                InsertJournalLine(LastLineNo, PostingDate, DocumentNo, Tenantname + ' - Security Deposit',
-                                  Tenantid, -AppliedAmount, '4502', InvoiceNo, GenJnlTemplate, GenJnlBatch);
+                InsertJournalLine(LastLineNo, PostingDate, DocumentNo, Tenantname + ' Security Deposit',
+                                  Tenantid, -AppliedAmount, SecurityDepositAccount, InvoiceNo, SelectedTemplate, SelectedBatch);
                 RemainingCharges -= AppliedAmount;
                 LastLineNo += 10000;
             end;
@@ -350,8 +379,8 @@ page 50125 "Adjustment Security Deposit"
             else
                 AppliedAmount := chillerdeposit;
             if AppliedAmount > 0 then begin
-                InsertJournalLine(LastLineNo, PostingDate, DocumentNo, Tenantname + ' - Chiller Deposit',
-                                  Tenantid, -AppliedAmount, '4508', InvoiceNo, GenJnlTemplate, GenJnlBatch); // Example G/L
+                InsertJournalLine(LastLineNo, PostingDate, DocumentNo, Tenantname + ' Chiller Deposit',
+                                  Tenantid, -AppliedAmount, ChillerDepositAccount, InvoiceNo, SelectedTemplate, SelectedBatch);
                 RemainingCharges -= AppliedAmount;
                 LastLineNo += 10000;
             end;
@@ -365,16 +394,70 @@ page 50125 "Adjustment Security Deposit"
             else
                 AppliedAmount := otherdeposit;
             if AppliedAmount > 0 then begin
-                InsertJournalLine(LastLineNo, PostingDate, DocumentNo, Tenantname + ' - Other Deposit',
-                                  Tenantid, -AppliedAmount, '4508', InvoiceNo, GenJnlTemplate, GenJnlBatch); // Example G/L
+                InsertJournalLine(LastLineNo, PostingDate, DocumentNo, Tenantname + ' Other Deposit',
+                                  Tenantid, -AppliedAmount, OtherDepositAccount, InvoiceNo, SelectedTemplate, SelectedBatch);
                 RemainingCharges -= AppliedAmount;
                 LastLineNo += 10000;
             end;
         end;
         Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnlLine);
         Message('Journal entries have been created and posted successfully');
+    end;
 
-        //   Message('Cash Receipt journal entries created successfully.');
+    // New procedure to find an available cash receipt template and batch
+    local procedure FindCashReceiptTemplate(var TemplateName: Code[10]; var BatchName: Code[10]): Boolean
+    var
+        GenJnlTemplate: Record "Gen. Journal Template";
+        GenJnlBatch: Record "Gen. Journal Batch";
+    begin
+        // First try to find a cash receipt template
+        GenJnlTemplate.Reset();
+        GenJnlTemplate.SetRange(Type, GenJnlTemplate.Type::"Cash Receipts");
+        if GenJnlTemplate.FindFirst() then begin
+            TemplateName := GenJnlTemplate.Name;
+
+            // Now find a batch in this template
+            GenJnlBatch.Reset();
+            GenJnlBatch.SetRange("Journal Template Name", TemplateName);
+            if GenJnlBatch.FindFirst() then begin
+                BatchName := GenJnlBatch.Name;
+                exit(true);
+            end;
+        end;
+
+        // If no cash receipt template found, try to find any general journal template
+        GenJnlTemplate.Reset();
+        if GenJnlTemplate.FindFirst() then begin
+            TemplateName := GenJnlTemplate.Name;
+
+            // Find a batch in this template
+            GenJnlBatch.Reset();
+            GenJnlBatch.SetRange("Journal Template Name", TemplateName);
+            if GenJnlBatch.FindFirst() then begin
+                BatchName := GenJnlBatch.Name;
+                exit(true);
+            end;
+        end;
+
+        exit(false); // No suitable template and batch found
+    end;
+
+    // Check if tenancy contract has residential classification
+    local procedure HasResidentialClassification(TenancyContract: Record "Tenancy Contract"): Boolean
+    var
+        PropertyClassification: Text;
+    begin
+        PropertyClassification := Format(TenancyContract."Property Classification");
+        exit((PropertyClassification = 'Residential') or (PropertyClassification = '0'));
+    end;
+
+    // Check if tenancy contract has commercial classification
+    local procedure HasCommercialClassification(TenancyContract: Record "Tenancy Contract"): Boolean
+    var
+        PropertyClassification: Text;
+    begin
+        PropertyClassification := Format(TenancyContract."Property Classification");
+        exit((PropertyClassification = 'Commercial') or (PropertyClassification = '1'));
     end;
 
     local procedure InsertJournalLine(LineNo: Integer; PostDate: Date; DocNo: Code[20]; Desc: Text[100]; AccNo: Code[20];
@@ -391,7 +474,7 @@ page 50125 "Adjustment Security Deposit"
         JnlLine."Line No." := LineNo;
         JnlLine."Posting Date" := PostDate;
         JnlLine."Document Type" := JnlLine."Document Type"::Payment;
-        JnlLine."Document No." := DocNo; // ✅ REQUIRED FIELD
+        JnlLine."Document No." := DocNo;
         JnlLine.Description := Desc;
         JnlLine."Account Type" := JnlLine."Account Type"::Customer;
         JnlLine."Account No." := AccNo;
@@ -403,6 +486,205 @@ page 50125 "Adjustment Security Deposit"
         JnlLine."Applies-to Doc. No." := Invoice;
         JnlLine.Insert(true);
     end;
+
+
+    // procedure Additinalchargescashreceipt()
+    // var
+    //     GenJnlLine: Record "Gen. Journal Line";
+    //     finalcalculation: Record "Final Calculation";
+    //     TerminationCharges: Record "Termination Charges Sub";
+    //     AdditionalChargesSub: Record "Additional Charges Sub";
+    //     GenJnlTemplate: Record "Gen. Journal Template";
+    //     GenJnlBatch: Record "Gen. Journal Batch";
+    //     TenancyContract: Record "Tenancy Contract";
+    //     SelectedTemplate: Code[10];
+    //     SelectedBatch: Code[10];
+    //     PostingDate: Date;
+    //     DocumentNo: Code[20];
+    //     InvoiceNo: Code[20];
+    //     Tenantid: Code[20];
+    //     Tenantname: Text[100];
+    //     AccountNo: Code[20];
+    //     LastLineNo: Integer;
+    //     AppliedAmount: Decimal;
+    //     RemainingCharges: Decimal;
+    //     securitydeposit: Decimal;
+    //     chillerdeposit: Decimal;
+    //     otherdeposit: Decimal;
+    //     Totaladdtionalcharges: Decimal;
+    //     TotalAdditionalChargesSubAmount: Decimal;
+    //     SecurityDepositAccount: Code[20];
+    //     ChillerDepositAccount: Code[20];
+    //     OtherDepositAccount: Code[20];
+    // begin
+    //     if not FindCashReceiptTemplate(SelectedTemplate, SelectedBatch) then
+    //         Error('No suitable journal template and batch found.');
+
+    //     PostingDate := Today();
+    //     DocumentNo := 'REFUND-' + Format(Rec."Contract ID");
+
+    //     finalcalculation.SetRange("Contract ID", Rec."Contract ID");
+    //     if not finalcalculation.FindFirst() then
+    //         Error('Final Calculation not found for Contract ID %1', Rec."Contract ID");
+
+    //     Tenantid := finalcalculation."Tenant ID";
+    //     Tenantname := finalcalculation."Tenant Name";
+    //     securitydeposit := finalcalculation."Net Balance";
+    //     chillerdeposit := finalcalculation."Chiller Deposit";
+    //     otherdeposit := finalcalculation."Other Deposit";
+
+    //     TerminationCharges.SetRange("Contract ID", Rec."Contract ID");
+    //     if not TerminationCharges.FindFirst() then
+    //         Error('Termination Charges not found for Contract ID %1', Rec."Contract ID");
+
+    //     InvoiceNo := TerminationCharges."Posted Invoice ID";
+
+    //     // Read from Additional Charges Sub table
+    //     AdditionalChargesSub.SetRange("Contract ID", Rec."Contract ID");
+    //     if AdditionalChargesSub.FindSet() then begin
+    //         repeat
+    //             TotalAdditionalChargesSubAmount += AdditionalChargesSub."Total Amount";
+    //         until AdditionalChargesSub.Next() = 0;
+    //     end;
+
+    //     RemainingCharges := TotalAdditionalChargesSubAmount;
+
+    //     GenJnlLine.Reset();
+    //     GenJnlLine.SetRange("Journal Template Name", SelectedTemplate);
+    //     GenJnlLine.SetRange("Journal Batch Name", SelectedBatch);
+    //     if GenJnlLine.FindLast() then
+    //         LastLineNo := GenJnlLine."Line No." + 10000
+    //     else
+    //         LastLineNo := 10000;
+
+    //     TenancyContract.SetRange("Contract ID", Rec."Contract ID");
+    //     if not TenancyContract.FindFirst() then
+    //         Error('Tenancy Contract not found for Contract ID %1', Rec."Contract ID");
+
+    //     // Set default and classification-based accounts
+    //     SecurityDepositAccount := '4502'; // default
+    //     ChillerDepositAccount := '4508';
+    //     OtherDepositAccount := '4508';
+
+    //     if HasResidentialClassification(TenancyContract) then
+    //         SecurityDepositAccount := '1501'
+    //     else if HasCommercialClassification(TenancyContract) then
+    //         SecurityDepositAccount := '1506';
+
+    //     // === Apply to Security Deposit ===
+    //         if RemainingCharges > 0 then begin
+    //             if RemainingCharges < securitydeposit then
+    //                 AppliedAmount := RemainingCharges
+    //             else
+    //                 AppliedAmount := securitydeposit;
+
+    //             if AppliedAmount > 0 then begin
+    //                 InsertJournalLine(LastLineNo, PostingDate, DocumentNo, Tenantname + ' Security Deposit',
+    //                                   Tenantid, -AppliedAmount, SecurityDepositAccount, InvoiceNo, SelectedTemplate, SelectedBatch);
+    //                 RemainingCharges -= AppliedAmount;
+    //                 LastLineNo += 10000;
+    //             end;
+    //         end;
+
+    //     // === Apply to Chiller Deposit ===
+    //     if RemainingCharges > 0 then begin
+    //         // Chiller Deposit
+    //         if RemainingCharges < chillerdeposit then
+    //             AppliedAmount := RemainingCharges
+    //         else
+    //             AppliedAmount := chillerdeposit;
+    //         if AppliedAmount > 0 then begin
+    //             InsertJournalLine(LastLineNo, PostingDate, DocumentNo, Tenantname + ' Chiller Deposit',
+    //                               Tenantid, -AppliedAmount, ChillerDepositAccount, InvoiceNo, SelectedTemplate, SelectedBatch);
+    //             RemainingCharges -= AppliedAmount;
+    //             LastLineNo += 10000;
+    //         end;
+    //     end;
+
+    //     // === Apply to Other Deposit ===
+    //     if RemainingCharges > 0 then begin
+    //         // Other Deposit
+    //         if RemainingCharges < otherdeposit then
+    //             AppliedAmount := RemainingCharges
+    //         else
+    //             AppliedAmount := otherdeposit;
+    //         if AppliedAmount > 0 then begin
+    //             InsertJournalLine(LastLineNo, PostingDate, DocumentNo, Tenantname + ' Other Deposit',
+    //                               Tenantid, -AppliedAmount, OtherDepositAccount, InvoiceNo, SelectedTemplate, SelectedBatch);
+    //             RemainingCharges -= AppliedAmount;
+    //             LastLineNo += 10000;
+    //         end;
+    //     end;
+
+    //     Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnlLine);
+    //     Message('Journal entries created and posted successfully.');
+    // end;
+
+    // local procedure FindCashReceiptTemplate(var TemplateName: Code[10]; var BatchName: Code[10]): Boolean
+    // var
+    //     GenJnlTemplate: Record "Gen. Journal Template";
+    //     GenJnlBatch: Record "Gen. Journal Batch";
+    // begin
+    //     GenJnlTemplate.SetRange(Type, GenJnlTemplate.Type::"Cash Receipts");
+    //     if GenJnlTemplate.FindFirst() then begin
+    //         TemplateName := GenJnlTemplate.Name;
+    //         GenJnlBatch.SetRange("Journal Template Name", TemplateName);
+    //         if GenJnlBatch.FindFirst() then begin
+    //             BatchName := GenJnlBatch.Name;
+    //             exit(true);
+    //         end;
+    //     end;
+
+    //     GenJnlTemplate.Reset();
+    //     if GenJnlTemplate.FindFirst() then begin
+    //         TemplateName := GenJnlTemplate.Name;
+    //         GenJnlBatch.SetRange("Journal Template Name", TemplateName);
+    //         if GenJnlBatch.FindFirst() then begin
+    //             BatchName := GenJnlBatch.Name;
+    //             exit(true);
+    //         end;
+    //     end;
+
+    //     exit(false);
+    // end;
+
+    // local procedure HasResidentialClassification(TenancyContract: Record "Tenancy Contract"): Boolean
+    // begin
+    //     exit((Format(TenancyContract."Property Classification") = 'Residential') or
+    //          (Format(TenancyContract."Property Classification") = '0'));
+    // end;
+
+    // local procedure HasCommercialClassification(TenancyContract: Record "Tenancy Contract"): Boolean
+    // begin
+    //     exit((Format(TenancyContract."Property Classification") = 'Commercial') or
+    //          (Format(TenancyContract."Property Classification") = '1'));
+    // end;
+
+    // local procedure InsertJournalLine(LineNo: Integer; PostDate: Date; DocNo: Code[20]; Desc: Text[100]; AccNo: Code[20];
+    //                                   Amt: Decimal; BalAcc: Code[20]; Invoice: Code[20];
+    //                                   Template: Code[10]; Batch: Code[10])
+    // var
+    //     JnlLine: Record "Gen. Journal Line";
+    // begin
+    //     Clear(JnlLine);
+    //     JnlLine.Init();
+    //     JnlLine."Journal Template Name" := Template;
+    //     JnlLine."Journal Batch Name" := Batch;
+    //     JnlLine."Line No." := LineNo;
+    //     JnlLine."Posting Date" := PostDate;
+    //     JnlLine."Document Type" := JnlLine."Document Type"::Payment;
+    //     JnlLine."Document No." := DocNo;
+    //     JnlLine.Description := Desc;
+    //     JnlLine."Account Type" := JnlLine."Account Type"::Customer;
+    //     JnlLine."Account No." := AccNo;
+    //     JnlLine.Amount := Amt;
+    //     JnlLine."Bal. Account Type" := JnlLine."Bal. Account Type"::"G/L Account";
+    //     JnlLine."Bal. Account No." := BalAcc;
+    //     JnlLine."External Document No." := Invoice;
+    //     JnlLine.Insert(true);
+    // end;
+
+
 
 
     // procedure Additinalchargescashreceipt()
@@ -607,7 +889,7 @@ page 50125 "Adjustment Security Deposit"
         GenJnlLine.Description := Tenantname;
         GenJnlLine."Account Type" := GenJnlLine."Account Type"::Customer;
         GenJnlLine."Account No." := Tenantid;
-        GenJnlLine.Amount := -TotalRefundableDeposit;
+        GenJnlLine.Amount := Round(-TotalRefundableDeposit, 0.01);
         GenJnlLine."Amount (LCY)" := GenJnlLine.Amount;
         GenJnlLine."Bal. Account Type" := GenJnlLine."Bal. Account Type"::"G/L Account";
         GenJnlLine."Bal. Account No." := AccountNo;
