@@ -168,22 +168,22 @@ page 50942 "Vendor Profile Card"
                     {
                         ApplicationArea = All;
                     }
-                    field("Country/Region Code"; Rec."Country/Region Code")
-                    {
-                        ApplicationArea = All;
-                    }
-                    field(City; Rec.City)
-                    {
-                        ApplicationArea = All;
-                    }
+                    // field("Country/Region Code"; Rec."Country/Region Code")
+                    // {
+                    //     ApplicationArea = All;
+                    // }
+                    // field(City; Rec.City)
+                    // {
+                    //     ApplicationArea = All;
+                    // }
                     field(Country; Rec.Country)
                     {
                         ApplicationArea = All;
                     }
-                    field("Post Code"; Rec."Post Code")
-                    {
-                        ApplicationArea = All;
-                    }
+                    // field("Post Code"; Rec."Post Code")
+                    // {
+                    //     ApplicationArea = All;
+                    // }
                 }
                 field("Phone No."; Rec."Phone No.")
                 {

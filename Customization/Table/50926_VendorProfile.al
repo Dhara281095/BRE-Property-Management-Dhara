@@ -33,10 +33,12 @@ table 50926 "Vendor Profile"
                     "Balance Due (LCY)" := Vendor."Balance Due (LCY)";
                     Address := Vendor.Address;
                     "Address 2" := Vendor."Address 2";
-                    "Country/Region Code" := Vendor."Country/Region Code";
-                    "City" := Vendor."City";
+                    // "Country/Region Code" := Vendor."Country/Region Code";
+                    // "City" := Vendor."City";
                     "Country" := Vendor.County;
-                    "Post Code" := Vendor."Post Code";
+                    "Emirate" := vendor.Emirate;
+                    "Community" := vendor.Community;
+                    // "Post Code" := Vendor."Post Code";
                     "Phone No." := Vendor."Phone No.";
                     "Mobile Phone No." := Vendor."Mobile Phone No.";
                     "E-Mail" := Vendor."E-Mail";
@@ -78,10 +80,10 @@ table 50926 "Vendor Profile"
                     "Balance Due (LCY)" := 0;
                     Address := '';
                     "Address 2" := '';
-                    "Country/Region Code" := '';
-                    "City" := '';
+                    // "Country/Region Code" := '';
+                    // "City" := '';
                     "Country" := '';
-                    "Post Code" := '';
+                    // "Post Code" := '';
                     "Phone No." := '';
                     "Mobile Phone No." := '';
                     "E-Mail" := '';
@@ -175,26 +177,36 @@ table 50926 "Vendor Profile"
             Caption = 'Address 2';
             Editable = false;
         }
-        field(50117; "Country/Region Code"; Code[10])
-        {
-            Caption = 'Country/Region Code';
-            Editable = false;
-        }
-        field(50118; City; Text[30])
-        {
-            Caption = 'City';
-            Editable = false;
-        }
-        field(50119; Country; Text[30])
+        // field(50117; "Country/Region Code"; Code[10])
+        // {
+        //     Caption = 'Country/Region Code';
+        //     Editable = false;
+        // }
+        // field(50118; City; Text[30])
+        // {
+        //     Caption = 'City';
+        //     Editable = false;
+        // }
+        field(50163; Country; Text[30])
         {
             Caption = 'Country';
             Editable = false;
         }
-        field(50120; "Post Code"; Code[80])
+        field(50164; Emirate; Text[30])
         {
-            Caption = 'Post Code';
+            Caption = 'Emirate';
             Editable = false;
         }
+        field(50119; Community; Text[30])
+        {
+            Caption = 'Community';
+            Editable = false;
+        }
+        // field(50120; "Post Code"; Code[80])
+        // {
+        //     Caption = 'Post Code';
+        //     Editable = false;
+        // }
         field(50121; "Phone No."; Text[30])
         {
             Caption = 'Phone No.';
