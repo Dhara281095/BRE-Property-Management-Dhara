@@ -426,7 +426,7 @@ table 50303 "Property Registration"
 
     keys
     {
-        key(PK; "Property ID", "Property Classification", "Property Type", "Property Name", "Property Size")
+        key(PK; "Property ID", "Property Classification", "Property Type", "Property Size")
         {
             Clustered = true;
         }
