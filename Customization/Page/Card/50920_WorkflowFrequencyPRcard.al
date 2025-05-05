@@ -17,6 +17,7 @@ page 50920 "Workflow Frequency PR Card"
                 {
                     ApplicationArea = All;
                     Editable = false; // The ID is not editable since it's auto-incrementing
+                    Visible = false;
 
                 }
 
@@ -52,6 +53,7 @@ page 50920 "Workflow Frequency PR Card"
                 {
                     ApplicationArea = All;
                     Editable = false; // The ID is not editable since it's auto-incrementing
+                    Visible = false;
 
                 }
 

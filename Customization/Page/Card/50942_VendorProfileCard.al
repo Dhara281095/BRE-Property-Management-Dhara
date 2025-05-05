@@ -119,41 +119,32 @@ page 50942 "Vendor Profile Card"
                 field("Calculation Method"; Rec."Calculation Method")
                 {
                     ApplicationArea = All;
-
                     trigger OnValidate()
                     begin
-                        IsEditableBasedOnCalcMethod := not (UpperCase(Rec."Calculation Method") = 'FIXED AMOUNT');
-
-                        IsFixedAmount := UpperCase(Rec."Calculation Method") = 'FIXED AMOUNT';
+                        UpdateFieldEditability();
                     end;
                 }
 
                 field("Percentage Type"; Rec."Percentage Type")
                 {
                     ApplicationArea = All;
-                    Editable = IsEditableBasedOnCalcMethod;
-
-                    // trigger OnValidate()
-                    // begin
-                    //     UpdatePercentageEditable();
-                    // end;
+                    Editable = IsPercentageTypeEditable;
+                }
+                field("Base Amount"; Rec."Base Amount")
+                {
+                    ApplicationArea = All;
                 }
 
                 field("Percentage"; Rec."Percentage")
                 {
                     ApplicationArea = All;
-                    Editable = IsEditableBasedOnCalcMethod;
-
+                    Editable = IsPercentageEditable;
                 }
 
                 field("Amount"; Rec."Amount")
                 {
                     ApplicationArea = All;
-                    Editable = IsFixedAmount;
-                }
-                field("Base Amount"; Rec."Base Amount")
-                {
-                    ApplicationArea = All;
+                    Editable = IsAmountEditable;
                 }
 
                 field("Frequency Of Payment"; Rec."Frequency Of Payment")
@@ -355,13 +346,14 @@ page 50942 "Vendor Profile Card"
         CurrPage."Calculation Detail".Page.SetStartEndDate(Rec."Start Date", Rec."End Date", Rec."Vendor Name");
         CurrPage."Vendor Documents".Page.SetVendorID(Rec."Vendor ID");
 
-        if Rec."Vendor Category" = 'Brokers and Commission Agent' then begin
+        if UpperCase(Rec."Vendor Category") = 'BROKERS AND COMMISSION AGENT' then begin
             ShowBrokerageGroup := true;
             //Message('Brokers and Commission Agent Section is Open');
         end else begin
             ShowBrokerageGroup := false;
             // Message('Vendor is NOT a Brokers and Commission Agent - Section remains Closed');
         end;
+        UpdateFieldEditability();
     end;
 
     trigger OnModifyRecord(): Boolean
@@ -382,31 +374,44 @@ page 50942 "Vendor Profile Card"
 
 
     var
-        // IsPercentageEditable: Boolean;
-        // IsFixedAmount: Boolean;
-        // IsPercentageamount: Boolean;
         ShowBrokerageGroup: Boolean;
-        IsEditableBasedOnCalcMethod: Boolean;
-        IsFixedAmount: Boolean;
+        IsAmountEditable: Boolean;
+        IsPercentageEditable: Boolean;
+        IsPercentageTypeEditable: Boolean;
 
 
-    // procedure UpdatePercentageEditable()
-    // begin
-    //     // Assume the enum or option values are "Percentage-Based" and "Fixed"
-    //     if (Rec."Percentage Type" <> Rec."Percentage Type"::" ") then begin
-    //         IsPercentageEditable := true;
-    //     end
-    //     else begin
-    //         IsPercentageEditable := false;
-    //     end;
+    procedure UpdateFieldEditability()
+    begin
+        case UpperCase(Rec."Calculation Method") of
+            '':
+                begin
+                    IsAmountEditable := false;
+                    IsPercentageEditable := false;
+                    IsPercentageTypeEditable := false;
+                end;
 
-    //     if (Rec."Percentage Type" = Rec."Percentage Type"::" ") then begin
-    //         IsFixedAmount := true;
-    //     end
-    //     else begin
-    //         IsFixedAmount := false;
-    //     end;
-    // end;
+            'FIXED AMOUNT':
+                begin
+                    IsAmountEditable := true;
+                    IsPercentageEditable := false;
+                    IsPercentageTypeEditable := false;
+                end;
+
+            'PERCENTAGE BASED':
+                begin
+                    IsAmountEditable := false;
+                    IsPercentageEditable := true;
+                    IsPercentageTypeEditable := true;
+                end;
+
+            else begin
+                // Default: Allow editing everything
+                IsAmountEditable := false;
+                IsPercentageEditable := true;
+                IsPercentageTypeEditable := true;
+            end;
+        end;
+    end;
 
 }
 

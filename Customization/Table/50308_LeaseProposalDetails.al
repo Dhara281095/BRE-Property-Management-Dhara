@@ -1406,6 +1406,7 @@ table 50308 "Lease Proposal Details"
                 AnnualAmount: Decimal;
             begin
                 VendorProfileRec.SetRange("Vendor Category", 'Brokers and Commission Agent');
+                VendorProfileRec.SetRange("Contract Status", "Contract Status"::" "); // 👈 Add this line
                 if Page.RunModal(Page::"Vendor Profile List", VendorProfileRec) = Action::LookupOK then begin
                     "Vendor ID" := VendorProfileRec."Vendor ID";
                     "Vendor Name" := VendorProfileRec."Vendor Name";

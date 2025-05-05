@@ -35,40 +35,32 @@ page 50957 "Vendor Calculation Details Sub"
                 field("Calculation Method"; Rec."Calculation Method")
                 {
                     ApplicationArea = All;
-
                     trigger OnValidate()
                     begin
-                        IsEditableBasedOnCalcMethod := not (UpperCase(Rec."Calculation Method") = 'FIXED AMOUNT');
-
-                        IsFixedAmount := UpperCase(Rec."Calculation Method") = 'FIXED AMOUNT';
+                        UpdateFieldEditability();
                     end;
+                }
+                field("Base Amount"; Rec."Base Amount")
+                {
+                    ApplicationArea = All;
                 }
 
                 field("Percentage Type"; Rec."Percentage Type")
                 {
                     ApplicationArea = All;
-                    Editable = IsEditableBasedOnCalcMethod;
-                    // trigger OnValidate()
-                    // begin
-                    //     UpdatePercentageEditable();
-                    // end;
+                    Editable = IsPercentageTypeEditable;
                 }
 
                 field("Percentage"; Rec."Percentage")
                 {
                     ApplicationArea = All;
-                    Editable = IsEditableBasedOnCalcMethod;
+                    Editable = IsPercentageEditable;
                 }
 
                 field("Amount"; Rec."Amount")
                 {
                     ApplicationArea = All;
-                    Editable = IsFixedAmount;
-                }
-
-                field("Base Amount"; Rec."Base Amount")
-                {
-                    ApplicationArea = All;
+                    Editable = IsAmountEditable;
                 }
 
                 field("Frequency Of Payment"; Rec."Frequency Of Payment")
@@ -76,10 +68,6 @@ page 50957 "Vendor Calculation Details Sub"
                     ApplicationArea = All;
                 }
 
-                // field("Contract Status"; Rec."Contract Status")
-                // {
-                //     ApplicationArea = All;
-                // }
             }
         }
     }
@@ -110,31 +98,43 @@ page 50957 "Vendor Calculation Details Sub"
         startDate: Date;
         endDate: Date;
         vendorName: Text[100];
-        IsEditableBasedOnCalcMethod: Boolean;
-        IsFixedAmount: Boolean;
+        IsAmountEditable: Boolean;
+        IsPercentageEditable: Boolean;
+        IsPercentageTypeEditable: Boolean;
 
-    // IsPercentageEditable: Boolean;
-    // IsFixedAmount: Boolean;
 
-    // IsPercentageamount: Boolean;
+    procedure UpdateFieldEditability()
+    begin
+        case UpperCase(Rec."Calculation Method") of
+            '':
+                begin
+                    IsAmountEditable := false;
+                    IsPercentageEditable := false;
+                    IsPercentageTypeEditable := false;
+                end;
 
-    // procedure UpdatePercentageEditable()
-    // begin
-    //     // Assume the enum or option values are "Percentage-Based" and "Fixed"
-    //     if (Rec."Percentage Type" <> Rec."Percentage Type"::" ") then begin
-    //         IsPercentageEditable := true;
-    //     end
-    //     else begin
-    //         IsPercentageEditable := false;
-    //     end;
+            'FIXED AMOUNT':
+                begin
+                    IsAmountEditable := true;
+                    IsPercentageEditable := false;
+                    IsPercentageTypeEditable := false;
+                end;
 
-    //     if (Rec."Percentage Type" = Rec."Percentage Type"::" ") then begin
-    //         IsFixedAmount := true;
-    //     end
-    //     else begin
-    //         IsFixedAmount := false;
-    //     end;
-    // end;
+            'PERCENTAGE BASED':
+                begin
+                    IsAmountEditable := false;
+                    IsPercentageEditable := true;
+                    IsPercentageTypeEditable := true;
+                end;
+
+            else begin
+                // Default: Allow editing everything
+                IsAmountEditable := false;
+                IsPercentageEditable := true;
+                IsPercentageTypeEditable := true;
+            end;
+        end;
+    end;
 
 }
 

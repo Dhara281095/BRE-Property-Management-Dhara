@@ -1170,8 +1170,10 @@ table 50318 "Contract Renewal"
             trigger OnLookup()
             var
                 VendorProfileRec: Record "Vendor Profile";
+                AnnualAmount: Decimal;
             begin
                 VendorProfileRec.SetRange("Vendor Category", 'Brokers and Commission Agent');
+                VendorProfileRec.SetRange("Contract Status", "Contract Status"::" "); // 👈 Add this line
                 if Page.RunModal(Page::"Vendor Profile List", VendorProfileRec) = Action::LookupOK then begin
                     "Vendor ID" := VendorProfileRec."Vendor ID";
                     "Vendor Name" := VendorProfileRec."Vendor Name";
@@ -1181,8 +1183,16 @@ table 50318 "Contract Renewal"
                     "Calculation Method" := VendorProfileRec."Calculation Method";
                     "Percentage Type" := VendorProfileRec."Percentage Type";
                     Percentage := VendorProfileRec.Percentage;
-                    Amount := VendorProfileRec.Amount;
                     "Base Amount" := VendorProfileRec."Base Amount";
+
+                    case "Base Amount" of
+                        "Base Amount"::"Annual Rent":
+                            AnnualAmount := Rec."Rent Amount";
+                        "Base Amount"::"Monthly Rent":
+                            AnnualAmount := Rec."Rent Amount" / 12;
+                    end;
+
+                    Amount := AnnualAmount;
                     "Frequency Of Payment" := VendorProfileRec."Frequency Of Payment";
                 end else begin
                     "Vendor ID" := '';
