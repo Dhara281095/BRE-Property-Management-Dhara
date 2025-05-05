@@ -133,6 +133,10 @@ page 50942 "Vendor Profile Card"
                 field("Base Amount"; Rec."Base Amount")
                 {
                     ApplicationArea = All;
+                    trigger OnValidate()
+                    begin
+                        UpdateFieldEditability();
+                    end;
                 }
 
                 field("Percentage"; Rec."Percentage")
@@ -392,7 +396,12 @@ page 50942 "Vendor Profile Card"
 
             'FIXED AMOUNT':
                 begin
-                    IsAmountEditable := true;
+                    if (Rec."Base Amount" = Rec."Base Amount"::Revenue) or
+                       (Rec."Base Amount" = Rec."Base Amount"::Collection) then
+                        IsAmountEditable := true
+                    else
+                        IsAmountEditable := false;
+
                     IsPercentageEditable := false;
                     IsPercentageTypeEditable := false;
                 end;
