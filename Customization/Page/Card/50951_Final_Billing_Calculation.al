@@ -421,6 +421,123 @@ page 50951 "Final Billing Calculation"
             Error('The file URL is invalid.');
     end;
 
+    // trigger OnAfterGetRecord()
+    // var
+    // begin
+    //     FetchDataFromRevenueCalcGrid();
+    //     Receiptamountfrompaymentscheule();
+    //     DifferenceAmountCalculation();
+    //     GetPositiveAmount();
+    //     GetOnlyCreditNoteAmount();
+    //     GetOnlyInvoiceAmount();
+    // end;
+
+    // procedure FetchDataFromRevenueCalcGrid()
+    // var
+    //     RevenueGrid: Record "Final Revenue Calculation Grid";
+    // begin
+    //     RevenueGrid.SetRange("Contract ID", Rec."Contract ID");
+    //     RevenueGrid.SetRange("Revenue Description", Rec.RevenueDescription);
+    //     if RevenueGrid.FindSet() then
+    //         repeat
+    //             Rec.RevisedAmount := RevenueGrid."Revised Amount";
+    //             Rec.RevisedVAT := RevenueGrid."Revised VAT";
+    //             Rec.RevisedAmountInclVAT := RevenueGrid."Revised Amount Incl.";
+    //             Rec.Modify();
+    //         until RevenueGrid.Next() = 0;
+
+    // end;
+
+    // procedure DifferenceAmountCalculation()
+    // var
+
+    // begin
+
+    //     Rec."DifferenceAmount" := Rec.InvoicedAmount - Rec.RevisedAmount;
+    //     Rec."DifferenceVAT" := Rec.InvoicedVAT - Rec.RevisedVAT;
+    //     Rec.DifferenceAmountInclVAT := Rec.InvoicedAmountInclVAT - Rec.RevisedAmountInclVAT;
+    //     Rec.Modify();
+
+    // end;
+
+    // procedure Receiptamountfrompaymentscheule()
+    // var
+    //     PaymentScheduleRec: Record "Payment Schedule2";
+    //     Totalamount: Decimal;
+    //     VATAmount: Decimal;
+    //     AmountIncVAT: Decimal;
+    // begin
+    //     Totalamount := 0;
+    //     PaymentScheduleRec.Reset();
+    //     PaymentScheduleRec.SetRange("Contract ID", Rec."Contract ID");
+    //     //PaymentScheduleRec.SetFilter("Due Date", '<%1', Rec."Termination Date");
+    //     PaymentScheduleRec.SetFilter("Workflow frequency date", '<%1', Rec."Termination Date");
+    //     PaymentScheduleRec.SetRange(Invoiced, true);
+    //     PaymentScheduleRec.SetRange("Secondary Item Type", Rec.RevenueDescription);
+    //     if PaymentScheduleRec.FindSet() then begin
+    //         repeat
+    //             Totalamount += PaymentScheduleRec.Amount;
+    //             VATAmount += PaymentScheduleRec."VAT Amount";
+    //             AmountIncVAT += PaymentScheduleRec."Amount Including VAT";
+
+    //         until PaymentScheduleRec.Next() = 0;
+    //     end;
+    //     PaymentScheduleRec.SetRange("Contract ID", Rec."Contract ID");
+    //     PaymentScheduleRec.SetRange("Secondary Item Type", Rec.RevenueDescription);
+    //     if PaymentScheduleRec.FindSet() then
+    //         repeat
+    //             Rec.InvoicedAmount := Totalamount;
+    //             Rec.InvoicedVAT := VATAmount;
+    //             Rec.InvoicedAmountInclVAT := AmountIncVAT;
+    //             Rec.Modify();
+    //         until PaymentScheduleRec.Next() = 0;
+    // end;
+
+    // procedure GetPositiveAmount()
+    // var
+    // begin
+    //     if Rec."Total DifferenceAmountIncl.VAT" < 0 then begin
+    //         Rec."Invoice To Be Raised" := Abs(Rec."Total DifferenceAmountIncl.VAT");
+    //         Rec.Modify();
+    //     end else begin
+    //         if Rec."CreditNote" = true then begin
+    //             Rec."Credit Note To Be Raised" := 0;
+    //         end else begin
+    //             Rec."Credit Note To Be Raised" := Rec."Total DifferenceAmountIncl.VAT";
+    //             Rec.Modify();
+    //         end;
+    //     end;
+    // END;
+
+    // procedure GetOnlyCreditNoteAmount()
+    // var
+    //     TotalPositiveDifference: Decimal;
+    //     billingcalculationgird: Record "Final Billing Calculation Grid";
+    // begin
+    //     billingcalculationgird.SetRange("Contract ID", Rec."Contract ID");
+    //     billingcalculationgird.SetFilter("DifferenceAmountInclVAT", '>%1', 0);
+    //     if billingcalculationgird.FindSet() then
+    //         repeat
+    //             TotalPositiveDifference += billingcalculationgird."DifferenceAmountInclVAT"
+    //         until billingcalculationgird.Next() = 0;
+    //     Rec."Credit Note Amount" := TotalPositiveDifference;
+    //     Rec.Modify();
+    // end;
+
+    // procedure GetOnlyInvoiceAmount()
+    // var
+    //     TotalNegativeDifference: Decimal;
+    //     billingcalculationgird: Record "Final Billing Calculation Grid";
+    // begin
+    //     billingcalculationgird.SetRange("Contract ID", Rec."Contract ID");
+    //     billingcalculationgird.SetFilter("DifferenceAmountInclVAT", '<%1', 0);
+    //     if billingcalculationgird.FindSet() then
+    //         repeat
+    //             TotalNegativeDifference += billingcalculationgird."DifferenceAmountInclVAT"
+    //         until billingcalculationgird.Next() = 0;
+    //     Rec."Invoice Amount" := Abs(TotalNegativeDifference);
+    //     Rec.Modify();
+    // end;
     trigger OnAfterGetRecord()
     var
     begin
@@ -428,8 +545,13 @@ page 50951 "Final Billing Calculation"
         Receiptamountfrompaymentscheule();
         DifferenceAmountCalculation();
         GetPositiveAmount();
+
+        CreditNoteTotalAmount();
+        InvoiceTotalAmount();
         GetOnlyCreditNoteAmount();
         GetOnlyInvoiceAmount();
+        InvoiceAmountZero();
+
     end;
 
     procedure FetchDataFromRevenueCalcGrid()
@@ -443,7 +565,7 @@ page 50951 "Final Billing Calculation"
                 Rec.RevisedAmount := RevenueGrid."Revised Amount";
                 Rec.RevisedVAT := RevenueGrid."Revised VAT";
                 Rec.RevisedAmountInclVAT := RevenueGrid."Revised Amount Incl.";
-                Rec.Modify();
+            //   Rec.Modify();
             until RevenueGrid.Next() = 0;
 
     end;
@@ -456,7 +578,7 @@ page 50951 "Final Billing Calculation"
         Rec."DifferenceAmount" := Rec.InvoicedAmount - Rec.RevisedAmount;
         Rec."DifferenceVAT" := Rec.InvoicedVAT - Rec.RevisedVAT;
         Rec.DifferenceAmountInclVAT := Rec.InvoicedAmountInclVAT - Rec.RevisedAmountInclVAT;
-        Rec.Modify();
+        // Rec.Modify();
 
     end;
 
@@ -489,25 +611,67 @@ page 50951 "Final Billing Calculation"
                 Rec.InvoicedAmount := Totalamount;
                 Rec.InvoicedVAT := VATAmount;
                 Rec.InvoicedAmountInclVAT := AmountIncVAT;
-                Rec.Modify();
+            //   Rec.Modify();
             until PaymentScheduleRec.Next() = 0;
     end;
 
     procedure GetPositiveAmount()
     var
     begin
-        if Rec."Total DifferenceAmountIncl.VAT" < 0 then begin
-            Rec."Invoice To Be Raised" := Abs(Rec."Total DifferenceAmountIncl.VAT");
-            Rec.Modify();
-        end else begin
-            if Rec."CreditNote" = true then begin
-                Rec."Credit Note To Be Raised" := 0;
-            end else begin
-                Rec."Credit Note To Be Raised" := Rec."Total DifferenceAmountIncl.VAT";
-                Rec.Modify();
-            end;
+        // if Rec."Total DifferenceAmountIncl.VAT" < 0 then begin
+        //     Rec."Invoice To Be Raised" := Abs(Rec."Total DifferenceAmountIncl.VAT");
+        //     Rec.Modify();
+        // end else begin
+        if Rec."CreditNote" = true then begin
+            Rec."Credit Note To Be Raised" := 0;
+            // end else begin
+            //     Rec."Credit Note To Be Raised" := Rec."Total DifferenceAmountIncl.VAT";
+            //     //    Rec.Modify();
+            // end;
         end;
     END;
+
+    procedure InvoiceAmountZero()
+    var
+    begin
+        if Rec.Invoiced = true then begin
+            Rec."Invoice To Be Raised" := 0;
+        end;
+    end;
+
+
+    procedure CreditNoteTotalAmount()
+    var
+        TotalPositiveDifference: Decimal;
+        billingcalculation: Record "Final Billing Calculation Grid";
+    begin
+        billingcalculation.SetRange("Contract ID", Rec."Contract ID");
+        billingcalculation.SetFilter("DifferenceAmountInclVAT", '>%1', 0);
+        if billingcalculation.FindSet() then
+            repeat
+                TotalPositiveDifference += billingcalculation."DifferenceAmountInclVAT"
+            until billingcalculation.Next() = 0;
+
+        Rec."Credit Note To Be Raised" := TotalPositiveDifference;
+        // Rec.Modify();
+    end;
+
+
+    procedure InvoiceTotalAmount()
+    var
+        TotalNegativeDifference: Decimal;
+        billingcalculationgird1: Record "Final Billing Calculation Grid";
+    begin
+        billingcalculationgird1.SetRange("Contract ID", Rec."Contract ID");
+        billingcalculationgird1.SetFilter("DifferenceAmountInclVAT", '<%1', 0);
+        if billingcalculationgird1.FindSet() then
+            repeat
+                TotalNegativeDifference += billingcalculationgird1."DifferenceAmountInclVAT"
+            until billingcalculationgird1.Next() = 0;
+
+        Rec."Invoice To Be Raised" := Abs(TotalNegativeDifference);
+        //  Rec.Modify();
+    end;
 
     procedure GetOnlyCreditNoteAmount()
     var
@@ -521,7 +685,8 @@ page 50951 "Final Billing Calculation"
                 TotalPositiveDifference += billingcalculationgird."DifferenceAmountInclVAT"
             until billingcalculationgird.Next() = 0;
         Rec."Credit Note Amount" := TotalPositiveDifference;
-        Rec.Modify();
+        // Rec."Credit Note To Be Raised" := TotalPositiveDifference;
+        //  Rec.Modify();
     end;
 
     procedure GetOnlyInvoiceAmount()
@@ -536,6 +701,7 @@ page 50951 "Final Billing Calculation"
                 TotalNegativeDifference += billingcalculationgird."DifferenceAmountInclVAT"
             until billingcalculationgird.Next() = 0;
         Rec."Invoice Amount" := Abs(TotalNegativeDifference);
+        //  Rec."Invoice To Be Raised" := Abs(TotalNegativeDifference);
         Rec.Modify();
     end;
 
