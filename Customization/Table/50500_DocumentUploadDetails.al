@@ -34,7 +34,7 @@ table 50500 "DocumentUploadDetails"
             AutoIncrement = true;
         }
 
-        field(50105; "View"; Text[20])
+        field(50105; "View & Download"; Text[20])
         {
             DataClassification = ToBeClassified;
             InitValue = 'View';

@@ -79,7 +79,7 @@ page 50503 "Tenant Document SubPage"
 
                 }
 
-                field("View & Download"; Rec.View)
+                field("View & Download"; Rec."View & Download")
                 {
                     ApplicationArea = All;
                     Editable = false;

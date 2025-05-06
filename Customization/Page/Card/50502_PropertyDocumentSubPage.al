@@ -79,7 +79,7 @@ page 50502 "Property Registration SubPage"
                     end;
                 }
 
-                field(View; Rec.View)
+                field("View & Download"; Rec."View & Download")
                 {
                     ApplicationArea = All;
                     Editable = false;
@@ -105,6 +105,7 @@ page 50502 "Property Registration SubPage"
                     ApplicationArea = All;
                     Editable = false;
                     DrillDown = true;
+                    Visible = false;
 
                     trigger OnDrillDown()
                     var

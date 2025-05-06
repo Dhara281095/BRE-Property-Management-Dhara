@@ -96,8 +96,9 @@ codeunit 50514 "Cash Receipt Journal Entry"
                 GenJournalLineRec.Reset();
                 GenJournalLineRec.SetRange("Journal Template Name", 'CASH RECE');
                 GenJournalLineRec.SetRange("Journal Batch Name", 'DEFAULT');
-                GenJournalLineRec.SetRange("Document No.", Format(PaymentSeriesCode."Entry No."));
-
+                GenJournalLineRec.SetRange("Line No.", 10000);
+                // GenJournalLineRec.DeleteAll();
+                // GenJournalLineRec.Modify();
                 if GenJournalLineRec.FindSet() then begin
                     GenJournalLineRec.DeleteAll();
                 end;
@@ -185,6 +186,8 @@ codeunit 50514 "Cash Receipt Journal Entry"
                 GenJournalLineRec.Description := PaymentSeriesRec."Invoice #";
                 GenJournalLineRec.Amount := -PaymentSeriesRec."Amount Including VAT";
                 GenJournalLineRec."Amount (LCY)" := GenJournalLineRec.Amount;
+                GenJournalLineRec."Applies-to Doc. Type" := GenJournalLineRec."Applies-to Doc. Type"::Invoice;
+                GenJournalLineRec."Applies-to Doc. No." := PaymentSeriesRec."Invoice #";
 
                 // GenJournalLineRec."Bal. Account No." := PaymentSeriesRec."Deposit Bank";
                 BankAccountRec.Reset();

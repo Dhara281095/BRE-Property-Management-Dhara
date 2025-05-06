@@ -30,10 +30,10 @@ table 50504 "Unit Document Details"
             Caption = 'Entry No.';
             AutoIncrement = true;
         }
-        field(50105; "View"; Text[20])
+        field(50105; "View & Download"; Text[20])
         {
             DataClassification = ToBeClassified;
-            Caption = 'View';
+
             InitValue = 'View';
         }
         field(50106; "Download"; Text[20])

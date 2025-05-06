@@ -123,7 +123,8 @@ page 50715 "Online Payment Request"
                                 if PaymentRec.FindSet() then begin
                                     // Update the status of OnlinePaymentApproval record
                                     PaymentRec."Approve/Decline Status" := 'Received';
-                                    PaymentRec."Payment Status" := PaymentStatus::Received;
+                                    // PaymentRec."Payment Status" := PaymentStatus::Received;
+                                    PaymentRec.Validate("Payment Status", PaymentStatus::Received);
                                     PaymentRec."Payment Received Date" := Today;
                                     PaymentRec.Modify(true);
                                 end;
