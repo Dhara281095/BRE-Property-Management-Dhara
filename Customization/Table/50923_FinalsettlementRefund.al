@@ -55,9 +55,9 @@ table 50923 "FinalSettlementRefund"
             Caption = 'Payment mode';
             TableRelation = "Payment Type"."Payment Method";
         }
-        field(50109; "Refund Payment Status"; Enum "Payment Status")
+        field(50109; "Refund Payment Status"; Option)
         {
-            DataClassification = ToBeClassified;
+            OptionMembers = "Scheduled","Due","Overdue","Paid","Cancelled";
             Caption = 'Payment Status';
         }
 
