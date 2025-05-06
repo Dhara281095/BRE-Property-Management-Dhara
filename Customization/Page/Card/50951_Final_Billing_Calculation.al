@@ -120,18 +120,6 @@ page 50951 "Final Billing Calculation"
                             Editable = false;
                             Caption = 'Total Difference Amount Incl. VAT';
                         }
-
-
-
-
-                        field("Creditnote"; Rec."Creditnote")
-                        {
-                            ApplicationArea = All;
-                            Caption = 'Creditnote';
-                            Editable = false;
-                            Visible = false;
-                        }
-
                     }
                     group("")
                     {
@@ -147,6 +135,22 @@ page 50951 "Final Billing Calculation"
                             Caption = 'Credit Note To Be Raised';
                             Editable = false;
                         }
+                        field(Line; Rec.Line)
+                        {
+                            ApplicationArea = All;
+                            Caption = 'Line';
+                            Editable = false;
+                            Visible = false;
+                        }
+
+                        field("Creditnote"; Rec."Creditnote")
+                        {
+                            ApplicationArea = All;
+                            Caption = 'Creditnote';
+                            Editable = false;
+                            Visible = false;
+                        }
+
                     }
                 }
 
