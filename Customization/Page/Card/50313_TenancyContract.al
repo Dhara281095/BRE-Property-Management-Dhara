@@ -1847,6 +1847,7 @@ page 50313 "Tenancy Contract Card"
                 field("Vendor ID"; Rec."Vendor ID")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                 }
 
                 field("Vendor Name"; Rec."Vendor Name")
