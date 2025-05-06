@@ -1173,7 +1173,7 @@ table 50318 "Contract Renewal"
                 AnnualAmount: Decimal;
             begin
                 VendorProfileRec.SetRange("Vendor Category", 'Brokers and Commission Agent');
-                VendorProfileRec.SetRange("Contract Status", "Contract Status"::" "); // 👈 Add this line
+                VendorProfileRec.SetRange("Contract Status", "Contract Status"::"Active"); // 👈 Add this line
                 if Page.RunModal(Page::"Vendor Profile List", VendorProfileRec) = Action::LookupOK then begin
                     "Vendor ID" := VendorProfileRec."Vendor ID";
                     "Vendor Name" := VendorProfileRec."Vendor Name";
@@ -1225,11 +1225,11 @@ table 50318 "Contract Renewal"
             DataClassification = ToBeClassified;
             Caption = 'Amount';
         }
-        field(50188; "Percentage/Amount"; Decimal)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Percentage/Amount';
-        }
+        // field(50188; "Percentage/Amount"; Decimal)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Percentage/Amount';
+        // }
         field(50176; "Calculation Method"; Text[100])
         {
             DataClassification = ToBeClassified;

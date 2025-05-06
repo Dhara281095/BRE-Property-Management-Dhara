@@ -62,6 +62,14 @@ table 50701 "testData"
         }
     }
 
+    fieldgroups
+    {
+        fieldgroup(DropDown; "Company ID", "Company Name")
+        {
+
+        }
+    }
+
     //--------------Record Insertion-----------------//
     trigger OnInsert()
     var

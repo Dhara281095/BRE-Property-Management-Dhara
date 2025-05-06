@@ -1627,13 +1627,13 @@ table 50307 "Tenancy Contract"
         {
             DataClassification = ToBeClassified;
             Caption = 'Vendor ID';
-            Editable = false;
+            // Editable = false;
         }
         field(50198; "Vendor Name"; Text[100])
         {
             DataClassification = ToBeClassified;
             Caption = 'Vendor Name';
-            Editable = false;
+            //  Editable = false;
         }
         field(50199; "Percentage"; Integer)
         {
@@ -1675,13 +1675,13 @@ table 50307 "Tenancy Contract"
         {
             DataClassification = ToBeClassified;
             Caption = 'Start Date';
-            Editable = false;
+            //  Editable = false;
         }
         field(50207; "End Date"; Date)
         {
             DataClassification = ToBeClassified;
             Caption = 'End Date';
-            Editable = false;
+            //  Editable = false;
         }
 
         field(50208; "Contract Status"; Option)
@@ -2664,10 +2664,12 @@ table 50307 "Tenancy Contract"
         leaseproposal: Record "Lease Proposal Details";
     begin
         leaseproposal.SetRange("Proposal ID", Rec."Proposal ID");
+
         if leaseproposal.FindSet() then begin
-            if leaseproposal."Vendor ID" = '' then
+            if leaseproposal."Vendor ID" = '' then begin
                 Message('Broker is not included.');
-            exit;
+                exit;
+            end;
 
             Rec."Vendor ID" := leaseproposal."Vendor ID";
             "Vendor Name" := leaseproposal."Vendor Name";
@@ -2684,27 +2686,30 @@ table 50307 "Tenancy Contract"
         end;
     end;
 
+
     procedure renewalbrokerdata()
     var
-        leaseproposal: Record "Lease Proposal Details";
+        contractrenewal: Record "Contract Renewal";
     begin
-        leaseproposal.SetRange("Proposal ID", Rec."Proposal ID");
-        if leaseproposal.FindSet() then begin
-            if leaseproposal."Vendor ID" = '' then
-                Message('Broker is not included.');
-            exit;
+        contractrenewal.SetRange("Proposal ID", Rec."Proposal ID");
 
-            Rec."Vendor ID" := leaseproposal."Vendor ID";
-            "Vendor Name" := leaseproposal."Vendor Name";
-            "Start Date" := leaseproposal."Start Date";
-            "End Date" := leaseproposal."End Date";
-            "Contract Status" := leaseproposal."Contract Status";
-            "Calculation Method" := leaseproposal."Calculation Method";
-            "Percentage Type" := leaseproposal."Percentage Type";
-            Percentage := leaseproposal.Percentage;
-            Amount := leaseproposal.Amount;
-            "Base Amount" := leaseproposal."Base Amount";
-            "Frequency Of Payment" := leaseproposal."Frequency Of Payment";
+        if contractrenewal.FindSet() then begin
+            if contractrenewal."Vendor ID" = '' then begin
+                Message('Broker is not included.');
+                exit;
+            end;
+
+            Rec."Vendor ID" := contractrenewal."Vendor ID";
+            "Vendor Name" := contractrenewal."Vendor Name";
+            "Start Date" := contractrenewal."Start Date";
+            "End Date" := contractrenewal."End Date";
+            "Contract Status" := contractrenewal."Contract Status";
+            "Calculation Method" := contractrenewal."Calculation Method";
+            "Percentage Type" := contractrenewal."Percentage Type";
+            Percentage := contractrenewal.Percentage;
+            Amount := contractrenewal.Amount;
+            "Base Amount" := contractrenewal."Base Amount";
+            "Frequency Of Payment" := contractrenewal."Frequency Of Payment";
             ManagementFeeMasterDetailsFetch();
         end;
     end;
