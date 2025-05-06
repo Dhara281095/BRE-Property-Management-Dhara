@@ -241,6 +241,18 @@ page 50951 "Final Billing Calculation"
                             ApplicationArea = All;
                             Caption = 'Credit Note ID';
                             Editable = false;
+                            DrillDown = true;
+
+                            trigger OnDrillDown()
+                            var
+                                creditnote: Record "Credit Note";
+                            begin
+                                creditnote.SetRange("Credit Note No.", Rec."Credit Note ID");
+                                if creditnote.FindFirst() then
+                                    Page.Run(Page::"Credit Note Card", creditnote)
+                                else
+                                    Message('No Credit Note found with this ID.');
+                            end;
                         }
                         field("Credit Note Document"; Rec."Credit Note Document")
                         {
