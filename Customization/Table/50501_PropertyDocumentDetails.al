@@ -34,10 +34,10 @@ table 50501 "Property Document Details"
             Caption = 'Entry No';
         }
 
-        field(50105; "View"; Text[20])
+        field(50105; "View & Download"; Text[20])
         {
             DataClassification = ToBeClassified;
-            Caption = 'View';
+
             InitValue = 'View';
 
         }
