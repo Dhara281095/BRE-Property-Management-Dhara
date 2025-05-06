@@ -53,6 +53,11 @@ page 50966 "Credit Note Card"
                         TenancyContract: Record "Final Calculation";
                     begin
                         TenancyContract.SetRange("Contract ID", Rec."Contract ID");
+                        if Rec.FindFirst() then
+                            Error('This Contract ID already exists. Please select a different one.');
+                        exit;
+
+
                         if TenancyContract.FindSet() then begin
                             Rec."Credit Note Type" := Rec."Credit Note Type"::"Termination Credit Note";
                             Rec."Contract Start Date" := TenancyContract."Contract Start Date";
@@ -262,6 +267,17 @@ page 50966 "Credit Note Card"
                         ApprovalCreditNote."Tenant Name" := CreditNote."Tenant Name";
                         ApprovalCreditNote."Credit Note Type" := CreditNote."Credit Note Type";
                         ApprovalCreditNote.Modify();
+
+                        billingcalculation.SetRange("Contract ID", Rec."Contract ID");
+                        if billingcalculation.FindSet() then begin
+                            // Modify existing approval record
+                            repeat
+                                creditnoteamount += billingcalculation."Amount Including VAT";
+                            until billingcalculation.Next() = 0;
+
+                            ApprovalCreditNote."Credit Note Amount" := creditnoteamount;
+                            ApprovalCreditNote.Modify();
+                        end;
                         Message('Approval Request Modified successfully!');
                     end else begin
                         // Insert new approval record
@@ -276,15 +292,19 @@ page 50966 "Credit Note Card"
                         ApprovalCreditNote."Tenant Name" := CreditNote."Tenant Name";
                         ApprovalCreditNote."Credit Note Type" := CreditNote."Credit Note Type";
                         ApprovalCreditNote.Insert(true);
-                        Message('Approval Request Sent successfully!');
-                    end;
+                        //  Message('Approval Request Sent successfully!');
 
-                    billingcalculation.SetRange("Contract ID", Rec."Contract ID");
-                    if billingcalculation.FindSet() then begin
-                        // Modify existing approval record
-                        creditnoteamount += billingcalculation."Amount Including VAT";
-                        ApprovalCreditNote."Credit Note Amount" := creditnoteamount;
-                        ApprovalCreditNote.Modify();
+                        billingcalculation.SetRange("Contract ID", Rec."Contract ID");
+                        if billingcalculation.FindSet() then begin
+                            // Modify existing approval record
+                            repeat
+                                creditnoteamount += billingcalculation."Amount Including VAT";
+                            until billingcalculation.Next() = 0;
+
+                            ApprovalCreditNote."Credit Note Amount" := creditnoteamount;
+                            ApprovalCreditNote.Modify();
+                        end;
+                        Message('Approval Request Sent successfully!');
                     end;
                 end;
 
