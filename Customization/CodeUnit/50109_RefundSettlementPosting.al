@@ -29,6 +29,9 @@ codeunit 50109 "Refund Settlement Posting Mgt."
         GenJnlTemplate := 'CASH RECE';
         GenJnlBatch := 'DEFAULT';
 
+        // Clear any existing journal lines in this batch before creating new ones
+        ClearJournalLines(GenJnlTemplate, GenJnlBatch);
+
         // Get property type from Contract table
         TenantContract.Reset();
         TenantContract.SetRange("FC ID", FinalSettlementRefund."FC ID");
@@ -98,6 +101,9 @@ codeunit 50109 "Refund Settlement Posting Mgt."
 
         // Post the Journal
         GenJnlPost.Run(GenJnlLine);
+
+        // Clear journal lines after posting
+        ClearJournalLines(GenJnlTemplate, GenJnlBatch);
 
         Message('Refund amount of %1 posted successfully.', Amount);
     end;
@@ -193,5 +199,16 @@ codeunit 50109 "Refund Settlement Posting Mgt."
             GenJournalLine.DeleteAll();
 
         Message('Cash Receipt journal entries created successfully.');
+    end;
+
+    local procedure ClearJournalLines(TemplateName: Code[10]; BatchName: Code[10])
+    var
+        GenJnlLine: Record "Gen. Journal Line";
+    begin
+        GenJnlLine.Reset();
+        GenJnlLine.SetRange("Journal Template Name", TemplateName);
+        GenJnlLine.SetRange("Journal Batch Name", BatchName);
+        if not GenJnlLine.IsEmpty() then
+            GenJnlLine.DeleteAll(true);
     end;
 }

@@ -43,7 +43,7 @@ page 50940 "FinalSettlemtRefundCard"
             repeater(RefundPaymentDetails)
             {
                 Caption = 'Refund Payment Details';
-                Editable = (Rec."Refund Payment Status" <> Rec."Refund Payment Status"::Paid);
+                // Editable = (Rec."Refund Payment Status" <> Rec."Refund Payment Status"::Paid);
 
                 field("FC ID"; Rec."FC ID")
                 {
@@ -99,8 +99,10 @@ page 50940 "FinalSettlemtRefundCard"
                             Rec.Modify();  // Save changes to the current record
                         end;
 
-                        RefundPostingMgt.PostRefundSettlementAmount(Rec);
-                        RefundPostingMgt.refundcashrecipt();
+                        if Rec."Refund Payment Status" = Rec."Refund Payment Status"::Paid then begin
+                            RefundPostingMgt.PostRefundSettlementAmount(Rec);
+                            // RefundPostingMgt.refundcashrecipt();
+                        end;
                     end;
                 }
                 field("Refund Cheque No."; Rec."Refund Cheque No.")
