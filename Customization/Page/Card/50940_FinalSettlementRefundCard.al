@@ -43,7 +43,7 @@ page 50940 "FinalSettlemtRefundCard"
             repeater(RefundPaymentDetails)
             {
                 Caption = 'Refund Payment Details';
-                Editable = (Rec."Refund Payment Status" <> PaymentStatus::Received);
+                Editable = (Rec."Refund Payment Status" <> Rec."Refund Payment Status"::Paid);
 
                 field("FC ID"; Rec."FC ID")
                 {
@@ -87,13 +87,13 @@ page 50940 "FinalSettlemtRefundCard"
                         RefundPostingMgt: Codeunit "Refund Settlement Posting Mgt.";
                     begin
                         // Check if Receivable Payment Status is 'Received'
-                        if Rec."Refund Payment Status" = PaymentStatus::Received then begin
-                            // Set PaymentStatus to 'Received' as well
+                        if Rec."Refund Payment Status" = Rec."Refund Payment Status"::Paid then begin
+                            // Set Rec."Refund Payment Status" to 'Received' as well
                             Rec."Refund Status" := Rec."Refund Status"::Paid;
                             Rec.Modify();  // Save changes to the current record
                         end;
 
-                        if Rec."Refund Payment Status" <> PaymentStatus::Received then begin
+                        if Rec."Refund Payment Status" <> Rec."Refund Payment Status"::Paid then begin
                             // Set PaymentStatus to 'Received' as well
                             Rec."Refund Status" := Rec."Refund Status"::Pending;
                             Rec.Modify();  // Save changes to the current record
@@ -170,30 +170,30 @@ page 50940 "FinalSettlemtRefundCard"
             Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
             Rec."Refund Total Amount" := Rec."Net Refund to the Tenant";
             //   finalCalculationgrid.SetRange("Tenant ID", Rec."Refund Tenant ID");
-            if Rec."Refund Payment Status" = PaymentStatus::" " then //begin
-                Rec."Refund Payment Status" := PaymentStatus::Scheduled;
+            // if Rec."Refund Payment Status" = PaymentStatus::" " then //begin
+            //     Rec."Refund Payment Status" := PaymentStatus::Scheduled;
 
-            if Rec."Refund Payment Status" = PaymentStatus::Received then begin
+            if Rec."Refund Payment Status" = Rec."Refund Payment Status"::Paid then begin
                 Rec."Refund Status" := Rec."Refund Status"::Paid;
                 Rec."Balance Refundable" := 0;
                 Rec."Refund Processed" := Rec."Net Refund to the Tenant";
                 Rec.Modify();
             end;
 
-            if Rec."Refund Payment Status" = PaymentStatus::Received then
+            if Rec."Refund Payment Status" = Rec."Refund Payment Status"::Paid then
                 exit;
 
             if Rec."Refund Due Date" = Today() then begin
-                Rec."Refund Payment Status" := PaymentStatus::Due;
+                Rec."Refund Payment Status" := Rec."Refund Payment Status"::Due;
             end
             else if Rec."Refund Due Date" > Today() then begin
-                Rec."Refund Payment Status" := PaymentStatus::Scheduled;
+                Rec."Refund Payment Status" := Rec."Refund Payment Status"::Scheduled;
             end
             else if Rec."Refund Due Date" = 0D then begin
-                Rec."Refund Payment Status" := PaymentStatus::Scheduled;
+                Rec."Refund Payment Status" := Rec."Refund Payment Status"::Scheduled;
             end
             else if Rec."Refund Due Date" < Today() then begin
-                Rec."Refund Payment Status" := PaymentStatus::Overdue;
+                Rec."Refund Payment Status" := Rec."Refund Payment Status"::Overdue;
             end;
             Rec.Modify();
 
@@ -223,30 +223,30 @@ page 50940 "FinalSettlemtRefundCard"
             Rec."Net Refund to the Tenant" := finalCalculationgrid."Amount Refundable";
             Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
             Rec."Refund Total Amount" := Rec."Net Refund to the Tenant";
-            if Rec."Refund Payment Status" = PaymentStatus::" " then //begin
-                Rec."Refund Payment Status" := PaymentStatus::Scheduled;
+            // if Rec."Refund Payment Status" = ' ' then //begin
+            //     Rec."Refund Payment Status" := PaymentStatus::Scheduled;
 
-            if Rec."Refund Payment Status" = PaymentStatus::Received then begin
+            if Rec."Refund Payment Status" = Rec."Refund Payment Status"::Paid then begin
                 Rec."Refund Status" := Rec."Refund Status"::Paid;
                 Rec."Balance Refundable" := 0;
                 Rec."Refund Processed" := Rec."Net Refund to the Tenant";
                 Rec.Modify();
             end;
 
-            if Rec."Refund Payment Status" = PaymentStatus::Received then
+            if Rec."Refund Payment Status" = Rec."Refund Payment Status"::Paid then
                 exit;
 
             if Rec."Refund Due Date" = Today() then begin
-                Rec."Refund Payment Status" := PaymentStatus::Due;
+                Rec."Refund Payment Status" := Rec."Refund Payment Status"::Due;
             end
             else if Rec."Refund Due Date" > Today() then begin
-                Rec."Refund Payment Status" := PaymentStatus::Scheduled;
+                Rec."Refund Payment Status" := Rec."Refund Payment Status"::Scheduled;
             end
             else if Rec."Refund Due Date" = 0D then begin
-                Rec."Refund Payment Status" := PaymentStatus::Scheduled;
+                Rec."Refund Payment Status" := Rec."Refund Payment Status"::Scheduled;
             end
             else if Rec."Refund Due Date" < Today() then begin
-                Rec."Refund Payment Status" := PaymentStatus::Overdue;
+                Rec."Refund Payment Status" := Rec."Refund Payment Status"::Overdue;
             end;
             Rec.Modify();
         end;
@@ -279,30 +279,30 @@ page 50940 "FinalSettlemtRefundCard"
             Rec."Net Refund to the Tenant" := finalCalculationgrid."Amount Refundable";
             Rec."Balance Refundable" := Rec."Net Refund to the Tenant";
             Rec."Refund Total Amount" := Rec."Net Refund to the Tenant";
-            if Rec."Refund Payment Status" = PaymentStatus::" " then
-                Rec."Refund Payment Status" := PaymentStatus::Scheduled;
+            // if Rec."Refund Payment Status" = PaymentStatus::" " then
+            //     Rec."Refund Payment Status" := PaymentStatus::Scheduled;
 
-            if Rec."Refund Payment Status" = PaymentStatus::Received then begin
+            if Rec."Refund Payment Status" = Rec."Refund Payment Status"::Paid then begin
                 Rec."Refund Status" := Rec."Refund Status"::Paid;
                 Rec."Balance Refundable" := 0;
                 Rec."Refund Processed" := Rec."Net Refund to the Tenant";
                 Rec.Modify();
             end;
 
-            if Rec."Refund Payment Status" = PaymentStatus::Received then
+            if Rec."Refund Payment Status" = Rec."Refund Payment Status"::Paid then
                 exit;
 
             if Rec."Refund Due Date" = Today() then begin
-                Rec."Refund Payment Status" := PaymentStatus::Due;
+                Rec."Refund Payment Status" := Rec."Refund Payment Status"::Due;
             end
             else if Rec."Refund Due Date" > Today() then begin
-                Rec."Refund Payment Status" := PaymentStatus::Scheduled;
+                Rec."Refund Payment Status" := Rec."Refund Payment Status"::Scheduled;
             end
             else if Rec."Refund Due Date" = 0D then begin
-                Rec."Refund Payment Status" := PaymentStatus::Scheduled;
+                Rec."Refund Payment Status" := Rec."Refund Payment Status"::Scheduled;
             end
             else if Rec."Refund Due Date" < Today() then begin
-                Rec."Refund Payment Status" := PaymentStatus::Overdue;
+                Rec."Refund Payment Status" := Rec."Refund Payment Status"::Overdue;
             end;
             Rec.Modify();
         end;
