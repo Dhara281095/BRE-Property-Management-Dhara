@@ -119,8 +119,8 @@ table 50922 "FinalSettlement"
 
                     // Call the Final Settlement Posting codeunit to post the amount
                     FinalSettlementPosting.PostFinalSettlementAmount(Rec);
-                    FinalSettlementPosting.receivecashrecipt(Rec);
-                    FinalSettlementPosting.receivablecashrecipt(Rec);
+                    // FinalSettlementPosting.receivecashrecipt(Rec);
+                    // FinalSettlementPosting.receivablecashrecipt(Rec);
                 end
             end;
         }
