@@ -127,7 +127,7 @@ page 50969 "Credit Note Approval List"
                 Promoted = true;
                 PromotedCategory = Process;
                 PromotedIsBig = true;
-                //Visible = IsFinanceManager;
+                Visible = IsFinanceManager;
 
 
                 trigger OnAction()
@@ -169,7 +169,7 @@ page 50969 "Credit Note Approval List"
                 Promoted = true;
                 PromotedCategory = Process;
                 PromotedIsBig = true;
-                // Visible = IsFinanceManager;
+                Visible = IsFinanceManager;
 
                 trigger OnAction()
                 var
