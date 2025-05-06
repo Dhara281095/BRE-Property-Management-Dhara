@@ -18,47 +18,47 @@ page 50719 "Contract End Process Approval"
                 field("ID"; Rec."ID")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field("Property_M Status"; Rec."Property_M Status")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field("Lease_M Status"; Rec."Lease_M Status")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field("Tenant ID"; Rec."Tenant ID")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field("Tenant Name"; Rec."Tenant Name")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field("Contract ID"; Rec."Contract ID")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field("Contract Start Date"; Rec."Start Date")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field("Contract End Date"; Rec."End Date")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field("Tenant Email"; Rec."Tenant Email")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
                 field("Lease Manager Remark"; Rec."Lease Manager Remark")
                 {
@@ -73,7 +73,7 @@ page 50719 "Contract End Process Approval"
                 field("Value"; Rec."Value")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                     Visible = false;
                 }
 
