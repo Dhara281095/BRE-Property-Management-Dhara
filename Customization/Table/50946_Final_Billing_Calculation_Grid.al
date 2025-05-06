@@ -229,6 +229,12 @@ table 50946 "Final Billing Calculation Grid"
             Caption = 'Credit Note Document URL';
             DataClassification = ToBeClassified;
         }
+        field(50140; "Line"; Code[50])
+        {
+            Caption = 'Credit Note Posted ID';
+            DataClassification = ToBeClassified;
+        }
+
     }
 
     keys
