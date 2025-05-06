@@ -654,11 +654,11 @@ page 50335 "Contract Renewal Card"
                     ApplicationArea = All;
                     Editable = false;
                 }
-                field("Percentage/Amount"; Rec."Percentage/Amount")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
+                // field("Percentage/Amount"; Rec."Percentage/Amount")
+                // {
+                //     ApplicationArea = All;
+                //     Editable = false;
+                // }
 
                 field("Base Amount"; Rec."Base Amount")
                 {
