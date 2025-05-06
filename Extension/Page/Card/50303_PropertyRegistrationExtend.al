@@ -1,0 +1,27 @@
+pageextension 50303 PropertyRegistrationCardExt extends "Property Registration Card"
+{
+    layout
+    {
+        modify("Documents") // Ensure this matches the group/control name
+        {
+            Visible = ShowDocAttachment;
+        }
+    }
+
+    trigger OnOpenPage()
+    begin
+        ShowDocAttachment := not (IsUserInProfile('LEASE_MANAGER') or IsUserInProfile('FINANCE MANAGER'));
+    end;
+
+    var
+        ShowDocAttachment: Boolean;
+
+    local procedure IsUserInProfile(ProfileID: Code[20]): Boolean
+    var
+        AccessControl: Record "User Personalization";
+    begin
+        AccessControl.SetRange("User ID", UserId());
+        AccessControl.SetRange("Profile ID", ProfileID);
+        exit(AccessControl.FindFirst());
+    end;
+}

@@ -4,6 +4,8 @@ pageextension 50101 Items extends "Item Card"
 
     layout
     {
+
+
         modify("No.")
         {
             Editable = false;
@@ -93,6 +95,8 @@ pageextension 50101 Items extends "Item Card"
         {
             Editable = editablefalsefieldNonInventoryType;
         }
+
+
 
 
         addafter("Last Date Modified")
@@ -291,16 +295,7 @@ pageextension 50101 Items extends "Item Card"
                     ApplicationArea = All;
                     Editable = false;
                 }
-                // field("Merge Units"; Rec."Merge Units") // Custom Field
-                // {
-                //     ApplicationArea = All;
-                //     Caption = 'Merge Units';
-                //     Editable = false;
-                //     trigger OnValidate()
-                //     begin
-                //         AutoGenerateUnitName(); // Call to auto-generate the Unit Name when Merge Units changes
-                //     end;
-                // }
+
                 field("Unit Status"; rec."Unit Status")
                 {
                     ApplicationArea = All;
@@ -312,82 +307,13 @@ pageextension 50101 Items extends "Item Card"
 
 
 
-            // group(MergedUnits)
-            // {
-            //     Caption = 'Merged Units';
-            //     Visible = IsMergedUnitsVisible;
-
-            //     field("Merged Unit ID"; Rec."Merged Unit ID")
-            //     {
-            //         ApplicationArea = All;
-            //     }
-            //     // field("Merged FixedNumber"; Rec."Merged FixedNumber")
-            //     // {
-            //     //     ApplicationArea = All;
-            //     // }
-            //     field("Merged Property ID"; Rec."Merged Property ID")
-            //     {
-            //         ApplicationArea = All;
-            //         Editable = false;
-            //     }
-            //     field("Merged Property Name"; Rec."Merged Property Name")
-            //     {
-            //         ApplicationArea = All;
-            //         Editable = false;
-            //     }
-            //     field("UnitID"; Rec."Unit ID")
-            //     {
-            //         ApplicationArea = All;
-            //         Editable = false;
-            //     }
-            //     field("Merge Unit Name"; Rec."Merge Unit Name")
-            //     {
-            //         ApplicationArea = All;
-            //         Editable = false;
-            //     }
-            //     field("Merged Base Unit of Measure"; Rec."Merged Base Unit of Measure")
-            //     {
-            //         ApplicationArea = All;
-            //         Editable = false;
-            //     }
-            //     field("Merged Unit Size"; Rec."Merged Unit Size")
-            //     {
-            //         ApplicationArea = All;
-            //         Editable = false;
-            //     }
-            //     field("Merged Amount"; Rec."Merged Amount")
-            //     {
-            //         ApplicationArea = All;
-            //         Editable = false;
-            //     }
-            //     field("Merged Property Type"; Rec."Merged Property Type")
-            //     {
-            //         ApplicationArea = All;
-            //         Editable = false;
-            //     }
-            //     field("Merged Status"; Rec."Merged Status")
-            //     {
-            //         ApplicationArea = All;
-            //         Editable = false;
-            //     }
-            //     field("Merged Spliting Status"; Rec."Merged Spliting Status")
-            //     {
-            //         ApplicationArea = All;
-            //         Editable = false;
-            //     }
-            //     field("Single Unit Name"; Rec."Single Unit Name")
-            //     {
-            //         ApplicationArea = All;
-            //         Editable = false;
-            //     }
-            // }
-
             part("Document Attachments"; "Unit Document SubPage")
             {
                 SubPageLink = UnitID = FIELD("No."); // Link to filter attachments for this owner only
                 ApplicationArea = All;
-                Visible = isVisible;
+                // Visible = isVisible;
                 Editable = editablefalsefieldNonInventoryType;
+                Visible = ShowFinancialFields;
 
             }
         }
@@ -587,15 +513,34 @@ pageextension 50101 Items extends "Item Card"
     begin
         hideshowfields := hidefields();
         editablefalsefieldNonInventoryType := editablefalseNonInventory();
+        ShowFinancialFields := not IsUserInProfile('FINANCE MANAGER');
 
     end;
 
     var
         ISPrimaryType: Boolean;
+
+        ShowFinancialFields: Boolean;
         documentattachment: Codeunit UploadAttachment;
 
         hideshowfields: Boolean;
         editablefalsefieldNonInventoryType: Boolean;
+
+
+
+
+    local procedure IsUserInProfile(ProfileID: Code[20]): Boolean
+    var
+        AccessControl: Record "User Personalization";
+    begin
+        AccessControl.SetRange("User ID", UserId());
+        AccessControl.SetRange("Profile ID", ProfileID);
+        exit(AccessControl.FindFirst());
+    end;
+
+
+
+
     // trigger OnOpenPage()
     // begin
     //     // Initialize visibility when page opens
