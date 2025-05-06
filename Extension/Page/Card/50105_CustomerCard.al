@@ -10,6 +10,28 @@ pageextension 50105 Customers extends "Customer Card"
         {
             Visible = false;
         }
+        modify("salesperson code")
+        {
+            Visible = false;
+        }
+        modify("Service Zone Code")
+        {
+            Visible = false;
+        }
+        modify("Document Sending Profile")
+        {
+            Visible = false;
+        }
+        // modify("Profit (LCY)")
+        // {
+        //     Visible = false;
+        // }
+        modify("Disable Search by Name")
+        {
+            Visible = false;
+        }
+
+
         modify("Balance Due (LCY)")
         {
             Visible = false;
@@ -38,6 +60,8 @@ pageextension 50105 Customers extends "Customer Card"
         {
             Visible = false;
         }
+
+
         modify(Statistics)
         {
             Visible = false;
@@ -115,6 +139,11 @@ pageextension 50105 Customers extends "Customer Card"
         {
             Caption = 'Mailing Address';
         }
+        modify(ShowMap)
+        {
+            Visible = false;
+
+        }
         // addafter("No.")
         // {
         //     field("Tenant ID"; Rec."Tenant ID")
@@ -161,6 +190,7 @@ pageextension 50105 Customers extends "Customer Card"
             {
                 ApplicationArea = All;
                 Caption = 'Code Area';
+                Visible = false;
             }
             field(Occupation; Rec.Occupation)
             {
@@ -180,6 +210,7 @@ pageextension 50105 Customers extends "Customer Card"
             {
                 ApplicationArea = All;
                 Caption = 'Business unit';
+                Visible = false;
             }
         }
         addafter("Address & Contact")
