@@ -119,12 +119,12 @@ page 50129 "Security Deposit Entries"
                         Rec.Modify();
 
                         // Get accounts from G/L Setup
-                        GLSetup.Get();
+                        // GLSetup.Get();
                         // Default account numbers (can be replaced with actual G/L Setup fields)
-                        TenantReceivableResAcc := '1501'; // Default Tenant Receivable Residential Account
-                        TenantReceivableComAcc := '1506'; // Default Tenant Receivable Commercial Account
-                        SecurityDepositRefundAcc := '4502'; // Default Security Deposit Refund Account
-                        ChillerDepositRefundAcc := '4508'; // Default Chiller Deposit Refund Account
+                        // TenantReceivableResAcc := '1501'; // Default Tenant Receivable Residential Account
+                        // TenantReceivableComAcc := '1506'; // Default Tenant Receivable Commercial Account
+                        // SecurityDepositRefundAcc := '4502'; // Default Security Deposit Refund Account
+                        // ChillerDepositRefundAcc := '4508'; // Default Chiller Deposit Refund Account
 
                         // If you have these accounts in G/L Setup, you can use them instead:
                         // TenantReceivableResAcc := GLSetup."Tenant Receivable Res. Acc.";
@@ -287,112 +287,112 @@ page 50129 "Security Deposit Entries"
                                 end;
                                 FinaCalculation.Modify();
 
-                                // NEW CODE: Create and post journal entries
-                                // Set posting date to today
-                                PostingDate := Today;
+                                // // NEW CODE: Create and post journal entries
+                                // // Set posting date to today
+                                // PostingDate := Today;
 
-                                // Get next document number
-                                DocumentNo := 'RFND-' + Format(TenancyContract."Contract ID") + '-' + Format(FinaCalculation."FC ID");
+                                // // Get next document number
+                                // DocumentNo := 'RFND-' + Format(TenancyContract."Contract ID") + '-' + Format(FinaCalculation."FC ID");
 
-                                // Initialize General Journal Batch
-                                GenJournalBatch.Reset();
-                                GenJournalBatch.SetRange("Journal Template Name", 'CASH RECE');
-                                GenJournalBatch.SetRange(Name, 'DEFAULT');
-                                if not GenJournalBatch.FindFirst() then
-                                    Error('Journal batch DEFAULT in template GENERAL not found');
+                                // // Initialize General Journal Batch
+                                // GenJournalBatch.Reset();
+                                // GenJournalBatch.SetRange("Journal Template Name", 'CASH RECE');
+                                // GenJournalBatch.SetRange(Name, 'DEFAULT');
+                                // if not GenJournalBatch.FindFirst() then
+                                //     Error('Journal batch DEFAULT in template GENERAL not found');
 
-                                // Find last line number in the journal
-                                GenJournalLine.Reset();
-                                GenJournalLine.SetRange("Journal Template Name", 'CASH RECE');
-                                GenJournalLine.SetRange("Journal Batch Name", 'DEFAULT');
-                                if GenJournalLine.FindLast() then
-                                    LastLineNo := GenJournalLine."Line No." + 1
-                                else
-                                    LastLineNo := 1;
+                                // // Find last line number in the journal
+                                // GenJournalLine.Reset();
+                                // GenJournalLine.SetRange("Journal Template Name", 'CASH RECE');
+                                // GenJournalLine.SetRange("Journal Batch Name", 'DEFAULT');
+                                // if GenJournalLine.FindLast() then
+                                //     LastLineNo := GenJournalLine."Line No." + 1
+                                // else
+                                //     LastLineNo := 1;
 
-                                // 1. Post TotalRefundableDeposit entry to appropriate Tenant Receivable account based on Property Classification (negative)
-                                if TotalRefundableDeposit <> 0 then begin
-                                    // Check Property Classification in Tenancy Contract
-                                    TenancyContract.Reset();
-                                    TenancyContract.SetRange("Contract ID", Rec."Contract ID");
-                                    if TenancyContract.FindFirst() then begin
-                                        // Choose appropriate G/L Account based on Property Classification
-                                        if TenancyContract."Property Classification" = 'Residential' then
-                                            CreateJournalLine(
-                                                'CASH RECE', 'DEFAULT', LastLineNo,
-                                                PostingDate, DocumentNo,
-                                                'G/L Account', TenantReceivableResAcc, // Tenant Receivable Residential Account
-                                                Format(Rec."Contract ID") + ' - Tenant Receivable Residential',
-                                                -TotalRefundableDeposit, TenantNo
-                                            )
-                                        else if TenancyContract."Property Classification" = 'Commercial' then
-                                            CreateJournalLine(
-                                                'CASH RECE', 'DEFAULT', LastLineNo,
-                                                PostingDate, DocumentNo,
-                                                'G/L Account', TenantReceivableComAcc, // Tenant Receivable Commercial Account
-                                                Format(Rec."Contract ID") + ' - Tenant Receivable Commercial',
-                                                -TotalRefundableDeposit, TenantNo
-                                            )
-                                        else
-                                            // Default account if classification doesn't match expected values
-                                            CreateJournalLine(
-                                                'CASH RECE', 'DEFAULT', LastLineNo,
-                                                PostingDate, DocumentNo,
-                                                'G/L Account', TenantReceivableResAcc, // Default to Residential account
-                                                Format(Rec."Contract ID") + ' - Tenant Receivable',
-                                                -TotalRefundableDeposit, TenantNo
-                                            );
-                                    end else
-                                        // If tenancy contract not found, use default account
-                                        CreateJournalLine(
-                                            'CASH RECE', 'DEFAULT', LastLineNo,
-                                            PostingDate, DocumentNo,
-                                            'G/L Account', TenantReceivableResAcc, // Default Tenant Receivable Account
-                                            Format(Rec."Contract ID") + ' - Tenant Receivable',
-                                            -TotalRefundableDeposit, TenantNo
-                                        );
+                                // // 1. Post TotalRefundableDeposit entry to appropriate Tenant Receivable account based on Property Classification (negative)
+                                // if TotalRefundableDeposit <> 0 then begin
+                                //     // Check Property Classification in Tenancy Contract
+                                //     TenancyContract.Reset();
+                                //     TenancyContract.SetRange("Contract ID", Rec."Contract ID");
+                                //     if TenancyContract.FindFirst() then begin
+                                //         // Choose appropriate G/L Account based on Property Classification
+                                //         if TenancyContract."Property Classification" = 'Residential' then
+                                //             CreateJournalLine(
+                                //                 'CASH RECE', 'DEFAULT', LastLineNo,
+                                //                 PostingDate, DocumentNo,
+                                //                 'G/L Account', TenantReceivableResAcc, // Tenant Receivable Residential Account
+                                //                 Format(Rec."Contract ID") + ' - Tenant Receivable Residential',
+                                //                 -TotalRefundableDeposit, TenantNo
+                                //             )
+                                //         else if TenancyContract."Property Classification" = 'Commercial' then
+                                //             CreateJournalLine(
+                                //                 'CASH RECE', 'DEFAULT', LastLineNo,
+                                //                 PostingDate, DocumentNo,
+                                //                 'G/L Account', TenantReceivableComAcc, // Tenant Receivable Commercial Account
+                                //                 Format(Rec."Contract ID") + ' - Tenant Receivable Commercial',
+                                //                 -TotalRefundableDeposit, TenantNo
+                                //             )
+                                //         else
+                                //             // Default account if classification doesn't match expected values
+                                //             CreateJournalLine(
+                                //                 'CASH RECE', 'DEFAULT', LastLineNo,
+                                //                 PostingDate, DocumentNo,
+                                //                 'G/L Account', TenantReceivableResAcc, // Default to Residential account
+                                //                 Format(Rec."Contract ID") + ' - Tenant Receivable',
+                                //                 -TotalRefundableDeposit, TenantNo
+                                //             );
+                                //     end else
+                                //         // If tenancy contract not found, use default account
+                                //         CreateJournalLine(
+                                //             'CASH RECE', 'DEFAULT', LastLineNo,
+                                //             PostingDate, DocumentNo,
+                                //             'G/L Account', TenantReceivableResAcc, // Default Tenant Receivable Account
+                                //             Format(Rec."Contract ID") + ' - Tenant Receivable',
+                                //             -TotalRefundableDeposit, TenantNo
+                                //         );
 
-                                    LastLineNo += 10000;
-                                end;
+                                //     LastLineNo += 10000;
+                                // end;
 
-                                // 2. Post NetBalanceAmount to Security Refund Deposit account (positive)
-                                if NetBalanceAmount <> 0 then begin
-                                    CreateJournalLine(
-                                        'CASH RECE', 'DEFAULT', LastLineNo,
-                                        PostingDate, DocumentNo,
-                                        'G/L Account', SecurityDepositRefundAcc, // Security Refund Deposit Account
-                                        Format(Rec."Contract ID") + ' - Security Deposit Refund',
-                                        NetBalanceAmount, TenantNo
-                                    );
-                                    LastLineNo += 10000;
-                                end;
+                                // // 2. Post NetBalanceAmount to Security Refund Deposit account (positive)
+                                // if NetBalanceAmount <> 0 then begin
+                                //     CreateJournalLine(
+                                //         'CASH RECE', 'DEFAULT', LastLineNo,
+                                //         PostingDate, DocumentNo,
+                                //         'G/L Account', SecurityDepositRefundAcc, // Security Refund Deposit Account
+                                //         Format(Rec."Contract ID") + ' - Security Deposit Refund',
+                                //         NetBalanceAmount, TenantNo
+                                //     );
+                                //     LastLineNo += 10000;
+                                // end;
 
-                                // 3. Post Chiller Deposit to Chiller Deposit Refund account (positive)
-                                if ChillarDepositAmount <> 0 then begin
-                                    CreateJournalLine(
-                                        'CASH RECE', 'DEFAULT', LastLineNo,
-                                        PostingDate, DocumentNo,
-                                        'G/L Account', ChillerDepositRefundAcc, // Chiller Deposit Refund Account
-                                        Format(Rec."Contract ID") + ' - Chiller Deposit Refund',
-                                        ChillarDepositAmount, TenantNo
-                                    );
-                                    LastLineNo += 10000;
-                                end;
+                                // // 3. Post Chiller Deposit to Chiller Deposit Refund account (positive)
+                                // if ChillarDepositAmount <> 0 then begin
+                                //     CreateJournalLine(
+                                //         'CASH RECE', 'DEFAULT', LastLineNo,
+                                //         PostingDate, DocumentNo,
+                                //         'G/L Account', ChillerDepositRefundAcc, // Chiller Deposit Refund Account
+                                //         Format(Rec."Contract ID") + ' - Chiller Deposit Refund',
+                                //         ChillarDepositAmount, TenantNo
+                                //     );
+                                //     LastLineNo += 10000;
+                                // end;
 
-                                // 4. Post Other Deposit to Chiller Deposit Refund account (positive) - using same account
-                                if OtherDepositAmount <> 0 then begin
-                                    CreateJournalLine(
-                                        'CASH RECE', 'DEFAULT', LastLineNo,
-                                        PostingDate, DocumentNo,
-                                        'G/L Account', ChillerDepositRefundAcc, // Using Chiller Deposit account for Other Deposit too
-                                        Format(Rec."Contract ID") + ' - Other Deposit Refund',
-                                        OtherDepositAmount, TenantNo
-                                    );
-                                end;
+                                // // 4. Post Other Deposit to Chiller Deposit Refund account (positive) - using same account
+                                // if OtherDepositAmount <> 0 then begin
+                                //     CreateJournalLine(
+                                //         'CASH RECE', 'DEFAULT', LastLineNo,
+                                //         PostingDate, DocumentNo,
+                                //         'G/L Account', ChillerDepositRefundAcc, // Using Chiller Deposit account for Other Deposit too
+                                //         Format(Rec."Contract ID") + ' - Other Deposit Refund',
+                                //         OtherDepositAmount, TenantNo
+                                //     );
+                                // end;
 
-                                // Post the journal
-                                Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJournalLine);
-                                Message('Journal entries have been created and posted successfully');
+                                // // Post the journal
+                                // Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJournalLine);
+                                // Message('Journal entries have been created and posted successfully');
                             end else begin
                                 Message('No Pending Receivable Grid record found for Contract ID: %1', Rec."Contract ID");
                             end;
@@ -466,44 +466,44 @@ page 50129 "Security Deposit Entries"
     end;
 
     // New procedure to create journal lines
-    local procedure CreateJournalLine(JournalTemplate: Code[20]; JournalBatch: Code[20]; LineNo: Integer; PostingDate: Date; DocumentNo: Code[20]; AccountType: Text[30]; AccountNo: Code[20]; Description: Text[100]; Amount: Decimal; TenantNo: Code[20])
-    var
-        GenJournalLine: Record "Gen. Journal Line";
-    begin
-        // Ensure Document No. is not empty
-        if DocumentNo = '' then
-            Error('Document No. must have a value.');
+    // local procedure CreateJournalLine(JournalTemplate: Code[20]; JournalBatch: Code[20]; LineNo: Integer; PostingDate: Date; DocumentNo: Code[20]; AccountType: Text[30]; AccountNo: Code[20]; Description: Text[100]; Amount: Decimal; TenantNo: Code[20])
+    // var
+    //     GenJournalLine: Record "Gen. Journal Line";
+    // begin
+    //     // Ensure Document No. is not empty
+    //     if DocumentNo = '' then
+    //         Error('Document No. must have a value.');
 
-        GenJournalLine.Init();
-        GenJournalLine."Journal Template Name" := JournalTemplate;
-        GenJournalLine."Journal Batch Name" := JournalBatch;
-        GenJournalLine."Line No." := LineNo;
-        GenJournalLine."Posting Date" := PostingDate;
-        GenJournalLine."Document No." := DocumentNo; // Assign Document No.
+    //     GenJournalLine.Init();
+    //     GenJournalLine."Journal Template Name" := JournalTemplate;
+    //     GenJournalLine."Journal Batch Name" := JournalBatch;
+    //     GenJournalLine."Line No." := LineNo;
+    //     GenJournalLine."Posting Date" := PostingDate;
+    //     GenJournalLine."Document No." := DocumentNo; // Assign Document No.
 
-        // Set account type
-        case AccountType of
-            'G/L Account':
-                GenJournalLine."Account Type" := GenJournalLine."Account Type"::"G/L Account";
-            'Customer':
-                GenJournalLine."Account Type" := GenJournalLine."Account Type"::Customer;
-            'Vendor':
-                GenJournalLine."Account Type" := GenJournalLine."Account Type"::Vendor;
-            else
-                Error('Invalid Account Type: %1', AccountType);
-        end;
+    //     // Set account type
+    //     case AccountType of
+    //         'G/L Account':
+    //             GenJournalLine."Account Type" := GenJournalLine."Account Type"::"G/L Account";
+    //         'Customer':
+    //             GenJournalLine."Account Type" := GenJournalLine."Account Type"::Customer;
+    //         'Vendor':
+    //             GenJournalLine."Account Type" := GenJournalLine."Account Type"::Vendor;
+    //         else
+    //             Error('Invalid Account Type: %1', AccountType);
+    //     end;
 
-        GenJournalLine."Account No." := AccountNo;
-        GenJournalLine.Description := Description;
-        GenJournalLine.Amount := Amount;
-        GenJournalLine."Bal. Account Type" := GenJournalLine."Bal. Account Type"::"G/L Account";
+    //     GenJournalLine."Account No." := AccountNo;
+    //     GenJournalLine.Description := Description;
+    //     GenJournalLine.Amount := Amount;
+    //     GenJournalLine."Bal. Account Type" := GenJournalLine."Bal. Account Type"::"G/L Account";
 
-        // If tenant number is provided, set it in Source Code field
-        if TenantNo <> '' then
-            GenJournalLine."Source Code" := TenantNo;
+    //     // If tenant number is provided, set it in Source Code field
+    //     if TenantNo <> '' then
+    //         GenJournalLine."Source Code" := TenantNo;
 
-        GenJournalLine.Insert(true);
-    end;
+    //     GenJournalLine.Insert(true);
+    // end;
 
     var
         IsFinanceManager: Boolean;
@@ -936,4 +936,4 @@ page 50129 "Security Deposit Entries"
 
 
 
-//}
+// }
