@@ -48,26 +48,29 @@ page 50966 "Credit Note Card"
                     Lookup = true;
                     TableRelation = "Final Calculation"."Contract ID";
 
+
                     trigger OnValidate()
                     var
-                        TenancyContract: Record "Final Calculation";
+                        finalcalculation: Record "Final Calculation";
+                        creditnote: Record "Credit Note";
+
                     begin
-                        TenancyContract.SetRange("Contract ID", Rec."Contract ID");
-                        if Rec.FindFirst() then
-                            Error('This Contract ID already exists. Please select a different one.');
-                        exit;
+                        creditnote.Reset();
+                        creditnote.SetRange("Contract ID", Rec."Contract ID");
+                        if creditnote.FindFirst() then
+                            Error('This Contract ID %1 is already used in another record.', Rec."Contract ID");
 
-
-                        if TenancyContract.FindSet() then begin
+                        finalcalculation.SetRange("Contract ID", Rec."Contract ID");
+                        if finalcalculation.FindSet() then begin
                             Rec."Credit Note Type" := Rec."Credit Note Type"::"Termination Credit Note";
-                            Rec."Contract Start Date" := TenancyContract."Contract Start Date";
-                            Rec."Contract End Date" := TenancyContract."Contract End Date"; // Convert Integer to Text
-                            Rec."Unit Type" := TenancyContract."Unit Type";
-                            Rec."Contract Amount" := TenancyContract."Contract Amount";
-                            Rec."Tenant ID" := TenancyContract."Tenant ID";
-                            Rec."Tenant Name" := TenancyContract."Tenant Name";
-                            Rec."Tenant Email" := TenancyContract."Tenant Email"; // Convert Integer to Text
-                            Rec."FC ID" := TenancyContract."FC ID";
+                            Rec."Contract Start Date" := finalcalculation."Contract Start Date";
+                            Rec."Contract End Date" := finalcalculation."Contract End Date"; // Convert Integer to Text
+                            Rec."Unit Type" := finalcalculation."Unit Type";
+                            Rec."Contract Amount" := finalcalculation."Contract Amount";
+                            Rec."Tenant ID" := finalcalculation."Tenant ID";
+                            Rec."Tenant Name" := finalcalculation."Tenant Name";
+                            Rec."Tenant Email" := finalcalculation."Tenant Email"; // Convert Integer to Text
+                            Rec."FC ID" := finalcalculation."FC ID";
                             BillingCalculationSub();
 
                         end else begin // Clear the fields if no record is found
@@ -405,6 +408,21 @@ page 50966 "Credit Note Card"
     //     end;
     // end;
 
+    trigger OnNewRecord(BelowxRec: Boolean)
+    var
+        CreditNoteRec: Record "Credit Note";
+        NextID: Integer;
+    begin
+        if Rec.ID = 0 then begin
+            if CreditNoteRec.FindLast() then
+                NextID := CreditNoteRec.ID + 1
+            else
+                NextID := 1;
+
+            Rec.ID := NextID;
+            Rec."Credit Note No." := 'CN_' + CopyStr('00000' + Format(NextID), StrLen('00000' + Format(NextID)) - 4, 5);
+        end;
+    end;
 
 
     procedure BillingCalculationSub()
@@ -425,7 +443,7 @@ page 50966 "Credit Note Card"
             repeat
                 if BillingCalculationSubFC."DifferenceAmount" > 0 then begin
                     BillingCalculationSubCN.Init();
-                    // BillingCalculationSubCN."ID" := Rec."ID";
+                    BillingCalculationSubCN."Credit Note ID" := Rec."ID";
                     BillingCalculationSubCN."Contract ID" := Rec."Contract ID";
                     BillingCalculationSubCN."Tenant ID" := Rec."Tenant ID";
                     BillingCalculationSubCN."Item" := BillingCalculationSubFC."RevenueDescription";

@@ -190,7 +190,7 @@ table 50929 "Revenue Recognition"
             if MonthDays < ActualDaysInMonth then begin
                 // Adjust the MonthlyRate based on actual MonthDays
                 MonthlyRate2 := Round("Contract Amount" / TotalMonths);
-                MonthlyRate := Round(MonthlyRate2 / DaysInMonth * MonthDays);
+                MonthlyRate := Round(MonthlyRate2 / ActualDaysInMonth * MonthDays);
             end else begin
                 // Default case: use the standard MonthlyRate formula
                 MonthlyRate := MonthlyRate2;
