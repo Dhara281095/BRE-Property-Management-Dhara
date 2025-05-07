@@ -57,7 +57,7 @@ page 50125 "Adjustment Security Deposit"
                     trigger OnValidate()
                     begin
                         if (Rec."Status" = Rec."Status"::Approved) then begin
-                            Additinalchargescashreceipt();
+                            AdditinalchargescashReceipt();
                             // receivablecashrecipt();
                         end;
                     end;
@@ -270,8 +270,8 @@ page 50125 "Adjustment Security Deposit"
         GenJnlLine: Record "Gen. Journal Line";
         finalcalculation: Record "Final Calculation";
         TerminationCharges: Record "Termination Charges Sub";
-        GenJnlTemplate: Record "Gen. Journal Template"; // FIXED: Using correct record type
-        GenJnlBatch: Record "Gen. Journal Batch";       // FIXED: Using correct record type
+        GenJnlTemplate: Record "Gen. Journal Template";
+        GenJnlBatch: Record "Gen. Journal Batch";
         PostingDate: Date;
         DocumentNo: Code[20];
         InvoiceNo: Code[20];
@@ -288,32 +288,21 @@ page 50125 "Adjustment Security Deposit"
         JournalTemplateName: Code[10];
         JournalBatchName: Code[10];
     begin
-        // FIXED: Properly initialize journal template and batch by finding existing ones
         JournalTemplateName := 'CASH RECE';
         JournalBatchName := 'DEFAULT';
 
-        // Verify that the template exists
-        if not GenJnlTemplate.Get(JournalTemplateName) then begin
-            GenJnlLine."Journal Template Name" := 'CASH RECE';
-            GenJnlLine."Journal Batch Name" := 'DEFAULT';
-            GenJnlLine.Modify();
-        end;
-        // Error('The Journal Template %1 does not exist.', JournalTemplateName);
-        // Verify that the batch exists
+        if not GenJnlTemplate.Get(JournalTemplateName) then
+            Error('The Journal Template %1 does not exist.', JournalTemplateName);
+
         GenJnlBatch.Reset();
         GenJnlBatch.SetRange("Journal Template Name", JournalTemplateName);
         GenJnlBatch.SetRange(Name, JournalBatchName);
-        if not GenJnlBatch.FindFirst() then begin
-            GenJnlLine."Journal Template Name" := 'CASH RECE';
-            GenJnlLine."Journal Batch Name" := 'DEFAULT';
-            GenJnlBatch.Modify();
-        end;
-        // Error('The Journal Batch %1 does not exist for template %2.', JournalBatchName, JournalTemplateName);
+        if not GenJnlBatch.FindFirst() then
+            Error('The Journal Batch %1 does not exist for template %2.', JournalBatchName, JournalTemplateName);
 
         PostingDate := Today();
         DocumentNo := 'REFUND-' + Format(Rec."Contract ID");
 
-        // 1. Get final calculation data
         finalcalculation.SetRange("Contract ID", Rec."Contract ID");
         if not finalcalculation.FindFirst() then
             Error('Invoice not found for Contract ID %1', Rec."Contract ID");
@@ -324,15 +313,13 @@ page 50125 "Adjustment Security Deposit"
         chillerdeposit := finalcalculation."Chiller Deposit";
         otherdeposit := finalcalculation."Other Deposit";
 
-        // 2. Get posted invoice
         TerminationCharges.SetRange("Contract ID", Rec."Contract ID");
         if not TerminationCharges.FindFirst() then
             Error('Invoice not found for Contract ID %1', Rec."Contract ID");
 
         InvoiceNo := TerminationCharges."Posted Invoice ID";
 
-        // 3. Calculate total additional charges
-        Totaladdtionalcharges := 0; // Initialize before summing
+        Totaladdtionalcharges := 0;
         TerminationCharges.Reset();
         TerminationCharges.SetRange("Contract ID", Rec."Contract ID");
         if TerminationCharges.FindSet() then
@@ -342,7 +329,6 @@ page 50125 "Adjustment Security Deposit"
 
         RemainingCharges := Totaladdtionalcharges;
 
-        // 4. Get last line number
         GenJnlLine.Reset();
         GenJnlLine.SetRange("Journal Template Name", JournalTemplateName);
         GenJnlLine.SetRange("Journal Batch Name", JournalBatchName);
@@ -359,8 +345,25 @@ page 50125 "Adjustment Security Deposit"
                 AppliedAmount := securitydeposit;
 
             if AppliedAmount > 0 then begin
-                InsertJournalLine(LastLineNo, PostingDate, DocumentNo, Tenantname + ' - Security Deposit',
-                                Tenantid, -AppliedAmount, '4502', InvoiceNo, JournalTemplateName, JournalBatchName);
+                Clear(GenJnlLine);
+                GenJnlLine.Init();
+                GenJnlLine."Journal Template Name" := JournalTemplateName;
+                GenJnlLine."Journal Batch Name" := JournalBatchName;
+                GenJnlLine."Line No." := LastLineNo;
+                GenJnlLine."Posting Date" := PostingDate;
+                GenJnlLine."Document Type" := GenJnlLine."Document Type"::Payment;
+                GenJnlLine."Document No." := DocumentNo;
+                GenJnlLine.Description := Tenantname + ' - Security Deposit';
+                GenJnlLine."Account Type" := GenJnlLine."Account Type"::Customer;
+                GenJnlLine."Account No." := Tenantid;
+                GenJnlLine.Amount := -AppliedAmount;
+                GenJnlLine."Amount (LCY)" := -AppliedAmount;
+                GenJnlLine."Bal. Account Type" := GenJnlLine."Bal. Account Type"::"G/L Account";
+                GenJnlLine."Bal. Account No." := '4502';
+                GenJnlLine."Applies-to Doc. Type" := GenJnlLine."Applies-to Doc. Type"::Invoice;
+                GenJnlLine."Applies-to Doc. No." := InvoiceNo;
+                GenJnlLine.Insert(true);
+
                 RemainingCharges -= AppliedAmount;
                 LastLineNo += 10000;
             end;
@@ -368,14 +371,31 @@ page 50125 "Adjustment Security Deposit"
 
         // === Apply to Chiller Deposit ===
         if RemainingCharges > 0 then begin
-            // Chiller Deposit
             if RemainingCharges < chillerdeposit then
                 AppliedAmount := RemainingCharges
             else
                 AppliedAmount := chillerdeposit;
+
             if AppliedAmount > 0 then begin
-                InsertJournalLine(LastLineNo, PostingDate, DocumentNo, Tenantname + ' - Chiller Deposit',
-                                Tenantid, -AppliedAmount, '4508', InvoiceNo, JournalTemplateName, JournalBatchName);
+                Clear(GenJnlLine);
+                GenJnlLine.Init();
+                GenJnlLine."Journal Template Name" := JournalTemplateName;
+                GenJnlLine."Journal Batch Name" := JournalBatchName;
+                GenJnlLine."Line No." := LastLineNo;
+                GenJnlLine."Posting Date" := PostingDate;
+                GenJnlLine."Document Type" := GenJnlLine."Document Type"::Payment;
+                GenJnlLine."Document No." := DocumentNo;
+                GenJnlLine.Description := Tenantname + ' - Chiller Deposit';
+                GenJnlLine."Account Type" := GenJnlLine."Account Type"::Customer;
+                GenJnlLine."Account No." := Tenantid;
+                GenJnlLine.Amount := -AppliedAmount;
+                GenJnlLine."Amount (LCY)" := -AppliedAmount;
+                GenJnlLine."Bal. Account Type" := GenJnlLine."Bal. Account Type"::"G/L Account";
+                GenJnlLine."Bal. Account No." := '4508';
+                GenJnlLine."Applies-to Doc. Type" := GenJnlLine."Applies-to Doc. Type"::Invoice;
+                GenJnlLine."Applies-to Doc. No." := InvoiceNo;
+                GenJnlLine.Insert(true);
+
                 RemainingCharges -= AppliedAmount;
                 LastLineNo += 10000;
             end;
@@ -383,20 +403,36 @@ page 50125 "Adjustment Security Deposit"
 
         // === Apply to Other Deposit ===
         if RemainingCharges > 0 then begin
-            // Other Deposit
             if RemainingCharges < otherdeposit then
                 AppliedAmount := RemainingCharges
             else
                 AppliedAmount := otherdeposit;
+
             if AppliedAmount > 0 then begin
-                InsertJournalLine(LastLineNo, PostingDate, DocumentNo, Tenantname + ' - Other Deposit',
-                                Tenantid, -AppliedAmount, '4508', InvoiceNo, JournalTemplateName, JournalBatchName);
+                Clear(GenJnlLine);
+                GenJnlLine.Init();
+                GenJnlLine."Journal Template Name" := JournalTemplateName;
+                GenJnlLine."Journal Batch Name" := JournalBatchName;
+                GenJnlLine."Line No." := LastLineNo;
+                GenJnlLine."Posting Date" := PostingDate;
+                GenJnlLine."Document Type" := GenJnlLine."Document Type"::Payment;
+                GenJnlLine."Document No." := DocumentNo;
+                GenJnlLine.Description := Tenantname + ' - Other Deposit';
+                GenJnlLine."Account Type" := GenJnlLine."Account Type"::Customer;
+                GenJnlLine."Account No." := Tenantid;
+                GenJnlLine.Amount := -AppliedAmount;
+                GenJnlLine."Amount (LCY)" := -AppliedAmount;
+                GenJnlLine."Bal. Account Type" := GenJnlLine."Bal. Account Type"::"G/L Account";
+                GenJnlLine."Bal. Account No." := '4508';
+                GenJnlLine."Applies-to Doc. Type" := GenJnlLine."Applies-to Doc. Type"::Invoice;
+                GenJnlLine."Applies-to Doc. No." := InvoiceNo;
+                GenJnlLine.Insert(true);
+
                 RemainingCharges -= AppliedAmount;
                 LastLineNo += 10000;
             end;
         end;
 
-        // Post the journal lines
         GenJnlLine.Reset();
         GenJnlLine.SetRange("Journal Template Name", JournalTemplateName);
         GenJnlLine.SetRange("Journal Batch Name", JournalBatchName);
@@ -406,31 +442,195 @@ page 50125 "Adjustment Security Deposit"
         Message('Journal entries have been created and posted successfully');
     end;
 
-    local procedure InsertJournalLine(LineNo: Integer; PostDate: Date; DocNo: Code[20]; Desc: Text[100]; AccNo: Code[20];
-                                    Amt: Decimal; BalAcc: Code[20]; Invoice: Code[20];
-                                    Template: Code[10]; Batch: Code[10])
+    // procedure AdditionalchargescashReceipt()
+    // var
+    //     GenJnlLine: Record "Gen. Journal Line";
+    //     finalcalculation: Record "Final Calculation";
+    //     TerminationCharges: Record "Termination Charges Sub";
+    //     GenJnlTemplate: Record "Gen. Journal Template";
+    //     GenJnlBatch: Record "Gen. Journal Batch";
+    //     PostingDate: Date;
+    //     DocumentNo: Code[20];
+    //     InvoiceNo: Code[20];
+    //     Tenantid: Code[20];
+    //     Tenantname: Text[100];
+    //     AccountNo: Code[20];
+    //     LastLineNo: Integer;
+    //     AppliedAmount: Decimal;
+    //     RemainingCharges: Decimal;
+    //     securitydeposit: Decimal;
+    //     chillerdeposit: Decimal;
+    //     otherdeposit: Decimal;
+    //     Totaladdtionalcharges: Decimal;
+    //     JournalTemplateName: Code[10];
+    //     JournalBatchName: Code[10];
+    // begin
+    //     // 1. Initialize with default template/batch names or use preset values
+    //     JournalTemplateName := 'CASH RECE';
+    //     JournalBatchName := 'DEFAULT';
 
-    var
-        JnlLine: Record "Gen. Journal Line";
-    begin
-        Clear(JnlLine);
-        JnlLine.Init();
-        JnlLine."Journal Template Name" := Template;
-        JnlLine."Journal Batch Name" := Batch;
-        JnlLine."Line No." := LineNo;
-        JnlLine."Posting Date" := PostDate;
-        JnlLine."Document Type" := JnlLine."Document Type"::Payment;
-        JnlLine."Document No." := DocNo;
-        JnlLine.Description := Desc;
-        JnlLine."Account Type" := JnlLine."Account Type"::Customer;
-        JnlLine."Account No." := AccNo;
-        JnlLine.Amount := Amt;
-        JnlLine."Amount (LCY)" := Amt;
-        JnlLine."Bal. Account Type" := JnlLine."Bal. Account Type"::"G/L Account";
-        JnlLine."Bal. Account No." := BalAcc;
-        JnlLine."Applies-to Doc. Type" := JnlLine."Applies-to Doc. Type"::Invoice;
-        JnlLine."Applies-to Doc. No." := Invoice;
-        JnlLine.Insert(true);
-    end;
+    //     // Key fix: Ensure template name is not empty
+    //     if JournalTemplateName = '' then
+    //         JournalTemplateName := 'CASH RECE';
+
+    //     // 2. Ensure template exists - create if not
+    //     if not GenJnlTemplate.Get(JournalTemplateName) then begin
+    //         GenJnlTemplate.Init();
+    //         GenJnlTemplate.Name := JournalTemplateName;
+    //         GenJnlTemplate.Description := 'Cash Receipts';
+    //         GenJnlTemplate.Type := GenJnlTemplate.Type::"Cash Receipts";
+    //         // Add basic required fields
+    //         GenJnlTemplate."Source Code" := 'CASHRECJNL';
+    //         GenJnlTemplate."Force Doc. Balance" := true;
+    //         // Insert with validate to fill in any system-required fields
+    //         if not GenJnlTemplate.Insert(true) then
+    //             Error('Failed to create template %1. Please create it manually.', JournalTemplateName);
+    //     end;
+
+    //     // 3. Ensure batch exists - create if not
+    //     GenJnlBatch.Reset();
+    //     if not GenJnlBatch.Get(JournalTemplateName, JournalBatchName) then begin
+    //         GenJnlBatch.Init();
+    //         GenJnlBatch."Journal Template Name" := JournalTemplateName;
+    //         GenJnlBatch.Name := JournalBatchName;
+    //         GenJnlBatch.Description := 'Default Batch';
+    //         // Insert with validate to fill in any system-required fields
+    //         if not GenJnlBatch.Insert(true) then
+    //             Error('Failed to create batch %1. Please create it manually.', JournalBatchName);
+    //     end;
+
+    //     // 4. Continue with main logic
+    //     PostingDate := Today();
+    //     DocumentNo := 'REFUND-' + Format(Rec."Contract ID");
+
+    //     // Get final calculation data
+    //     finalcalculation.SetRange("Contract ID", Rec."Contract ID");
+    //     if not finalcalculation.FindFirst() then
+    //         Error('Final calculation not found for Contract ID %1', Rec."Contract ID");
+
+    //     Tenantid := finalcalculation."Tenant ID";
+    //     Tenantname := finalcalculation."Tenant Name";
+    //     securitydeposit := finalcalculation."Net Balance";
+    //     chillerdeposit := finalcalculation."Chiller Deposit";
+    //     otherdeposit := finalcalculation."Other Deposit";
+
+    //     // Get posted invoice
+    //     TerminationCharges.SetRange("Contract ID", Rec."Contract ID");
+    //     if not TerminationCharges.FindFirst() then
+    //         Error('Termination charges not found for Contract ID %1', Rec."Contract ID");
+
+    //     InvoiceNo := TerminationCharges."Posted Invoice ID";
+
+    //     // Calculate total additional charges
+    //     Totaladdtionalcharges := 0;
+    //     TerminationCharges.Reset();
+    //     TerminationCharges.SetRange("Contract ID", Rec."Contract ID");
+    //     if TerminationCharges.FindSet() then
+    //         repeat
+    //             Totaladdtionalcharges += TerminationCharges."Amount Including VAT";
+    //         until TerminationCharges.Next() = 0;
+
+    //     RemainingCharges := Totaladdtionalcharges;
+
+    //     // Clear any existing journal lines to avoid conflicts
+    //     ClearJournalLines(JournalTemplateName, JournalBatchName);
+
+    //     // Get last line number
+    //     GenJnlLine.Reset();
+    //     GenJnlLine.SetRange("Journal Template Name", JournalTemplateName);
+    //     GenJnlLine.SetRange("Journal Batch Name", JournalBatchName);
+    //     if GenJnlLine.FindLast() then
+    //         LastLineNo := GenJnlLine."Line No." + 10000
+    //     else
+    //         LastLineNo := 10000;
+
+    //     // Apply to Security Deposit
+    //     if RemainingCharges > 0 then begin
+    //         AppliedAmount := RemainingCharges < securitydeposit ? RemainingCharges : securitydeposit;
+    //         if AppliedAmount > 0 then begin
+    //             InsertJournalLine(LastLineNo, PostingDate, DocumentNo, Tenantname + ' - Security Deposit',
+    //                             Tenantid, -AppliedAmount, '4502', InvoiceNo, JournalTemplateName, JournalBatchName);
+    //             RemainingCharges -= AppliedAmount;
+    //             LastLineNo += 10000;
+    //         end;
+    //     end;
+
+    //     // Apply to Chiller Deposit
+    //     if RemainingCharges > 0 then begin
+    //         AppliedAmount := RemainingCharges < chillerdeposit ? RemainingCharges : chillerdeposit;
+    //         if AppliedAmount > 0 then begin
+    //             InsertJournalLine(LastLineNo, PostingDate, DocumentNo, Tenantname + ' - Chiller Deposit',
+    //                             Tenantid, -AppliedAmount, '4508', InvoiceNo, JournalTemplateName, JournalBatchName);
+    //             RemainingCharges -= AppliedAmount;
+    //             LastLineNo += 10000;
+    //         end;
+    //     end;
+
+    //     // Apply to Other Deposit
+    //     if RemainingCharges > 0 then begin
+    //         AppliedAmount := RemainingCharges < otherdeposit ? RemainingCharges : otherdeposit;
+    //         if AppliedAmount > 0 then begin
+    //             InsertJournalLine(LastLineNo, PostingDate, DocumentNo, Tenantname + ' - Other Deposit',
+    //                             Tenantid, -AppliedAmount, '4508', InvoiceNo, JournalTemplateName, JournalBatchName);
+    //             RemainingCharges -= AppliedAmount;
+    //             LastLineNo += 10000;
+    //         end;
+    //     end;
+
+    //     // Post journal lines
+    //     GenJnlLine.Reset();
+    //     GenJnlLine.SetRange("Journal Template Name", JournalTemplateName);
+    //     GenJnlLine.SetRange("Journal Batch Name", JournalBatchName);
+    //     if not GenJnlLine.IsEmpty() then begin
+    //         Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnlLine);
+    //         Message('Journal entries have been successfully created and posted');
+    //     end else
+    //         Message('No journal entries were created');
+    // end;
+
+    // // Helper procedure to clear existing journal lines
+    // local procedure ClearJournalLines(TemplateName: Code[10]; BatchName: Code[10])
+    // var
+    //     GenJnlLine: Record "Gen. Journal Line";
+    // begin
+    //     GenJnlLine.Reset();
+    //     GenJnlLine.SetRange("Journal Template Name", TemplateName);
+    //     GenJnlLine.SetRange("Journal Batch Name", BatchName);
+    //     if not GenJnlLine.IsEmpty() then
+    //         GenJnlLine.DeleteAll();
+    // end;
+
+    // local procedure InsertJournalLine(
+    //     LineNo: Integer;
+    //     PostDate: Date;
+    //     DocNo: Code[20];
+    //     Desc: Text[100];
+    //     AccNo: Code[20];
+    //     Amt: Decimal;
+    //     BalAcc: Code[20];
+    //     Invoice: Code[20];
+    //     Template: Code[10];
+    //     Batch: Code[10])
+    // var
+    //     JnlLine: Record "Gen. Journal Line";
+    // begin
+    //     JnlLine.Init();
+    //     JnlLine."Journal Template Name" := Template;
+    //     JnlLine."Journal Batch Name" := Batch;
+    //     JnlLine."Line No." := LineNo;
+    //     JnlLine."Posting Date" := PostDate;
+    //     JnlLine."Document Type" := JnlLine."Document Type"::Payment;
+    //     JnlLine."Document No." := DocNo;
+    //     JnlLine.Description := Desc;
+    //     JnlLine."Account Type" := JnlLine."Account Type"::Customer;
+    //     JnlLine."Account No." := AccNo;
+    //     JnlLine.Amount := Amt;
+    //     JnlLine."Amount (LCY)" := Amt;
+    //     JnlLine."Bal. Account Type" := JnlLine."Bal. Account Type"::"G/L Account";
+    //     JnlLine."Bal. Account No." := BalAcc;
+    //     JnlLine."Applies-to Doc. Type" := JnlLine."Applies-to Doc. Type"::Invoice;
+    //     JnlLine."Applies-to Doc. No." := Invoice;
+    //     JnlLine.Insert(true);
+    // end;
 
 }
