@@ -1405,7 +1405,7 @@ table 50308 "Lease Proposal Details"
                 VendorProfileRec: Record "Vendor Profile";
                 AnnualAmount: Decimal;
                 MonthlyRent: Decimal;
-                Percentage: Integer;
+                Percentageamt: Integer;
                 CalcType: Text;
                 BaseAmountType: Text;
             begin
@@ -1419,9 +1419,11 @@ table 50308 "Lease Proposal Details"
                     "Contract Status" := VendorProfileRec."Contract Status";
                     "Calculation Method" := VendorProfileRec."Calculation Method";
                     "Percentage Type" := VendorProfileRec."Percentage Type";
-                    Percentage := VendorProfileRec.Percentage;
                     "Base Amount" := VendorProfileRec."Base Amount";
                     "Frequency Of Payment" := VendorProfileRec."Frequency Of Payment";
+                    Percentage := VendorProfileRec.Percentage;
+
+                    Percentageamt := "Percentage"; // used for calculations
 
                     case UpperCase(Rec."Calculation Method") of
                         'Fixed Amount':
@@ -1440,8 +1442,8 @@ table 50308 "Lease Proposal Details"
                             begin
                                 if Rec."Base Amount" = Rec."Base Amount"::"Annual Rent" then begin
                                     MonthlyRent := Rec."Rent Amount";
-                                    Percentage := "Percentage";
-                                    Rec."Amount" := Round((MonthlyRent * Percentage) / 100, 0.01);
+                                    // Percentage := "Percentage";
+                                    Rec."Amount" := Round((MonthlyRent * Percentageamt) / 100, 0.01);
                                 end;
                             end;
                     end;
