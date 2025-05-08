@@ -490,12 +490,6 @@ codeunit 50108 "Final Settlement Posting Mgt."
         // Generate Document No
         DocNo := 'FS-' + Format(FinalSettlement."Contract ID") + '-' + Format(FinalSettlement."FC ID");
 
-        // Clear any existing journal lines
-        GenJnlLine.Reset();
-        GenJnlLine.SetRange("Journal Template Name", JournalTemplateName);
-        GenJnlLine.SetRange("Journal Batch Name", JournalBatchName);
-        if not GenJnlLine.IsEmpty() then
-            GenJnlLine.DeleteAll(true);
 
         // Start with first line number
         LineNo := 10000;
@@ -513,6 +507,7 @@ codeunit 50108 "Final Settlement Posting Mgt."
         GenJnlLine."Line No." := LineNo;
         GenJnlLine."Posting Date" := Today;
         GenJnlLine."Document No." := DocNo;
+        GenJnlLine.Description := BillingSetup."Invoice ID";
         GenJnlLine."Document Type" := GenJnlLine."Document Type"::Payment;
         GenJnlLine."Account Type" := GenJnlLine."Account Type"::Customer;
         GenJnlLine."Account No." := FinalSettlement."Tenant ID";
@@ -541,6 +536,7 @@ codeunit 50108 "Final Settlement Posting Mgt."
         GenJnlLine."Line No." := LineNo;
         GenJnlLine."Posting Date" := Today;
         GenJnlLine."Document No." := DocNo;
+        GenJnlLine.Description := AdditionalCharges."Invoiced ID";
         GenJnlLine."Document Type" := GenJnlLine."Document Type"::Payment;
         GenJnlLine."Account Type" := GenJnlLine."Account Type"::Customer;
         GenJnlLine."Account No." := FinalSettlement."Tenant ID";
@@ -581,6 +577,12 @@ codeunit 50108 "Final Settlement Posting Mgt."
 
         // Post the Journal
         GenJnlPost.Run(GenJnlLine);
+
+        GenJnlLine.Reset();
+        GenJnlLine.SetRange("Journal Template Name", JournalTemplateName);
+        GenJnlLine.SetRange("Journal Batch Name", JournalBatchName);
+        if GenJnlLine.FindSet() then
+            GenJnlLine.DeleteAll(true);
 
         Message('Final Settlement amount posted successfully. Total: %1, Pending: %2', Amount, PendingAmount);
     end;
@@ -672,11 +674,11 @@ codeunit 50108 "Final Settlement Posting Mgt."
                   TotalRefundableDeposit, FinalSettlement."Contract ID");
 
         // Clear any existing journal lines in this batch
-        GenJournalLine.Reset();
-        GenJournalLine.SetRange("Journal Template Name", JournalTemplateName);
-        GenJournalLine.SetRange("Journal Batch Name", JournalBatchName);
-        if not GenJournalLine.IsEmpty() then
-            GenJournalLine.DeleteAll(true);
+        // GenJournalLine.Reset();
+        // GenJournalLine.SetRange("Journal Template Name", JournalTemplateName);
+        // GenJournalLine.SetRange("Journal Batch Name", JournalBatchName);
+        // if not GenJournalLine.IsEmpty() then
+        //     GenJournalLine.DeleteAll(true);
 
         // Start with standard line number
         LastLineNo := 10000;
@@ -709,6 +711,12 @@ codeunit 50108 "Final Settlement Posting Mgt."
 
         // Insert the journal line
         GenJnlLine.Insert(true);
+
+        GenJnlLine.Reset();
+        GenJnlLine.SetRange("Journal Template Name", JournalTemplateName);
+        GenJnlLine.SetRange("Journal Batch Name", JournalBatchName);
+        if GenJnlLine.FindSet() then
+            GenJnlLine.DeleteAll(true);
 
         // Post the journal line
         if GenJnlLine.Amount <> 0 then begin
@@ -799,11 +807,11 @@ codeunit 50108 "Final Settlement Posting Mgt."
         end;
 
         // Clear any existing journal lines in this batch
-        GenJournalLine.Reset();
-        GenJournalLine.SetRange("Journal Template Name", JournalTemplateName);
-        GenJournalLine.SetRange("Journal Batch Name", JournalBatchName);
-        if not GenJournalLine.IsEmpty() then
-            GenJournalLine.DeleteAll(true);
+        // GenJournalLine.Reset();
+        // GenJournalLine.SetRange("Journal Template Name", JournalTemplateName);
+        // GenJournalLine.SetRange("Journal Batch Name", JournalBatchName);
+        // if not GenJournalLine.IsEmpty() then
+        //     GenJournalLine.DeleteAll(true);
 
         // Start with standard line number
         LastLineNo := 10000;
@@ -836,6 +844,12 @@ codeunit 50108 "Final Settlement Posting Mgt."
 
         // Insert the journal line
         GenJnlLine.Insert(true);
+
+        GenJnlLine.Reset();
+        GenJnlLine.SetRange("Journal Template Name", JournalTemplateName);
+        GenJnlLine.SetRange("Journal Batch Name", JournalBatchName);
+        if GenJnlLine.FindSet() then
+            GenJnlLine.DeleteAll(true);
 
         // Post the journal line using RunWithCheck to catch any posting errors
         if GenJnlLine.Amount <> 0 then begin
