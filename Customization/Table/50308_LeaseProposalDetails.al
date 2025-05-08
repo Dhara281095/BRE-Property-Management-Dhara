@@ -1404,6 +1404,10 @@ table 50308 "Lease Proposal Details"
             var
                 VendorProfileRec: Record "Vendor Profile";
                 AnnualAmount: Decimal;
+                MonthlyRent: Decimal;
+                Percentage: Integer;
+                CalcType: Text;
+                BaseAmountType: Text;
             begin
                 VendorProfileRec.SetRange("Vendor Category", 'Brokers and Commission Agent');
                 VendorProfileRec.SetRange("Contract Status", "Contract Status"::"Active"); // 👈 Add this line
@@ -1417,16 +1421,40 @@ table 50308 "Lease Proposal Details"
                     "Percentage Type" := VendorProfileRec."Percentage Type";
                     Percentage := VendorProfileRec.Percentage;
                     "Base Amount" := VendorProfileRec."Base Amount";
-
-                    case "Base Amount" of
-                        "Base Amount"::"Annual Rent":
-                            AnnualAmount := Rec."Rent Amount";
-                        "Base Amount"::"Monthly Rent":
-                            AnnualAmount := Rec."Rent Amount" / 12;
-                    end;
-
-                    Amount := AnnualAmount;
                     "Frequency Of Payment" := VendorProfileRec."Frequency Of Payment";
+
+                    case UpperCase(Rec."Calculation Method") of
+                        'Fixed Amount':
+                            // Do nothing – amount is manually entered
+                            Rec."Amount" := VendorProfileRec."Amount";
+
+                        'STANDARD RATE':
+                            begin
+                                if Rec."Base Amount" = Rec."Base Amount"::"Monthly Rent" then begin
+                                    MonthlyRent := Rec."Rent Amount";
+                                    Rec."Amount" := Round(MonthlyRent / 12, 0.01); // 2 decimal rounding
+                                end;
+                            end;
+
+                        'PERCENTAGE BASED':
+                            begin
+                                if Rec."Base Amount" = Rec."Base Amount"::"Annual Rent" then begin
+                                    MonthlyRent := Rec."Rent Amount";
+                                    Percentage := "Percentage";
+                                    Rec."Amount" := Round((MonthlyRent * Percentage) / 100, 0.01);
+                                end;
+                            end;
+                    end;
+                    // CalculateBrokerageAmount();
+                    // case "Base Amount" of
+                    //     "Base Amount"::"Annual Rent":
+                    //         AnnualAmount := Rec."Rent Amount";
+                    //     "Base Amount"::"Monthly Rent":
+                    //         AnnualAmount := Rec."Rent Amount" / 12;
+                    // end;
+
+                    // Amount := AnnualAmount;
+
                 end else begin
                     "Vendor ID" := '';
                     "Vendor Name" := '';
@@ -1811,6 +1839,45 @@ table 50308 "Lease Proposal Details"
 
         // you can add the custom validation here also for other type of fields like email,contact
     end;
+
+
+
+
+    // procedure CalculateBrokerageAmount()
+    // var
+    //     VendorProfileRec: Record "Vendor Profile";
+    //     MonthlyRent: Decimal;
+    //     AnnualRent: Decimal;
+    //     Percentage: Decimal;
+    //     CalcType: Text;
+    //     BaseAmountType: Text;
+    // begin
+    //     // Assume `CalcType`, `BaseAmountType`, and values are already assigned from the record.
+
+    //     case CalcType of
+    //         'Fixed Amount':
+    //             // Do nothing – amount is manually entered
+    //             Rec."Amount" := VendorProfileRec."Amount";
+
+    //         'STANDARD RATE':
+    //             begin
+    //                 if Rec."Base Amount" = Rec."Base Amount"::"Monthly Rent" then begin
+    //                     MonthlyRent := Rec."Rent Amount";
+    //                     Rec."Amount" := Round(MonthlyRent / 12, 0.01); // 2 decimal rounding
+    //                 end;
+    //             end;
+
+    //         'PERCENTAGE BASED':
+    //             begin
+    //                 if Rec."Base Amount" = Rec."Base Amount"::"Annual Rent" then begin
+    //                     AnnualRent := Rec."Rent Amount";
+    //                     Percentage := Rec."Percentage";
+    //                     Rec."Amount" := Round((AnnualRent * Percentage) / 100, 0.01);
+    //                 end;
+    //             end;
+    //     end;
+    // end;
+
 
 
 }

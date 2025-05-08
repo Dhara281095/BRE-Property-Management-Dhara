@@ -42,7 +42,7 @@ page 50942 "Vendor Profile Card"
                     ApplicationArea = All;
                     trigger OnValidate()
                     begin
-                        if Rec."Vendor Category" = 'Brokers and Commission Agent' then begin
+                        if UpperCase(Rec."Vendor Category") = 'BROKERS AND COMMISSION AGENT' then begin
                             ShowBrokerageGroup := true;
                             //   Message('Brokers and Commission Agent Section is Open');
                         end else begin
@@ -133,6 +133,8 @@ page 50942 "Vendor Profile Card"
                 field("Base Amount"; Rec."Base Amount")
                 {
                     ApplicationArea = All;
+                    Editable = IsBaseamount;
+
                     trigger OnValidate()
                     begin
                         UpdateFieldEditability();
@@ -382,6 +384,7 @@ page 50942 "Vendor Profile Card"
         IsAmountEditable: Boolean;
         IsPercentageEditable: Boolean;
         IsPercentageTypeEditable: Boolean;
+        IsBaseamount: Boolean;
 
 
     procedure UpdateFieldEditability()
@@ -392,18 +395,20 @@ page 50942 "Vendor Profile Card"
                     IsAmountEditable := false;
                     IsPercentageEditable := false;
                     IsPercentageTypeEditable := false;
+                    IsBaseamount := false;
                 end;
 
             'FIXED AMOUNT':
                 begin
-                    if (Rec."Base Amount" = Rec."Base Amount"::Revenue) or
-                       (Rec."Base Amount" = Rec."Base Amount"::Collection) then
-                        IsAmountEditable := true
-                    else
-                        IsAmountEditable := false;
+                    // if (Rec."Base Amount" = Rec."Base Amount"::Revenue) or
+                    //    (Rec."Base Amount" = Rec."Base Amount"::Collection) then
+                    IsAmountEditable := true;
+                    // else
+                    // IsAmountEditable := false;
 
                     IsPercentageEditable := false;
                     IsPercentageTypeEditable := false;
+                    IsBaseamount := false;
                 end;
 
             'PERCENTAGE BASED':
@@ -411,13 +416,30 @@ page 50942 "Vendor Profile Card"
                     IsAmountEditable := false;
                     IsPercentageEditable := true;
                     IsPercentageTypeEditable := true;
+                    IsBaseamount := true;
+                end;
+
+            'STANDARD RATE':
+                begin
+                    // Auto-populate 'Monthly Rent' if not already set
+                    if Rec."Base Amount" <> Rec."Base Amount"::"Monthly Rent" then
+                        Rec."Base Amount" := Rec."Base Amount"::"Monthly Rent";
+
+                    // Now apply the logic
+                    if Rec."Base Amount" = Rec."Base Amount"::"Monthly Rent" then begin
+                        IsAmountEditable := false;
+                        IsPercentageEditable := false;
+                        IsPercentageTypeEditable := false;
+                        IsBaseamount := false;
+                    end;
                 end;
 
             else begin
                 // Default: Allow editing everything
                 IsAmountEditable := false;
-                IsPercentageEditable := true;
-                IsPercentageTypeEditable := true;
+                IsPercentageEditable := false;
+                IsPercentageTypeEditable := false;
+                IsBaseamount := false;
             end;
         end;
     end;
