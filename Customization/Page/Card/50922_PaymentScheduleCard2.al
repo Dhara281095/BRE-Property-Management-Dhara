@@ -230,77 +230,31 @@ page 50922 "Payment Schedule Card2"
         exit(false);
     end;
 
-    trigger OnAfterGetRecord()
-    var
-        PaymentSchedule: Record "Payment Schedule";
-        workflowfrequency: Record "Workflow Frequency PR";
-    begin
-        InvoicedField := NotAccessInvoicedFieldFinanceManager();
-
-
-        // UpdateBalanceAmountOnPaymentReceived();
-
-
-
-        if PaymentSchedule.Get(Rec."Contract ID")
-          then begin
-            Rec."Contract start date" := PaymentSchedule."Contract Start date";
-            Rec.Modify();
-        end;
-
-        workflowfrequency.SetRange("Property ID", Rec."Property ID");
-        workflowfrequency.SetRange(Workflow, workflowfrequency.Workflow::Invoice);
-        if workflowfrequency.FindSet() then begin
-            Rec."No of Days" := workflowfrequency."No. of Days";
-            Rec.Modify();
-        end;
-
-
-        // if Rec."No of Days" = 0 then begin
-        //     Rec."Workflow frequency date" := Rec."Due Date";
-        //     Rec.Modify();
-        // end else begin
-        //     Rec."Workflow frequency date" := CalcDate('-' + Format(Rec."No of Days") + 'D', Rec."Due Date");
-        //     Rec.Modify();
-        // end;
-    end;
-
-
-
-    // trigger OnAfterGetCurrRecord()
+    // trigger OnAfterGetRecord()
     // var
-    //     PaymentSchedule1: Record "Payment Schedule";
-    //     workflowfrequency1: Record "Workflow Frequency PR";
+    //     PaymentSchedule: Record "Payment Schedule";
+    //     workflowfrequency: Record "Workflow Frequency PR";
     // begin
-    //     if PaymentSchedule1.Get(Rec."Contract ID")
+    //     InvoicedField := NotAccessInvoicedFieldFinanceManager();
+
+
+
+
+
+    //     if PaymentSchedule.Get(Rec."Contract ID")
     //       then begin
-    //         Rec."Contract start date" := PaymentSchedule1."Contract Start date";
+    //         Rec."Contract start date" := PaymentSchedule."Contract Start date";
     //         Rec.Modify();
     //     end;
 
-    //     workflowfrequency1.SetRange("Property ID", Rec."Property ID");
-    //     workflowfrequency1.SetRange(Workflow, workflowfrequency1.Workflow::Invoice);
-    //     if workflowfrequency1.FindSet() then begin
-    //         Rec."No of Days" := workflowfrequency1."No. of Days";
+    //     workflowfrequency.SetRange("Property ID", Rec."Property ID");
+    //     workflowfrequency.SetRange(Workflow, workflowfrequency.Workflow::Invoice);
+    //     if workflowfrequency.FindSet() then begin
+    //         Rec."No of Days" := workflowfrequency."No. of Days";
     //         Rec.Modify();
     //     end;
 
-    //     if Rec."No of Days" = '0' then begin
-    //         Rec."Workflow frequency date" := Rec."Due Date";
-    //         Rec.Modify();
-    //     end else begin
-    //         Rec."Workflow frequency date" := CalcDate('-' + Format(Rec."No of Days") + 'D', Rec."Due Date");
-    //         Rec.Modify();
-    //     end;
-    // end;
 
-
-
-    var
-        InvoicedField: Boolean;
-
-    // trigger OnAfterGetCurrRecord()
-    // begin
     //     if Rec."No of Days" = 0 then begin
     //         Rec."Workflow frequency date" := Rec."Due Date";
     //         Rec.Modify();
@@ -309,6 +263,43 @@ page 50922 "Payment Schedule Card2"
     //         Rec.Modify();
     //     end;
     // end;
+
+    trigger OnAfterGetRecord()
+    var
+        PaymentSchedule: Record "Payment Schedule";
+        workflowfrequency: Record "Workflow Frequency PR";
+        TempDueDate: Date;
+    begin
+        InvoicedField := NotAccessInvoicedFieldFinanceManager();
+
+        if PaymentSchedule.Get(Rec."Contract ID") then
+            Rec."Contract start date" := PaymentSchedule."Contract Start date";
+
+        workflowfrequency.SetRange("Property ID", Rec."Property ID");
+        workflowfrequency.SetRange(Workflow, workflowfrequency.Workflow::Invoice);
+        if workflowfrequency.FindSet() then
+            Rec."No of Days" := workflowfrequency."No. of Days";
+
+        TempDueDate := Rec."Due Date";
+
+        if TempDueDate <> 0D then begin
+            if Rec."No of Days" = 0 then
+                Rec."Workflow frequency date" := TempDueDate
+            else
+                Rec."Workflow frequency date" := CalcDate('-' + Format(Rec."No of Days") + 'D', TempDueDate);
+        end else
+            Rec."Workflow frequency date" := 0D; // or skip, or raise a warning
+
+        Rec.Modify();
+    end;
+
+
+
+
+    var
+        InvoicedField: Boolean;
+
+
 
     local procedure UpdateBalanceAmountOnPaymentReceived()
     var
