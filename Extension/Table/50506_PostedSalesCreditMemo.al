@@ -66,5 +66,10 @@ tableextension 50506 "Posted Sales Credit Memo" extends "Sales Cr.Memo Header"
             DataClassification = ToBeClassified;
             Caption = 'Contract Amount';
         }
+        field(50121; "Terminated Credit Note"; Boolean)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Terminated Credit Note';
+        }
     }
 }
