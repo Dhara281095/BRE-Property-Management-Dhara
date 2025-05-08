@@ -91,6 +91,14 @@ pageextension 50508 SalesCreditMemo extends "Sales Credit Memo"
                     Editable = false;
                     // Editable = approvaleditable;
                 }
+                field("Terminated Credit Note"; Rec."Terminated Credit Note")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Indicates if the credit note is terminated.';
+                    Editable = false;
+                    Visible = false;
+                }
+
 
 
             }

@@ -100,6 +100,7 @@ codeunit 50515 "Create Sales Credit Memo"
         salesHeader."Property Classification" := pUnitType;
         SalesHeader."Posting No. Series" := salesReciveable."Posted Credit Memo Nos.";
         SalesHeader."Approval Status for CreditNote" := SalesHeader."Approval Status for CreditNote"::Approved;
+        SalesHeader."Terminated Credit Note" := true;
         salesHeader.Insert();
         exit(salesHeader);
     end;
