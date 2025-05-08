@@ -137,6 +137,12 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
             DataClassification = ToBeClassified;
             Caption = 'Contract Amount';
         }
+        field(50121; "Terminated Credit Note"; Boolean)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Terminated Credit Note';
+        }
+
     }
 
 }
