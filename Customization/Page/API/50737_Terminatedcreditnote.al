@@ -564,11 +564,16 @@ page 50737 "Terminated credit note"
                 {
                     Caption = 'Your Reference';
                 }
-                 field("ContractAmount";Rec."Contract Amount")
+                field("ContractAmount"; Rec."Contract Amount")
                 {
                     Caption = 'Contract Amount';
                 }
-                
+                field("TerminatedCreditNote"; Rec."Terminated Credit Note")
+                {
+                    Caption = 'Terminated Credit Note';
+                }
+
+
             }
         }
     }
