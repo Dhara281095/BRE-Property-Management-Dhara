@@ -52,6 +52,14 @@ pageextension 50509 PostedSalesCreditMemo extends "Posted Sales Credit Memo"
                     ApplicationArea = All;
                     ToolTip = 'Reason for rejection of the credit note.';
                 }
+                field("Terminated Credit Note"; Rec."Terminated Credit Note")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Indicates if the credit note is terminated.';
+                    Editable = false;
+                    Visible = false;
+                }
+
 
             }
         }
