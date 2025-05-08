@@ -255,14 +255,16 @@ page 50922 "Payment Schedule Card2"
             Rec.Modify();
         end;
 
-        if Rec."No of Days" = 0 then begin
-            Rec."Workflow frequency date" := Rec."Due Date";
-            Rec.Modify();
-        end else begin
-            Rec."Workflow frequency date" := CalcDate('-' + Format(Rec."No of Days") + 'D', Rec."Due Date");
-            Rec.Modify();
-        end;
+
+        // if Rec."No of Days" = 0 then begin
+        //     Rec."Workflow frequency date" := Rec."Due Date";
+        //     Rec.Modify();
+        // end else begin
+        //     Rec."Workflow frequency date" := CalcDate('-' + Format(Rec."No of Days") + 'D', Rec."Due Date");
+        //     Rec.Modify();
+        // end;
     end;
+
 
 
     // trigger OnAfterGetCurrRecord()
@@ -297,7 +299,16 @@ page 50922 "Payment Schedule Card2"
     var
         InvoicedField: Boolean;
 
-
+    // trigger OnAfterGetCurrRecord()
+    // begin
+    //     if Rec."No of Days" = 0 then begin
+    //         Rec."Workflow frequency date" := Rec."Due Date";
+    //         Rec.Modify();
+    //     end else begin
+    //         Rec."Workflow frequency date" := CalcDate('-' + Format(Rec."No of Days") + 'D', Rec."Due Date");
+    //         Rec.Modify();
+    //     end;
+    // end;
 
     local procedure UpdateBalanceAmountOnPaymentReceived()
     var
@@ -333,6 +344,8 @@ page 50922 "Payment Schedule Card2"
             until PaymentScheduleRec.Next() = 0;
         end;
     end;
+
+
 
 }
 
