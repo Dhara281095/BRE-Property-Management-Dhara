@@ -67,7 +67,7 @@ table 50959 "RevenueRecognition Othercharge"
             Caption = 'Total Amount(Day)';
             Editable = false;
             FieldClass = FlowField;
-            CalcFormula = sum("Revenue Recognition Subpage"."RR - Method 1 (Day)" where("Contract ID" = field("Contract ID")));
+            CalcFormula = sum("RevenueRecognition Othercharge"."RR - Method 1 (Day)" where("Contract ID" = field("Contract ID")));
 
         }
         field(50108; "Total Amount(Month)"; Decimal)
@@ -76,7 +76,7 @@ table 50959 "RevenueRecognition Othercharge"
             Caption = 'Total Amount(Month)';
             Editable = false;
             FieldClass = FlowField;
-            CalcFormula = sum("Revenue Recognition Subpage"."RR - Method 2 (Month)" where("Contract ID" = field("Contract ID")));
+            CalcFormula = sum("RevenueRecognition Othercharge"."RR - Method 2 (Month)" where("Contract ID" = field("Contract ID")));
         }
     }
 

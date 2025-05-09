@@ -105,30 +105,30 @@ page 50976 "Revenue Item Breakdown Sub"
                     Caption = 'Annual Amount';
                     Editable = false;
                 }
-                field("Posting Month"; Rec."Posting Month")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Posting Month';
-                    Editable = false;
-                }
-                field("Posting Year"; Rec."Posting Year")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Posting Year';
-                    Editable = false;
-                }
-                field("Posting Period"; Rec."Posting Period")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Posting Period';
-                    Editable = false;
-                }
-                field("Final Annual Amount"; Rec."Final Annual Amount")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Final Annual Amount';
-                    Editable = false;
-                }
+                // field("Posting Month"; Rec."Posting Month")
+                // {
+                //     ApplicationArea = All;
+                //     Caption = 'Posting Month';
+                //     Editable = false;
+                // }
+                // field("Posting Year"; Rec."Posting Year")
+                // {
+                //     ApplicationArea = All;
+                //     Caption = 'Posting Year';
+                //     Editable = false;
+                // }
+                // field("Posting Period"; Rec."Posting Period")
+                // {
+                //     ApplicationArea = All;
+                //     Caption = 'Posting Period';
+                //     Editable = false;
+                // }
+                // field("Final Annual Amount"; Rec."Final Annual Amount")
+                // {
+                //     ApplicationArea = All;
+                //     Caption = 'Final Annual Amount';
+                //     Editable = false;
+                // }
                 field("No Of Days"; Rec."No Of Days")
                 {
                     ApplicationArea = All;
