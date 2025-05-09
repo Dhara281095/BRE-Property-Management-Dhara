@@ -3,7 +3,6 @@ page 50972 "Revenue Recognition Main"
     PageType = Card;
     SourceTable = "Revenue Recognition Main";
     ApplicationArea = All;
-    UsageCategory = Administration;
     Caption = 'Revenue Recognition Card';
 
     layout
