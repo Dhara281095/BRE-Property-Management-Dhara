@@ -83,10 +83,10 @@ table 50964 "Brokerage Calculation Sub"
             Caption = 'Brokerage Percentage';
             Editable = false;
         }
-        field(50113; "Calculation Amount"; Decimal)
+        field(50113; "Brokerage Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Calculation Amount';
+            Caption = 'Brokerage Amount';
             Editable = false;
         }
         field(50114; "Paid By"; Option)
@@ -125,7 +125,36 @@ table 50964 "Brokerage Calculation Sub"
             Caption = 'Total brokerage Amount';
             Editable = false;
             FieldClass = FlowField;
-            CalcFormula = sum("Brokerage Calculation Sub"."Calculation Amount" where("ID" = field("ID"), "Owner ID" = field("Owner ID")));
+            CalcFormula = sum("Brokerage Calculation Sub"."Brokerage Amount" where("ID" = field("ID"), "Owner ID" = field("Owner ID")));
+        }
+
+        field(50120; "Percentage"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Brokerage Percentage';
+        }
+        field(50121; "Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Brokerage Amount';
+        }
+        field(50122; "Calculation Method"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Calculation Method';
+            TableRelation = "Calculation Type"."Calculation Type";
+        }
+        field(50123; "Base Amount Type"; Option)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Base Amount Type';
+            OptionMembers = " ","Revenue","Collection","Annual Rent","Monthly Rent";
+        }
+
+        field(50124; "Base Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Base Amount';
         }
 
     }

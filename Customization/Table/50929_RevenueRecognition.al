@@ -10,15 +10,12 @@ table 50929 "Revenue Recognition"
             DataClassification = ToBeClassified;
             AutoIncrement = true;
             Caption = 'RR Id';
-
         }
-
 
         field(50100; "Contract ID"; Integer)
         {
             DataClassification = ToBeClassified;
             TableRelation = "Tenancy Contract"."Contract ID";
-            // AutoIncrement = true;
             Caption = 'Contract ID';
 
             trigger OnValidate()
@@ -57,20 +54,17 @@ table 50929 "Revenue Recognition"
         {
             DataClassification = ToBeClassified;
             Caption = 'Start Date';
-
         }
         field(50104; "End Date"; Date)
         {
             DataClassification = ToBeClassified;
             Caption = 'End Date';
-
         }
 
         field(50105; "Contract Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Contract Amount';
-
         }
 
     }
@@ -81,10 +75,6 @@ table 50929 "Revenue Recognition"
         {
             Clustered = true;
         }
-
-
-
-
     }
 
 

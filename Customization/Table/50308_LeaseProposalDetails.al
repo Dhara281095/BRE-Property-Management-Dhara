@@ -1419,20 +1419,20 @@ table 50308 "Lease Proposal Details"
                     "Contract Status" := VendorProfileRec."Contract Status";
                     "Calculation Method" := VendorProfileRec."Calculation Method";
                     "Percentage Type" := VendorProfileRec."Percentage Type";
-                    "Base Amount" := VendorProfileRec."Base Amount";
+                    "Base Amount Type" := VendorProfileRec."Base Amount Type";
                     "Frequency Of Payment" := VendorProfileRec."Frequency Of Payment";
                     Percentage := VendorProfileRec.Percentage;
 
                     Percentageamt := "Percentage"; // used for calculations
 
                     case UpperCase(Rec."Calculation Method") of
-                        'Fixed Amount':
+                        'FIXED AMOUNT':
                             // Do nothing – amount is manually entered
                             Rec."Amount" := VendorProfileRec."Amount";
 
                         'STANDARD RATE':
                             begin
-                                if Rec."Base Amount" = Rec."Base Amount"::"Monthly Rent" then begin
+                                if Rec."Base Amount Type" = Rec."Base Amount Type"::"Monthly Rent" then begin
                                     MonthlyRent := Rec."Rent Amount";
                                     Rec."Amount" := Round(MonthlyRent / 12, 0.01); // 2 decimal rounding
                                 end;
@@ -1440,7 +1440,7 @@ table 50308 "Lease Proposal Details"
 
                         'PERCENTAGE BASED':
                             begin
-                                if Rec."Base Amount" = Rec."Base Amount"::"Annual Rent" then begin
+                                if Rec."Base Amount Type" = Rec."Base Amount Type"::"Annual Rent" then begin
                                     MonthlyRent := Rec."Rent Amount";
                                     // Percentage := "Percentage";
                                     Rec."Amount" := Round((MonthlyRent * Percentageamt) / 100, 0.01);
@@ -1467,7 +1467,7 @@ table 50308 "Lease Proposal Details"
                     "Percentage Type" := "Percentage Type"::" ";
                     Percentage := 0;
                     Amount := 0;
-                    "Base Amount" := "Base Amount"::" ";
+                    "Base Amount Type" := "Base Amount Type"::" ";
                     "Frequency Of Payment" := "Frequency Of Payment"::" ";
                 end;
             end;
@@ -1501,10 +1501,10 @@ table 50308 "Lease Proposal Details"
             Caption = 'Percentage Type';
             OptionMembers = " ","Fixed","Variable";
         }
-        field(50178; "Base Amount"; Option)
+        field(50178; "Base Amount Type"; Option)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Base Amount';
+            Caption = 'Base Amount Type';
             OptionMembers = " ","Revenue","Collection","Annual Rent","Monthly Rent";
         }
         field(50179; "Frequency Of Payment"; Option)

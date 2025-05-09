@@ -130,7 +130,7 @@ page 50942 "Vendor Profile Card"
                     ApplicationArea = All;
                     Editable = IsPercentageTypeEditable;
                 }
-                field("Base Amount"; Rec."Base Amount")
+                field("Base Amount Type"; Rec."Base Amount Type")
                 {
                     ApplicationArea = All;
                     Editable = IsBaseamount;
@@ -422,11 +422,11 @@ page 50942 "Vendor Profile Card"
             'STANDARD RATE':
                 begin
                     // Auto-populate 'Monthly Rent' if not already set
-                    if Rec."Base Amount" <> Rec."Base Amount"::"Monthly Rent" then
-                        Rec."Base Amount" := Rec."Base Amount"::"Monthly Rent";
+                    if Rec."Base Amount Type" <> Rec."Base Amount Type"::"Monthly Rent" then
+                        Rec."Base Amount Type" := Rec."Base Amount Type"::"Monthly Rent";
 
                     // Now apply the logic
-                    if Rec."Base Amount" = Rec."Base Amount"::"Monthly Rent" then begin
+                    if Rec."Base Amount Type" = Rec."Base Amount Type"::"Monthly Rent" then begin
                         IsAmountEditable := false;
                         IsPercentageEditable := false;
                         IsPercentageTypeEditable := false;

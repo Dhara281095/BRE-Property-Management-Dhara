@@ -122,8 +122,13 @@ page 50963 "Brokerage Calculation Card"
                                 SubDetailRec."Unit Name" := MasterDataRec."Unit Name";
                                 SubDetailRec."Vendor Name" := MasterDataRec."Vendor Name";
                                 SubDetailRec."Brokerage Percentage" := MasterDataRec.Percentage;
-                                SubDetailRec."Calculation Amount" := MasterDataRec."Amount";
+                                SubDetailRec."Brokerage Amount" := MasterDataRec."Amount";
                                 SubDetailRec."Owner Name" := MasterDataRec."Owner Name";
+                                SubDetailRec."Calculation Method" := MasterDataRec."Calculation Method";
+                                SubDetailRec."Base Amount Type" := MasterDataRec."Base Amount Type";
+                                SubDetailRec."Base Amount" := MasterDataRec."Base Amount";
+                                SubDetailRec."Amount" := MasterDataRec.Amount;
+
 
                                 // Insert
                                 SubDetailRec.Insert(true);
@@ -139,8 +144,6 @@ page 50963 "Brokerage Calculation Card"
             }
         }
     }
-
-
 }
 
 

@@ -777,7 +777,7 @@ page 50315 "Lease Proposal Card"
                     ApplicationArea = All;
                      Editable = false;
                 }
-                field("Base Amount"; Rec."Base Amount")
+                field("Base Amount Type"; Rec."Base Amount Type")
                 {
                     ApplicationArea = All;
                      Editable = false;

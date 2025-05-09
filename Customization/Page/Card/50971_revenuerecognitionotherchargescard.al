@@ -1,9 +1,10 @@
-page 50933 "Revenue Recognition Card2"
+page 50971 "RevenueRecognition Othercharge"
 {
     PageType = ListPart;
-    SourceTable = "Revenue Recognition Subpage";
+    SourceTable = "RevenueRecognition Othercharge";
     ApplicationArea = All;
-    Caption = 'Revenue Recognition-Rent';
+    Caption = 'Revenue Recognition Other Charges';
+    // UsageCategory = Administration;
 
     layout
     {
@@ -11,11 +12,12 @@ page 50933 "Revenue Recognition Card2"
         {
             repeater(Group)
             {
-                field("RR Id"; Rec."RR Id")
+
+                field("RS Id"; Rec."RS Id")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
-
                 field("Month"; Rec."Month")
                 {
                     ApplicationArea = All;
@@ -34,6 +36,7 @@ page 50933 "Revenue Recognition Card2"
                 field("RR - Method 2 (Month)"; Rec."RR - Method 2 (Month)")
                 {
                     ApplicationArea = All;
+
                 }
             }
 
@@ -51,6 +54,7 @@ page 50933 "Revenue Recognition Card2"
             }
         }
     }
+
 }
 
 

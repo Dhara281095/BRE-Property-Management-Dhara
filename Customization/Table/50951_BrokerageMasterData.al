@@ -49,10 +49,10 @@ table 50951 "Brokerage Master Data"
             Caption = 'Percentage Type';
             OptionMembers = " ","Fixed","Variable";
         }
-        field(50108; "Base Amount"; Option)
+        field(50108; "Base Amount Type"; Option)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Base Amount';
+            Caption = 'Base Amount Type';
             OptionMembers = " ","Revenue","Collection","Annual Rent","Monthly Rent";
         }
         field(50109; "Frequency Of Payment"; Option)
@@ -133,6 +133,18 @@ table 50951 "Brokerage Master Data"
         {
             DataClassification = ToBeClassified;
             Caption = 'Tenant Name';
+        }
+
+        field(50123; "Base Amount"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Base Amount';
+        }
+        field(50124; "Proposal ID"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Proposal ID';
+            Editable = false;
         }
     }
 

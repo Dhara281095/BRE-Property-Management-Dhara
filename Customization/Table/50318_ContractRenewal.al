@@ -1183,12 +1183,12 @@ table 50318 "Contract Renewal"
                     "Calculation Method" := VendorProfileRec."Calculation Method";
                     "Percentage Type" := VendorProfileRec."Percentage Type";
                     Percentage := VendorProfileRec.Percentage;
-                    "Base Amount" := VendorProfileRec."Base Amount";
+                    "Base Amount Type" := VendorProfileRec."Base Amount Type";
 
-                    case "Base Amount" of
-                        "Base Amount"::"Annual Rent":
+                    case "Base Amount Type" of
+                        "Base Amount Type"::"Annual Rent":
                             AnnualAmount := Rec."Rent Amount";
-                        "Base Amount"::"Monthly Rent":
+                        "Base Amount Type"::"Monthly Rent":
                             AnnualAmount := Rec."Rent Amount" / 12;
                     end;
 
@@ -1204,7 +1204,7 @@ table 50318 "Contract Renewal"
                     "Percentage Type" := "Percentage Type"::" ";
                     Percentage := 0;
                     Amount := 0;
-                    "Base Amount" := "Base Amount"::" ";
+                    "Base Amount Type" := "Base Amount Type"::" ";
                     "Frequency Of Payment" := "Frequency Of Payment"::" ";
                 end;
             end;
@@ -1243,10 +1243,10 @@ table 50318 "Contract Renewal"
             Caption = 'Percentage Type';
             OptionMembers = " ","Fixed","Variable";
         }
-        field(50178; "Base Amount"; Option)
+        field(50178; "Base Amount Type"; Option)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Base Amount';
+            Caption = 'Base Amount Type';
             OptionMembers = " ","Revenue","Collection","Annual Rent","Monthly Rent";
         }
         field(50179; "Frequency Of Payment"; Option)
