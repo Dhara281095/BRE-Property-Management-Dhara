@@ -50,11 +50,23 @@ page 50965 "Brokerage Calculation Sub Card"
                 {
                     ApplicationArea = All;
                 }
+                field("Calculation Method"; Rec."Calculation Method")
+                {
+                    ApplicationArea = All;
+                }
+                field("Base Amount Type"; Rec."Base Amount Type")
+                {
+                    ApplicationArea = All;
+                }
+                field("Base Amount"; Rec."Base Amount")
+                {
+                    ApplicationArea = All;
+                }
                 field("Brokerage Percentage"; Rec."Brokerage Percentage")
                 {
                     ApplicationArea = All;
                 }
-                field("Calculation Amount"; Rec."Calculation Amount")
+                field("Brokerage Amount"; Rec."Brokerage Amount")
                 {
                     ApplicationArea = All;
                 }

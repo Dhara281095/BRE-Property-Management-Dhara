@@ -1,20 +1,20 @@
-table 50932 "Revenue Recognition Subpage"
+table 50959 "RevenueRecognition Othercharge"
 {
     DataClassification = ToBeClassified;
 
     fields
     {
-        field(50109; "RR Id"; Integer)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'RR Id';
-        }
 
-        field(50102; "Entry No."; Integer)
+        field(50109; "Entry No."; Integer)
         {
             DataClassification = ToBeClassified;
             AutoIncrement = true;
             Caption = 'Entry No.';
+        }
+        field(50102; "RS Id"; Integer)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'RS Id';
         }
 
         field(50100; "Contract ID"; Integer)
@@ -22,6 +22,7 @@ table 50932 "Revenue Recognition Subpage"
             DataClassification = ToBeClassified;
             TableRelation = "Tenancy Contract"."Contract ID";
             Editable = false;
+
         }
         field(50101; "Tenant Id"; Code[20])
         {
@@ -29,13 +30,16 @@ table 50932 "Revenue Recognition Subpage"
             Caption = 'Tenant Id';
             TableRelation = "Tenancy Contract"."Tenant ID";
             Editable = false; // Make it read-only for the user
+
         }
         field(50103; "Month"; Text[50])
         {
             DataClassification = ToBeClassified;
             Caption = 'Month';
             Editable = false;
+
         }
+
         field(50104; "No. of Days"; Integer)
         {
             DataClassification = ToBeClassified;
@@ -64,8 +68,8 @@ table 50932 "Revenue Recognition Subpage"
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = sum("Revenue Recognition Subpage"."RR - Method 1 (Day)" where("Contract ID" = field("Contract ID")));
-        }
 
+        }
         field(50108; "Total Amount(Month)"; Decimal)
         {
             // DataClassification = ToBeClassified;
@@ -82,5 +86,7 @@ table 50932 "Revenue Recognition Subpage"
         {
             Clustered = true;
         }
+
     }
+
 }

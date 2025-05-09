@@ -95,6 +95,16 @@ page 50961 "Brokerage Master Data List"
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field("Base Amount"; Rec."Base Amount")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+                field("Base Amount Type"; Rec."Base Amount Type")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
                 field("Percentage Type"; Rec."Percentage Type")
                 {
                     ApplicationArea = All;
@@ -107,11 +117,6 @@ page 50961 "Brokerage Master Data List"
                     Editable = false;
                 }
                 field("Amount"; Rec."Amount")
-                {
-                    ApplicationArea = All;
-                    Editable = false;
-                }
-                field("Base Amount"; Rec."Base Amount")
                 {
                     ApplicationArea = All;
                     Editable = false;

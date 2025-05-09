@@ -1,13 +1,18 @@
-table 50110 "Revenue Allocation SubGrid"
+table 50962 "Revenue Recognition Details"
 {
     DataClassification = ToBeClassified;
 
     fields
     {
-        field(50100; "Line No."; Integer)
+        field(50123; "RR_No."; Integer)
+        {
+            DataClassification = SystemMetadata;
+        }
+        field(50100; "Entry No."; Integer)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Line No.';
+            Caption = 'Entry No.';
+            AutoIncrement = true;
             Editable = false;
         }
 
@@ -120,10 +125,10 @@ table 50110 "Revenue Allocation SubGrid"
             Caption = 'No Of Days';
         }
 
-        field(50119; "Per Day Rent"; Decimal)
+        field(50119; "Per Day Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
-            Caption = 'Per Day Rent';
+            Caption = 'Per Day Amount';
         }
 
         field(50120; "Total Value"; Decimal)
@@ -143,11 +148,6 @@ table 50110 "Revenue Allocation SubGrid"
             DataClassification = ToBeClassified;
             Caption = 'Owner Share';
         }
-        field(50123; "Header No."; Integer)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Header No.';
-        }
         field(50124; "Final Annual Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
@@ -158,11 +158,9 @@ table 50110 "Revenue Allocation SubGrid"
 
     keys
     {
-        key(Key1; "Header No.", "Line No.")
+        key(PK; "Entry No.")
         {
             Clustered = true;
         }
-
     }
-
 }

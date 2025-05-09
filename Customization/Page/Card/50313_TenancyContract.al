@@ -1892,7 +1892,7 @@ page 50313 "Tenancy Contract Card"
                     Editable = false;
                 }
 
-                field("Base Amount"; Rec."Base Amount")
+                field("Base Amount Type"; Rec."Base Amount Type")
                 {
                     ApplicationArea = All;
                     Editable = false;

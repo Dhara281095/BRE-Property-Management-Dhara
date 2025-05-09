@@ -407,7 +407,7 @@ table 50926 "Vendor Profile"
             Caption = 'Percentage Type';
             OptionMembers = " ","Fixed","Variable";
         }
-        field(50161; "Base Amount"; Option)
+        field(50161; "Base Amount Type"; Option)
         {
             DataClassification = ToBeClassified;
             Caption = 'Base Amount Type';

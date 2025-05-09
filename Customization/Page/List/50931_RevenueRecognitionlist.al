@@ -3,7 +3,7 @@ page 50931 "Revenue Recognition List"
     PageType = List;
     SourceTable = "Revenue Recognition";
     ApplicationArea = All;
-    Caption = 'Revenue Recognition List';
+    Caption = 'Revenue Recognition Rent List';
     UsageCategory = Lists;
     CardPageId = 50930;
 
