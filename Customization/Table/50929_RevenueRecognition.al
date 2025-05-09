@@ -101,6 +101,7 @@ table 50929 "Revenue Recognition"
         MonthlyRate2: Decimal;
         TotalMonths: Integer;
         ActualDaysInMonth: Integer;
+        LastEntryNo: Integer;
     begin
         // Clear existing records in the subpage table
         SubpageRec.DeleteAll();
@@ -118,6 +119,9 @@ table 50929 "Revenue Recognition"
         CurrentDate := "Start Date";
         while CurrentDate <= "End Date" do begin
             SubpageRec.Init();
+            LastEntryNo += 1; // Increment Entry No.
+            SubpageRec."Entry No." := LastEntryNo; // Assign new Entry No.
+
             SubpageRec."RR Id" := "RR Id";
             SubpageRec."Contract ID" := "Contract ID";
             SubpageRec."Tenant Id" := "Tenant Id";
