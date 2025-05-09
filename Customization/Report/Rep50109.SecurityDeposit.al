@@ -42,11 +42,12 @@ report 50109 "Security Deposit"
             }
             column(CarriedForwardIn; CarriedForwardInAmount)
             {
-                Caption = 'Carried Forward In';
             }
             column(CarriedForwardOut; CarriedForwardOutAmount)
             {
-                Caption = 'Carried Forward Out';
+            }
+            column(Adjustment; AdjustmentAmount)
+            {
             }
             column(Refund; RefundAmount)
             {
@@ -54,6 +55,12 @@ report 50109 "Security Deposit"
             column(Closing_Balance; ClosingBalance)
             {
             }
+            // column(TotalAdditionalCharges; TotalAdditionalCharges)
+            // {
+            // }
+            // column(NetBalance; NetBalance)
+            // {
+            // }
 
             trigger OnAfterGetRecord()
             var
@@ -62,6 +69,8 @@ report 50109 "Security Deposit"
                 SecurityDepositAmount: Decimal;
                 SecurityDepositTransferRec: Record "Security Deposit";
                 SecurityDepositTransfer: Record "Security Deposit";
+                AdditionalCharges: Record "Additional Charges Sub";
+                FinalCalculation: Record "Final Calculation";
             begin
                 // ------------------------------------custome start & end date ----------------------------------------------------------/
 
@@ -119,24 +128,67 @@ report 50109 "Security Deposit"
                     until SecurityDepositTransfer.Next() = 0;
 
 
+                // --------------------------------- Get Total Amount from Additional Charges and Net Balance from Final Calculation -----------------------/
+
+                TotalAdditionalCharges := 0;
+                AdditionalCharges.Reset();
+                AdditionalCharges.SetRange("Contract ID", "Contract ID");
+                if AdditionalCharges.FindSet() then
+                    repeat
+                        TotalAdditionalCharges += AdditionalCharges."Amount Including VAT";
+                    until AdditionalCharges.Next() = 0;
+
+                // Get Net Balance from Final Calculation
+                NetBalance := 0;
+                FinalCalculation.Reset();
+                FinalCalculation.SetRange("Contract ID", "Contract ID");
+                if FinalCalculation.FindFirst() then
+                    NetBalance := FinalCalculation."Net Balance";
+
+                // --------------------------------- Calculate Adjustment and Refund based on the rules -----------------------/
+
+                // Calculate Adjustment and Refund using the specified rules
+                if TotalAdditionalCharges > NetBalance then begin
+                    AdjustmentAmount := NetBalance;
+                    RefundAmount := 0;
+                end else if TotalAdditionalCharges < NetBalance then begin
+                    AdjustmentAmount := TotalAdditionalCharges;
+                    RefundAmount := NetBalance - TotalAdditionalCharges;
+                end else begin
+                    // When TotalAdditionalCharges equals NetBalance
+                    AdjustmentAmount := 0;
+                    RefundAmount := 0;
+                end;
 
                 // ------------------------------------------ Closing Balance -----------------------------------------------------------/
 
                 // Closing Balance condition
-                if CustomEndDate < "Contract End Date" then begin
-                    ClosingBalance := SecurityDepositAmount;
-                    RefundAmount := 0
-                end
-                else
-                    ClosingBalance := 0;
+                // if CustomEndDate < "Contract End Date" then begin
+                //     ClosingBalance := SecurityDepositAmount;
+                //     RefundAmount := 0;
+                //     AdjustmentAmount := 0;
+                // end
+                // else
+                //     ClosingBalance := 0;
 
                 // Assign value to the ClosingBalance column
                 "ClosingBalance" := ClosingBalance;
 
-                // Calculate Refund amount - the remaining amount after transfers out
-                RefundAmount := SecurityDepositAmount - CarriedForwardOutAmount;
-                if RefundAmount < 0 then
-                    RefundAmount := 0;
+                // Closing Balance condition
+                if CustomEndDate < "Contract End Date" then begin
+                    ClosingBalance := SecurityDepositAmount;
+                    // RefundAmount := 0
+                end
+                else
+                    ClosingBalance := 0;
+
+                // // Assign value to the ClosingBalance column
+                // "ClosingBalance" := ClosingBalance;
+
+                // // Calculate Refund amount - the remaining amount after transfers out
+                // RefundAmount := SecurityDepositAmount - CarriedForwardOutAmount;
+                // if RefundAmount < 0 then
+                //     RefundAmount := 0;
 
                 // -------------------------------------- Refund & carriedforwardout -------------------------------------------------------/
                 // SecurityDepositAmount := "Security Deposit Amount";
@@ -198,8 +250,11 @@ report 50109 "Security Deposit"
         CustomDateRangeText: Text;
         OpeningBalance: Decimal;
         Additions: Decimal;
+        AdjustmentAmount: Decimal;
         ClosingBalance: Decimal;
         RefundAmount: Decimal;
         CarriedForwardOutAmount: Decimal;
         CarriedForwardInAmount: Decimal;
+        TotalAdditionalCharges: Decimal;
+        NetBalance: Decimal;
 }
