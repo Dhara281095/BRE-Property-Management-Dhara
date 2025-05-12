@@ -137,6 +137,7 @@ table 50911 "Revenue Structure"
     begin
         deletepaymentschedule();
         deleterevenuestructuresubpag1();
+        Deleterevenuerecognition();
     end;
 
     procedure deletepaymentschedule()
@@ -162,6 +163,18 @@ table 50911 "Revenue Structure"
             revenuestructuresubpage1.DeleteAll();
         end;
     end;
+
+    procedure Deleterevenuerecognition()
+    var
+        revenuerecognition: Record "RevenueRecognition Othercharge";
+    begin
+        revenuerecognition.SetRange("Contract ID", Rec."Contract ID");
+        if revenuerecognition.FindSet() then
+            repeat
+                revenuerecognition.DeleteAll();
+            until revenuerecognition.Next() = 0;
+    end;
+
 
     //-----------------Delete record also delete subgrid -----------------//
 

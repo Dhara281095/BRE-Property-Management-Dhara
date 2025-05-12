@@ -57,35 +57,35 @@ table 50962 "Revenue Recognition Details"
             Caption = 'Grace Days';
         }
 
-        field(50108; "Termination Date"; Date)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Termination Date';
-        }
+        // field(50108; "Termination Date"; Date)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Termination Date';
+        // }
 
-        field(50109; "Suspension Start Date"; Date)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Suspension Start Date';
-        }
+        // field(50109; "Suspension Start Date"; Date)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Suspension Start Date';
+        // }
 
-        field(50110; "Suspension End Date"; Date)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Suspension End Date';
-        }
+        // field(50110; "Suspension End Date"; Date)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Suspension End Date';
+        // }
 
-        field(50111; "Multi Year Start Date"; Date)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Multi Year Start Date';
-        }
+        // field(50111; "Multi Year Start Date"; Date)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Multi Year Start Date';
+        // }
 
-        field(50112; "Multi Year End Date"; Date)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Multi Year End Date';
-        }
+        // field(50112; "Multi Year End Date"; Date)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Multi Year End Date';
+        // }
 
         field(50113; "Contract Amount"; Decimal)
         {
@@ -99,25 +99,25 @@ table 50962 "Revenue Recognition Details"
             Caption = 'Annual Amount';
         }
 
-        field(50115; "Posting Month"; Option)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Posting Month';
-            OptionCaption = 'January,February,March,April,May,June,July,August,September,October,November,December';
-            OptionMembers = January,February,March,April,May,June,July,August,September,October,November,December;
-        }
+        // field(50115; "Posting Month"; Option)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Posting Month';
+        //     OptionCaption = 'January,February,March,April,May,June,July,August,September,October,November,December';
+        //     OptionMembers = January,February,March,April,May,June,July,August,September,October,November,December;
+        // }
 
-        field(50116; "Posting Year"; Integer)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Posting Year';
-        }
+        // field(50116; "Posting Year"; Integer)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Posting Year';
+        // }
 
-        field(50117; "Posting Period"; Text[50])
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Posting Period';
-        }
+        // field(50117; "Posting Period"; Text[50])
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Posting Period';
+        // }
 
         field(50118; "No Of Days"; Integer)
         {
@@ -148,12 +148,6 @@ table 50962 "Revenue Recognition Details"
             DataClassification = ToBeClassified;
             Caption = 'Owner Share';
         }
-        field(50124; "Final Annual Amount"; Decimal)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Final Annual Amount';
-        }
-
     }
 
     keys

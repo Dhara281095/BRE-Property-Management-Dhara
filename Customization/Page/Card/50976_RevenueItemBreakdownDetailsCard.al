@@ -33,6 +33,12 @@ page 50976 "Revenue Item Breakdown Sub"
                     Caption = 'Contract Id';
                     Editable = false;
                 }
+                field("Item Type"; Rec."Item Type")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Item Type';
+                    Editable = false;
+                }
                 field("Contract Tenure"; Rec."Contract Tenure")
                 {
                     ApplicationArea = All;
@@ -63,36 +69,36 @@ page 50976 "Revenue Item Breakdown Sub"
                     Caption = 'Grace Days';
                     Editable = false;
                 }
-                field("Termination Date"; Rec."Termination Date")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Termination Date';
-                    Editable = false;
-                }
-                field("Suspension Start Date"; Rec."Suspension Start Date")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Suspension Start Date';
-                    Editable = false;
-                }
-                field("Suspension End Date"; Rec."Suspension End Date")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Suspension End Date';
-                    Editable = false;
-                }
-                field("Multi Year Start Date"; Rec."Multi Year Start Date")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Multi Year Start Date';
-                    Editable = false;
-                }
-                field("Multi Year End Date"; Rec."Multi Year End Date")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Multi Year End Date';
-                    Editable = false;
-                }
+                // field("Termination Date"; Rec."Termination Date")
+                // {
+                //     ApplicationArea = All;
+                //     Caption = 'Termination Date';
+                //     Editable = false;
+                // }
+                // field("Suspension Start Date"; Rec."Suspension Start Date")
+                // {
+                //     ApplicationArea = All;
+                //     Caption = 'Suspension Start Date';
+                //     Editable = false;
+                // }
+                // field("Suspension End Date"; Rec."Suspension End Date")
+                // {
+                //     ApplicationArea = All;
+                //     Caption = 'Suspension End Date';
+                //     Editable = false;
+                // }
+                // field("Multi Year Start Date"; Rec."Multi Year Start Date")
+                // {
+                //     ApplicationArea = All;
+                //     Caption = 'Multi Year Start Date';
+                //     Editable = false;
+                // }
+                // field("Multi Year End Date"; Rec."Multi Year End Date")
+                // {
+                //     ApplicationArea = All;
+                //     Caption = 'Multi Year End Date';
+                //     Editable = false;
+                // }
                 field("Contract Amount"; Rec."Contract Amount")
                 {
                     ApplicationArea = All;
@@ -121,12 +127,6 @@ page 50976 "Revenue Item Breakdown Sub"
                 // {
                 //     ApplicationArea = All;
                 //     Caption = 'Posting Period';
-                //     Editable = false;
-                // }
-                // field("Final Annual Amount"; Rec."Final Annual Amount")
-                // {
-                //     ApplicationArea = All;
-                //     Caption = 'Final Annual Amount';
                 //     Editable = false;
                 // }
                 field("No Of Days"; Rec."No Of Days")
@@ -162,4 +162,20 @@ page 50976 "Revenue Item Breakdown Sub"
             }
         }
     }
+
+    procedure SetRIID(pRIID: Integer)
+    begin
+        RIID := pRIID;
+
+    end;
+
+
+    trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    begin
+
+        Rec."RI_No." := RIID;
+    end;
+
+    var
+        RIID: Integer;
 }

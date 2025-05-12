@@ -26,6 +26,11 @@ table 50965 "Revenue Item Breakdown Details"
             DataClassification = ToBeClassified;
             Caption = 'Contract Id';
         }
+        field(50124; "Item Type"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Item Type';
+        }
 
         field(50103; "Contract Tenure"; Text[50])
         {
@@ -57,35 +62,35 @@ table 50965 "Revenue Item Breakdown Details"
             Caption = 'Grace Days';
         }
 
-        field(50108; "Termination Date"; Date)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Termination Date';
-        }
+        // field(50108; "Termination Date"; Date)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Termination Date';
+        // }
 
-        field(50109; "Suspension Start Date"; Date)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Suspension Start Date';
-        }
+        // field(50109; "Suspension Start Date"; Date)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Suspension Start Date';
+        // }
 
-        field(50110; "Suspension End Date"; Date)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Suspension End Date';
-        }
+        // field(50110; "Suspension End Date"; Date)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Suspension End Date';
+        // }
 
-        field(50111; "Multi Year Start Date"; Date)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Multi Year Start Date';
-        }
+        // field(50111; "Multi Year Start Date"; Date)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Multi Year Start Date';
+        // }
 
-        field(50112; "Multi Year End Date"; Date)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'Multi Year End Date';
-        }
+        // field(50112; "Multi Year End Date"; Date)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Multi Year End Date';
+        // }
 
         field(50113; "Contract Amount"; Decimal)
         {
@@ -148,11 +153,6 @@ table 50965 "Revenue Item Breakdown Details"
             DataClassification = ToBeClassified;
             Caption = 'Owner Share';
         }
-        // field(50124; "Final Annual Amount"; Decimal)
-        // {
-        //     DataClassification = ToBeClassified;
-        //     Caption = 'Final Annual Amount';
-        // }
 
     }
 

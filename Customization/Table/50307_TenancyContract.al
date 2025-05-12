@@ -2767,111 +2767,111 @@ table 50307 "Tenancy Contract"
             Message('No Contract Renewal found for given Proposal ID.');
     end;
 
-    // procedure ManagementFeeMasterDetailsFetch()
-    // var
-    //     managementfee: Record "Brokerage Master Data";
-    // begin
-    //     // Check if record already exists for same Vendor ID and Property ID to avoid duplicates (optional but good)
-    //     managementfee.SetRange("Vendor ID", Rec."Vendor ID");
-    //     managementfee.SetRange("Contract ID", Rec."Contract ID");
-
-    //     if not managementfee.IsEmpty() then
-    //         exit; // Record already exists, avoid duplicate insert
-
-    //     // Now insert new record
-    //     managementfee.Init();
-    //     managementfee."Property ID" := Rec."Property ID";
-    //     managementfee."Owner ID" := Rec."Owner ID";
-    //     managementfee."Vendor ID" := Rec."Vendor ID";
-    //     managementfee."Contract ID" := Rec."Contract ID";
-    //     managementfee."Unit ID" := Rec."Unit ID";
-    //     managementfee."Vendor Name" := Rec."Vendor Name";
-    //     managementfee."Unit Name" := Rec."Unit Name";
-    //     managementfee."Unit Number" := Rec."Unit Number";
-    //     managementfee."Property Name" := Rec."Property Name";
-    //     managementfee."Start Date" := Rec."Start Date";
-    //     managementfee."End Date" := Rec."End Date";
-    //     managementfee."Property Type" := Rec."Property Classification";
-    //     managementfee."Contract Status" := Rec."Contract Status";
-    //     managementfee."Calculation Method" := Rec."Calculation Method";
-    //     managementfee."Percentage Type" := Rec."Percentage Type";
-    //     managementfee."Base Amount Type" := Rec."Base Amount Type";
-    //     managementfee."Frequency Of Payment" := Rec."Frequency Of Payment";
-    //     managementfee.Amount := Rec.Amount;
-    //     managementfee."Base Amount" := Rec."Rent Amount";
-    //     managementfee.Percentage := Rec.Percentage;
-    //     managementfee."Owner Name" := Rec."Owner's Name";
-    //     managementfee."Tenant Name" := Rec."Customer Name";
-    //     managementfee.Insert();
-    //     Clear(managementfee);
-    // end;
-
     procedure ManagementFeeMasterDetailsFetch()
     var
-        brokeragemaster: Record "Brokerage Master Data";
+        managementfee: Record "Brokerage Master Data";
     begin
-        // Set filters to check if a record exists
-        brokeragemaster.SetRange("Contract ID", Rec."Contract ID");
-        brokeragemaster.SetRange("Vendor ID", Rec."Vendor ID");
-        brokeragemaster.SetRange("Property ID", Rec."Property ID");
-        // brokeragemaster.SetRange("Proposal ID", Rec."Proposal ID");
+        // Check if record already exists for same Vendor ID and Property ID to avoid duplicates (optional but good)
+        // managementfee.SetRange("Vendor ID", Rec."Vendor ID");
+        // managementfee.SetRange("Contract ID", Rec."Contract ID");
 
-        if brokeragemaster.FindSet() then begin
-            // Record exists – update fields
-            brokeragemaster."Property ID" := Rec."Property ID";
-            brokeragemaster."Owner ID" := Rec."Owner ID";
-            brokeragemaster."Vendor ID" := Rec."Vendor ID";
-            brokeragemaster."Contract ID" := Rec."Contract ID";
-            brokeragemaster."Unit ID" := Rec."Unit ID";
-            brokeragemaster."Vendor Name" := Rec."Vendor Name";
-            brokeragemaster."Unit Name" := Rec."Unit Name";
-            brokeragemaster."Unit Number" := Rec."Unit Number";
-            brokeragemaster."Property Name" := Rec."Property Name";
-            brokeragemaster."Start Date" := Rec."Start Date";
-            brokeragemaster."End Date" := Rec."End Date";
-            brokeragemaster."Property Type" := Rec."Property Classification";
-            brokeragemaster."Contract Status" := Rec."Contract Status";
-            brokeragemaster."Calculation Method" := Rec."Calculation Method";
-            brokeragemaster."Percentage Type" := Rec."Percentage Type";
-            brokeragemaster."Base Amount Type" := Rec."Base Amount Type";
-            brokeragemaster."Frequency Of Payment" := Rec."Frequency Of Payment";
-            brokeragemaster.Amount := Rec.Amount;
-            brokeragemaster."Base Amount" := Rec."Rent Amount";
-            brokeragemaster.Percentage := Rec.Percentage;
-            brokeragemaster."Owner Name" := Rec."Owner's Name";
-            brokeragemaster."Tenant Name" := Rec."Customer Name";
+        // if not managementfee.IsEmpty() then
+        //     exit; // Record already exists, avoid duplicate insert
 
-            brokeragemaster.Modify();
-            Message('Record is Modified');
-        end else begin
-            // Record not found – insert new
-            brokeragemaster.Init();
-            brokeragemaster."Vendor ID" := Rec."Vendor ID";
-            brokeragemaster."Contract ID" := Rec."Contract ID";
-            brokeragemaster."Property ID" := Rec."Property ID";
-            brokeragemaster."Owner ID" := Rec."Owner ID";
-            brokeragemaster."Unit ID" := Rec."Unit ID";
-            brokeragemaster."Vendor Name" := Rec."Vendor Name";
-            brokeragemaster."Unit Name" := Rec."Unit Name";
-            brokeragemaster."Unit Number" := Rec."Unit Number";
-            brokeragemaster."Property Name" := Rec."Property Name";
-            brokeragemaster."Start Date" := Rec."Start Date";
-            brokeragemaster."End Date" := Rec."End Date";
-            brokeragemaster."Property Type" := Rec."Property Classification";
-            brokeragemaster."Contract Status" := Rec."Contract Status";
-            brokeragemaster."Calculation Method" := Rec."Calculation Method";
-            brokeragemaster."Percentage Type" := Rec."Percentage Type";
-            brokeragemaster."Base Amount Type" := Rec."Base Amount Type";
-            brokeragemaster."Frequency Of Payment" := Rec."Frequency Of Payment";
-            brokeragemaster.Amount := Rec.Amount;
-            brokeragemaster."Base Amount" := Rec."Rent Amount";
-            brokeragemaster.Percentage := Rec.Percentage;
-            brokeragemaster."Owner Name" := Rec."Owner's Name";
-            brokeragemaster."Tenant Name" := Rec."Customer Name";
-            brokeragemaster.Insert();
-            Message('Record is Inserted');
-        end;
+        // // Now insert new record
+        // managementfee.Init();
+        // managementfee."Property ID" := Rec."Property ID";
+        // managementfee."Owner ID" := Rec."Owner ID";
+        // managementfee."Vendor ID" := Rec."Vendor ID";
+        // managementfee."Contract ID" := Rec."Contract ID";
+        // managementfee."Unit ID" := Rec."Unit ID";
+        // managementfee."Vendor Name" := Rec."Vendor Name";
+        // managementfee."Unit Name" := Rec."Unit Name";
+        // managementfee."Unit Number" := Rec."Unit Number";
+        // managementfee."Property Name" := Rec."Property Name";
+        // managementfee."Start Date" := Rec."Start Date";
+        // managementfee."End Date" := Rec."End Date";
+        // managementfee."Property Type" := Rec."Property Classification";
+        // managementfee."Contract Status" := Rec."Contract Status";
+        // managementfee."Calculation Method" := Rec."Calculation Method";
+        // managementfee."Percentage Type" := Rec."Percentage Type";
+        // managementfee."Base Amount Type" := Rec."Base Amount Type";
+        // managementfee."Frequency Of Payment" := Rec."Frequency Of Payment";
+        // managementfee.Amount := Rec.Amount;
+        // managementfee."Base Amount" := Rec."Rent Amount";
+        // managementfee.Percentage := Rec.Percentage;
+        // managementfee."Owner Name" := Rec."Owner's Name";
+        // managementfee."Tenant Name" := Rec."Customer Name";
+        // managementfee.Insert();
+        // Clear(managementfee);
     end;
+
+    // procedure ManagementFeeMasterDetailsFetch()
+    // var
+    //     brokeragemaster: Record "Brokerage Master Data";
+    // begin
+    //     // Set filters to check if a record exists
+    //     brokeragemaster.SetRange("Contract ID", Rec."Contract ID");
+    //     brokeragemaster.SetRange("Vendor ID", Rec."Vendor ID");
+    //     brokeragemaster.SetRange("Property ID", Rec."Property ID");
+    //     // brokeragemaster.SetRange("Proposal ID", Rec."Proposal ID");
+
+    //     if brokeragemaster.FindSet() then begin
+    //         // Record exists – update fields
+    //         brokeragemaster."Property ID" := Rec."Property ID";
+    //         brokeragemaster."Owner ID" := Rec."Owner ID";
+    //         brokeragemaster."Vendor ID" := Rec."Vendor ID";
+    //         brokeragemaster."Contract ID" := Rec."Contract ID";
+    //         brokeragemaster."Unit ID" := Rec."Unit ID";
+    //         brokeragemaster."Vendor Name" := Rec."Vendor Name";
+    //         brokeragemaster."Unit Name" := Rec."Unit Name";
+    //         brokeragemaster."Unit Number" := Rec."Unit Number";
+    //         brokeragemaster."Property Name" := Rec."Property Name";
+    //         brokeragemaster."Start Date" := Rec."Start Date";
+    //         brokeragemaster."End Date" := Rec."End Date";
+    //         brokeragemaster."Property Type" := Rec."Property Classification";
+    //         brokeragemaster."Contract Status" := Rec."Contract Status";
+    //         brokeragemaster."Calculation Method" := Rec."Calculation Method";
+    //         brokeragemaster."Percentage Type" := Rec."Percentage Type";
+    //         brokeragemaster."Base Amount Type" := Rec."Base Amount Type";
+    //         brokeragemaster."Frequency Of Payment" := Rec."Frequency Of Payment";
+    //         brokeragemaster.Amount := Rec.Amount;
+    //         brokeragemaster."Base Amount" := Rec."Rent Amount";
+    //         brokeragemaster.Percentage := Rec.Percentage;
+    //         brokeragemaster."Owner Name" := Rec."Owner's Name";
+    //         brokeragemaster."Tenant Name" := Rec."Customer Name";
+
+    //         brokeragemaster.Modify();
+    //         Message('Record is Modified');
+    //     end else begin
+    //         // Record not found – insert new
+    //         brokeragemaster.Init();
+    //         brokeragemaster."Vendor ID" := Rec."Vendor ID";
+    //         brokeragemaster."Contract ID" := Rec."Contract ID";
+    //         brokeragemaster."Property ID" := Rec."Property ID";
+    //         brokeragemaster."Owner ID" := Rec."Owner ID";
+    //         brokeragemaster."Unit ID" := Rec."Unit ID";
+    //         brokeragemaster."Vendor Name" := Rec."Vendor Name";
+    //         brokeragemaster."Unit Name" := Rec."Unit Name";
+    //         brokeragemaster."Unit Number" := Rec."Unit Number";
+    //         brokeragemaster."Property Name" := Rec."Property Name";
+    //         brokeragemaster."Start Date" := Rec."Start Date";
+    //         brokeragemaster."End Date" := Rec."End Date";
+    //         brokeragemaster."Property Type" := Rec."Property Classification";
+    //         brokeragemaster."Contract Status" := Rec."Contract Status";
+    //         brokeragemaster."Calculation Method" := Rec."Calculation Method";
+    //         brokeragemaster."Percentage Type" := Rec."Percentage Type";
+    //         brokeragemaster."Base Amount Type" := Rec."Base Amount Type";
+    //         brokeragemaster."Frequency Of Payment" := Rec."Frequency Of Payment";
+    //         brokeragemaster.Amount := Rec.Amount;
+    //         brokeragemaster."Base Amount" := Rec."Rent Amount";
+    //         brokeragemaster.Percentage := Rec.Percentage;
+    //         brokeragemaster."Owner Name" := Rec."Owner's Name";
+    //         brokeragemaster."Tenant Name" := Rec."Customer Name";
+    //         brokeragemaster.Insert();
+    //         Message('Record is Inserted');
+    //     end;
+    // end;
 
 
 }

@@ -51,6 +51,22 @@ page 50933 "Revenue Recognition Card2"
             }
         }
     }
+
+    procedure SetRR_ID(pRRIDs: Integer)
+    begin
+        RRIDs := pRRIDs;
+
+    end;
+
+
+    trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    begin
+
+        Rec."RR Id" := RRIDs;
+    end;
+
+    var
+        RRIDs: Integer;
 }
 
 
