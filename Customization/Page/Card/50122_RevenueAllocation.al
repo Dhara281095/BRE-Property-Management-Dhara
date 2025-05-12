@@ -16,7 +16,6 @@ page 50122 "Revenue Allocation Card"
                 field("No."; Rec."No.")
                 {
                     ApplicationArea = All;
-                    Caption = 'No.';
                     trigger OnValidate()
                     begin
                         if xRec."No." <> Rec."No." then
@@ -26,7 +25,6 @@ page 50122 "Revenue Allocation Card"
                 field(Month; Rec.Month)
                 {
                     ApplicationArea = All;
-
                 }
                 field("Financial Year"; Rec."Financial Year")
                 {
@@ -62,6 +60,8 @@ page 50122 "Revenue Allocation Card"
         ClearSubgridData();
     end;
 
+
+    //---------------Calculate Days In SelectedMonth--------------//
     procedure CalculateDaysInSelectedMonth(
        ContractStartDate: Date;
        ContractEndDate: Date;
@@ -92,11 +92,11 @@ page 50122 "Revenue Allocation Card"
 
             EndDate := MonthEndDate;
         end
+
         // Check if selected month falls in multi-year end date month
         else if (Date2DMY(MultiYearEndDate, 2) = (SelectedMonth + 1)) and
                 (Date2DMY(MultiYearEndDate, 3) = SelectedYear) then begin
             StartDate := MonthStartDate;
-
             // Use contract end date if it falls in same month
             if (Date2DMY(ContractEndDate, 2) = (SelectedMonth + 1)) and
                (Date2DMY(ContractEndDate, 3) = SelectedYear) then
@@ -114,6 +114,8 @@ page 50122 "Revenue Allocation Card"
         exit(EndDate - StartDate + 1);
     end;
 
+
+    //---------------Clear Subgrid Data--------------//
     procedure ClearSubgridData()
     var
         FilteredContractRec: Record "Revenue Allocation SubGrid";
@@ -123,6 +125,8 @@ page 50122 "Revenue Allocation Card"
         FilteredContractRec.DeleteAll();
     end;
 
+
+    //---------------Get Next LineNo--------------//
     procedure GetNextLineNo(): Integer
     var
         FilteredContractRec: Record "Revenue Allocation SubGrid";
@@ -137,6 +141,8 @@ page 50122 "Revenue Allocation Card"
         exit(LastLineNo + 1);
     end;
 
+
+    //---------------Should Keep Entry--------------//
     procedure ShouldKeepEntry(StartDate: Date; EndDate: Date): Boolean
     var
         CheckDate: Date;
@@ -151,14 +157,14 @@ page 50122 "Revenue Allocation Card"
 
         // Check if selected month's date range overlaps with the given date range
         // A period overlaps if:
-        // 1. The start date is before or equal to the last day of the month AND
-        // 2. The end date is after or equal to the first day of the month
         if (StartDate <= LastDayOfMonth) and (EndDate >= FirstDayOfMonth) then
             exit(true);
 
-
         exit(false);
     end;
+
+
+    //---------------Insert Allocation Line--------------//
 
     // Helper procedure to insert allocation line
     procedure InsertAllocationLine(
@@ -169,7 +175,7 @@ page 50122 "Revenue Allocation Card"
       PerDayRent: Decimal;
       TotalAnnualAmount: Decimal;
       OwnerShareAmount: Decimal;
-    TerminationDate: Date; // New parameter for Termination Date
+      TerminationDate: Date;
       LineNo: Integer;
       MonthNo: Integer;
       FinancialYear: Integer)
@@ -215,7 +221,7 @@ page 50122 "Revenue Allocation Card"
 
         // Add Termination Date
         if TerminationDate = 0D then
-            FilteredContractRec."Termination Date" := 0D // Default to blank if no termination date
+            FilteredContractRec."Termination Date" := 0D
         else
             FilteredContractRec."Termination Date" := TerminationDate;
 
@@ -246,6 +252,9 @@ page 50122 "Revenue Allocation Card"
         FilteredContractRec.Insert();
     end;
 
+
+    //---------------Fetch Contracts--------------//
+
     // Then modify the FetchContracts procedure to use this
     procedure FetchContracts()
     var
@@ -258,20 +267,19 @@ page 50122 "Revenue Allocation Card"
         MergedSingleRent: Record "TC Merge SameSqure SubPage";
         MergedMultiRent: Record "TC Merge DifferentSq SubPage";
         SpecialRent: Record "TC Merge LumAnnualAmount SP";
-        FinalCalculationRec: Record "Final Calculation"; // New record for Final Calculation
+        FinalCalculationRec: Record "Final Calculation";
         SelectedMonthStart: Date;
         SelectedMonthEnd: Date;
         MonthNo: Integer;
         FinancialYear: Integer;
         LineNo: Integer;
-        TerminationDate: Date; // Variable to store Termination Date
+        TerminationDate: Date;
 
     begin
         ClearSubgridData();
 
         MonthNo := Rec.Month + 1;
         FinancialYear := Rec."Financial Year";
-
 
         SelectedMonthStart := DMY2Date(01, MonthNo, FinancialYear);
         SelectedMonthEnd := CALCDATE('<+1M-1D>', SelectedMonthStart);
@@ -287,7 +295,7 @@ page 50122 "Revenue Allocation Card"
                     if FinalCalculationRec.FindFirst() then
                         TerminationDate := FinalCalculationRec."Termination Date"
                     else
-                        TerminationDate := 0D; // Default to blank if no termination date
+                        TerminationDate := 0D;
 
                     // Check Single Unit Rent grid
                     SingleUnitRent.Reset();

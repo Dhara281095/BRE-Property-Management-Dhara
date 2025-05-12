@@ -407,6 +407,7 @@ page 50129 "Security Deposit Entries"
         Totaladdtionalcharges: Decimal;
         JournalTemplateName: Code[10];
         JournalBatchName: Code[10];
+        IsPosted: Boolean;
     begin
         JournalTemplateName := 'CASH RECE';
         JournalBatchName := 'DEFAULT';
@@ -557,9 +558,10 @@ page 50129 "Security Deposit Entries"
         GenJnlLine.SetRange("Journal Template Name", JournalTemplateName);
         GenJnlLine.SetRange("Journal Batch Name", JournalBatchName);
         if not GenJnlLine.IsEmpty() then
-            Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnlLine);
-
-        Message('Journal entries have been created and posted successfully');
+            if Confirm('Do you want to post journal lines?', true) then begin
+                Codeunit.Run(Codeunit::"Gen. Jnl.-Post", GenJnlLine);
+                Message('Journal entries have been created and posted successfully');
+            end;
     end;
 
 

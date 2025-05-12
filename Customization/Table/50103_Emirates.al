@@ -9,6 +9,7 @@ table 50103 "Emirate"
         {
             DataClassification = ToBeClassified;
             AutoIncrement = true;
+            Editable = false;
         }
         field(50101; "Sl No."; Integer)
         {
@@ -35,9 +36,6 @@ table 50103 "Emirate"
         {
             Clustered = true;
         }
-        // key("Country_Emirate"; "Country Code")
-        // {
-        // }
     }
 
     fieldgroups
@@ -53,8 +51,6 @@ table 50103 "Emirate"
     var
         EmirateRec: Record "Emirate";
     begin
-        // Find all records where 'Sl No.' is greater than the deleted record's 'Sl No.'
-        // Set a filter to retrieve records where "Sl No." is greater than the current record's "Sl No."
         EmirateRec.SetRange("Sl No.", "Sl No." + 1, 2147483647); // Set filter to find records with 'Sl No.' greater than the current record
 
         // Process each of those records and adjust 'Sl No.'
@@ -62,8 +58,8 @@ table 50103 "Emirate"
             repeat
                 // Decrease 'Sl No.' by 1 for each record
                 EmirateRec."Sl No." := EmirateRec."Sl No." - 1;
-                EmirateRec.Modify; // Save the modified record
-            until EmirateRec.Next = 0; // Move to the next record
+                EmirateRec.Modify;
+            until EmirateRec.Next = 0;
         end;
     end;
     //-------------Record Delete--------------//
@@ -79,7 +75,7 @@ table 50103 "Emirate"
             if EmirateRec.FindLast then
                 "Sl No." := EmirateRec."Sl No." + 1
             else
-                "Sl No." := 1; // Start from 1 if no records exist
+                "Sl No." := 1;
         end;
     end;
     //-------------Record Insert--------------//

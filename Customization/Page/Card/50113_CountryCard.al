@@ -16,12 +16,10 @@ page 50113 "Country Card"
                 field("ID"; Rec."ID")
                 {
                     ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
                 }
                 field("Sl No."; Rec."Sl No.")
                 {
                     ApplicationArea = All;
-                    Editable = false;
                 }
                 field("Country Name"; Rec."Country Name")
                 {
@@ -33,7 +31,6 @@ page 50113 "Country Card"
                 {
                     ApplicationArea = All;
                 }
-
             }
         }
 

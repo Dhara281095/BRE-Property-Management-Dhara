@@ -16,19 +16,16 @@ page 50115 "Emirate Card"
                 field("ID"; Rec."ID")
                 {
                     ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
                 }
                 field("Sl No."; Rec."Sl No.")
                 {
                     ApplicationArea = All;
-                    Editable = false;
                 }
                 field("Country Code"; Rec."Country Code")
                 {
                     ApplicationArea = All;
                     ShowMandatory = true;
                     NotBlank = true;
-
                 }
                 field("Emirate Name"; Rec."Emirate Name")
                 {
@@ -39,6 +36,4 @@ page 50115 "Emirate Card"
             }
         }
     }
-
-
 }
