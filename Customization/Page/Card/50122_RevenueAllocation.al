@@ -67,6 +67,24 @@ page 50122 "Revenue Allocation Card"
                     ApplicationArea = All;
                 }
             }
+
+            group("Revenue Recognition Item")
+            {
+                Caption = 'Revenue Item Details';
+                part("Revenue Recognition Item Details"; "Revenue Recognition Item Sub")
+                {
+                    SubPageLink = "RR_No." = field("No.");
+                }
+            }
+
+            group("Revenue Recognition Detail")
+            {
+                Caption = 'Revenue Recognition Details';
+                part("Revenue Recognition Details"; "Revenue Recognition Detail Sub")
+                {
+                    SubPageLink = "RR_No." = field("No.");
+                }
+            }
         }
     }
 
@@ -82,8 +100,43 @@ page 50122 "Revenue Allocation Card"
                     CalculateTotals();
                 end;
             }
+
+            action("Process Selected Items")
+            {
+                Caption = 'Process Selected Items';
+                ApplicationArea = All;
+
+                trigger OnAction()
+                var
+                    SourceRec: Record "Revenue Item Breakdown";
+                    TargetRec: Record "Revenue Recognition Item";
+                begin
+                    // ✅ Set the RR_No. filter BEFORE calling FindSet
+                    TargetRec.Reset();
+                    TargetRec.SetRange("RR_No.", Rec."No.");
+
+                    if TargetRec.FindSet() then begin
+                        repeat
+                            // Find matching Revenue Item Breakdown by Item Type
+                            SourceRec.Reset();
+                            SourceRec.SetRange("Item Type", TargetRec."Item Type");
+
+                            if SourceRec.FindFirst() then begin
+                                TargetRec.Link := SourceRec."RI_No.";
+                                TargetRec."RR_No." := Rec."No."; // Set header ID
+                                TargetRec.Modify(true); // Save changes and keep record visible
+                            end;
+                        until TargetRec.Next() = 0;
+
+                        Message('Selected records processed successfully.');
+                    end else
+                        Message('No selected records found.');
+                end;
+            }
+
         }
     }
+
     trigger OnNewRecord(BelowxRec: Boolean)
     begin
         ClearSubgridData();
@@ -92,6 +145,8 @@ page 50122 "Revenue Allocation Card"
     trigger OnAfterGetRecord()
     begin
         CalculateTotals();
+        CurrPage."Revenue Recognition Item Details".Page.SetRIID(Rec."No.");
+        CurrPage."Revenue Recognition Details".Page.SetRIID(Rec."No.");
     end;
 
 
@@ -102,15 +157,23 @@ page 50122 "Revenue Allocation Card"
         TotalFinalAnnualAmount: Decimal;
         TotalValue: Decimal;
 
+
     procedure CalculateTotals()
     var
         FilteredContractRec: Record "Revenue Allocation SubGrid";
+        SuspensionRec: Record SuspendReasonTable;
+        SelectedMonthStart: Date;
+        SelectedMonthEnd: Date;
     begin
         // Reset totals
         TotalContractAmount := 0;
         TotalAnnualAmount := 0;
         TotalFinalAnnualAmount := 0;
         TotalValue := 0;
+
+        // Get first and last day of selected month
+        SelectedMonthStart := DMY2Date(1, Rec.Month + 1, Rec."Financial Year");
+        SelectedMonthEnd := CALCDATE('<+1M-1D>', SelectedMonthStart);
 
         // Filter records for the current header
         FilteredContractRec.Reset();
@@ -119,14 +182,21 @@ page 50122 "Revenue Allocation Card"
         // Calculate totals
         if FilteredContractRec.FindSet() then begin
             repeat
-                TotalContractAmount += FilteredContractRec."Contract Amount";
-                TotalAnnualAmount += FilteredContractRec."Annual Amount";
-                TotalFinalAnnualAmount += FilteredContractRec."Final Annual Amount";
-                TotalValue += FilteredContractRec."Total Value";
+                // Check if the contract is suspended during the selected month
+                SuspensionRec.Reset();
+                SuspensionRec.SetRange("Contract ID", FilteredContractRec."Contract Id");
+                SuspensionRec.SetFilter(DateEffective, '..%1', SelectedMonthEnd);
+                SuspensionRec.SetFilter(SuspensionEndDate, '%1..', SelectedMonthStart);
+
+                // Only add to totals if the contract is NOT suspended during the selected month
+                if not SuspensionRec.FindFirst() then begin
+                    TotalContractAmount += FilteredContractRec."Contract Amount";
+                    TotalAnnualAmount += FilteredContractRec."Annual Amount";
+                    TotalFinalAnnualAmount += FilteredContractRec."Final Annual Amount";
+                    TotalValue += FilteredContractRec."Total Value";
+                end;
             until FilteredContractRec.Next() = 0;
         end;
-
-        // Refresh the page to show the calculated totals
         CurrPage.Update(false);
     end;
 
@@ -189,10 +259,14 @@ page 50122 "Revenue Allocation Card"
     procedure ClearSubgridData()
     var
         FilteredContractRec: Record "Revenue Allocation SubGrid";
+        revenueitem: Record "Revenue Recognition Item";
     begin
         FilteredContractRec.Reset();
         FilteredContractRec.SetRange("Header No.", Rec."No.");
         FilteredContractRec.DeleteAll();
+        revenueitem.Reset();
+        revenueitem.SetRange("RR_No.", Rec."No.");
+        revenueitem.DeleteAll();
     end;
 
 
@@ -477,5 +551,24 @@ page 50122 "Revenue Allocation Card"
             until ContractRec.Next() = 0;
         end;
         CalculateTotals();
+    end;
+
+    // trigger OnAfterGetRecord()
+    // begin
+    //     CurrPage."Revenue Recognition Item Details".Page.SetRIID(Rec."No.");
+    //     CurrPage."Revenue Recognition Details".Page.SetRIID(Rec."No.");
+    // end;
+
+
+    trigger OnModifyRecord(): Boolean
+    begin
+        CurrPage."Revenue Recognition Item Details".Page.SetRIID(Rec."No.");
+        CurrPage."Revenue Recognition Details".Page.SetRIID(Rec."No.");
+    end;
+
+    trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    begin
+        CurrPage."Revenue Recognition Item Details".Page.SetRIID(Rec."No.");
+        CurrPage."Revenue Recognition Details".Page.SetRIID(Rec."No.");
     end;
 }
