@@ -14,7 +14,6 @@ report 50109 "Security Deposit"
             DataItemTableView = SORTING("Customer Name", "Contract ID");
             column(CustomDateRange; CustomDateRangeText)
             {
-                Caption = 'Custom Date Range';
             }
             column(Contract_ID; "Contract ID")
             {
@@ -76,8 +75,8 @@ report 50109 "Security Deposit"
 
                 // Set the custom date range text
                 CustomDateRangeText :=
-                    Format(CustomStartDate, 0, '<Day,2>/<Month,2>/<Year,4>') + ' - ' +
-                    Format(CustomEndDate, 0, '<Day,2>/<Month,2>/<Year,4>');
+                     Format(CustomStartDate, 0, '<Day,2>/<Month,2>/') + Format(Date2DMY(CustomStartDate, 3)) + ' - ' +
+                     Format(CustomEndDate, 0, '<Day,2>/<Month,2>/') + Format(Date2DMY(CustomEndDate, 3));
 
                 // Check if Contract Start Date or Contract End Date is in the specified range
                 StartDateIsInRange := ("Contract Start Date" >= CustomStartDate) and ("Contract Start Date" <= CustomEndDate);
@@ -154,6 +153,9 @@ report 50109 "Security Deposit"
                 end else if TotalAdditionalCharges < NetBalance then begin
                     AdjustmentAmount := TotalAdditionalCharges;
                     RefundAmount := NetBalance - TotalAdditionalCharges;
+                end else if TotalAdditionalCharges = NetBalance then begin
+                    AdjustmentAmount := NetBalance;
+                    RefundAmount := 0;
                 end else begin
                     // When TotalAdditionalCharges equals NetBalance
                     AdjustmentAmount := 0;
