@@ -9,6 +9,7 @@ table 50109 "Revenue Allocation Details"
             DataClassification = SystemMetadata;
             Editable = false;
             AutoIncrement = true;
+            Caption = 'ID';
         }
 
         field(50101; "Financial Year"; Integer)

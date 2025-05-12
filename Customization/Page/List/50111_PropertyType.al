@@ -23,8 +23,7 @@ page 50111 "Property Type List"
                     ApplicationArea = All;
                     Caption = 'Primary Classification';
                     TableRelation = "Primary Classification";
-                    // Display the Primary Classification description
-                    Lookup = true; // Enable lookup to Primary Classification
+                    Lookup = true;
                 }
                 field("Property Type"; Rec."Property Type")
                 {
@@ -54,8 +53,4 @@ page 50111 "Property Type List"
             }
         }
     }
-
-    // Link to open the card page for detailed editing
-    // DrillDownPageId = "Secondary Classification Card";
-    // EditPageId = "Secondary Classification Card";
 }

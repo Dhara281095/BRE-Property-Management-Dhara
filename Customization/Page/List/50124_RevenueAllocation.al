@@ -31,9 +31,4 @@ page 50124 "Revenue Allocation List"
             }
         }
     }
-
-
-    // Link to open the card page for detailed editing
-    // DrillDownPageId = "Primary Classification Card";
-    // EditPageId = "Primary Classification Card";
 }

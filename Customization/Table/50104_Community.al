@@ -56,17 +56,14 @@ table 50104 "Community"
     var
         CommunityRec: Record "Community";
     begin
-        // Find all records where 'Sl No.' is greater than the deleted record's 'Sl No.'
-        // Set a filter to retrieve records where "Sl No." is greater than the current record's "Sl No."
         CommunityRec.SetRange("Sl No.", "Sl No." + 1, 2147483647); // Set filter to find records with 'Sl No.' greater than the current record
 
         // Process each of those records and adjust 'Sl No.'
         if CommunityRec.FindSet() then begin
             repeat
-                // Decrease 'Sl No.' by 1 for each record
                 CommunityRec."Sl No." := CommunityRec."Sl No." - 1;
-                CommunityRec.Modify; // Save the modified record
-            until CommunityRec.Next = 0; // Move to the next record
+                CommunityRec.Modify;
+            until CommunityRec.Next = 0;
         end;
     end;
 
@@ -84,7 +81,7 @@ table 50104 "Community"
             if CommunityRec.FindLast then
                 "Sl No." := CommunityRec."Sl No." + 1
             else
-                "Sl No." := 1; // Start from 1 if no records exist
+                "Sl No." := 1;
         end;
     end;
     //-------------Record Insert--------------//

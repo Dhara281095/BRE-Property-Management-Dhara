@@ -16,12 +16,10 @@ page 50117 "Community Card"
                 field("ID"; Rec."ID")
                 {
                     ApplicationArea = All;
-                    Editable = false; // The ID is not editable since it's auto-incrementing
                 }
                 field("Sl No."; Rec."Sl No.")
                 {
                     ApplicationArea = All;
-                    Editable = false;
                 }
                 field("Emirate Name"; Rec."Emirate Name")
                 {
