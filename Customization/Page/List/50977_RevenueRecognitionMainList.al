@@ -3,7 +3,7 @@ page 50977 "Revenue Recognition Main List"
     PageType = List;
     SourceTable = "Revenue Recognition Main";
     ApplicationArea = All;
-    UsageCategory = Lists;
+    // UsageCategory = Lists;
     CardPageId = 50972;
     Caption = 'Revenue Recognition List';
 

@@ -65,21 +65,21 @@ page 50930 "Revenue Recognition Card"
         }
     }
 
-    trigger OnAfterGetRecord()
-    begin
-        CurrPage."RevenueRecognition".Page.SetRR_ID(Rec."RR Id");
-    end;
+    // trigger OnAfterGetRecord()
+    // begin
+    //     CurrPage."RevenueRecognition".Page.SetRR_ID(Rec."RR Id");
+    // end;
 
 
-    trigger OnModifyRecord(): Boolean
-    begin
-        CurrPage."RevenueRecognition".Page.SetRR_ID(Rec."RR Id");
-    end;
+    // trigger OnModifyRecord(): Boolean
+    // begin
+    //     CurrPage."RevenueRecognition".Page.SetRR_ID(Rec."RR Id");
+    // end;
 
-    trigger OnInsertRecord(BelowxRec: Boolean): Boolean
-    begin
-        CurrPage."RevenueRecognition".Page.SetRR_ID(Rec."RR Id");
-    end;
+    // trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    // begin
+    //     CurrPage."RevenueRecognition".Page.SetRR_ID(Rec."RR Id");
+    // end;
 
 }
 

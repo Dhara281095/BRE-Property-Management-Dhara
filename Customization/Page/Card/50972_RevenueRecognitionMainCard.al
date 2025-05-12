@@ -59,20 +59,25 @@ page 50972 "Revenue Recognition Main"
                     SourceRec: Record "Revenue Item Breakdown";
                     TargetRec: Record "Revenue Recognition Item";
                 begin
-                    TargetRec.Reset();
                     if TargetRec.FindSet() then begin
                         repeat
-                            // Check for matching ItemType in SourceTable
+                            // Find matching Revenue Item Breakdown by Item Type
                             SourceRec.Reset();
                             SourceRec.SetRange("Item Type", TargetRec."Item Type");
+
                             if SourceRec.FindFirst() then begin
-                                // If match found, update RelatedMainID in the same Target line
-                                TargetRec."RR_No." := Rec."RR_No.";
+                                // Store RI_No from SourceRec to Link field
                                 TargetRec.Link := SourceRec."RI_No.";
-                                TargetRec.Modify();
+
+                                // Store header record RR_No. to current line
+                                TargetRec."RR_No." := Rec."RR_No."; // Rec is header/page context
+                                TargetRec.Modify(true); // ✅ This keeps record visible
                             end;
                         until TargetRec.Next() = 0;
-                    end;
+
+                        Message('Selected records processed successfully.');
+                    end else
+                        Message('No selected records found.');
                 end;
             }
             action(FilterSubgrid)
@@ -217,6 +222,10 @@ page 50972 "Revenue Recognition Main"
         NewLineNo: Integer;
         TotalDays: Integer;
         DailyRate: Decimal;
+        RevenueItemRec: Record "Revenue Item Breakdown Details";
+        TotalMergedAmount: Decimal;
+        PerDayMergedAmount: Decimal;
+        revenueitem: Record "Revenue Recognition Item";
     // CalculatedTotalValue: Decimal;
     // CalculatedOwnerShare: Decimal;
     begin
@@ -261,28 +270,44 @@ page 50972 "Revenue Recognition Main"
         FilteredContractRec."Grace Days" := ContractRec."Grace Period";
         FilteredContractRec."Contract Amount" := ContractRec."Contract Amount Including VAT";
         FilteredContractRec."Annual Amount" := ContractRec."Rent Amount";
-
-        TotalDays := FilteredContractRec."Contract End Date" - FilteredContractRec."Contract Start Date" + 1;
-        if TotalDays <= 0 then
-            Error('Invalid contract dates. End date must be after start date.');
-
-        // Calculate per day amount and value
-        DailyRate := FilteredContractRec."Contract Amount" / TotalDays;
-        // FilteredContractRec."Multi Year Start Date" := MultiYearStartDate;
-        // FilteredContractRec."Multi Year End Date" := MultiYearEndDate;
-        FilteredContractRec."No Of Days" := CalculatedDays;
-        FilteredContractRec."Per Day Amount" := Round(DailyRate);
-        FilteredContractRec."Total Value" := CalculatedDays * FilteredContractRec."Per Day Amount";
-        FilteredContractRec."Owner Share" := CalculatedDays * FilteredContractRec."Per Day Amount";
-
-        // Add this line to store the Final Annual Amount
-        // FilteredContractRec."Final Annual Amount" := TotalAnnualAmount;
-        // FilteredContractRec."Posting Month" := MonthNo - 1;
-        // FilteredContractRec."Posting Year" := FinancialYear;
-        // FilteredContractRec."Posting Period" := Format(FilteredContractRec."Posting Month") +
-        //     ' ' + Format(FilteredContractRec."Posting Year") + ' ' + '-' + ' ' +
-        //     Format(FilteredContractRec."Posting Month") + ' ' + Format(FilteredContractRec."Posting Year");
         FilteredContractRec."Owner Name" := ContractRec."Owner's Name";
+
+
+        RevenueItemRec.Reset();
+        RevenueItemRec.SetRange("Contract ID", ContractRec."Contract ID");
+        RevenueItemRec.SetRange("Item Type", revenueitem."Item Type");
+        if RevenueItemRec.FindSet() then begin
+            repeat
+                // Sum all charges (adjust field name as per your table)
+                PerDayMergedAmount += RevenueItemRec."Per Day Amount"; // Replace "Amount" with your actual charge field
+                TotalMergedAmount += RevenueItemRec."Total Value";
+            until RevenueItemRec.Next() = 0;
+        end;
+        FilteredContractRec."No Of Days" := RevenueItemRec."No Of Days";
+        FilteredContractRec."Per Day Amount" := PerDayMergedAmount;
+        FilteredContractRec."Total Value" := TotalMergedAmount;
+        FilteredContractRec."Owner Share" := TotalMergedAmount; // If same as Total Value
+        // TotalDays := FilteredContractRec."Contract End Date" - FilteredContractRec."Contract Start Date" + 1;
+        // if TotalDays <= 0 then
+        //     Error('Invalid contract dates. End date must be after start date.');
+
+        // // Calculate per day amount and value
+        // DailyRate := FilteredContractRec."Contract Amount" / TotalDays;
+        // // FilteredContractRec."Multi Year Start Date" := MultiYearStartDate;
+        // // FilteredContractRec."Multi Year End Date" := MultiYearEndDate;
+        // FilteredContractRec."No Of Days" := CalculatedDays;
+        // FilteredContractRec."Per Day Amount" := Round(DailyRate);
+        // FilteredContractRec."Total Value" := CalculatedDays * FilteredContractRec."Per Day Amount";
+        // FilteredContractRec."Owner Share" := CalculatedDays * FilteredContractRec."Per Day Amount";
+
+        // // Add this line to store the Final Annual Amount
+        // // FilteredContractRec."Final Annual Amount" := TotalAnnualAmount;
+        // // FilteredContractRec."Posting Month" := MonthNo - 1;
+        // // FilteredContractRec."Posting Year" := FinancialYear;
+        // // FilteredContractRec."Posting Period" := Format(FilteredContractRec."Posting Month") +
+        // //     ' ' + Format(FilteredContractRec."Posting Year") + ' ' + '-' + ' ' +
+        // //     Format(FilteredContractRec."Posting Month") + ' ' + Format(FilteredContractRec."Posting Year");
+        // FilteredContractRec."Owner Name" := ContractRec."Owner's Name";
         FilteredContractRec.Insert();
     end;
 
