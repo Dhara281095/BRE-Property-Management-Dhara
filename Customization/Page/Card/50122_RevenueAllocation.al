@@ -39,6 +39,34 @@ page 50122 "Revenue Allocation Card"
                     SubPageLink = "Header No." = field("No.");
                 }
             }
+            group("Total Calculations")
+            {
+                Caption = 'Total Calculations';
+                field(TotalContractAmount; TotalContractAmount)
+                {
+                    Caption = 'Total Contract Amount';
+                    Editable = false;
+                    ApplicationArea = All;
+                }
+                field(TotalAnnualAmount; TotalAnnualAmount)
+                {
+                    Caption = 'Total Annual Amount';
+                    Editable = false;
+                    ApplicationArea = All;
+                }
+                field(TotalFinalAnnualAmount; TotalFinalAnnualAmount)
+                {
+                    Caption = 'Total Final Annual Amount';
+                    Editable = false;
+                    ApplicationArea = All;
+                }
+                field(TotalValue; TotalValue)
+                {
+                    Caption = 'Total Value';
+                    Editable = false;
+                    ApplicationArea = All;
+                }
+            }
         }
     }
 
@@ -51,6 +79,7 @@ page 50122 "Revenue Allocation Card"
                 trigger OnAction()
                 begin
                     FetchContracts();
+                    CalculateTotals();
                 end;
             }
         }
@@ -58,6 +87,47 @@ page 50122 "Revenue Allocation Card"
     trigger OnNewRecord(BelowxRec: Boolean)
     begin
         ClearSubgridData();
+    end;
+
+    trigger OnAfterGetRecord()
+    begin
+        CalculateTotals();
+    end;
+
+
+    //---------------Calculate Totals--------------//
+    var
+        TotalContractAmount: Decimal;
+        TotalAnnualAmount: Decimal;
+        TotalFinalAnnualAmount: Decimal;
+        TotalValue: Decimal;
+
+    procedure CalculateTotals()
+    var
+        FilteredContractRec: Record "Revenue Allocation SubGrid";
+    begin
+        // Reset totals
+        TotalContractAmount := 0;
+        TotalAnnualAmount := 0;
+        TotalFinalAnnualAmount := 0;
+        TotalValue := 0;
+
+        // Filter records for the current header
+        FilteredContractRec.Reset();
+        FilteredContractRec.SetRange("Header No.", Rec."No.");
+
+        // Calculate totals
+        if FilteredContractRec.FindSet() then begin
+            repeat
+                TotalContractAmount += FilteredContractRec."Contract Amount";
+                TotalAnnualAmount += FilteredContractRec."Annual Amount";
+                TotalFinalAnnualAmount += FilteredContractRec."Final Annual Amount";
+                TotalValue += FilteredContractRec."Total Value";
+            until FilteredContractRec.Next() = 0;
+        end;
+
+        // Refresh the page to show the calculated totals
+        CurrPage.Update(false);
     end;
 
 
@@ -274,7 +344,6 @@ page 50122 "Revenue Allocation Card"
         FinancialYear: Integer;
         LineNo: Integer;
         TerminationDate: Date;
-
     begin
         ClearSubgridData();
 
@@ -283,6 +352,9 @@ page 50122 "Revenue Allocation Card"
 
         SelectedMonthStart := DMY2Date(01, MonthNo, FinancialYear);
         SelectedMonthEnd := CALCDATE('<+1M-1D>', SelectedMonthStart);
+
+        // Add filter for active contracts
+        ContractRec.SetRange(ContractRec."Tenant Contract Status", ContractRec."Tenant Contract Status"::Active);
 
         if ContractRec.FindSet() then begin
             repeat
@@ -404,5 +476,6 @@ page 50122 "Revenue Allocation Card"
                 end;
             until ContractRec.Next() = 0;
         end;
+        CalculateTotals();
     end;
 }
