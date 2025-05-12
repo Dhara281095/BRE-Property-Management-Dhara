@@ -1924,17 +1924,32 @@ page 50313 "Tenancy Contract Card"
                 var
                     TenancyContract: Record "Tenancy Contract";
                     ReportDubai: Report "Tenancy Contract";
-                // ReportAbuDhabi: Report "AbuDhabi_Contract";
+                    ReportAbuDhabi: Report UmmAlQuwainContract;
                 begin
                     TenancyContract.SetRange("Contract ID", Rec."Contract ID");  // Set appropriate filters
 
-                    // if Rec.Emirate = 'Dubai' then begin
-                    ReportDubai.SetTableView(TenancyContract);
-                    ReportDubai.RunModal();
-                    // end else if Rec.Emirate = 'Abu Dhabi' then begin
-                    //     ReportAbuDhabi.SetTableView(TenancyContract);
-                    //     ReportAbuDhabi.RunModal();
-                    // end;
+                    if Rec.Emirate = 'Dubai' then begin
+                        ReportDubai.SetTableView(TenancyContract);
+                        ReportDubai.RunModal();
+                    end else if Rec.Emirate = 'Umm Al Quwain' then begin
+                        ReportAbuDhabi.SetTableView(TenancyContract);
+                        ReportAbuDhabi.RunModal();
+                    end else if Rec.Emirate = 'Abu Dhabi' then begin
+                        ReportDubai.SetTableView(TenancyContract);
+                        ReportDubai.RunModal();
+                    end else if Rec.Emirate = 'Sharjah' then begin
+                        ReportDubai.SetTableView(TenancyContract);
+                        ReportDubai.RunModal();
+                    end else if Rec.Emirate = 'Ajman' then begin
+                        ReportDubai.SetTableView(TenancyContract);
+                        ReportDubai.RunModal();
+                    end else if Rec.Emirate = 'Fujairah' then begin
+                        ReportDubai.SetTableView(TenancyContract);
+                        ReportDubai.RunModal();
+                    end else if Rec.Emirate = 'Ras Al Khaimah' then begin
+                        ReportDubai.SetTableView(TenancyContract);
+                        ReportDubai.RunModal();
+                    end;
                 end;
             }
         }
