@@ -160,6 +160,15 @@ page 50976 "Revenue Item Breakdown Sub"
                     Editable = false;
                 }
             }
+            group(" ")
+            {
+                field("Total Amount"; Rec."Total Amount")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Amount';
+                    Editable = false;
+                }
+            }
         }
     }
 

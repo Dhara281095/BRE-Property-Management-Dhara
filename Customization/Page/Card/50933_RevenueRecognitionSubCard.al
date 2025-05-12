@@ -11,10 +11,10 @@ page 50933 "Revenue Recognition Card2"
         {
             repeater(Group)
             {
-                field("RR Id"; Rec."RR Id")
-                {
-                    ApplicationArea = All;
-                }
+                // field("RR Id"; Rec."RR Id")
+                // {
+                //     ApplicationArea = All;
+                // }
 
                 field("Month"; Rec."Month")
                 {
@@ -52,21 +52,21 @@ page 50933 "Revenue Recognition Card2"
         }
     }
 
-    procedure SetRR_ID(pRRIDs: Integer)
-    begin
-        RRIDs := pRRIDs;
+    // procedure SetRR_ID(pRRIDs: Integer)
+    // begin
+    //     RRIDs := pRRIDs;
 
-    end;
+    // end;
 
 
-    trigger OnInsertRecord(BelowxRec: Boolean): Boolean
-    begin
+    // trigger OnInsertRecord(BelowxRec: Boolean): Boolean
+    // begin
 
-        Rec."RR Id" := RRIDs;
-    end;
+    //     Rec."RR Id" := RRIDs;
+    // end;
 
-    var
-        RRIDs: Integer;
+    // var
+    //     RRIDs: Integer;
 }
 
 

@@ -121,8 +121,6 @@ table 50929 "Revenue Recognition"
             SubpageRec.Init();
             LastEntryNo += 1; // Increment Entry No.
             SubpageRec."Entry No." := LastEntryNo; // Assign new Entry No.
-
-            SubpageRec."RR Id" := "RR Id";
             SubpageRec."Contract ID" := "Contract ID";
             SubpageRec."Tenant Id" := "Tenant Id";
 

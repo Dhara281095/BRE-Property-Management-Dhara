@@ -4,11 +4,11 @@ table 50932 "Revenue Recognition Subpage"
 
     fields
     {
-        field(50109; "RR Id"; Integer)
-        {
-            DataClassification = ToBeClassified;
-            Caption = 'RR Id';
-        }
+        // field(50109; "RR Id"; Integer)
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'RR Id';
+        // }
 
         field(50102; "Entry No."; Integer)
         {
