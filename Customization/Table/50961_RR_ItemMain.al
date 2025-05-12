@@ -12,10 +12,11 @@ table 50961 "Revenue Recognition Item"
             Editable = false;
         }
 
-        field(50101; "Item Charges"; Text[100])
+        field(50101; "Item Type"; Text[100])
         {
             DataClassification = ToBeClassified;
-            Caption = 'Item Charges';
+            Caption = 'Item Type';
+            TableRelation = "Secondary Item"."Secondary Item Type" WHERE("Charges Status" = CONST("Regular Charges"));
         }
         field(50102; "Link"; Integer)
         {

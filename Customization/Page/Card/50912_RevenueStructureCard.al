@@ -365,6 +365,19 @@ page 50912 "Revenue Structure Card"
     //-----------------Calculate Total Days in Months's-----------------//
 
 
+    trigger OnNewRecord(BelowxRec: Boolean)
+    begin
+        ClearSubgridData();
+    end;
+
+    procedure ClearSubgridData()
+    var
+        REVENUESTRUCTURE: Record "Revenue Structure Subpage1";
+    begin
+        REVENUESTRUCTURE.Reset();
+        REVENUESTRUCTURE.SetRange("RS ID", Rec."RS ID");
+        REVENUESTRUCTURE.DeleteAll();
+    end;
 
     // trigger OnInsertRecord(BelowxRec: Boolean): Boolean
     // begin

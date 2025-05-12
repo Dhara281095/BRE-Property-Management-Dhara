@@ -6,7 +6,6 @@ page 50913 "Revenue Structure List"
     Caption = 'Revenue Structure List';
     UsageCategory = Lists;
     CardPageId = 50912;
-    InsertAllowed = false; // 👈 This hides the "+ New" button
 
 
     layout

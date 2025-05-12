@@ -25,5 +25,22 @@ table 50963 "Revenue Item Breakdown"
     {
         key(PK; "RI_No.") { Clustered = true; }
     }
+
+    trigger OnDelete()
+    var
+    begin
+        revenuebrekdown();
+    end;
+
+    procedure revenuebrekdown()
+    var
+        revenuebreakdowndetails: Record "Revenue Item Breakdown Details";
+
+    begin
+        revenuebreakdowndetails.SetRange("RI_No.", Rec."RI_No.");
+        if revenuebreakdowndetails.FindSet() then begin
+            revenuebreakdowndetails.DeleteAll();
+        end
+    end;
 }
 

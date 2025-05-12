@@ -28,4 +28,34 @@ table 50960 "Revenue Recognition Main"
             Clustered = true;
         }
     }
+
+    trigger OnDelete()
+    var
+    begin
+        revenueitem();
+        revenueitemdetails();
+    end;
+
+    procedure revenueitem()
+    var
+        revenueitems: Record "Revenue Recognition Item";
+
+    begin
+        revenueitems.SetRange("RR_No.", Rec."RR_No.");
+        if revenueitems.FindSet() then begin
+            revenueitems.DeleteAll();
+        end
+
+    end;
+
+    procedure revenueitemdetails()
+    var
+        revenueitemdetail: Record "Revenue Recognition Details";
+
+    begin
+        revenueitemdetail.SetRange("RR_No.", Rec."RR_No.");
+        if revenueitemdetail.FindSet() then begin
+            revenueitemdetail.DeleteAll();
+        end
+    end;
 }
