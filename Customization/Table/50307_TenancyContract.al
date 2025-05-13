@@ -2706,22 +2706,24 @@ table 50307 "Tenancy Contract"
             Rec.Amount := leaseproposal.Amount;
             Rec."Base Amount Type" := leaseproposal."Base Amount Type";
             Rec."Frequency Of Payment" := leaseproposal."Frequency Of Payment";
-
-            // Check if current record already exists in DB
-            isExisting := Rec.FindSet();
-
-            if isExisting then begin
-                Rec.Modify();
-                ManagementFeeMasterDetailsFetch(); // Call your existing procedure
-                Message('Record modified from Lease Proposal.');
-            end else begin
-                Rec.Insert();
-                ManagementFeeMasterDetailsFetch(); // Call your existing procedure
-                Message('Record inserted from Lease Proposal.');
-            end;
-            //  ManagementFeeMasterDetailsFetch();
-        end else
-            Message('No Lease Proposal found for given Proposal ID.');
+            ManagementFeeMasterDetailsFetch();
+            Rec.Modify();
+        end else begin
+            Rec.Init();
+            Rec."Vendor ID" := leaseproposal."Vendor ID";
+            Rec."Vendor Name" := leaseproposal."Vendor Name";
+            Rec."Start Date" := leaseproposal."Start Date";
+            Rec."End Date" := leaseproposal."End Date";
+            Rec."Contract Status" := leaseproposal."Contract Status";
+            Rec."Calculation Method" := leaseproposal."Calculation Method";
+            Rec."Percentage Type" := leaseproposal."Percentage Type";
+            Rec.Percentage := leaseproposal.Percentage;
+            Rec.Amount := leaseproposal.Amount;
+            Rec."Base Amount Type" := leaseproposal."Base Amount Type";
+            Rec."Frequency Of Payment" := leaseproposal."Frequency Of Payment";
+            ManagementFeeMasterDetailsFetch();
+            Rec.Insert();
+        end;
     end;
 
 
@@ -2750,61 +2752,133 @@ table 50307 "Tenancy Contract"
             Rec.Amount := contractrenewal.Amount;
             Rec."Base Amount Type" := contractrenewal."Base Amount Type";
             Rec."Frequency Of Payment" := contractrenewal."Frequency Of Payment";
-
-            isExisting := Rec.FindSet();
-
-            if isExisting then begin
-                Rec.Modify();
-                ManagementFeeMasterDetailsFetch();
-                Message('Record modified from Contract Renewal.');
-            end else begin
-                Rec.Insert();
-                ManagementFeeMasterDetailsFetch();
-                Message('Record inserted from Contract Renewal.');
-            end;
-            // ManagementFeeMasterDetailsFetch();
-        end else
-            Message('No Contract Renewal found for given Proposal ID.');
+            ManagementFeeMasterDetailsFetch();
+            Rec.Modify();
+        end else begin
+            // Insert new
+            Rec.Init();
+            Rec."Vendor ID" := contractrenewal."Vendor ID";
+            Rec."Vendor Name" := contractrenewal."Vendor Name";
+            Rec."Start Date" := contractrenewal."Start Date";
+            Rec."End Date" := contractrenewal."End Date";
+            Rec."Contract Status" := contractrenewal."Contract Status";
+            Rec."Calculation Method" := contractrenewal."Calculation Method";
+            Rec."Percentage Type" := contractrenewal."Percentage Type";
+            Rec.Percentage := contractrenewal.Percentage;
+            Rec.Amount := contractrenewal.Amount;
+            Rec."Base Amount Type" := contractrenewal."Base Amount Type";
+            ManagementFeeMasterDetailsFetch();
+            Rec.Insert();
+        end;
     end;
+
+
 
     procedure ManagementFeeMasterDetailsFetch()
     var
         managementfee: Record "Brokerage Master Data";
+        contractLine: Record "Tenancy Contract";
     begin
-        // Check if record already exists for same Vendor ID and Property ID to avoid duplicates (optional but good)
-        // managementfee.SetRange("Vendor ID", Rec."Vendor ID");
-        // managementfee.SetRange("Contract ID", Rec."Contract ID");
+        // Filter contractLine using Proposal ID or other unique identifiers
+        contractLine.SetRange("Proposal ID", Rec."Proposal ID"); // Add this line or use appropriate filters
 
-        // if not managementfee.IsEmpty() then
-        //     exit; // Record already exists, avoid duplicate insert
+        if contractLine.FindSet() then
+            managementfee.Reset();
+        managementfee.SetRange("Vendor ID", contractLine."Vendor ID");
+        managementfee.SetRange("Contract ID", contractLine."Contract ID");
 
-        // // Now insert new record
-        // managementfee.Init();
-        // managementfee."Property ID" := Rec."Property ID";
-        // managementfee."Owner ID" := Rec."Owner ID";
-        // managementfee."Vendor ID" := Rec."Vendor ID";
-        // managementfee."Contract ID" := Rec."Contract ID";
-        // managementfee."Unit ID" := Rec."Unit ID";
-        // managementfee."Vendor Name" := Rec."Vendor Name";
-        // managementfee."Unit Name" := Rec."Unit Name";
-        // managementfee."Unit Number" := Rec."Unit Number";
-        // managementfee."Property Name" := Rec."Property Name";
-        // managementfee."Start Date" := Rec."Start Date";
-        // managementfee."End Date" := Rec."End Date";
-        // managementfee."Property Type" := Rec."Property Classification";
-        // managementfee."Contract Status" := Rec."Contract Status";
-        // managementfee."Calculation Method" := Rec."Calculation Method";
-        // managementfee."Percentage Type" := Rec."Percentage Type";
-        // managementfee."Base Amount Type" := Rec."Base Amount Type";
-        // managementfee."Frequency Of Payment" := Rec."Frequency Of Payment";
-        // managementfee.Amount := Rec.Amount;
-        // managementfee."Base Amount" := Rec."Rent Amount";
-        // managementfee.Percentage := Rec.Percentage;
-        // managementfee."Owner Name" := Rec."Owner's Name";
-        // managementfee."Tenant Name" := Rec."Customer Name";
-        // managementfee.Insert();
-        // Clear(managementfee);
+        if managementfee.FindFirst() then begin
+            // Modify existing
+            managementfee."Vendor ID" := contractLine."Vendor ID";
+            managementfee."Contract ID" := contractLine."Contract ID";
+            managementfee."Property ID" := contractLine."Property ID";
+            managementfee."Owner ID" := contractLine."Owner ID";
+            managementfee."Unit Name" := contractLine."Unit Name";
+            managementfee."Unit Number" := contractLine."Unit Number";
+            managementfee."Vendor Name" := contractLine."Vendor Name";
+            managementfee."Property Name" := contractLine."Property Name";
+            managementfee."Start Date" := contractLine."Start Date";
+            managementfee."End Date" := contractLine."End Date";
+            managementfee."Property Type" := contractLine."Property Classification";
+            managementfee."Contract Status" := contractLine."Contract Status";
+            managementfee."Calculation Method" := contractLine."Calculation Method";
+            managementfee."Percentage Type" := contractLine."Percentage Type";
+            managementfee."Base Amount Type" := contractLine."Base Amount Type";
+            managementfee."Frequency Of Payment" := contractLine."Frequency Of Payment";
+            managementfee.Amount := contractLine.Amount;
+            managementfee."Base Amount" := contractLine."Rent Amount";
+            managementfee.Percentage := contractLine.Percentage;
+            managementfee."Owner Name" := contractLine."Owner's Name";
+            managementfee."Tenant Name" := contractLine."Customer Name";
+            managementfee.Modify();
+        end else begin
+            // Insert new
+            managementfee.Init();
+            managementfee."Vendor ID" := contractLine."Vendor ID";
+            managementfee."Contract ID" := contractLine."Contract ID";
+            managementfee."Unit ID" := contractLine."Unit ID";
+            managementfee."Unit Name" := contractLine."Unit Name";
+            managementfee."Unit Number" := contractLine."Unit Number";
+            managementfee."Vendor Name" := contractLine."Vendor Name";
+            managementfee."Property ID" := contractLine."Property ID";
+            managementfee."Property Name" := contractLine."Property Name";
+            managementfee."Start Date" := contractLine."Start Date";
+            managementfee."End Date" := contractLine."End Date";
+            managementfee."Property Type" := contractLine."Property Classification";
+            managementfee."Contract Status" := contractLine."Contract Status";
+            managementfee."Calculation Method" := contractLine."Calculation Method";
+            managementfee."Percentage Type" := contractLine."Percentage Type";
+            managementfee."Base Amount Type" := contractLine."Base Amount Type";
+            managementfee."Frequency Of Payment" := contractLine."Frequency Of Payment";
+            managementfee.Amount := contractLine.Amount;
+            managementfee."Base Amount" := contractLine."Rent Amount";
+            managementfee.Percentage := contractLine.Percentage;
+            managementfee."Owner ID" := contractLine."Owner ID";
+            managementfee."Owner Name" := contractLine."Owner's Name";
+            managementfee."Tenant Name" := contractLine."Customer Name";
+            managementfee.Insert();
+        end;
     end;
+
+
+    // procedure ManagementFeeMasterDetailsFetch()
+    // var
+    //     managementfee: Record "Brokerage Master Data";
+    // begin
+    // Check if record already exists for same Vendor ID and Property ID to avoid duplicates (optional but good)
+    // managementfee.SetRange("Vendor ID", Rec."Vendor ID");
+    // managementfee.SetRange("Contract ID", Rec."Contract ID");
+
+    // if not managementfee.IsEmpty() then
+    //     exit; // Record already exists, avoid duplicate insert
+
+    // // Now insert new record
+    // managementfee.Init();
+    // managementfee."Property ID" := Rec."Property ID";
+    // managementfee."Owner ID" := Rec."Owner ID";
+    // managementfee."Vendor ID" := Rec."Vendor ID";
+    // managementfee."Contract ID" := Rec."Contract ID";
+    // managementfee."Unit ID" := Rec."Unit ID";
+    // managementfee."Vendor Name" := Rec."Vendor Name";
+    // managementfee."Unit Name" := Rec."Unit Name";
+    // managementfee."Unit Number" := Rec."Unit Number";
+    // managementfee."Property Name" := Rec."Property Name";
+    // managementfee."Start Date" := Rec."Start Date";
+    // managementfee."End Date" := Rec."End Date";
+    // managementfee."Property Type" := Rec."Property Classification";
+    // managementfee."Contract Status" := Rec."Contract Status";
+    // managementfee."Calculation Method" := Rec."Calculation Method";
+    // managementfee."Percentage Type" := Rec."Percentage Type";
+    // managementfee."Base Amount Type" := Rec."Base Amount Type";
+    // managementfee."Frequency Of Payment" := Rec."Frequency Of Payment";
+    // managementfee.Amount := Rec.Amount;
+    // managementfee."Base Amount" := Rec."Rent Amount";
+    // managementfee.Percentage := Rec.Percentage;
+    // managementfee."Owner Name" := Rec."Owner's Name";
+    // managementfee."Tenant Name" := Rec."Customer Name";
+    // managementfee.Insert();
+    // Clear(managementfee);
+    // end;
 
     // procedure ManagementFeeMasterDetailsFetch()
     // var
