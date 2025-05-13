@@ -34,12 +34,14 @@ table 50964 "Brokerage Calculation Sub"
         {
             DataClassification = ToBeClassified;
             Caption = 'Start Date';
+            Editable = false;
         }
 
         field(50105; "End Date"; Date)
         {
             DataClassification = ToBeClassified;
             Caption = 'End Date';
+            Editable = false;
         }
         field(50106; "Tenant Name"; Code[20])
         {
@@ -132,29 +134,34 @@ table 50964 "Brokerage Calculation Sub"
         {
             DataClassification = ToBeClassified;
             Caption = 'Brokerage Percentage';
+            Editable = false;
         }
         field(50121; "Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Brokerage Amount';
+            Editable = false;
         }
         field(50122; "Calculation Method"; Text[100])
         {
             DataClassification = ToBeClassified;
             Caption = 'Calculation Method';
             TableRelation = "Calculation Type"."Calculation Type";
+            Editable = false;
         }
         field(50123; "Base Amount Type"; Option)
         {
             DataClassification = ToBeClassified;
             Caption = 'Base Amount Type';
             OptionMembers = " ","Revenue","Collection","Annual Rent","Monthly Rent";
+            Editable = false;
         }
 
         field(50124; "Base Amount"; Decimal)
         {
             DataClassification = ToBeClassified;
             Caption = 'Base Amount';
+            Editable = false;
         }
 
     }
