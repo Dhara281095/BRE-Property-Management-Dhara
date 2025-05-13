@@ -160,6 +160,11 @@ table 50962 "Revenue Recognition Details"
             FieldClass = FlowField;
             CalcFormula = sum("Revenue Recognition Details"."Total Value" where("RR_No." = field("RR_No."), "Contract Id" = field("Contract Id")));
         }
+        field(50127; "Item Type"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Item Type';
+        }
     }
 
     keys

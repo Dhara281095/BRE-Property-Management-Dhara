@@ -29,6 +29,12 @@ page 50974 "Revenue Recognition Detail Sub"
                     Caption = 'Contract Id';
                     Editable = false;
                 }
+                field("Item Type"; Rec."Item Type")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Item Type';
+                    Editable = false;
+                }
                 field("Contract Tenure"; Rec."Contract Tenure")
                 {
                     ApplicationArea = All;
