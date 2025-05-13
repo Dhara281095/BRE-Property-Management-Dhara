@@ -78,6 +78,23 @@ table 50923 "FinalSettlementRefund"
             DataClassification = ToBeClassified;
             Caption = 'Payment Receipt/Proof document URL';
         }
+        field(50119; "Deposit Bank"; Code[100])
+        {
+            Caption = 'Deposit Bank';
+            TableRelation = "Bank Account"; // You can add a TableRelation here if required
+
+            trigger OnValidate()
+            var
+                BankAccountRec: Record "Bank Account";
+            begin
+                // When a Deposit Bank is selected (i.e., a Bank Account No. is provided)
+                if "Deposit Bank" <> '' then begin
+                    // Attempt to find the Bank Account using the No. from the Deposit Bank
+                    if BankAccountRec.Get("Deposit Bank") then
+                        "Deposit Bank" := BankAccountRec."Name"; // Populating the Name field from the Bank Account table
+                end;
+            end;
+        }
 
         // field(50113; "Entry No."; Integer)
         // {

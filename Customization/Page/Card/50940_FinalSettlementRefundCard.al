@@ -121,6 +121,14 @@ page 50940 "FinalSettlemtRefundCard"
                         end;
                     end;
                 }
+
+                field("Deposit Bank"; Rec."Deposit Bank")
+                {
+                    ApplicationArea = All;
+                    Lookup = true;
+                    Editable = Rec."Refund Payment Mode" <> 'Cash';
+                    // Editable = (Rec."Payment Status" <> Rec."Payment Status"::Cancelled); // Makes the field editable unless Payment Status is "Cancelled"
+                }
                 field("Refund Cheque No."; Rec."Refund Cheque No.")
                 {
                     ApplicationArea = All;
