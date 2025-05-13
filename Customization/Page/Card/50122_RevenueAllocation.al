@@ -4,7 +4,7 @@ page 50122 "Revenue Allocation Card"
     SourceTable = "Revenue Allocation Details";
     ApplicationArea = All;
     Caption = 'Revenue Allocation Details';
-    UsageCategory = Administration;
+    //  UsageCategory = Administration;
 
     layout
     {

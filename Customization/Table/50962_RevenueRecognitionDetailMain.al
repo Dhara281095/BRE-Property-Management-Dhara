@@ -157,13 +157,52 @@ table 50962 "Revenue Recognition Details"
         {
             Caption = 'Total Amount';
             Editable = false;
-            FieldClass = FlowField;
-            CalcFormula = sum("Revenue Recognition Details"."Total Value" where("RR_No." = field("RR_No."), "Contract Id" = field("Contract Id")));
+        }
+
+        field(50128; "Total Contract Amount"; Decimal)
+        {
+            Editable = false;
+            Caption = 'Total Contract Amount';
+        }
+
+        field(50129; "Total Annual Amount"; Decimal)
+        {
+            Editable = false;
+            Caption = 'Total Annual Amount';
+        }
+
+        field(50130; "Total Final Annual Amount"; Decimal)
+        {
+            Editable = false;
+            Caption = 'Total Final Annual Amount';
         }
         field(50127; "Item Type"; Text[100])
         {
             DataClassification = ToBeClassified;
             Caption = 'Item Type';
+        }
+
+        field(50131; "Total Amounts"; Decimal)
+        {
+            Caption = 'Total Amount';
+            Editable = false;
+        }
+
+        field(50132; "Total Contract Amounts"; Decimal)
+        {
+            Editable = false;
+            Caption = 'Total Contract Amount';
+        }
+
+        field(50133; "Total Annual Amounts"; Decimal)
+        {
+            Editable = false;
+            Caption = 'Total Annual Amount';
+        }
+        field(50134; "Total Final Annual Amounts"; Decimal)
+        {
+            Editable = false;
+            Caption = 'Total Final Annual Amount';
         }
     }
 

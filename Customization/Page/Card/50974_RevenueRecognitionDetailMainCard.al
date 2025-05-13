@@ -162,7 +162,65 @@ page 50974 "Revenue Recognition Detail Sub"
                     Editable = false;
                 }
             }
+            group(" ")
+            {
+                field("Total Amount"; Rec."Total Amount")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Amount';
+                    Editable = false;
+                }
+                field("Total Contract Amount"; Rec."Total Contract Amount")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Contract Amount';
+                    Editable = false;
+                }
+                field("Total Annual Amount"; Rec."Total Annual Amount")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Annual Amount';
+                    Editable = false;
+                }
+                field("Total Final Annual Amount"; Rec."Total Final Annual Amount")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Final Annual Amount';
+                    Editable = false;
+                }
+
+            }
+
+            group("Final Amount")
+            {
+                field("Total Amounts"; Rec."Total Amounts")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Amount';
+                    Editable = false;
+                }
+                field("Total Contract Amounts"; Rec."Total Contract Amounts")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Contract Amount';
+                    Editable = false;
+                }
+                field("Total Annual Amounts"; Rec."Total Annual Amounts")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Annual Amount';
+                    Editable = false;
+                }
+                field("Total Final Annual Amounts"; Rec."Total Final Annual Amounts")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Final Annual Amount';
+                    Editable = false;
+                }
+
+            }
         }
+
     }
 
     procedure SetRIID(pRRID: Integer)
