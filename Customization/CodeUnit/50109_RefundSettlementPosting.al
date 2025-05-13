@@ -34,7 +34,7 @@ codeunit 50109 "Refund Settlement Posting Mgt."
         RefundChillerDepositGL := '4508'; // Replace with Refund Chiller Deposit G/L Account No.
         RefundSecurityDepositGL := '4502'; // Replace with Refund Security Deposit G/L Account No.
                                            // TenantReceivableGL := 'YOUR_TENANT_REC_GL';// Replace with Tenant Receivable G/L Account No.
-        NetRefundToTenant := FinalSettlementRefund."Net Refund to the Tenant";
+        NetRefundToTenant := Round(FinalSettlementRefund."Net Refund to the Tenant");
         adjustsecurityDeposit := FinalSettlementRefund."Adjust Security Deposit";
         adjustChillerDeposit := FinalSettlementRefund."Adjust Chiller Deposit";
         adjustotherDeposit := FinalSettlementRefund."Adjust other deposit";
@@ -45,7 +45,7 @@ codeunit 50109 "Refund Settlement Posting Mgt."
         // if not GenJnlBatch.Get('CASH RECE', 'DEFAULT') then
         //     Error('Journal Batch not found.');
 
-        // PostingDate := Today();
+        PostingDate := Today();
         // DocumentNo := 'REFUND-' + Format(Rec."Contract ID");
 
         // // Find last line number
@@ -78,7 +78,7 @@ codeunit 50109 "Refund Settlement Posting Mgt."
                 Error('Invalid Property Type. Must be Residential or Commercial.');
         end;
 
-        BankAccount.SetRange(Name, FinalSettlementRefund."Deposit Bank");
+        BankAccount.SetRange("Search Name", FinalSettlementRefund."Deposit Bank");
         if BankAccount.FindSet()
         then begin
             BankCashAccount := BankAccount."No.";
@@ -100,7 +100,7 @@ codeunit 50109 "Refund Settlement Posting Mgt."
         // 1. If Adjust Other Deposit > 0
         if FinalSettlementRefund."Adjust other deposit" > 0 then begin
             // Refund Other Deposit (Credit)
-            AppliedAmount := Min(adjustotherDeposit, NetRefundToTenant);
+            AppliedAmount := Round(Min(adjustotherDeposit, NetRefundToTenant));
             GenJnlLine.Init();
             GenJnlLine."Journal Template Name" := 'CASH RECE';
             GenJnlLine."Journal Batch Name" := 'DEFAULT';
@@ -123,7 +123,7 @@ codeunit 50109 "Refund Settlement Posting Mgt."
         // 2. If Adjust Chiller Deposit > 0
         if FinalSettlementRefund."Adjust Chiller Deposit" > 0 then begin
             // Refund Chiller Deposit (Credit)
-            AppliedAmount := Min(adjustChillerDeposit, NetRefundToTenant);
+            AppliedAmount := Round(Min(adjustChillerDeposit, NetRefundToTenant));
             GenJnlLine.Init();
             GenJnlLine."Journal Template Name" := 'CASH RECE';
             GenJnlLine."Journal Batch Name" := 'DEFAULT';
@@ -147,7 +147,7 @@ codeunit 50109 "Refund Settlement Posting Mgt."
         // 3. If Adjust Security Deposit > 0
         if FinalSettlementRefund."Adjust Security Deposit" > 0 then begin
             // Refund Security Deposit (Credit)
-            AppliedAmount := Min(adjustsecurityDeposit, NetRefundToTenant);
+            AppliedAmount := Round(Min(adjustsecurityDeposit, NetRefundToTenant));
             GenJnlLine.Init();
             GenJnlLine."Journal Template Name" := 'CASH RECE';
             GenJnlLine."Journal Batch Name" := 'DEFAULT';
@@ -168,9 +168,9 @@ codeunit 50109 "Refund Settlement Posting Mgt."
         end;
 
         // 4. If all Adjust fields are zero, use Net Refund to the Tenant
-        if (FinalSettlementRefund."Adjust Security Deposit" = 0) and (FinalSettlementRefund."Adjust Chiller Deposit" = 0) and (FinalSettlementRefund."Adjust other deposit" = 0) then begin
+        if (adjustsecurityDeposit = 0) and (adjustChillerDeposit = 0) and (adjustotherDeposit = 0) then begin
             if NetRefundToTenant > 0 then begin
-                AppliedAmount := NetRefundToTenant;
+                AppliedAmount := Round(NetRefundToTenant);
                 GenJnlLine.Init();
                 GenJnlLine."Journal Template Name" := 'CASH RECE';
                 GenJnlLine."Journal Batch Name" := 'DEFAULT';
@@ -184,14 +184,18 @@ codeunit 50109 "Refund Settlement Posting Mgt."
                 GenJnlLine.Validate(Amount, Round(appliedamount));
                 GenJnlLine."Bal. Account Type" := GenJnlLine."Bal. Account Type"::"Bank Account";
                 GenJnlLine."Bal. Account No." := BankCashAccount;
-                ;
+
                 GenJnlLine.Insert(true);
                 NetRefundToTenant -= AppliedAmount;
                 LineNo += 10000;
             end;
         end;
 
-        Message('Refund journal lines created successfully.');
+
+        // Post the journal lines
+        GenJnlPost.Run(GenJnlLine);
+
+
     end;
 
 

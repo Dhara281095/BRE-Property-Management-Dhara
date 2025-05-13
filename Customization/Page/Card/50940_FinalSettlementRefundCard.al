@@ -41,18 +41,20 @@ page 50940 "FinalSettlemtRefundCard"
                 field("Adjust Security Deposit"; Rec."Adjust Security Deposit")
                 {
                     ApplicationArea = All;
-                    // Editable = false;
-                    //Visible = false;
+                    Editable = false;
+                    Visible = false;
                 }
                 field("Adjust Chiller Deposit"; Rec."Adjust Chiller Deposit")
                 {
                     ApplicationArea = All;
-                    //Editable = false;
+                    Editable = false;
+                    Visible = false;
                 }
                 field("Adjust other deposit"; Rec."Adjust other deposit")
                 {
                     ApplicationArea = All;
-                    //Editable = false;
+                    Editable = false;
+                    Visible = false;
                 }
             }
 
