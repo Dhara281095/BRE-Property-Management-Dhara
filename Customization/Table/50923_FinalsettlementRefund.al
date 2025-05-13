@@ -90,6 +90,18 @@ table 50923 "FinalSettlementRefund"
             DataClassification = ToBeClassified;
             Caption = 'Refund Tenant ID';
         }
+        field(50115; "Adjust Security Deposit"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(50116; "Adjust Chiller Deposit"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+        }
+        field(50117; "Adjust other deposit"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+        }
     }
 
     // keys
