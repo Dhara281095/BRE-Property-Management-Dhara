@@ -158,8 +158,8 @@ table 50965 "Revenue Item Breakdown Details"
         {
             Caption = 'Total Amount';
             Editable = false;
-            FieldClass = FlowField;
-            CalcFormula = sum("Revenue Item Breakdown Details"."Total Value" where("RI_No." = field("RI_No."), "Contract Id" = field("Contract Id")));
+            // FieldClass = FlowField;
+            // CalcFormula = sum("Revenue Item Breakdown Details"."Total Value" where("RI_No." = field("RI_No."), "Contract Id" = field("Contract Id")));
         }
 
     }
