@@ -83,18 +83,18 @@ page 50974 "Revenue Recognition Detail Sub"
                     Caption = 'Suspension End Date';
                     Editable = false;
                 }
-                field("Multi Year Start Date"; Rec."Multi Year Start Date")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Multi Year Start Date';
-                    Editable = false;
-                }
-                field("Multi Year End Date"; Rec."Multi Year End Date")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Multi Year End Date';
-                    Editable = false;
-                }
+                // field("Multi Year Start Date"; Rec."Multi Year Start Date")
+                // {
+                //     ApplicationArea = All;
+                //     Caption = 'Multi Year Start Date';
+                //     Editable = false;
+                // }
+                // field("Multi Year End Date"; Rec."Multi Year End Date")
+                // {
+                //     ApplicationArea = All;
+                //     Caption = 'Multi Year End Date';
+                //     Editable = false;
+                // }
                 field("Contract Amount"; Rec."Contract Amount")
                 {
                     ApplicationArea = All;
