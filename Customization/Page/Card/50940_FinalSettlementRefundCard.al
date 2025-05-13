@@ -38,6 +38,22 @@ page 50940 "FinalSettlemtRefundCard"
                     ApplicationArea = All;
                     Editable = false; // The ID is not editable since it's auto-incrementing
                 }
+                field("Adjust Security Deposit"; Rec."Adjust Security Deposit")
+                {
+                    ApplicationArea = All;
+                    // Editable = false;
+                    //Visible = false;
+                }
+                field("Adjust Chiller Deposit"; Rec."Adjust Chiller Deposit")
+                {
+                    ApplicationArea = All;
+                    //Editable = false;
+                }
+                field("Adjust other deposit"; Rec."Adjust other deposit")
+                {
+                    ApplicationArea = All;
+                    //Editable = false;
+                }
             }
 
             repeater(RefundPaymentDetails)
@@ -100,7 +116,7 @@ page 50940 "FinalSettlemtRefundCard"
                         end;
 
                         if Rec."Refund Payment Status" = Rec."Refund Payment Status"::Paid then begin
-                            RefundPostingMgt.PostRefundSettlementAmount(Rec);
+                            RefundPostingMgt.PostRefundJournalLines(Rec);
                             // RefundPostingMgt.refundcashrecipt();
                         end;
                     end;
