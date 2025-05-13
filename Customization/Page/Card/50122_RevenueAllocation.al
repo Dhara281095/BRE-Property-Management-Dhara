@@ -94,6 +94,7 @@ page 50122 "Revenue Allocation Card"
         {
             action(FilterSubgrid)
             {
+                Caption = 'Revenue Allocation-Rent';
                 trigger OnAction()
                 begin
                     FetchContracts();

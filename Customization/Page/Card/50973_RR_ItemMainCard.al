@@ -82,6 +82,7 @@ page 50973 "Revenue Recognition Item Sub"
                         // Show message about fetched details
                         Message('Revenue details have been fetched successfully.');
                     end;
+                    CalculateAndStoreTotalRevenue();
                 end;
             }
 

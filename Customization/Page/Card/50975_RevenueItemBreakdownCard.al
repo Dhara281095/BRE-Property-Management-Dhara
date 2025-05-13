@@ -192,6 +192,7 @@ page 50975 "Revenue Item Breakdown Card"
                         end else
                             Message('No data found for selected item type: %1', Format(CurrentItemType));
                     end;
+                    CalculateAndStoreTotalRevenue();
                 end;
 
                 // trigger OnAction()
@@ -335,6 +336,31 @@ page 50975 "Revenue Item Breakdown Card"
         exit((Year mod 4 = 0) and ((Year mod 100 <> 0) or (Year mod 400 = 0)));
     end;
 
+
+
+
+    procedure CalculateAndStoreTotalRevenue()
+    var
+        revenueBreakdown: Record "Revenue Item Breakdown Details";
+        totalAmount: Decimal;
+        headerRecord: Record "Revenue Item Breakdown"; // Assuming you have a header table to store total
+    begin
+        totalAmount := 0;
+
+        // Calculate total from Revenue Breakdown Lines
+        revenueBreakdown.SetRange("RI_No.", Rec."RI_No.");
+        if revenueBreakdown.FindSet() then
+            repeat
+                totalAmount += revenueBreakdown."Total Value";
+            until revenueBreakdown.Next() = 0;
+
+        revenueBreakdown."Total Amount" := totalAmount;
+        revenueBreakdown.Modify();
+    end;
+
+
+
+
     // Get number of days in a month from a given date
     // local procedure GetDaysInMonth(CurrentDate: Date): Integer
     // var
@@ -401,6 +427,7 @@ page 50975 "Revenue Item Breakdown Card"
 
     trigger OnAfterGetRecord()
     begin
+        CalculateAndStoreTotalRevenue();
         CurrPage."Revenue Item Breakdown Details".Page.SetRIID(Rec."RI_No.");
     end;
 
