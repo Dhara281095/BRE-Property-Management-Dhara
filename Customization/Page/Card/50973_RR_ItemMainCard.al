@@ -128,6 +128,7 @@ page 50973 "Revenue Recognition Item Sub"
         RevenueAllocation: Record "Revenue Allocation Details";
         RevenueRecognitionDetails: Record "Revenue Recognition Details";
         RevenueItemBreakdown: Record "Revenue Item Breakdown Details";
+        SuspendedReasonList: Record SuspendReasonTable;  // Added suspended reason list record
         SelectedItemTypes: List of [Text];
         ProcessedContractCount: Integer;
         ContractProcessed: Boolean;
@@ -263,6 +264,7 @@ page 50973 "Revenue Recognition Item Sub"
     )
     var
         RevenueRecognitionDetails: Record "Revenue Recognition Details";
+        SuspendedReasonList: Record SuspendReasonTable;  // Added suspended reason list record
         NextEntryNo: Integer;
     begin
         // Get next entry number
@@ -286,9 +288,13 @@ page 50973 "Revenue Recognition Item Sub"
         RevenueRecognitionDetails."Contract Amount" := pTenancyContract."Contract Amount Including VAT";
         RevenueRecognitionDetails."Annual Amount" := pTenancyContract."Rent Amount";
         RevenueRecognitionDetails."Owner Name" := pTenancyContract."Owner's Name";
+        RevenueRecognitionDetails."Termination Date" := pTenancyContract."Termination Date";
 
         // Copy revenue item breakdown details
         RevenueRecognitionDetails."Item Type" := pRevenueItemBreakdown."Item Type";
+        RevenueRecognitionDetails."Contract Tenure" := pRevenueItemBreakdown."Contract Tenure";
+        RevenueRecognitionDetails."Grace Days" := pRevenueItemBreakdown."Grace Days";
+        // RevenueRecognitionDetails."Termination Date" := pRevenueItemBreakdown.;
         RevenueRecognitionDetails."No Of Days" := pRevenueItemBreakdown."No Of Days";
         RevenueRecognitionDetails."Per Day Amount" := pRevenueItemBreakdown."Per Day Amount";
         RevenueRecognitionDetails."Total Value" := pRevenueItemBreakdown."Total Value";
@@ -300,6 +306,16 @@ page 50973 "Revenue Recognition Item Sub"
         RevenueRecognitionDetails."Posting Period" :=
             FORMAT(pRevenueAllocation.Month) + ' ' +
             FORMAT(pRevenueAllocation."Financial Year");
+
+        // Get suspension details from Suspended Reason List
+        SuspendedReasonList.Reset();
+        SuspendedReasonList.SetRange("Contract ID", pTenancyContract."Contract ID");
+        if SuspendedReasonList.FindSet() then begin
+            // Add suspension information to RevenueRecognitionDetails
+            RevenueRecognitionDetails."Suspension Start Date" := SuspendedReasonList.SuspensionEffectiveDate;
+            RevenueRecognitionDetails."Suspension End Date" := SuspendedReasonList.SuspensionEndDate;
+            // You can add more fields from SuspendedReasonList if needed
+        end;
 
         // Insert the record
         RevenueRecognitionDetails.Insert(true);
@@ -319,231 +335,3 @@ page 50973 "Revenue Recognition Item Sub"
         exit(true);
     end;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// page 50973 "Revenue Recognition Item Sub"
-// {
-//     PageType = ListPart;
-//     ApplicationArea = All;
-//     SourceTable = "Revenue Recognition Item";
-//     Caption = 'Revenue Item';
-
-//     layout
-//     {
-//         area(Content)
-//         {
-//             repeater(Group)
-//             {
-//                 field("RR_No."; Rec."RR_No.")
-//                 {
-//                     ApplicationArea = All;
-//                     Visible = false;
-//                 }
-//                 field("Item Type"; Rec."Item Type")
-//                 {
-//                     ApplicationArea = All;
-//                     Caption = 'Item Type';
-//                 }
-//                 field("Link"; Rec."Link")
-//                 {
-//                     ApplicationArea = All;
-//                     Caption = 'Link';
-//                     Editable = false;
-//                     DrillDown = true;
-
-//                     trigger OnDrillDown()
-//                     var
-//                         RevenueItemBreakdown: Record "Revenue Item Breakdown";
-//                     begin
-//                         // Filter and open Revenue Item Breakdown Card
-//                         RevenueItemBreakdown.SetRange("RI_No.", Rec.Link);
-//                         if RevenueItemBreakdown.FindSet() then
-//                             PAGE.RunModal(PAGE::"Revenue Item Breakdown Card", RevenueItemBreakdown)
-//                         else
-//                             Message('No Revenue Item Breakdown found.');
-//                     end;
-//                 }
-//                 field("Entry No."; Rec."Entry No.")
-//                 {
-//                     ApplicationArea = All;
-//                     Caption = 'Entry No.';
-//                     Editable = false;
-//                 }
-//             }
-//         }
-//     }
-
-//     actions
-//     {
-//         area(Processing)
-//         {
-//             action(FetchRevenueDetails)
-//             {
-//                 Caption = 'Fetch Revenue Details';
-//                 ApplicationArea = All;
-//                 Image = List;
-
-//                 trigger OnAction()
-//                 begin
-//                     FetchContractDetails();
-//                 end;
-//             }
-//         }
-//     }
-
-//     trigger OnNewRecord(BelowxRec: Boolean)
-//     begin
-//         ClearSubgridData();
-//     end;
-
-//     procedure ClearSubgridData()
-//     var
-//         RevenueItemDetail: Record "Revenue Recognition Details";
-//     begin
-//         // Clear existing details for this Revenue Recognition record
-//         RevenueItemDetail.SetRange("RR_No.", Rec."RR_No.");
-//         RevenueItemDetail.DeleteAll(true);
-//     end;
-
-//     procedure FetchContractDetails()
-//     var
-//         TenancyContract: Record "Tenancy Contract";
-//         RevenueAllocation: Record "Revenue Allocation Details";
-//         RevenueRecognitionDetails: Record "Revenue Recognition Details";
-//         RevenueItemBreakdown: Record "Revenue Item Breakdown Details";
-//         FinalCalculation: Record "Final Calculation";
-//     begin
-//         // Clear existing data
-//         ClearSubgridData();
-
-//         // Get current month and financial year from Revenue Allocation
-//         if not RevenueAllocation.FindFirst() then
-//             exit;
-
-//         // Process active contracts
-//         if TenancyContract.FindSet() then begin
-//             repeat
-//                 // Check if contract is active during the selected period
-//                 if IsContractActiveForPeriod(TenancyContract, RevenueAllocation) then begin
-//                     // Retrieve associated revenue item breakdown
-//                     RevenueItemBreakdown.Reset();
-//                     RevenueItemBreakdown.SetRange("Contract ID", TenancyContract."Contract ID");
-
-//                     if RevenueItemBreakdown.FindSet() then begin
-//                         repeat
-//                             // Create Revenue Recognition Detail
-//                             CreateRevenueRecognitionDetail(TenancyContract, RevenueItemBreakdown, RevenueAllocation);
-//                         until RevenueItemBreakdown.Next() = 0;
-//                     end;
-//                 end;
-//             until TenancyContract.Next() = 0;
-//         end;
-
-//         // Refresh the page to show new details
-//         CurrPage.Update(false);
-//     end;
-
-//     local procedure IsContractActiveForPeriod(
-//         pTenancyContract: Record "Tenancy Contract";
-//         pRevenueAllocation: Record "Revenue Allocation Details"
-//     ): Boolean
-//     var
-//         SelectedMonthStart: Date;
-//         SelectedMonthEnd: Date;
-//     begin
-//         // Calculate the start and end of the selected month
-//         SelectedMonthStart := DMY2Date(1, pRevenueAllocation.Month + 1, pRevenueAllocation."Financial Year");
-//         SelectedMonthEnd := CALCDATE('<+1M-1D>', SelectedMonthStart);
-
-//         // Check if contract overlaps with the selected period
-//         exit(
-//             (pTenancyContract."Contract Start Date" <= SelectedMonthEnd) and
-//             (pTenancyContract."Contract End Date" >= SelectedMonthStart)
-//         );
-//     end;
-
-//     local procedure CreateRevenueRecognitionDetail(
-//         pTenancyContract: Record "Tenancy Contract";
-//         pRevenueItemBreakdown: Record "Revenue Item Breakdown Details";
-//         pRevenueAllocation: Record "Revenue Allocation Details"
-//     )
-//     var
-//         RevenueRecognitionDetails: Record "Revenue Recognition Details";
-//         NextEntryNo: Integer;
-//     begin
-//         // Get next entry number
-//         RevenueRecognitionDetails.Reset();
-//         if RevenueRecognitionDetails.FindLast() then
-//             NextEntryNo := RevenueRecognitionDetails."Entry No." + 1
-//         else
-//             NextEntryNo := 1;
-
-//         // Create new Revenue Recognition Detail record
-//         RevenueRecognitionDetails.Init();
-//         RevenueRecognitionDetails."Entry No." := NextEntryNo;
-//         RevenueRecognitionDetails."RR_No." := Rec."RR_No.";
-
-//         // Copy contract details
-//         RevenueRecognitionDetails."Contract Id" := pTenancyContract."Contract ID";
-//         RevenueRecognitionDetails."Property Name" := pTenancyContract."Property Name";
-//         RevenueRecognitionDetails."Customer Name" := pTenancyContract."Customer Name";
-//         RevenueRecognitionDetails."Contract Start Date" := pTenancyContract."Contract Start Date";
-//         RevenueRecognitionDetails."Contract End Date" := pTenancyContract."Contract End Date";
-//         RevenueRecognitionDetails."Contract Amount" := pTenancyContract."Contract Amount Including VAT";
-//         RevenueRecognitionDetails."Annual Amount" := pTenancyContract."Rent Amount";
-//         RevenueRecognitionDetails."Owner Name" := pTenancyContract."Owner's Name";
-
-//         // Copy revenue item breakdown details
-//         // RevenueRecognitionDetails. := pRevenueItemBreakdown."Item Type";
-//         RevenueRecognitionDetails."No Of Days" := pRevenueItemBreakdown."No Of Days";
-//         RevenueRecognitionDetails."Per Day Amount" := pRevenueItemBreakdown."Per Day Amount";
-//         RevenueRecognitionDetails."Total Value" := pRevenueItemBreakdown."Total Value";
-//         RevenueRecognitionDetails."Owner Share" := pRevenueItemBreakdown."Total Value";
-
-//         // Add allocation period details
-//         RevenueRecognitionDetails."Posting Month" := pRevenueAllocation.Month;
-//         RevenueRecognitionDetails."Posting Year" := pRevenueAllocation."Financial Year";
-//         RevenueRecognitionDetails."Posting Period" :=
-//             FORMAT(pRevenueAllocation.Month) + ' ' +
-//             FORMAT(pRevenueAllocation."Financial Year");
-
-//         // Insert the record
-//         RevenueRecognitionDetails.Insert(true);
-//     end;
-
-//     var
-//         RRID: Integer;
-
-//     procedure SetRIID(pRRID: Integer)
-//     begin
-//         RRID := pRRID;
-//     end;
-
-//     trigger OnInsertRecord(BelowxRec: Boolean): Boolean
-//     begin
-//         Rec."RR_No." := RRID;
-//         exit(true);
-//     end;
-// }
