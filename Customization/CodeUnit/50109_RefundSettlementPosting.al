@@ -1,31 +1,61 @@
 codeunit 50109 "Refund Settlement Posting Mgt."
 {
-    procedure PostRefundSettlementAmount(FinalSettlementRefund: Record "FinalSettlementRefund")
+    procedure PostRefundJournalLines(FinalSettlementRefund: Record "FinalSettlementRefund")
     var
         GenJnlLine: Record "Gen. Journal Line";
+        // GenJnlTemplate: Record "Gen. Journal Template";
+        // GenJnlBatch: Record "Gen. Journal Batch";
         GenJnlTemplate: Code[10];
         GenJnlBatch: Code[10];
         LineNo: Integer;
         DocNo: Code[20];
+        PostingDate: Date;
+        // DocNo;: Code[20];
+        // LastLineNo: Integer;
         GenJnlPost: Codeunit "Gen. Jnl.-Post";
         TenantContract: Record "Final Calculation"; // Adjust to your actual Contract table name
         TenantReceivableAccount: Code[20];
         BankCashAccount: Code[20];
-        Amount: Decimal;
-        GLSetup: Record "General Ledger Setup";
+        BankGLAccount: Code[20];
+        RefundOtherDepositGL: Code[20];
+        RefundChillerDepositGL: Code[20];
+        RefundSecurityDepositGL: Code[20];
+        TenantReceivableGL: Code[20];
+        NetRefundToTenant: Decimal;
+        adjustsecurityDeposit: Decimal;
+        adjustChillerDeposit: Decimal;
+        adjustotherDeposit: Decimal;
+        BankAccount: Record "Bank Account";
+        appliedamount: Decimal;
     begin
-        // Load G/L Setup for rounding
-        GLSetup.Get();
+        // Set your G/L Account numbers here
+        // BankGLAccount := 'YOUR_BANK_GL'; // Replace with your Bank G/L Account No.
+        RefundOtherDepositGL := '4508'; // Replace with Refund Other Deposit G/L Account No.
+        RefundChillerDepositGL := '4508'; // Replace with Refund Chiller Deposit G/L Account No.
+        RefundSecurityDepositGL := '4502'; // Replace with Refund Security Deposit G/L Account No.
+                                           // TenantReceivableGL := 'YOUR_TENANT_REC_GL';// Replace with Tenant Receivable G/L Account No.
+        NetRefundToTenant := FinalSettlementRefund."Net Refund to the Tenant";
+        adjustsecurityDeposit := FinalSettlementRefund."Adjust Security Deposit";
+        adjustChillerDeposit := FinalSettlementRefund."Adjust Chiller Deposit";
+        adjustotherDeposit := FinalSettlementRefund."Adjust other deposit";
 
-        // Check if there's any amount to post
-        Amount := FinalSettlementRefund."Refund Total Amount";
-        if Amount = 0 then
-            Error('Refund Amount is zero. Cannot post.');
+        // Setup Journal Template and Batch
+        // if not GenJnlTemplate.Get('CASH RECE') then
+        //     Error('Journal Template not found.');
+        // if not GenJnlBatch.Get('CASH RECE', 'DEFAULT') then
+        //     Error('Journal Batch not found.');
 
-        // Round the amount according to G/L setup
-        Amount := Round(Amount, GLSetup."Amount Rounding Precision");
+        // PostingDate := Today();
+        // DocumentNo := 'REFUND-' + Format(Rec."Contract ID");
 
-        // Set Journal Template and Batch
+        // // Find last line number
+        // GenJnlLine.Reset();
+        // GenJnlLine.SetRange("Journal Template Name", 'CASH RECE');
+        // GenJnlLine.SetRange("Journal Batch Name", 'DEFAULT');
+        // if GenJnlLine.FindLast() then
+        //     LastLineNo := GenJnlLine."Line No." + 10000
+        // else
+        //     LastLineNo := 10000;
         GenJnlTemplate := 'CASH RECE';
         GenJnlBatch := 'DEFAULT';
 
@@ -48,12 +78,13 @@ codeunit 50109 "Refund Settlement Posting Mgt."
                 Error('Invalid Property Type. Must be Residential or Commercial.');
         end;
 
-        // Set Bank/Cash Account based on Payment Mode
-        if FinalSettlementRefund."Refund Payment mode" = 'Cash' then
-            BankCashAccount := '3001'  // Replace with your actual Cash G/L Account
-        else
-            BankCashAccount := '3002'; // Replace with your actual Bank G/L Account
-
+        BankAccount.SetRange(Name, FinalSettlementRefund."Deposit Bank");
+        if BankAccount.FindSet()
+        then begin
+            BankCashAccount := BankAccount."No.";
+            // BankCashAccount := BankAccount."Bank Account No.";
+        end else
+            BankCashAccount := '3001'; // Default to Cash G/L Account if not found
         // Generate Document No
         DocNo := 'RFND-' + Format(FinalSettlementRefund."Contract ID") + '-' + Format(FinalSettlementRefund."FC ID");
 
@@ -62,144 +93,107 @@ codeunit 50109 "Refund Settlement Posting Mgt."
         GenJnlLine.SetRange("Journal Template Name", GenJnlTemplate);
         GenJnlLine.SetRange("Journal Batch Name", GenJnlBatch);
         if GenJnlLine.FindLast() then
-            LineNo := GenJnlLine."Line No." + 1
+            LineNo := GenJnlLine."Line No." + 10000
         else
-            LineNo := 1;
+            LineNo := 10000;
 
-        // 1st Line - Tenant Receivable (+Amount)
-        Clear(GenJnlLine);
-        GenJnlLine.Init();
-        GenJnlLine."Journal Template Name" := GenJnlTemplate;
-        GenJnlLine."Journal Batch Name" := GenJnlBatch;
-        GenJnlLine."Line No." := LineNo;
-        GenJnlLine."Posting Date" := Today;
-        GenJnlLine."Document No." := DocNo;
-        GenJnlLine."Document Type" := GenJnlLine."Document Type"::Payment;
-        GenJnlLine."Account Type" := GenJnlLine."Account Type"::"G/L Account";
-        GenJnlLine."Account No." := TenantReceivableAccount;
-        GenJnlLine.Validate(Amount, Amount); // Positive amount to INCREASE tenant receivable
-        GenJnlLine."Source Code" := 'REFUND';
-        GenJnlLine.Description := StrSubstNo('Refund for Contract %1', FinalSettlementRefund."Contract ID");
-        GenJnlLine.Insert();
+        // 1. If Adjust Other Deposit > 0
+        if FinalSettlementRefund."Adjust other deposit" > 0 then begin
+            // Refund Other Deposit (Credit)
+            AppliedAmount := Min(adjustotherDeposit, NetRefundToTenant);
+            GenJnlLine.Init();
+            GenJnlLine."Journal Template Name" := 'CASH RECE';
+            GenJnlLine."Journal Batch Name" := 'DEFAULT';
+            GenJnlLine."Line No." := LineNo;
+            GenJnlLine."Posting Date" := PostingDate;
+            GenJnlLine."Document Type" := GenJnlLine."Document Type"::Payment;
+            GenJnlLine."Document No." := DocNo;
+            GenJnlLine.Description := 'Refund Other Deposit';
+            GenJnlLine."Account Type" := GenJnlLine."Account Type"::"G/L Account";
+            GenJnlLine."Account No." := RefundOtherDepositGL;
+            GenJnlLine.Validate(Amount, Round(appliedamount));
+            GenJnlLine."Bal. Account Type" := GenJnlLine."Bal. Account Type"::"Bank Account";
+            GenJnlLine."Bal. Account No." := BankCashAccount;
+            GenJnlLine.Insert(true);
+            NetRefundToTenant -= AppliedAmount;
+            adjustotherDeposit -= AppliedAmount;
+            LineNo += 10000;
+        end;
 
-        // 2nd Line - Bank/Cash Account (-Amount)
-        LineNo += 10000;
-        Clear(GenJnlLine);
-        GenJnlLine.Init();
-        GenJnlLine."Journal Template Name" := GenJnlTemplate;
-        GenJnlLine."Journal Batch Name" := GenJnlBatch;
-        GenJnlLine."Line No." := LineNo;
-        GenJnlLine."Posting Date" := Today;
-        GenJnlLine."Document No." := DocNo;
-        GenJnlLine."Document Type" := GenJnlLine."Document Type"::Payment;
-        GenJnlLine."Account Type" := GenJnlLine."Account Type"::"G/L Account";
-        GenJnlLine."Account No." := BankCashAccount;
-        GenJnlLine.Validate(Amount, -Amount); // Negative amount to DECREASE bank account
-        GenJnlLine."Source Code" := 'REFUND';
-        GenJnlLine.Description := StrSubstNo('Refund for Contract %1', FinalSettlementRefund."Contract ID");
-        GenJnlLine.Insert();
+        // 2. If Adjust Chiller Deposit > 0
+        if FinalSettlementRefund."Adjust Chiller Deposit" > 0 then begin
+            // Refund Chiller Deposit (Credit)
+            AppliedAmount := Min(adjustChillerDeposit, NetRefundToTenant);
+            GenJnlLine.Init();
+            GenJnlLine."Journal Template Name" := 'CASH RECE';
+            GenJnlLine."Journal Batch Name" := 'DEFAULT';
+            GenJnlLine."Line No." := LineNo;
+            GenJnlLine."Posting Date" := PostingDate;
+            GenJnlLine."Document Type" := GenJnlLine."Document Type"::Payment;
+            GenJnlLine."Document No." := DocNo;
+            GenJnlLine.Description := 'Refund Chiller Deposit';
+            GenJnlLine."Account Type" := GenJnlLine."Account Type"::"G/L Account";
+            GenJnlLine."Account No." := RefundChillerDepositGL;
+            GenJnlLine.Validate(Amount, Round(appliedamount));
+            GenJnlLine."Bal. Account Type" := GenJnlLine."Bal. Account Type"::"Bank Account";
+            GenJnlLine."Bal. Account No." := BankCashAccount;
+            GenJnlLine.Insert(true);
+            NetRefundToTenant -= AppliedAmount;
+            adjustChillerDeposit -= AppliedAmount;
 
-        // Post the Journal
-        GenJnlPost.Run(GenJnlLine);
+            LineNo += 10000;
+        end;
 
-        // Clear journal lines after posting
-        ClearJournalLines(GenJnlTemplate, GenJnlBatch);
+        // 3. If Adjust Security Deposit > 0
+        if FinalSettlementRefund."Adjust Security Deposit" > 0 then begin
+            // Refund Security Deposit (Credit)
+            AppliedAmount := Min(adjustsecurityDeposit, NetRefundToTenant);
+            GenJnlLine.Init();
+            GenJnlLine."Journal Template Name" := 'CASH RECE';
+            GenJnlLine."Journal Batch Name" := 'DEFAULT';
+            GenJnlLine."Line No." := LineNo;
+            GenJnlLine."Posting Date" := PostingDate;
+            GenJnlLine."Document Type" := GenJnlLine."Document Type"::Payment;
+            GenJnlLine."Document No." := DocNo;
+            GenJnlLine.Description := 'Refund Security Deposit';
+            GenJnlLine."Account Type" := GenJnlLine."Account Type"::"G/L Account";
+            GenJnlLine."Account No." := RefundSecurityDepositGL;
+            GenJnlLine.Validate(Amount, Round(appliedamount));
+            GenJnlLine."Bal. Account Type" := GenJnlLine."Bal. Account Type"::"Bank Account";
+            GenJnlLine."Bal. Account No." := BankCashAccount;
+            GenJnlLine.Insert(true);
+            NetRefundToTenant -= AppliedAmount;
+            adjustsecurityDeposit -= AppliedAmount;
+            LineNo += 10000;
+        end;
 
-        Message('Refund amount of %1 posted successfully.', Amount);
+        // 4. If all Adjust fields are zero, use Net Refund to the Tenant
+        if (FinalSettlementRefund."Adjust Security Deposit" = 0) and (FinalSettlementRefund."Adjust Chiller Deposit" = 0) and (FinalSettlementRefund."Adjust other deposit" = 0) then begin
+            if NetRefundToTenant > 0 then begin
+                AppliedAmount := NetRefundToTenant;
+                GenJnlLine.Init();
+                GenJnlLine."Journal Template Name" := 'CASH RECE';
+                GenJnlLine."Journal Batch Name" := 'DEFAULT';
+                GenJnlLine."Line No." := LineNo;
+                GenJnlLine."Posting Date" := PostingDate;
+                GenJnlLine."Document Type" := GenJnlLine."Document Type"::Payment;
+                GenJnlLine."Document No." := DocNo;
+                GenJnlLine.Description := 'Refund to Tenant';
+                GenJnlLine."Account Type" := GenJnlLine."Account Type"::"G/L Account";
+                GenJnlLine."Account No." := TenantReceivableAccount;
+                GenJnlLine.Validate(Amount, Round(appliedamount));
+                GenJnlLine."Bal. Account Type" := GenJnlLine."Bal. Account Type"::"Bank Account";
+                GenJnlLine."Bal. Account No." := BankCashAccount;
+                ;
+                GenJnlLine.Insert(true);
+                NetRefundToTenant -= AppliedAmount;
+                LineNo += 10000;
+            end;
+        end;
+
+        Message('Refund journal lines created successfully.');
     end;
 
-    procedure refundcashrecipt()
-    var
-        GenJnlLine: Record "Gen. Journal Line";
-        SalesInvoice: Record "Sales Invoice Header";
-        finalcalculation: Record "Final Calculation";
-        GenJnlTemplate: Code[10];
-        GenJnlBatch: Code[10];
-        PostingDate: Date;
-        DocumentNo: Code[20];
-        AccountNo: Code[20];
-        InvoiceNo: Code[20];
-        GenJournalLine: Record "Gen. Journal Line";
-        LastLineNo: Integer;
-        GenJnlPostLine: Codeunit "Gen. Jnl.-Post Line";
-        TerminationCharges: Record "Termination Charges Sub";
-        TotalRefundableDeposit: Decimal;
-        TerminationChargesub: Record "Additional Charges Sub";
-        Tenantid: Code[20];
-        Tenantname: Text[100];
-        billingcalculation: Record "Final Billing Calculation Grid";
-        finalsettlement: Record "FinalSettlementRefund";
-        balaccounttype: Option;
-
-    begin
-        GenJnlTemplate := 'CASH RECE';
-        GenJnlBatch := 'DEFAULT';
-        PostingDate := Today(); // You can replace with actual Posting Date
-        DocumentNo := 'REFUND-' + Format(finalsettlement."Contract ID"); // Customize as needed
-        AccountNo := '3001'; // Cash Account G/L
-        GenJnlLine."Bal. Account Type" := GenJnlLine."Bal. Account Type"::"G/L Account";
-
-        // Fetch tenant details from Final Calculation
-        finalcalculation.Reset();
-        finalcalculation.SetRange("Contract ID", finalsettlement."Contract ID");
-        if finalcalculation.FindFirst() then begin
-            Tenantid := finalcalculation."Tenant ID";
-            Tenantname := finalcalculation."Tenant Name";
-        end else
-            Error('Final Calculation not found for Contract ID %1', finalsettlement."Contract ID");
-
-
-        // Sum Additional Charges and fetch Invoice No.
-        TotalRefundableDeposit := 0;
-        InvoiceNo := '';
-        TerminationChargesub.Reset();
-        TerminationChargesub.SetRange("Contract ID", finalsettlement."Contract ID");
-        if TerminationChargesub.FindSet() then begin
-            repeat
-                TotalRefundableDeposit += TerminationChargesub."Amount Including VAT";
-                if InvoiceNo = '' then
-                    InvoiceNo := TerminationChargesub."Posted Invoice ID";
-            until TerminationChargesub.Next() = 0;
-        end else
-            Error('Additional charges not found for Contract ID %1', finalsettlement."Contract ID");
-
-        GenJournalLine.Reset();
-        GenJournalLine.SetRange("Journal Template Name", GenJnlTemplate);
-        GenJournalLine.SetRange("Journal Batch Name", GenJnlBatch);
-        if GenJournalLine.FindLast() then
-            LastLineNo := GenJournalLine."Line No." + 1// Always increment by a safe step (standard NAV step is 10000)
-        else
-            LastLineNo := 1;
-        // 3. Insert Gen. Journal Line
-        Clear(GenJnlLine);
-        GenJnlLine.Init();
-        GenJnlLine."Journal Template Name" := GenJnlTemplate;
-        GenJnlLine."Journal Batch Name" := GenJnlBatch;
-        GenJnlLine."Line No." := LastLineNo;
-        GenJnlLine."Posting Date" := PostingDate;
-        GenJnlLine."Document Type" := GenJnlLine."Document Type"::Payment;
-        GenJnlLine."Document No." := DocumentNo;
-        GenJnlLine.Description := Tenantname;
-        GenJnlLine."Account Type" := GenJnlLine."Account Type"::Customer;
-        GenJnlLine."Account No." := Tenantid;
-        GenJnlLine.Amount := Round(-TotalRefundableDeposit, 0.01);
-        GenJnlLine."Amount (LCY)" := GenJnlLine.Amount;
-        // Bal. Account Type already assigned above
-        GenJnlLine."Bal. Account No." := AccountNo;
-        GenJnlLine."Applies-to Doc. Type" := GenJnlLine."Applies-to Doc. Type"::Invoice;
-        GenJnlLine."Applies-to Doc. No." := InvoiceNo;
-        GenJnlLine.Insert(true);
-
-        GenJnlPostLine.RunWithCheck(GenJnlLine);
-
-        GenJournalLine.Reset();
-        GenJournalLine.SetRange("Journal Template Name", 'CASH RECE');
-        GenJournalLine.SetRange("Journal Batch Name", 'DEFAULT');
-        if GenJournalLine.FindSet() then
-            GenJournalLine.DeleteAll();
-
-        Message('Cash Receipt journal entries created successfully.');
-    end;
 
     local procedure ClearJournalLines(TemplateName: Code[10]; BatchName: Code[10])
     var
@@ -211,4 +205,13 @@ codeunit 50109 "Refund Settlement Posting Mgt."
         if not GenJnlLine.IsEmpty() then
             GenJnlLine.DeleteAll(true);
     end;
+
+    local procedure Min(a: Decimal; b: Decimal): Decimal
+    begin
+        if a < b then
+            exit(a)
+        else
+            exit(b);
+    end;
+
 }

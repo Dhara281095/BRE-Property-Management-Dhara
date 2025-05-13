@@ -81,11 +81,11 @@ page 50951 "Final Billing Calculation"
                     }
                     group("Revised Values")
                     {
-                        field("Total Revised Amount"; Rec."Total Revised Amount")
+                        field("Total Revised AmountIncl. VAT"; Rec."Total Revised AmountIncl. VAT")
                         {
                             ApplicationArea = All;
                             Editable = false;
-                            Caption = 'Total Revised Amount';
+                            Caption = 'Total Revised AmountIncl. VAT';
                         }
                         field("Total Revised VAT"; Rec."Total Revised VAT")
                         {
@@ -93,35 +93,36 @@ page 50951 "Final Billing Calculation"
                             Editable = false;
                             Caption = 'Total Revised VAT';
                         }
-                        field("Total Revised AmountIncl. VAT"; Rec."Total Revised AmountIncl. VAT")
+
+                        field("Total Revised Amount"; Rec."Total Revised Amount")
                         {
                             ApplicationArea = All;
                             Editable = false;
-                            Caption = 'Total Revised AmountIncl. VAT';
+                            Caption = 'Total Revised Amount';
                         }
                     }
-                    group("Difference & Summary")
-                    {
-                        field("Total Differnece Amount"; Rec."Total Differnece Amount")
-                        {
-                            ApplicationArea = All;
-                            Editable = false;
-                            Caption = 'Total Differnece Amount';
-                        }
-                        field("Total Difference VAT"; Rec."Total Difference VAT")
-                        {
-                            ApplicationArea = All;
-                            Editable = false;
-                            Caption = 'Total Difference VAT';
-                        }
-                        field("Total DifferenceAmountIncl.VAT"; Rec."Total DifferenceAmountIncl.VAT")
-                        {
-                            ApplicationArea = All;
-                            Editable = false;
-                            Caption = 'Total Difference Amount Incl. VAT';
-                        }
-                    }
-                    group("")
+                    // group("Difference & Summary")
+                    // {
+                    //     field("Total Differnece Amount"; Rec."Total Differnece Amount")
+                    //     {
+                    //         ApplicationArea = All;
+                    //         Editable = false;
+                    //         Caption = 'Total Differnece Amount';
+                    //     }
+                    //     field("Total Difference VAT"; Rec."Total Difference VAT")
+                    //     {
+                    //         ApplicationArea = All;
+                    //         Editable = false;
+                    //         Caption = 'Total Difference VAT';
+                    //     }
+                    //     field("Total DifferenceAmountIncl.VAT"; Rec."Total DifferenceAmountIncl.VAT")
+                    //     {
+                    //         ApplicationArea = All;
+                    //         Editable = false;
+                    //         Caption = 'Total Difference Amount Incl. VAT';
+                    //     }
+                    // }
+                    group("Summary")
                     {
                         field("Invoice To Be Raised"; Rec."Invoice To Be Raised")
                         {
