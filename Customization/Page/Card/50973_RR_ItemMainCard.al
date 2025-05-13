@@ -285,10 +285,11 @@ page 50973 "Revenue Recognition Item Sub"
         RevenueRecognitionDetails."Customer Name" := pTenancyContract."Customer Name";
         RevenueRecognitionDetails."Contract Start Date" := pTenancyContract."Contract Start Date";
         RevenueRecognitionDetails."Contract End Date" := pTenancyContract."Contract End Date";
-        RevenueRecognitionDetails."Contract Amount" := pTenancyContract."Contract Amount Including VAT";
-        RevenueRecognitionDetails."Annual Amount" := pTenancyContract."Rent Amount";
+        RevenueRecognitionDetails."Contract Amount" := pRevenueItemBreakdown."Contract Amount";
+        RevenueRecognitionDetails."Annual Amount" := pRevenueItemBreakdown."Annual Amount";
         RevenueRecognitionDetails."Owner Name" := pTenancyContract."Owner's Name";
         RevenueRecognitionDetails."Termination Date" := pTenancyContract."Termination Date";
+        RevenueRecognitionDetails."Final Annual Amount" := RevenueRecognitionDetails."Annual Amount";
 
         // Copy revenue item breakdown details
         RevenueRecognitionDetails."Item Type" := pRevenueItemBreakdown."Item Type";
@@ -316,10 +317,72 @@ page 50973 "Revenue Recognition Item Sub"
             RevenueRecognitionDetails."Suspension End Date" := SuspendedReasonList.SuspensionEndDate;
             // You can add more fields from SuspendedReasonList if needed
         end;
-
+        //   CalculateAndStoreTotalRevenue();
         // Insert the record
         RevenueRecognitionDetails.Insert(true);
     end;
+
+
+    procedure CalculateAndStoreTotalRevenue()
+    var
+        revenueAllocLine: Record "Revenue Allocation Subgrid";
+        revenueItemLine: Record "Revenue Recognition Details";
+
+        totalcontractAmount: Decimal;
+        totalamount: Decimal;
+        totalannualamount: Decimal;
+        totalfinalannualamount: Decimal;
+
+        totalcontractAmounts: Decimal;
+        totalamounts: Decimal;
+        totalannualamounts: Decimal;
+        totalfinalannualamounts: Decimal;
+
+        totalcombinecontractAmounts: Decimal;
+        totalcombineamounts: Decimal;
+        totalcombineannualamounts: Decimal;
+        totalcombinefinalannualamounts: Decimal;
+    begin
+        // Calculate total from Revenue Allocation Lines
+        revenueAllocLine.SetRange("Header No.", Rec."RR_No.");
+        if revenueAllocLine.FindSet() then
+            repeat
+                totalcontractAmount += revenueAllocLine."Contract Amount";
+                totalamount += revenueAllocLine."Total Value";
+                totalannualamount += revenueAllocLine."Annual Amount";
+                totalfinalannualamount += revenueAllocLine."Final Annual Amount";
+            until revenueAllocLine.Next() = 0;
+
+        // Calculate total from Revenue Item Lines
+        revenueItemLine.SetRange("RR_No.", Rec."RR_No.");
+        if revenueItemLine.FindSet() then
+            repeat
+                totalcontractAmounts += revenueItemLine."Contract Amount";
+                totalamounts += revenueItemLine."Total Value";
+                totalannualamounts += revenueItemLine."Annual Amount";
+                totalfinalannualamounts += revenueItemLine."Final Annual Amount";
+            until revenueItemLine.Next() = 0;
+
+        revenueItemLine."Total Amount" := totalamounts;
+        revenueItemLine."Total Annual Amount" := totalannualamounts;
+        revenueItemLine."Total Final Annual Amount" := totalfinalannualamounts;
+        revenueItemLine."Total Contract Amount" := totalcontractAmounts;
+
+
+        // Combine both
+        totalcombinecontractAmounts := totalcontractAmount + totalcontractAmounts;
+        totalcombineamounts := totalamount + totalamounts;
+        totalcombineannualamounts := totalannualamount + totalannualamounts;
+        totalcombinefinalannualamounts := totalfinalannualamount + totalfinalannualamounts;
+
+        // Store into header
+        revenueItemLine."Total Contract Amounts" := totalcombinecontractAmounts;
+        revenueItemLine."Total Annual Amounts" := totalcombineannualamounts;
+        revenueItemLine."Total Amounts" := totalcombineamounts;
+        revenueItemLine."Total Final Annual Amounts" := totalcombinefinalannualamounts;
+        revenueItemLine.Modify();
+    end;
+
 
     var
         RRID: Integer;
@@ -333,5 +396,10 @@ page 50973 "Revenue Recognition Item Sub"
     begin
         Rec."RR_No." := RRID;
         exit(true);
+    end;
+
+    trigger OnAfterGetRecord()
+    begin
+        CalculateAndStoreTotalRevenue();
     end;
 }

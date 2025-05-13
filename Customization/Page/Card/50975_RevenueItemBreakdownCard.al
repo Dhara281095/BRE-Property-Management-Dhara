@@ -101,8 +101,8 @@ page 50975 "Revenue Item Breakdown Card"
                                 BreakdownRec."Contract Start Date" := TenancyCont."Contract Start Date";
                                 BreakdownRec."Contract End Date" := TenancyCont."Contract End Date";
                                 BreakdownRec."Grace Days" := TenancyCont."Grace Period";
-                                BreakdownRec."Contract Amount" := TenancyCont."Contract Amount Including VAT";
-                                BreakdownRec."Annual Amount" := TenancyCont."Rent Amount";
+                                BreakdownRec."Contract Amount" := RevenueStruct."Amount Including VAT";
+                                BreakdownRec."Annual Amount" := RevenueStruct."Amount";
 
                                 // Get month and year from contract start date
                                 ContractStartMonth := Date2DMY(TenancyCont."Contract Start Date", 2); // Month
