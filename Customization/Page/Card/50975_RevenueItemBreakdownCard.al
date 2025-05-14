@@ -3,7 +3,7 @@ page 50975 "Revenue Item Breakdown Card"
     PageType = Card;
     SourceTable = "Revenue Item Breakdown";
     ApplicationArea = All;
-    Caption = 'Revenue Item Breakdown';
+    Caption = 'Revenue Recognition-Other Charges';
 
     layout
     {
@@ -72,11 +72,11 @@ page 50975 "Revenue Item Breakdown Card"
                     BreakdownRec.DeleteAll();
 
                     // Find the highest Entry No. to ensure uniqueness
-                    BreakdownRec.Reset();
-                    if BreakdownRec.FindLast() then
-                        LastEntryNo := BreakdownRec."Entry No."
-                    else
-                        LastEntryNo := 0;
+                    LastEntryNo := GetNextLineNo();
+                    // if BreakdownRec.FindLast() then
+                    //     LastEntryNo := BreakdownRec."Entry No."
+                    // else
+                    //     LastEntryNo := 0;
 
                     // Filter Revenue Structure by item type
                     RevenueStruct.SetRange("Secondary Item Type", CurrentItemType);
@@ -137,198 +137,212 @@ page 50975 "Revenue Item Breakdown Card"
                         until RevenueStruct.Next() = 0;
 
                         Message('Breakdown data fetched successfully.');
-                    end else begin
-                        // Existing logic for non-rent item types (from Rent Calculation)
-                        rentcalculation.SetRange("Secondary Item Type", CurrentItemType);
-                        if rentcalculation.FindSet() then begin
-                            repeat
-                                TenancyCont.Reset();
-                                TenancyCont.SetRange("Contract ID", rentcalculation."Contract ID");
+                        // end else begin
+                        //     // Existing logic for non-rent item types (from Rent Calculation)
+                        //     rentcalculation.SetRange("Secondary Item Type", CurrentItemType);
+                        //     if rentcalculation.FindSet() then begin
+                        //         repeat
+                        //             TenancyCont.Reset();
+                        //             TenancyCont.SetRange("Contract ID", rentcalculation."Contract ID");
 
-                                if TenancyCont.FindFirst() then begin
-                                    BreakdownRec.Init();
-                                    LastEntryNo += 1;
-                                    BreakdownRec."Entry No." := LastEntryNo;
-                                    BreakdownRec."RI_No." := Rec."RI_No.";
-                                    BreakdownRec."Contract ID" := TenancyCont."Contract ID";
-                                    BreakdownRec."Item Type" := CurrentItemType;
-                                    BreakdownRec."Property Name" := TenancyCont."Property Name";
-                                    BreakdownRec."Customer Name" := TenancyCont."Customer Name";
-                                    BreakdownRec."Owner Name" := TenancyCont."Owner's Name";
-                                    BreakdownRec."Contract Tenure" := TenancyCont."Contract tenor";
-                                    BreakdownRec."Contract Start Date" := TenancyCont."Contract Start Date";
-                                    BreakdownRec."Contract End Date" := TenancyCont."Contract End Date";
-                                    BreakdownRec."Grace Days" := TenancyCont."Grace Period";
-                                    BreakdownRec."Contract Amount" := TenancyCont."Contract Amount Including VAT";
-                                    BreakdownRec."Annual Amount" := TenancyCont."Rent Amount";
+                        //             if TenancyCont.FindFirst() then begin
+                        //                 BreakdownRec.Init();
+                        //                 LastEntryNo += 1;
+                        //                 BreakdownRec."Entry No." := LastEntryNo;
+                        //                 BreakdownRec."RI_No." := Rec."RI_No.";
+                        //                 BreakdownRec."Contract ID" := TenancyCont."Contract ID";
+                        //                 BreakdownRec."Item Type" := CurrentItemType;
+                        //                 BreakdownRec."Property Name" := TenancyCont."Property Name";
+                        //                 BreakdownRec."Customer Name" := TenancyCont."Customer Name";
+                        //                 BreakdownRec."Owner Name" := TenancyCont."Owner's Name";
+                        //                 BreakdownRec."Contract Tenure" := TenancyCont."Contract tenor";
+                        //                 BreakdownRec."Contract Start Date" := TenancyCont."Contract Start Date";
+                        //                 BreakdownRec."Contract End Date" := TenancyCont."Contract End Date";
+                        //                 BreakdownRec."Grace Days" := TenancyCont."Grace Period";
+                        //                 BreakdownRec."Contract Amount" := TenancyCont."Contract Amount Including VAT";
+                        //                 BreakdownRec."Annual Amount" := TenancyCont."Rent Amount";
 
-                                    // Get month and year from contract start date
-                                    ContractStartMonth := Date2DMY(TenancyCont."Contract Start Date", 2); // Month
-                                    ContractStartYear := Date2DMY(TenancyCont."Contract Start Date", 3);  // Year
+                        //                 // Get month and year from contract start date
+                        //                 ContractStartMonth := Date2DMY(TenancyCont."Contract Start Date", 2); // Month
+                        //                 ContractStartYear := Date2DMY(TenancyCont."Contract Start Date", 3);  // Year
 
-                                    // Calculate the last day of the month in which the contract starts
-                                    LastDayOfContractStartMonth := CalcDate('<CM>', DMY2Date(1, ContractStartMonth, ContractStartYear));
+                        //                 // Calculate the last day of the month in which the contract starts
+                        //                 LastDayOfContractStartMonth := CalcDate('<CM>', DMY2Date(1, ContractStartMonth, ContractStartYear));
 
-                                    // Calculate remaining days in start month (including the start date)
-                                    RemainingDaysInStartMonth := LastDayOfContractStartMonth - TenancyCont."Contract Start Date" + 1;
+                        //                 // Calculate remaining days in start month (including the start date)
+                        //                 RemainingDaysInStartMonth := LastDayOfContractStartMonth - TenancyCont."Contract Start Date" + 1;
 
-                                    // Set the calculated days to No Of Days
-                                    BreakdownRec."No Of Days" := RemainingDaysInStartMonth;
+                        //                 // Set the calculated days to No Of Days
+                        //                 BreakdownRec."No Of Days" := RemainingDaysInStartMonth;
 
-                                    TotalDays := TenancyCont."Contract End Date" - TenancyCont."Contract Start Date" + 1;
-                                    if TotalDays <= 0 then
-                                        Error('Invalid contract dates. End date must be after start date.');
+                        //                 TotalDays := TenancyCont."Contract End Date" - TenancyCont."Contract Start Date" + 1;
+                        //                 if TotalDays <= 0 then
+                        //                     Error('Invalid contract dates. End date must be after start date.');
 
-                                    DailyRate := BreakdownRec."Contract Amount" / TotalDays;
-                                    BreakdownRec."Per Day Amount" := Round(DailyRate);
-                                    BreakdownRec."Total Value" := BreakdownRec."Per Day Amount" * RemainingDaysInStartMonth;
-                                    BreakdownRec."Owner Share" := BreakdownRec."Total Value";
+                        //                 DailyRate := BreakdownRec."Contract Amount" / TotalDays;
+                        //                 BreakdownRec."Per Day Amount" := Round(DailyRate);
+                        //                 BreakdownRec."Total Value" := BreakdownRec."Per Day Amount" * RemainingDaysInStartMonth;
+                        //                 BreakdownRec."Owner Share" := BreakdownRec."Total Value";
 
-                                    BreakdownRec.Insert();
-                                end;
-                            until rentcalculation.Next() = 0;
+                        //                 BreakdownRec.Insert();
+                        //             end;
+                        //         until rentcalculation.Next() = 0;
 
-                            Message('Breakdown data fetched successfully.');
-                        end else
-                            Message('No data found for selected item type: %1', Format(CurrentItemType));
+                        //         Message('Breakdown data fetched successfully.');
+                        //     end else
+                        //         Message('No data found for selected item type: %1', Format(CurrentItemType));
                     end;
-                    CalculateAndStoreTotalRevenue();
                 end;
 
-                // trigger OnAction()
-                // var
-                //     RevenueStruct: Record "Revenue Structure";
-                //     rentcalculation: Record "Rent Calculation";
-                //     TenancyCont: Record "Tenancy Contract";
-                //     BreakdownRec: Record "Revenue Item Breakdown Details";
-                //     SuspensionRec: Record SuspendReasonTable;
-                //     CurrentItemType: Text[100];
-                //     LastEntryNo: Integer;
-                //     TotalDays: Integer;
-                //     CurrentDate: Date;
-                //     MonthDays: Integer;
-                //     DailyRate: Decimal;
-                //     FirstDayNextMonth: Date;
-                //     LastDayOfMonth: Date;
-                //     ActualDaysInMonth: Integer;
-                // begin
-                //     // Validate and assign current date
-                //     CurrentDate := Today;
-
-                //     // Get current item type from page
-                //     CurrentItemType := Rec."Item Type";
-                //     BreakdownRec.DeleteAll();
-                //     // Clear existing breakdowns if needed
-                //     BreakdownRec.SetRange("RI_No.", Rec."RI_No.");
-
-
-                //     // Get last entry number for incrementing
-                //     // if BreakdownRec.FindLast() then
-                //     //     LastEntryNo := BreakdownRec."Entry No."
-                //     // else
-                //     //     LastEntryNo := 0;
-
-                //     // Filter Revenue Structure by item type
-
-                //     if CurrentItemType <> 'Rent' then begin
-                //         RevenueStruct.SetRange("Secondary Item Type", CurrentItemType);
-                //         if RevenueStruct.FindSet() then begin
-                //             repeat
-                //                 // Get contract based on structure
-                //                 TenancyCont.Reset();
-                //                 TenancyCont.SetRange("Contract ID", RevenueStruct."Contract ID");
-
-                //                 if TenancyCont.FindFirst() then begin
-                //                     // Initialize breakdown entry
-                //                     BreakdownRec.Init();
-                //                     LastEntryNo += 1;
-                //                     BreakdownRec."Entry No." := LastEntryNo;
-                //                     BreakdownRec."RI_No." := Rec."RI_No.";
-                //                     BreakdownRec."Contract ID" := TenancyCont."Contract ID";
-                //                     BreakdownRec."Item Type" := CurrentItemType;
-                //                     BreakdownRec."Property Name" := TenancyCont."Property Name";
-                //                     BreakdownRec."Customer Name" := TenancyCont."Customer Name";
-                //                     BreakdownRec."Owner Name" := TenancyCont."Owner's Name";
-                //                     BreakdownRec."Contract Tenure" := TenancyCont."Contract tenor";
-                //                     BreakdownRec."Contract Start Date" := TenancyCont."Contract Start Date";
-                //                     BreakdownRec."Contract End Date" := TenancyCont."Contract End Date";
-                //                     BreakdownRec."Grace Days" := TenancyCont."Grace Period";
-                //                     BreakdownRec."Contract Amount" := TenancyCont."Contract Amount Including VAT";
-                //                     BreakdownRec."Annual Amount" := TenancyCont."Rent Amount";
-
-                //                     // Get days in current month
-                //                     ActualDaysInMonth := GetDaysInMonth(CurrentDate);
-                //                     BreakdownRec."No Of Days" := ActualDaysInMonth;
-
-                //                     // Calculate total contract days
-                //                     TotalDays := TenancyCont."Contract End Date" - TenancyCont."Contract Start Date" + 1;
-                //                     if TotalDays <= 0 then
-                //                         Error('Invalid contract dates. End date must be after start date.');
-
-                //                     // Calculate per day amount and value
-                //                     DailyRate := BreakdownRec."Contract Amount" / TotalDays;
-                //                     BreakdownRec."Per Day Amount" := Round(DailyRate);
-                //                     BreakdownRec."Total Value" := BreakdownRec."Per Day Amount" * ActualDaysInMonth;
-                //                     BreakdownRec."Owner Share" := BreakdownRec."Total Value";
-
-                //                     // Insert record
-                //                     BreakdownRec.Insert();
-                //                 end;
-                //             until RevenueStruct.Next() = 0;
-
-                //             Message('Breakdown data fetched successfully.');
-                //         end else
-                //             Message('No data found for selected item type: %1', Format(CurrentItemType));
-                //         //end;
-                //     end else begin
-                //         // ▶ Existing logic for non-rent item types (from Revenue Structure)
-                //         rentcalculation.SetRange("Secondary Item Type", CurrentItemType);
-                //         if rentcalculation.FindSet() then begin
-                //             repeat
-                //                 TenancyCont.Reset();
-                //                 TenancyCont.SetRange("Contract ID", rentcalculation."Contract ID");
-
-                //                 if TenancyCont.FindFirst() then begin
-                //                     BreakdownRec.Init();
-                //                     LastEntryNo += 1;
-                //                     BreakdownRec."Entry No." := LastEntryNo;
-                //                     BreakdownRec."RI_No." := Rec."RI_No.";
-                //                     BreakdownRec."Contract ID" := TenancyCont."Contract ID";
-                //                     BreakdownRec."Item Type" := CurrentItemType;
-                //                     BreakdownRec."Property Name" := TenancyCont."Property Name";
-                //                     BreakdownRec."Customer Name" := TenancyCont."Customer Name";
-                //                     BreakdownRec."Owner Name" := TenancyCont."Owner's Name";
-                //                     BreakdownRec."Contract Tenure" := TenancyCont."Contract tenor";
-                //                     BreakdownRec."Contract Start Date" := TenancyCont."Contract Start Date";
-                //                     BreakdownRec."Contract End Date" := TenancyCont."Contract End Date";
-                //                     BreakdownRec."Grace Days" := TenancyCont."Grace Period";
-                //                     BreakdownRec."Contract Amount" := TenancyCont."Contract Amount Including VAT";
-                //                     BreakdownRec."Annual Amount" := TenancyCont."Rent Amount";
-
-                //                     ActualDaysInMonth := GetDaysInMonth(CurrentDate);
-                //                     BreakdownRec."No Of Days" := ActualDaysInMonth;
-
-                //                     TotalDays := TenancyCont."Contract End Date" - TenancyCont."Contract Start Date" + 1;
-                //                     if TotalDays <= 0 then
-                //                         Error('Invalid contract dates. End date must be after start date.');
-
-                //                     DailyRate := BreakdownRec."Contract Amount" / TotalDays;
-                //                     BreakdownRec."Per Day Amount" := Round(DailyRate);
-                //                     BreakdownRec."Total Value" := BreakdownRec."Per Day Amount" * ActualDaysInMonth;
-                //                     BreakdownRec."Owner Share" := BreakdownRec."Total Value";
-
-                //                     BreakdownRec.Insert();
-                //                 end;
-                //             until rentcalculation.Next() = 0;
-
-                //             Message('Breakdown data fetched successfully.');
-                //         end else
-                //             Message('No data found for selected item type: %1', Format(CurrentItemType));
-                //     end;
-                // end;
             }
         }
     }
+
+    procedure GetNextLineNo(): Integer
+    var
+        BreakdownRec: Record "Revenue Item Breakdown Details";
+        LastLineNo: Integer;
+    begin
+        BreakdownRec.Reset();
+        BreakdownRec.SetRange("RI_No.", Rec."RI_No.");
+        if BreakdownRec.FindLast() then
+            LastLineNo := BreakdownRec."Entry No."
+        else
+            LastLineNo := 0;
+        exit(LastLineNo + 1);
+    end;
+
+    // trigger OnAction()
+    // var
+    //     RevenueStruct: Record "Revenue Structure";
+    //     rentcalculation: Record "Rent Calculation";
+    //     TenancyCont: Record "Tenancy Contract";
+    //     BreakdownRec: Record "Revenue Item Breakdown Details";
+    //     SuspensionRec: Record SuspendReasonTable;
+    //     CurrentItemType: Text[100];
+    //     LastEntryNo: Integer;
+    //     TotalDays: Integer;
+    //     CurrentDate: Date;
+    //     MonthDays: Integer;
+    //     DailyRate: Decimal;
+    //     FirstDayNextMonth: Date;
+    //     LastDayOfMonth: Date;
+    //     ActualDaysInMonth: Integer;
+    // begin
+    //     // Validate and assign current date
+    //     CurrentDate := Today;
+
+    //     // Get current item type from page
+    //     CurrentItemType := Rec."Item Type";
+    //     BreakdownRec.DeleteAll();
+    //     // Clear existing breakdowns if needed
+    //     BreakdownRec.SetRange("RI_No.", Rec."RI_No.");
+
+
+    //     // Get last entry number for incrementing
+    //     // if BreakdownRec.FindLast() then
+    //     //     LastEntryNo := BreakdownRec."Entry No."
+    //     // else
+    //     //     LastEntryNo := 0;
+
+    //     // Filter Revenue Structure by item type
+
+    //     if CurrentItemType <> 'Rent' then begin
+    //         RevenueStruct.SetRange("Secondary Item Type", CurrentItemType);
+    //         if RevenueStruct.FindSet() then begin
+    //             repeat
+    //                 // Get contract based on structure
+    //                 TenancyCont.Reset();
+    //                 TenancyCont.SetRange("Contract ID", RevenueStruct."Contract ID");
+
+    //                 if TenancyCont.FindFirst() then begin
+    //                     // Initialize breakdown entry
+    //                     BreakdownRec.Init();
+    //                     LastEntryNo += 1;
+    //                     BreakdownRec."Entry No." := LastEntryNo;
+    //                     BreakdownRec."RI_No." := Rec."RI_No.";
+    //                     BreakdownRec."Contract ID" := TenancyCont."Contract ID";
+    //                     BreakdownRec."Item Type" := CurrentItemType;
+    //                     BreakdownRec."Property Name" := TenancyCont."Property Name";
+    //                     BreakdownRec."Customer Name" := TenancyCont."Customer Name";
+    //                     BreakdownRec."Owner Name" := TenancyCont."Owner's Name";
+    //                     BreakdownRec."Contract Tenure" := TenancyCont."Contract tenor";
+    //                     BreakdownRec."Contract Start Date" := TenancyCont."Contract Start Date";
+    //                     BreakdownRec."Contract End Date" := TenancyCont."Contract End Date";
+    //                     BreakdownRec."Grace Days" := TenancyCont."Grace Period";
+    //                     BreakdownRec."Contract Amount" := TenancyCont."Contract Amount Including VAT";
+    //                     BreakdownRec."Annual Amount" := TenancyCont."Rent Amount";
+
+    //                     // Get days in current month
+    //                     ActualDaysInMonth := GetDaysInMonth(CurrentDate);
+    //                     BreakdownRec."No Of Days" := ActualDaysInMonth;
+
+    //                     // Calculate total contract days
+    //                     TotalDays := TenancyCont."Contract End Date" - TenancyCont."Contract Start Date" + 1;
+    //                     if TotalDays <= 0 then
+    //                         Error('Invalid contract dates. End date must be after start date.');
+
+    //                     // Calculate per day amount and value
+    //                     DailyRate := BreakdownRec."Contract Amount" / TotalDays;
+    //                     BreakdownRec."Per Day Amount" := Round(DailyRate);
+    //                     BreakdownRec."Total Value" := BreakdownRec."Per Day Amount" * ActualDaysInMonth;
+    //                     BreakdownRec."Owner Share" := BreakdownRec."Total Value";
+
+    //                     // Insert record
+    //                     BreakdownRec.Insert();
+    //                 end;
+    //             until RevenueStruct.Next() = 0;
+
+    //             Message('Breakdown data fetched successfully.');
+    //         end else
+    //             Message('No data found for selected item type: %1', Format(CurrentItemType));
+    //         //end;
+    //     end else begin
+    //         // ▶ Existing logic for non-rent item types (from Revenue Structure)
+    //         rentcalculation.SetRange("Secondary Item Type", CurrentItemType);
+    //         if rentcalculation.FindSet() then begin
+    //             repeat
+    //                 TenancyCont.Reset();
+    //                 TenancyCont.SetRange("Contract ID", rentcalculation."Contract ID");
+
+    //                 if TenancyCont.FindFirst() then begin
+    //                     BreakdownRec.Init();
+    //                     LastEntryNo += 1;
+    //                     BreakdownRec."Entry No." := LastEntryNo;
+    //                     BreakdownRec."RI_No." := Rec."RI_No.";
+    //                     BreakdownRec."Contract ID" := TenancyCont."Contract ID";
+    //                     BreakdownRec."Item Type" := CurrentItemType;
+    //                     BreakdownRec."Property Name" := TenancyCont."Property Name";
+    //                     BreakdownRec."Customer Name" := TenancyCont."Customer Name";
+    //                     BreakdownRec."Owner Name" := TenancyCont."Owner's Name";
+    //                     BreakdownRec."Contract Tenure" := TenancyCont."Contract tenor";
+    //                     BreakdownRec."Contract Start Date" := TenancyCont."Contract Start Date";
+    //                     BreakdownRec."Contract End Date" := TenancyCont."Contract End Date";
+    //                     BreakdownRec."Grace Days" := TenancyCont."Grace Period";
+    //                     BreakdownRec."Contract Amount" := TenancyCont."Contract Amount Including VAT";
+    //                     BreakdownRec."Annual Amount" := TenancyCont."Rent Amount";
+
+    //                     ActualDaysInMonth := GetDaysInMonth(CurrentDate);
+    //                     BreakdownRec."No Of Days" := ActualDaysInMonth;
+
+    //                     TotalDays := TenancyCont."Contract End Date" - TenancyCont."Contract Start Date" + 1;
+    //                     if TotalDays <= 0 then
+    //                         Error('Invalid contract dates. End date must be after start date.');
+
+    //                     DailyRate := BreakdownRec."Contract Amount" / TotalDays;
+    //                     BreakdownRec."Per Day Amount" := Round(DailyRate);
+    //                     BreakdownRec."Total Value" := BreakdownRec."Per Day Amount" * ActualDaysInMonth;
+    //                     BreakdownRec."Owner Share" := BreakdownRec."Total Value";
+
+    //                     BreakdownRec.Insert();
+    //                 end;
+    //             until rentcalculation.Next() = 0;
+
+    //             Message('Breakdown data fetched successfully.');
+    //         end else
+    //             Message('No data found for selected item type: %1', Format(CurrentItemType));
+    //     end;
+    // end;
 
     // Check if year is leap year
     local procedure IsLeapYear(Year: Integer): Boolean
@@ -427,8 +441,8 @@ page 50975 "Revenue Item Breakdown Card"
 
     trigger OnAfterGetRecord()
     begin
-        CalculateAndStoreTotalRevenue();
         CurrPage."Revenue Item Breakdown Details".Page.SetRIID(Rec."RI_No.");
+        CalculateAndStoreTotalRevenue();
     end;
 
 
