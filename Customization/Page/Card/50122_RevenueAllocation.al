@@ -104,7 +104,7 @@ page 50122 "Revenue Allocation Card"
 
             action("Process Selected Items")
             {
-                Caption = 'Process Selected Items';
+                Caption = 'Process Other Charges';
                 ApplicationArea = All;
 
                 trigger OnAction()

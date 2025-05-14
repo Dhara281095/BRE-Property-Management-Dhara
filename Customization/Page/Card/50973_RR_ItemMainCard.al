@@ -61,12 +61,12 @@ page 50973 "Revenue Recognition Item Sub"
         {
             action(FetchRevenueDetails)
             {
-                Caption = 'Fetch Revenue Details';
+                Caption = 'Revenue Allocation-Other Charges';
                 ApplicationArea = All;
                 Image = List;
-                Promoted = true;
-                PromotedCategory = Process;
-                PromotedIsBig = true;
+                // Promoted = true;
+                // PromotedCategory = Process;
+                // PromotedIsBig = true;
 
                 trigger OnAction()
                 var
