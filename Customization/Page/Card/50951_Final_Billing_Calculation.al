@@ -81,25 +81,27 @@ page 50951 "Final Billing Calculation"
                     }
                     group("Revised Values")
                     {
-                        field("Total Revised AmountIncl. VAT"; Rec."Total Revised AmountIncl. VAT")
-                        {
-                            ApplicationArea = All;
-                            Editable = false;
-                            Caption = 'Total Revised AmountIncl. VAT';
-                        }
-                        field("Total Revised VAT"; Rec."Total Revised VAT")
-                        {
-                            ApplicationArea = All;
-                            Editable = false;
-                            Caption = 'Total Revised VAT';
-                        }
 
                         field("Total Revised Amount"; Rec."Total Revised Amount")
                         {
                             ApplicationArea = All;
                             Editable = false;
-                            Caption = 'Total Revised Amount';
+
                         }
+                        field("Total Revised VAT"; Rec."Total Revised VAT")
+                        {
+                            ApplicationArea = All;
+                            Editable = false;
+
+                        }
+                        field("Total Revised AmountIncl. VAT"; Rec."Total Revised AmountIncl. VAT")
+                        {
+                            ApplicationArea = All;
+                            Editable = false;
+
+                        }
+
+
                     }
                     // group("Difference & Summary")
                     // {

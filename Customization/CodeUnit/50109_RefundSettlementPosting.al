@@ -27,6 +27,8 @@ codeunit 50109 "Refund Settlement Posting Mgt."
         adjustotherDeposit: Decimal;
         BankAccount: Record "Bank Account";
         appliedamount: Decimal;
+        customer: Record Customer;
+        customerpostinggroup: Record "Customer Posting Group";
     begin
         // Set your G/L Account numbers here
         // BankGLAccount := 'YOUR_BANK_GL'; // Replace with your Bank G/L Account No.
@@ -69,13 +71,22 @@ codeunit 50109 "Refund Settlement Posting Mgt."
             Error('Final Calculation not found for FC ID %1', FinalSettlementRefund."FC ID");
 
         // Set G/L Accounts based on Property Type
-        case TenantContract."Unit Type" of
-            'Residential':
-                TenantReceivableAccount := '1501';  // Replace with your actual Residential Receivable G/L Account
-            'Commercial':
-                TenantReceivableAccount := '1506';  // Replace with your actual Commercial Receivable G/L Account
-            else
-                Error('Invalid Property Type. Must be Residential or Commercial.');
+        // case TenantContract."Unit Type" of
+        //     'Residential':
+        //         TenantReceivableAccount := '1501';  // Replace with your actual Residential Receivable G/L Account
+        //     'Commercial':
+        //         TenantReceivableAccount := '1506';  // Replace with your actual Commercial Receivable G/L Account
+        //     else
+        //         Error('Invalid Property Type. Must be Residential or Commercial.');
+        // end;
+
+        customer.SetRange("No.", FinalSettlementRefund."Tenant ID");
+        if customer.FindSet() then begin
+            // Set the Tenant Receivable Account based on the Customer
+            // if customerpostinggroup.Get(customer."Customer Posting Group") then begin
+            //     TenantReceivableAccount := customerpostinggroup."Receivables Account";
+            // end;
+            TenantReceivableAccount := customer."No.";
         end;
 
         BankAccount.SetRange("Search Name", FinalSettlementRefund."Deposit Bank");
@@ -176,10 +187,10 @@ codeunit 50109 "Refund Settlement Posting Mgt."
                 GenJnlLine."Journal Batch Name" := 'DEFAULT';
                 GenJnlLine."Line No." := LineNo;
                 GenJnlLine."Posting Date" := PostingDate;
-                GenJnlLine."Document Type" := GenJnlLine."Document Type"::Payment;
+                GenJnlLine."Document Type" := GenJnlLine."Document Type"::Refund;
                 GenJnlLine."Document No." := DocNo;
                 GenJnlLine.Description := 'Refund to Tenant';
-                GenJnlLine."Account Type" := GenJnlLine."Account Type"::"G/L Account";
+                GenJnlLine."Account Type" := GenJnlLine."Account Type"::Customer;
                 GenJnlLine."Account No." := TenantReceivableAccount;
                 GenJnlLine.Validate(Amount, Round(appliedamount));
                 GenJnlLine."Bal. Account Type" := GenJnlLine."Bal. Account Type"::"Bank Account";
