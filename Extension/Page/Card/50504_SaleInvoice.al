@@ -127,6 +127,22 @@ pageextension 50504 SalesInvoice extends "Sales Invoice"
                     ApplicationArea = All;
                     Editable = approvaleditable;
                     //Editable = true;
+
+                    trigger OnValidate()
+
+                    var
+                        emailrecord: Codeunit SendInvoiceToTenant;
+                        Rejectionmail: Codeunit RejectSalesInvoice;
+                        ShowDialogBox: Codeunit ShowDialogboxRejctionInvoice;
+                    begin
+                        if Rec."Approval Status" = Rec."Approval Status"::Approved then begin
+                            emailrecord.SendInvoice(Rec); // Pass the current record if needed
+                        end else
+                            if Rec."Approval Status" = Rec."Approval Status"::Rejected then begin
+                                ShowDialogBox.DialogboxForRejection(Rec);
+                                // Rejectionmail.SendInvoiceToLeaseManager(Rec);
+                            end;
+                    end;
                 }
                 field("Overdue Invoice"; Rec."Overdue Invoice")
                 {
