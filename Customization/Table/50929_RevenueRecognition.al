@@ -102,6 +102,11 @@ table 50929 "Revenue Recognition"
         TotalMonths: Integer;
         ActualDaysInMonth: Integer;
         LastEntryNo: Integer;
+        Method1Total: Decimal;
+        Method2Total: Decimal;
+        TempSubpageRecs: array[1000] of Record "Revenue Recognition Subpage" temporary;
+        RecCount: Integer;
+        RemainingAmount: Decimal;
     begin
         // Clear existing records in the subpage table
         SubpageRec.DeleteAll();
@@ -111,23 +116,28 @@ table 50929 "Revenue Recognition"
             exit;
 
         TotalMonths := CalculateTotalMonths("Start Date", "End Date");
-
         TotalDays := ("End Date" - "Start Date") + 1;
         DailyRate := "Contract Amount" / TotalDays;
-        //  MonthlyRate := ("Annual Rent Amount" / 12);
 
         CurrentDate := "Start Date";
+        Method1Total := 0;
+        Method2Total := 0;
+        RecCount := 0;
+        MonthlyRate2 := Round("Contract Amount" / TotalMonths);
+
+        // First pass - calculate all monthly values
         while CurrentDate <= "End Date" do begin
-            SubpageRec.Init();
+            RecCount += 1;
+
+            // Initialize temporary record to store calculations
+            TempSubpageRecs[RecCount].Init();
             LastEntryNo += 1; // Increment Entry No.
-            SubpageRec."Entry No." := LastEntryNo; // Assign new Entry No.
-            SubpageRec."Contract ID" := "Contract ID";
-            SubpageRec."Tenant Id" := "Tenant Id";
+            TempSubpageRecs[RecCount]."Entry No." := LastEntryNo;
+            TempSubpageRecs[RecCount]."Contract ID" := "Contract ID";
+            TempSubpageRecs[RecCount]."Tenant Id" := "Tenant Id";
 
             // Format Month-Year
-            SubpageRec."Month" := FORMAT(CurrentDate, 0, '<Month Text>') + '-' + FORMAT(CurrentDate, 0, '<Year>');
-
-            // Date2DMY(CurrentDate, Year, Month, Day);
+            TempSubpageRecs[RecCount]."Month" := FORMAT(CurrentDate, 0, '<Month Text>') + '-' + FORMAT(CurrentDate, 0, '<Year>');
 
             // Calculate the first day of the next month
             if DATE2DMY(CurrentDate, 2) = 12 then begin
@@ -136,76 +146,195 @@ table 50929 "Revenue Recognition"
                 FirstDayNextMonth := DMY2DATE(1, DATE2DMY(CurrentDate, 2) + 1, DATE2DMY(CurrentDate, 3)); // Next month of the same year
             end;
 
-            // // Check for the first day of the next month
-            // if Month = 12 then begin
-            //     FirstDayNextMonth := DMY2DATE(1, 1, Year + 1); // January of next year
-            // end else begin
-            //     FirstDayNextMonth := DMY2DATE(1, Month + 1, Year); // Next month of the same year
-            // end;
-
-
-            // Calculate the last day of the current month
             LastDayOfMonth := FirstDayNextMonth - 1;
 
-            // Calculate number of days in the current month
+
             if "End Date" < LastDayOfMonth then
                 MonthDays := "End Date" - CurrentDate + 1
             else
                 MonthDays := LastDayOfMonth - CurrentDate + 1;
 
-            // Adjust for Start Date or End Date in partial months
+
             if CurrentDate = "Start Date" then
                 if MonthDays > ("End Date" - CurrentDate + 1) then
                     MonthDays := ("End Date" - CurrentDate + 1);
 
-
+            Year := DATE2DMY(CurrentDate, 3);
+            Month := DATE2DMY(CurrentDate, 2);
             IsLeap := IsLeapYear(Year);
 
             if Month = 2 then begin
-                // February handling: 28 days in common year, 29 days in leap year
                 if IsLeap then
                     DaysInMonth := 29
                 else
                     DaysInMonth := 28;
             end else if (Month = 4) or (Month = 6) or (Month = 9) or (Month = 11) then begin
-                // April, June, September, November have 30 days
                 DaysInMonth := 30;
             end else begin
-                // All other months (January, March, May, July, August, October, December) have 31 days
                 DaysInMonth := 31;
             end;
 
             ActualDaysInMonth := GetDaysInMonthss(CurrentDate);
 
+            AllocatedAmount := MonthDays * DailyRate;
+            TempSubpageRecs[RecCount]."RR - Method 1 (Day)" := AllocatedAmount;
 
-            // // Check if the days in the month are fewer than the typical month days (30 or 31)
+
             if MonthDays < ActualDaysInMonth then begin
-                // Adjust the MonthlyRate based on actual MonthDays
-                MonthlyRate2 := Round("Contract Amount" / TotalMonths);
                 MonthlyRate := Round(MonthlyRate2 / ActualDaysInMonth * MonthDays);
             end else begin
-                // Default case: use the standard MonthlyRate formula
                 MonthlyRate := MonthlyRate2;
-                //MonthlyRate2 := ("Contract Amount" / TotalMonths);
             end;
-            // // ActualDaysInMonth := CALCDATE('<+CM>', CurrentDate) - CALCDATE('<-CM>', CurrentDate);
-            // MonthlyRate2 := ("Contract Amount" / TotalMonths);
 
+            Method2Total += MonthlyRate;
+            TempSubpageRecs[RecCount]."RR - Method 2 (Month)" := MonthlyRate;
+            TempSubpageRecs[RecCount]."No. of Days" := MonthDays;
 
-
-
-
-            AllocatedAmount := MonthDays * DailyRate;
-
-            SubpageRec."No. of Days" := MonthDays;
-            SubpageRec."RR - Method 1 (Day)" := AllocatedAmount;
-            SubpageRec."RR - Method 2 (Month)" := MonthlyRate;
-            SubpageRec.Insert();
-
-            // Move to the first day of the next month
             CurrentDate := FirstDayNextMonth;
         end;
+
+        RemainingAmount := "Contract Amount" - (Method2Total - TempSubpageRecs[RecCount]."RR - Method 2 (Month)");
+        TempSubpageRecs[RecCount]."RR - Method 2 (Month)" := RemainingAmount;
+
+        for LastEntryNo := 1 to RecCount do begin
+            SubpageRec.Init();
+            SubpageRec."Entry No." := TempSubpageRecs[LastEntryNo]."Entry No.";
+            SubpageRec."Contract ID" := TempSubpageRecs[LastEntryNo]."Contract ID";
+            SubpageRec."Tenant Id" := TempSubpageRecs[LastEntryNo]."Tenant Id";
+            SubpageRec."Month" := TempSubpageRecs[LastEntryNo]."Month";
+            SubpageRec."No. of Days" := TempSubpageRecs[LastEntryNo]."No. of Days";
+            SubpageRec."RR - Method 1 (Day)" := TempSubpageRecs[LastEntryNo]."RR - Method 1 (Day)";
+            SubpageRec."RR - Method 2 (Month)" := TempSubpageRecs[LastEntryNo]."RR - Method 2 (Month)";
+            SubpageRec.Insert();
+        end;
     end;
+
+    // local procedure CalculateMonthlyRevenue()
+    // var
+    //     SubpageRec: Record "Revenue Recognition Subpage";
+    //     StartDate: Date;
+    //     EndDate: Date;
+    //     TotalDays: Integer;
+    //     CurrentDate: Date;
+    //     MonthDays: Integer;
+    //     DailyRate: Decimal;
+    //     MonthlyRate: Decimal;
+    //     AllocatedAmount: Decimal;
+    //     FirstDayNextMonth: Date;
+    //     LastDayOfMonth: Date;
+    //     DaysInMonth: Integer;
+    //     Year: Integer;
+    //     Month: Integer;
+    //     Day: Integer;
+    //     IsLeap: Boolean;
+    //     MonthlyRate2: Decimal;
+    //     TotalMonths: Integer;
+    //     ActualDaysInMonth: Integer;
+    //     LastEntryNo: Integer;
+    // begin
+    //     // Clear existing records in the subpage table
+    //     SubpageRec.DeleteAll();
+
+    //     // Ensure Start and End Dates are valid
+    //     if ("Start Date" = 0D) or ("End Date" = 0D) then
+    //         exit;
+
+    //     TotalMonths := CalculateTotalMonths("Start Date", "End Date");
+
+    //     TotalDays := ("End Date" - "Start Date") + 1;
+    //     DailyRate := "Contract Amount" / TotalDays;
+    //     //  MonthlyRate := ("Annual Rent Amount" / 12);
+
+    //     CurrentDate := "Start Date";
+    //     while CurrentDate <= "End Date" do begin
+    //         SubpageRec.Init();
+    //         LastEntryNo += 1; // Increment Entry No.
+    //         SubpageRec."Entry No." := LastEntryNo; // Assign new Entry No.
+    //         SubpageRec."Contract ID" := "Contract ID";
+    //         SubpageRec."Tenant Id" := "Tenant Id";
+
+    //         // Format Month-Year
+    //         SubpageRec."Month" := FORMAT(CurrentDate, 0, '<Month Text>') + '-' + FORMAT(CurrentDate, 0, '<Year>');
+
+    //         // Date2DMY(CurrentDate, Year, Month, Day);
+
+    //         // Calculate the first day of the next month
+    //         if DATE2DMY(CurrentDate, 2) = 12 then begin
+    //             FirstDayNextMonth := DMY2DATE(1, 1, DATE2DMY(CurrentDate, 3) + 1); // January of next year
+    //         end else begin
+    //             FirstDayNextMonth := DMY2DATE(1, DATE2DMY(CurrentDate, 2) + 1, DATE2DMY(CurrentDate, 3)); // Next month of the same year
+    //         end;
+
+    //         // // Check for the first day of the next month
+    //         // if Month = 12 then begin
+    //         //     FirstDayNextMonth := DMY2DATE(1, 1, Year + 1); // January of next year
+    //         // end else begin
+    //         //     FirstDayNextMonth := DMY2DATE(1, Month + 1, Year); // Next month of the same year
+    //         // end;
+
+
+    //         // Calculate the last day of the current month
+    //         LastDayOfMonth := FirstDayNextMonth - 1;
+
+    //         // Calculate number of days in the current month
+    //         if "End Date" < LastDayOfMonth then
+    //             MonthDays := "End Date" - CurrentDate + 1
+    //         else
+    //             MonthDays := LastDayOfMonth - CurrentDate + 1;
+
+    //         // Adjust for Start Date or End Date in partial months
+    //         if CurrentDate = "Start Date" then
+    //             if MonthDays > ("End Date" - CurrentDate + 1) then
+    //                 MonthDays := ("End Date" - CurrentDate + 1);
+
+
+    //         IsLeap := IsLeapYear(Year);
+
+    //         if Month = 2 then begin
+    //             // February handling: 28 days in common year, 29 days in leap year
+    //             if IsLeap then
+    //                 DaysInMonth := 29
+    //             else
+    //                 DaysInMonth := 28;
+    //         end else if (Month = 4) or (Month = 6) or (Month = 9) or (Month = 11) then begin
+    //             // April, June, September, November have 30 days
+    //             DaysInMonth := 30;
+    //         end else begin
+    //             // All other months (January, March, May, July, August, October, December) have 31 days
+    //             DaysInMonth := 31;
+    //         end;
+
+    //         ActualDaysInMonth := GetDaysInMonthss(CurrentDate);
+
+
+    //         // // Check if the days in the month are fewer than the typical month days (30 or 31)
+    //         if MonthDays < ActualDaysInMonth then begin
+    //             // Adjust the MonthlyRate based on actual MonthDays
+    //             MonthlyRate2 := Round("Contract Amount" / TotalMonths);
+    //             MonthlyRate := Round(MonthlyRate2 / ActualDaysInMonth * MonthDays);
+    //         end else begin
+    //             // Default case: use the standard MonthlyRate formula
+    //             MonthlyRate := MonthlyRate2;
+    //             //MonthlyRate2 := ("Contract Amount" / TotalMonths);
+    //         end;
+    //         // // ActualDaysInMonth := CALCDATE('<+CM>', CurrentDate) - CALCDATE('<-CM>', CurrentDate);
+    //         // MonthlyRate2 := ("Contract Amount" / TotalMonths);
+
+
+
+
+
+    //         AllocatedAmount := MonthDays * DailyRate;
+
+    //         SubpageRec."No. of Days" := MonthDays;
+    //         SubpageRec."RR - Method 1 (Day)" := AllocatedAmount;
+    //         SubpageRec."RR - Method 2 (Month)" := MonthlyRate;
+    //         SubpageRec.Insert();
+
+    //         // Move to the first day of the next month
+    //         CurrentDate := FirstDayNextMonth;
+    //     end;
+    // end;
     //-----------------Calculate Monthly Revenue-----------------//
 
     //-----------------Calculate Leap year-----------------//

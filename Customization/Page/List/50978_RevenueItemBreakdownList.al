@@ -5,6 +5,7 @@ page 50978 "Revenue Item Breakdown List"
     ApplicationArea = All;
     UsageCategory = Lists;
     CardPageId = 50975;
+    Caption = 'Revenue Recognition-Other Charges List';
 
     layout
     {
