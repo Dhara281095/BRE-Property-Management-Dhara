@@ -1200,6 +1200,14 @@ page 50903 "Final Calculation Card"
         CanPost := (Rec."Amount Refundable" <> 0) or (Rec."Net Receivable From The Tenant" <> 0);
     end;
 
+    procedure FinalSettlementVisible()
+    begin
+        if (Rec."Amount Refundable" = 0) and (Rec."Net Receivable From The Tenant" = 0) then begin
+            IsReceivable := false;
+            IsRefundable := false;
+        end;
+    end;
+
     var
         IsReceivable: Boolean;
         IsRefundable: Boolean;
