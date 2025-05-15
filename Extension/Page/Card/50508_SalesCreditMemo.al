@@ -83,6 +83,21 @@ pageextension 50508 SalesCreditMemo extends "Sales Credit Memo"
                     Editable = approvaleditable;
 
                     // Editable = approvaleditable;
+
+                    trigger OnValidate()
+                    var
+                        emailcreditmemo: Codeunit "Send Credit Memo to Tenant";
+                        Rejectionmail: Codeunit "Reject Credit Memo";
+                        ShowDialogBox: Codeunit DialogboxRejectionCreditMemo;
+                    begin
+                        if Rec."Approval Status for CreditNote" = Rec."Approval Status for CreditNote"::Approved then begin
+                            emailcreditmemo.SendMailToTenantForCreditMemo(Rec); // Pass the current record if needed
+                        end else
+                            if Rec."Approval Status for CreditNote" = Rec."Approval Status for CreditNote"::Rejected then begin
+                                ShowDialogBox.Dialogboxcreditmemo(Rec);
+                                // Rejectionmail.SendInvoiceToLeaseManager(Rec);
+                            end;
+                    end;
                 }
                 field("Rejection Reason CreditNote"; Rec."Rejection Reason CreditNote")
                 {

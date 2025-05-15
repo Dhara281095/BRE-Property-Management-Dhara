@@ -31,20 +31,6 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
             DataClassification = ToBeClassified;
             OptionMembers = " ",Approved,Rejected;
             Caption = 'Approval Status';
-            trigger OnValidate()
-            var
-                emailrecord: Codeunit SendInvoiceToTenant;
-                Rejectionmail: Codeunit RejectSalesInvoice;
-                ShowDialogBox: Codeunit ShowDialogboxRejctionInvoice;
-            begin
-                if "Approval Status" = "Approval Status"::Approved then begin
-                    emailrecord.SendInvoice(Rec); // Pass the current record if needed
-                end else
-                    if "Approval Status" = "Approval Status"::Rejected then begin
-                        ShowDialogBox.DialogboxForRejection(Rec);
-                        // Rejectionmail.SendInvoiceToLeaseManager(Rec);
-                    end;
-            end;
         }
         field(50106; "Tenant Name"; Text[100])
         {
@@ -101,21 +87,6 @@ tableextension 50502 SalesInvoiceHeaderExt extends "Sales Header"
             DataClassification = ToBeClassified;
             Caption = 'Approval Status';
             OptionMembers = " ",Approved,Rejected;
-
-            trigger OnValidate()
-            var
-                emailcreditmemo: Codeunit "Send Credit Memo to Tenant";
-                Rejectionmail: Codeunit "Reject Credit Memo";
-                ShowDialogBox: Codeunit DialogboxRejectionCreditMemo;
-            begin
-                if "Approval Status for CreditNote" = "Approval Status for CreditNote"::Approved then begin
-                    emailcreditmemo.SendMailToTenantForCreditMemo(Rec); // Pass the current record if needed
-                end else
-                    if "Approval Status for CreditNote" = "Approval Status for CreditNote"::Rejected then begin
-                        ShowDialogBox.Dialogboxcreditmemo(Rec);
-                        // Rejectionmail.SendInvoiceToLeaseManager(Rec);
-                    end;
-            end;
         }
         field(50117; "Rejection Reason CreditNote"; Text[1000])
         {
