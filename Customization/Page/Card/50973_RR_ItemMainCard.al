@@ -40,7 +40,7 @@ page 50973 "Revenue Recognition Item Sub"
                         // Filter and open Revenue Item Breakdown Card
                         RevenueItemBreakdown.SetRange("RI_No.", Rec.Link);
                         if RevenueItemBreakdown.FindSet() then
-                            PAGE.RunModal(PAGE::"Revenue Item Breakdown Card", RevenueItemBreakdown)
+                            PAGE.Run(PAGE::"Revenue Item Breakdown Card", RevenueItemBreakdown)
                         else
                             Message('No Revenue Item Breakdown found.');
                     end;
