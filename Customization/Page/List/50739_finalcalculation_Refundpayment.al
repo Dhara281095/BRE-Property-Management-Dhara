@@ -18,68 +18,73 @@ page 50739 "finalcalculation_Refundpayment"
                 field("ID"; Rec."ID")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
                 }
                 field(Status; Rec.Status)
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
                 }
 
                 field("Tenant ID"; Rec."Tenant ID")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
                 }
                 field("Tenant Name"; Rec."Tenant Name")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
                 }
                 field("Contract ID"; Rec."Contract ID")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
+                }
+                field(fcID; Rec.fcID)
+                {
+                    ApplicationArea = All;
+                    Editable = false;
                 }
                 field("Due Date"; Rec."Due Date")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
                 }
                 field("Total Amount"; Rec."Total Amount")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
                 }
                 field("Bank Name"; Rec."Bank Name")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
                 }
                 field("Branch Address"; Rec."Branch Address")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
                 }
                 field("Account Holder Name"; Rec."Account Holder Name")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
                 }
                 field("Account Number"; Rec."Account Number")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
                 }
                 field("Swift Code"; Rec."Swift Code")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
                 }
                 field("IBAN number"; Rec."IBAN number")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
                 }
                 field(Description; Rec.Description)
                 {
@@ -89,7 +94,7 @@ page 50739 "finalcalculation_Refundpayment"
                 field("Request Date"; Rec."Request Date")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
                 }
 
             }
