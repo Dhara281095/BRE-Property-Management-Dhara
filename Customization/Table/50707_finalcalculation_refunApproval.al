@@ -80,19 +80,19 @@ table 50707 "finalcalculation_refunApproval"
         {
             DataClassification = ToBeClassified;
             Caption = 'Description';
-            Editable = true;
+
         }
         Field(50124; "Request Date"; Date)
         {
             DataClassification = ToBeClassified;
             Caption = 'Request Date';
-            Editable = false;
+
         }
         Field(50125; "fcID"; Text[500])
         {
             DataClassification = ToBeClassified;
             Caption = 'fcID';
-            Editable = false;
+
         }
     }
 

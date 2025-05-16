@@ -94,7 +94,7 @@ page 50739 "finalcalculation_Refundpayment"
                 field("Request Date"; Rec."Request Date")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
 
             }
