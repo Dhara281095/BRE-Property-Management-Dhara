@@ -1,8 +1,8 @@
 codeunit 50106 GenerateConsolidatedInvoices
 {
-    //trigger OnRun()
+    trigger OnRun()
 
-    procedure GenerateConsolidatedInvoicesDirectly()
+    // procedure GenerateConsolidatedInvoicesDirectly()
     var
         paymentScheudle2: Record "Payment Schedule2";
         SalesHeader: Record "Sales Header";
@@ -22,10 +22,10 @@ codeunit 50106 GenerateConsolidatedInvoices
         paymentschedulecardpage: Record "Payment Schedule";
 
     begin
-        // todaydate := Today();
+        todaydate := Today();
         //todaydate := 20250705D;
         // todaydate := 20260530D;
-        todaydate := 20260228D;
+        //todaydate := 20260228D;
         //todaydate := 20251129D; // for first installment date
         currentdate := Today();
 
