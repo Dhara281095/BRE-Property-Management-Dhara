@@ -9,7 +9,7 @@ table 50707 "finalcalculation_refunApproval"
         {
             DataClassification = ToBeClassified;
             Caption = 'ID';
-            Editable = true;
+            Editable = false;
             AutoIncrement = true;
         }
         field(50108; "Status"; Text[50])
@@ -86,7 +86,13 @@ table 50707 "finalcalculation_refunApproval"
         {
             DataClassification = ToBeClassified;
             Caption = 'Request Date';
-            Editable = true;
+            Editable = false;
+        }
+        Field(50125; "fcID"; Text[500])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'fcID';
+            Editable = false;
         }
     }
 

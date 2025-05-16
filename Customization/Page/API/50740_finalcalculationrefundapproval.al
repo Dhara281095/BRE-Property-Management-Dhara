@@ -102,6 +102,10 @@ page 50740 finalcalculation_refundapprova
                 {
                     Caption = 'Request Date';
                 }
+                field(fcID; Rec.fcID)
+                {
+                    Caption = 'fcID';
+                }
             }
         }
     }
