@@ -91,29 +91,32 @@ table 50946 "Final Billing Calculation Grid"
         }
         field(50115; "Total Invoiced AmountIncl. VAT"; Decimal)
         {
-            Caption = 'Total Invoiced Amount';
+            Caption = 'Total Invoiced AmountIncl. VAT';
             FieldClass = FlowField;
             CalcFormula = sum("Final Billing Calculation Grid"."InvoicedAmountInclVAT" where("Contract ID" = field("Contract ID")));
 
         }
         field(50116; "Total Revised Amount"; Decimal)
         {
-
+            Caption = 'Total Revised Amount';
             FieldClass = FlowField;
+            DecimalPlaces = 2 : 2;
             CalcFormula = sum("Final Billing Calculation Grid"."RevisedAmount" where("Contract ID" = field("Contract ID")));
 
         }
         field(50117; "Total Revised VAT"; Decimal)
         {
-
+            Caption = 'Total Revised VAT';
             FieldClass = FlowField;
+            DecimalPlaces = 2 : 2;
             CalcFormula = sum("Final Billing Calculation Grid"."RevisedVAT" where("Contract ID" = field("Contract ID")));
 
         }
-        field(50118; "Total Revised AmountIncl. VAT"; Decimal)
+        field(50118; "Total Revised AmountIncl.VAT"; Decimal)
         {
-
+            Caption = 'Total Revised AmountIncl. VAT';
             FieldClass = FlowField;
+            DecimalPlaces = 2 : 2;
             CalcFormula = sum("Final Billing Calculation Grid"."RevisedAmountInclVAT" where("Contract ID" = field("Contract ID")));
 
         }

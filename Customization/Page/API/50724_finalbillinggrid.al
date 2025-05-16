@@ -122,7 +122,7 @@ page 50724 finalbillinggrid
                 {
                     Caption = 'Total Revised Amount';
                 }
-                field(totalRevisedAmountInclVAT; Rec."Total Revised AmountIncl. VAT")
+                field(totalRevisedAmountInclVAT; Rec."Total Revised AmountIncl.VAT")
                 {
                     Caption = 'Total Revised Amount Incl. VAT';
                 }

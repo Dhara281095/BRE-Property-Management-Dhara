@@ -85,22 +85,23 @@ page 50951 "Final Billing Calculation"
                         field("Total Revised Amount"; Rec."Total Revised Amount")
                         {
                             ApplicationArea = All;
+                            Caption = 'Total Revised Amount';
                             Editable = false;
 
                         }
                         field("Total Revised VAT"; Rec."Total Revised VAT")
                         {
                             ApplicationArea = All;
+                            Caption = 'Total Revised VAT';
                             Editable = false;
 
                         }
-                        field("Total Revised AmountIncl. VAT"; Rec."Total Revised AmountIncl. VAT")
+                        field("Total Revised AmountIncl.VAT"; Rec."Total Revised AmountIncl.VAT")
                         {
                             ApplicationArea = All;
+                            Caption = 'Total Revised Amount Incl. VAT';
                             Editable = false;
-
                         }
-
 
                     }
                     // group("Difference & Summary")
@@ -137,13 +138,6 @@ page 50951 "Final Billing Calculation"
                             ApplicationArea = All;
                             Caption = 'Credit Note To Be Raised';
                             Editable = false;
-                        }
-                        field(Line; Rec.Line)
-                        {
-                            ApplicationArea = All;
-                            Caption = 'Line';
-                            Editable = false;
-                            Visible = false;
                         }
 
                         field("Creditnote"; Rec."Creditnote")
