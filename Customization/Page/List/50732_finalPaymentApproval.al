@@ -94,7 +94,7 @@ page 50732 "final payment approval"
                     ErrorCount: Integer;
                     Finalsettlement: Record "FinalSettlement";
                     PaymentStatus: Enum "Payment Status";
-                    FinalsettlementRefund: Record "FinalSettlementRefund";
+                //  FinalsettlementRefund: Record "FinalSettlementRefund";
                 begin
                     CurrPage.SetSelectionFilter(SelectedRecs);
 
@@ -112,12 +112,12 @@ page 50732 "final payment approval"
                                 SelectedRecs.Status := 'Received';
                                 SelectedRecs.Modify();
 
-                                FinalsettlementRefund.SetRange("Contract ID", SelectedRecs."Contract ID");
+                                // FinalsettlementRefund.SetRange("Contract ID", SelectedRecs."Contract ID");
 
-                                if FinalsettlementRefund.FindSet() then begin
-                                    FinalsettlementRefund."Refund Payment Status" := PaymentStatus::Received;
-                                    FinalsettlementRefund.Modify(true);
-                                end;
+                                // if FinalsettlementRefund.FindSet() then begin
+                                //     FinalsettlementRefund."Refund Payment Status" := PaymentStatus::Received;
+                                //     FinalsettlementRefund.Modify(true);
+                                // end;
 
                                 Finalsettlement.SetRange("Contract ID", SelectedRecs."Contract ID");
                                 if Finalsettlement.FindSet() then begin
