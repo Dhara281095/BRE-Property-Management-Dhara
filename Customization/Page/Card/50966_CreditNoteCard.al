@@ -315,7 +315,7 @@ page 50966 "Credit Note Card"
 
             action("Create Credit Note")
             {
-                Caption = 'Create Credit Note';
+                Caption = 'Credit Note Document';
                 ApplicationArea = All;
                 Image = NewDocument; // Use an appropriate icon for the action
                 Promoted = true; // Make the action visible in the header

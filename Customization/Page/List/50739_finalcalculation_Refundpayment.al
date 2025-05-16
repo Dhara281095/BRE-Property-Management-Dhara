@@ -116,9 +116,9 @@ page 50739 "finalcalculation_Refundpayment"
                     SelectedRecs: Record "finalcalculation_refunApproval";
                     ApproveCount: Integer;
                     ErrorCount: Integer;
-                // Finalsettlement: Record "FinalSettlement";
-                // PaymentStatus: Enum "Payment Status";
-                // FinalsettlementRefund: Record "FinalSettlementRefund";
+                    // Finalsettlement: Record "FinalSettlement";
+                    // PaymentStatus: Enum "Payment Status";
+                    FinalsettlementRefund: Record "FinalSettlementRefund";
                 begin
                     CurrPage.SetSelectionFilter(SelectedRecs);
 
@@ -136,12 +136,12 @@ page 50739 "finalcalculation_Refundpayment"
                                 SelectedRecs.Status := 'paid';
                                 SelectedRecs.Modify();
 
-                                // FinalsettlementRefund.SetRange("Contract ID", SelectedRecs."Contract ID");
+                                FinalsettlementRefund.SetRange("Contract ID", SelectedRecs."Contract ID");
 
-                                // if FinalsettlementRefund.FindSet() then begin
-                                //     FinalsettlementRefund."Refund Payment Status" := PaymentStatus::Received;
-                                //     FinalsettlementRefund.Modify(true);
-                                // end;
+                                if FinalsettlementRefund.FindSet() then begin
+                                    FinalsettlementRefund."Refund Payment Status" := FinalsettlementRefund."Refund Payment Status"::Paid;
+                                    FinalsettlementRefund.Modify(true);
+                                end;
 
                                 // Finalsettlement.SetRange("Contract ID", SelectedRecs."Contract ID");
                                 // if Finalsettlement.FindSet() then begin
