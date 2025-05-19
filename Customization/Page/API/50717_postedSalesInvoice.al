@@ -190,10 +190,10 @@ page 50717 postedSalesInvoice
                 {
                     Caption = 'Corrective';
                 }
-                field(coupledToCRM; Rec."Coupled to CRM")
-                {
-                    Caption = 'Coupled to Dynamics 365 Sales';
-                }
+                // field(coupledToCRM; Rec."Coupled to CRM")
+                // {
+                //     Caption = 'Coupled to Dynamics 365 Sales';
+                // }
                 field(coupledToDataverse; Rec."Coupled to Dataverse")
                 {
                     Caption = 'Coupled to Dynamics 365 Sales';
