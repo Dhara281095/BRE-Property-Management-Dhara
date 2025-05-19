@@ -30,6 +30,11 @@ page 50122 "Revenue Allocation Card"
                 {
                     ApplicationArea = All;
                 }
+                field(Status; Rec.Status)
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
             }
             group("Revenue Allocation Report Details")
             {
@@ -135,6 +140,44 @@ page 50122 "Revenue Allocation Card"
                 end;
             }
 
+            action(RevenueAllocation)
+            {
+                ApplicationArea = All;
+                Caption = 'Revenue Allocation Approval';
+                Image = PostDocument;
+                Enabled = Rec.Status = Rec.Status::Pending;
+
+                trigger OnAction()
+                var
+                    Approvalrevenueallocation: Record "Revenue Allocation Approval";
+                    revenueallocation: Record "Revenue Allocation Details";
+                begin
+                    // Validate required fields
+                    if Rec."No." = 0 then
+                        Error('No must be specified');
+
+                    Approvalrevenueallocation.SetRange("ID", Rec."No.");
+
+                    if Approvalrevenueallocation.FindSet() then begin
+                        // Modify existing approval record
+                        Approvalrevenueallocation."ID" := Rec."No.";
+                        Approvalrevenueallocation."Month" := revenueallocation."Month";
+                        Approvalrevenueallocation."Status" := revenueallocation."Status";
+                        Approvalrevenueallocation."Financial Year" := revenueallocation."Financial Year";
+                        Approvalrevenueallocation.Modify();
+                        Message('Approval Request Modified successfully!');
+                    end else begin
+                        // Insert new approval record
+                        Approvalrevenueallocation.Init();
+                        Approvalrevenueallocation."ID" := Rec."No.";
+                        Approvalrevenueallocation."Month" := revenueallocation."Month";
+                        Approvalrevenueallocation."Status" := revenueallocation."Status";
+                        Approvalrevenueallocation."Financial Year" := revenueallocation."Financial Year";
+                        Approvalrevenueallocation.Insert();
+                    end;
+                    Message('Approval Request Sent successfully!');
+                end;
+            }
         }
     }
 

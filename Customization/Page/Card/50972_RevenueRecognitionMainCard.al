@@ -269,7 +269,7 @@ page 50972 "Revenue Recognition Main"
         FilteredContractRec."Contract End Date" := ContractRec."Contract End Date";
         FilteredContractRec."Grace Days" := ContractRec."Grace Period";
         FilteredContractRec."Contract Amount" := ContractRec."Contract Amount Including VAT";
-        FilteredContractRec."Annual Amount" := ContractRec."Rent Amount";
+        // FilteredContractRec."Annual Amount" := ContractRec."Rent Amount";
         FilteredContractRec."Owner Name" := ContractRec."Owner's Name";
 
 

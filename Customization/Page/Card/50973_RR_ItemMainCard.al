@@ -287,10 +287,10 @@ page 50973 "Revenue Recognition Item Sub"
         RevenueRecognitionDetails."Contract Start Date" := pTenancyContract."Contract Start Date";
         RevenueRecognitionDetails."Contract End Date" := pTenancyContract."Contract End Date";
         RevenueRecognitionDetails."Contract Amount" := pRevenueItemBreakdown."Contract Amount";
-        RevenueRecognitionDetails."Annual Amount" := pRevenueItemBreakdown."Annual Amount";
+        // RevenueRecognitionDetails."Annual Amount" := pRevenueItemBreakdown."Annual Amount";
         RevenueRecognitionDetails."Owner Name" := pTenancyContract."Owner's Name";
         RevenueRecognitionDetails."Termination Date" := pTenancyContract."Termination Date";
-        RevenueRecognitionDetails."Final Annual Amount" := RevenueRecognitionDetails."Annual Amount";
+        // RevenueRecognitionDetails."Final Annual Amount" := RevenueRecognitionDetails."Annual Amount";
 
         // Copy revenue item breakdown details
         RevenueRecognitionDetails."Item Type" := pRevenueItemBreakdown."Item Type";
@@ -360,21 +360,21 @@ page 50973 "Revenue Recognition Item Sub"
             repeat
                 totalcontractAmounts += revenueItemLine."Contract Amount";
                 totalamounts += revenueItemLine."Total Value";
-                totalannualamounts += revenueItemLine."Annual Amount";
-                totalfinalannualamounts += revenueItemLine."Final Annual Amount";
+            // totalannualamounts += revenueItemLine."Annual Amount";
+            // totalfinalannualamounts += revenueItemLine."Final Annual Amount";
             until revenueItemLine.Next() = 0;
 
         revenueItemLine."Total Amount" := totalamounts;
-        revenueItemLine."Total Annual Amount" := totalannualamounts;
-        revenueItemLine."Total Final Annual Amount" := totalfinalannualamounts;
+        // revenueItemLine."Total Annual Amount" := totalannualamounts;
+        // revenueItemLine."Total Final Annual Amount" := totalfinalannualamounts;
         revenueItemLine."Total Contract Amount" := totalcontractAmounts;
 
 
         // Combine both
         totalcombinecontractAmounts := totalcontractAmount + totalcontractAmounts;
         totalcombineamounts := totalamount + totalamounts;
-        totalcombineannualamounts := totalannualamount + totalannualamounts;
-        totalcombinefinalannualamounts := totalfinalannualamount + totalfinalannualamounts;
+        totalcombineannualamounts := totalannualamount;
+        totalcombinefinalannualamounts := totalfinalannualamount;
 
         // Store into header
         revenueItemLine."Total Contract Amounts" := totalcombinecontractAmounts;
