@@ -101,12 +101,12 @@ page 50974 "Revenue Recognition Detail Sub"
                     Caption = 'Contract Amount';
                     Editable = false;
                 }
-                field("Annual Amount"; Rec."Annual Amount")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Annual Amount';
-                    Editable = false;
-                }
+                // field("Annual Amount"; Rec."Annual Amount")
+                // {
+                //     ApplicationArea = All;
+                //     Caption = 'Annual Amount';
+                //     Editable = false;
+                // }
                 field("Posting Month"; Rec."Posting Month")
                 {
                     ApplicationArea = All;
@@ -125,12 +125,12 @@ page 50974 "Revenue Recognition Detail Sub"
                     Caption = 'Posting Period';
                     Editable = false;
                 }
-                field("Final Annual Amount"; Rec."Final Annual Amount")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Final Annual Amount';
-                    Editable = false;
-                }
+                // field("Final Annual Amount"; Rec."Final Annual Amount")
+                // {
+                //     ApplicationArea = All;
+                //     Caption = 'Final Annual Amount';
+                //     Editable = false;
+                // }
                 field("No Of Days"; Rec."No Of Days")
                 {
                     ApplicationArea = All;
@@ -176,18 +176,18 @@ page 50974 "Revenue Recognition Detail Sub"
                     Caption = 'Total Contract Amount';
                     Editable = false;
                 }
-                field("Total Annual Amount"; Rec."Total Annual Amount")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Total Annual Amount';
-                    Editable = false;
-                }
-                field("Total Final Annual Amount"; Rec."Total Final Annual Amount")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Total Final Annual Amount';
-                    Editable = false;
-                }
+                // field("Total Annual Amount"; Rec."Total Annual Amount")
+                // {
+                //     ApplicationArea = All;
+                //     Caption = 'Total Annual Amount';
+                //     Editable = false;
+                // }
+                // field("Total Final Annual Amount"; Rec."Total Final Annual Amount")
+                // {
+                //     ApplicationArea = All;
+                //     Caption = 'Total Final Annual Amount';
+                //     Editable = false;
+                // }
 
             }
 

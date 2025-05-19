@@ -28,7 +28,7 @@ page 50111 "Property Type List"
                 field("Property Type"; Rec."Property Type")
                 {
                     ApplicationArea = All;
-                    Caption = 'Unit Type';
+                    Caption = 'Property Type';
                 }
             }
         }

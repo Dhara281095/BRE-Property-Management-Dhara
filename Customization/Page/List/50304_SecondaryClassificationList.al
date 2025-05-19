@@ -29,7 +29,7 @@ page 50304 "Secondary Classification List"
                 field("Property Type"; Rec."Property Type")
                 {
                     ApplicationArea = All;
-                    Caption = 'Property Type';
+                    Caption = 'Unit Type';
                 }
             }
         }

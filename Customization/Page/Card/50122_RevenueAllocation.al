@@ -513,6 +513,361 @@ page 50122 "Revenue Allocation Card"
     end;
 
 
+    // Add this new helper procedure to handle missed revenue allocations
+    procedure HandleMissedAllocation(
+     ContractRec: Record "Tenancy Contract";
+     MonthNo: Integer;
+     FinancialYear: Integer)
+    var
+        PreviousMonthNo: Integer;
+        PreviousYearNo: Integer;
+        PreviousMonthStart: Date;
+        PreviousMonthEnd: Date;
+        CurrentMonthStart: Date;
+        CurrentMonthEnd: Date;
+        ContractStartDate: Date;
+        MissedDays: Integer;
+        SingleUnitRent: Record "TC Single Unit Rent SubPage";
+        MultiUnitRent: Record "TC Single LumAnnualAmnt SP";
+        MergedSingleRent: Record "TC Merge SameSqure SubPage";
+        MergedMultiRent: Record "TC Merge DifferentSq SubPage";
+        SpecialRent: Record "TC Merge LumAnnualAmount SP";
+        FinalCalculationRec: Record "Final Calculation";
+        TerminationDate: Date;
+        LineNo: Integer;
+    begin
+        // Calculate previous month and year
+        if MonthNo = 1 then begin
+            PreviousMonthNo := 12;
+            PreviousYearNo := FinancialYear - 1;
+        end else begin
+            PreviousMonthNo := MonthNo - 1;
+            PreviousYearNo := FinancialYear;
+        end;
+
+        // Calculate date ranges
+        PreviousMonthStart := DMY2Date(1, PreviousMonthNo, PreviousYearNo);
+        PreviousMonthEnd := CALCDATE('<+1M-1D>', PreviousMonthStart);
+        CurrentMonthStart := DMY2Date(1, MonthNo, FinancialYear);
+        CurrentMonthEnd := CALCDATE('<+1M-1D>', CurrentMonthStart);
+        ContractStartDate := ContractRec."Contract Start Date";
+
+        // Check if contract started in previous month
+        if (ContractStartDate >= PreviousMonthStart) and (ContractStartDate <= PreviousMonthEnd) then begin
+            // Contract started in previous month, so we need to allocate missed days
+            MissedDays := PreviousMonthEnd - ContractStartDate + 1;
+
+            // Retrieve Termination Date from Final Calculation
+            FinalCalculationRec.Reset();
+            FinalCalculationRec.SetRange("Contract ID", ContractRec."Contract ID");
+            if FinalCalculationRec.FindFirst() then
+                TerminationDate := FinalCalculationRec."Termination Date"
+            else
+                TerminationDate := 0D;
+
+            // Process each rent type for missed allocation
+            // Check Single Unit Rent grid
+            SingleUnitRent.Reset();
+            SingleUnitRent.SetRange("Contract ID", ContractRec."Contract ID");
+            if SingleUnitRent.FindSet() then begin
+                repeat
+                    if (SingleUnitRent."Start Date" <= PreviousMonthEnd) and (SingleUnitRent."End Date" >= ContractStartDate) then begin
+                        InsertMissedAllocationLine(
+                            ContractRec,
+                            SingleUnitRent."Start Date",
+                            SingleUnitRent."End Date",
+                            SingleUnitRent."Number of Days",
+                            SingleUnitRent."Per Day Rent",
+                            SingleUnitRent."Final Annual Amount",
+                            SingleUnitRent."Final Annual Amount",
+                            TerminationDate,
+                            LineNo,
+                            PreviousMonthNo,
+                            PreviousYearNo,
+                            ContractStartDate,
+                            PreviousMonthEnd);
+                    end;
+                until SingleUnitRent.Next() = 0;
+            end;
+
+            // Check Multi Unit Rent grid
+            MultiUnitRent.Reset();
+            MultiUnitRent.SetRange("Contract ID", ContractRec."Contract ID");
+            if MultiUnitRent.FindSet() then begin
+                repeat
+                    if (MultiUnitRent."SL_Start Date" <= PreviousMonthEnd) and (MultiUnitRent."SL_End Date" >= ContractStartDate) then begin
+                        InsertMissedAllocationLine(
+                            ContractRec,
+                            MultiUnitRent."SL_Start Date",
+                            MultiUnitRent."SL_End Date",
+                            MultiUnitRent."SL_Number of Days",
+                            MultiUnitRent."SL_Per Day Rent",
+                            MultiUnitRent."SL_Final Annual Amount",
+                            MultiUnitRent."SL_Final Annual Amount",
+                            TerminationDate,
+                            LineNo,
+                            PreviousMonthNo,
+                            PreviousYearNo,
+                            ContractStartDate,
+                            PreviousMonthEnd);
+                    end;
+                until MultiUnitRent.Next() = 0;
+            end;
+
+            // Check Merged Single Rent grid
+            MergedSingleRent.Reset();
+            MergedSingleRent.SetRange("Contract ID", ContractRec."Contract ID");
+            if MergedSingleRent.FindSet() then begin
+                repeat
+                    if (MergedSingleRent."MS_Start Date" <= PreviousMonthEnd) and (MergedSingleRent."MS_End Date" >= ContractStartDate) then begin
+                        InsertMissedAllocationLine(
+                            ContractRec,
+                            MergedSingleRent."MS_Start Date",
+                            MergedSingleRent."MS_End Date",
+                            MergedSingleRent."MS_Number of Days",
+                            MergedSingleRent."MS_Per Day Rent",
+                            MergedSingleRent."MS_Final Annual Amount",
+                            MergedSingleRent."MS_Final Annual Amount",
+                            TerminationDate,
+                            LineNo,
+                            PreviousMonthNo,
+                            PreviousYearNo,
+                            ContractStartDate,
+                            PreviousMonthEnd);
+                    end;
+                until MergedSingleRent.Next() = 0;
+            end;
+
+            // Check Merged Multi Rent grid
+            MergedMultiRent.Reset();
+            MergedMultiRent.SetRange("Contract ID", ContractRec."Contract ID");
+            if MergedMultiRent.FindSet() then begin
+                repeat
+                    if (MergedMultiRent."MD_Start Date" <= PreviousMonthEnd) and (MergedMultiRent."MD_End Date" >= ContractStartDate) then begin
+                        InsertMissedAllocationLine(
+                            ContractRec,
+                            MergedMultiRent."MD_Start Date",
+                            MergedMultiRent."MD_End Date",
+                            MergedMultiRent."MD_Number of Days",
+                            MergedMultiRent."MD_Per Day Rent",
+                            MergedMultiRent."MD_Final Annual Amount",
+                            MergedMultiRent."MD_Final Annual Amount",
+                            TerminationDate,
+                            LineNo,
+                            PreviousMonthNo,
+                            PreviousYearNo,
+                            ContractStartDate,
+                            PreviousMonthEnd);
+                    end;
+                until MergedMultiRent.Next() = 0;
+            end;
+
+            // Check Special Rent grid
+            SpecialRent.Reset();
+            SpecialRent.SetRange("Contract ID", ContractRec."Contract ID");
+            if SpecialRent.FindSet() then begin
+                repeat
+                    if (SpecialRent."ML_Start Date" <= PreviousMonthEnd) and (SpecialRent."ML_End Date" >= ContractStartDate) then begin
+                        InsertMissedAllocationLine(
+                            ContractRec,
+                            SpecialRent."ML_Start Date",
+                            SpecialRent."ML_End Date",
+                            SpecialRent."ML_Number of Days",
+                            SpecialRent."ML_Per Day Rent",
+                            SpecialRent."ML_Final Annual Amount",
+                            SpecialRent."ML_Final Annual Amount",
+                            TerminationDate,
+                            LineNo,
+                            PreviousMonthNo,
+                            PreviousYearNo,
+                            ContractStartDate,
+                            PreviousMonthEnd);
+                    end;
+                until SpecialRent.Next() = 0;
+            end;
+        end;
+    end;
+
+    // Helper procedure to insert missed allocation lines
+    procedure InsertMissedAllocationLine(
+     ContractRec: Record "Tenancy Contract";
+     MultiYearStartDate: Date;
+     MultiYearEndDate: Date;
+     NoOfDays: Integer;
+     PerDayRent: Decimal;
+     TotalAnnualAmount: Decimal;
+     OwnerShareAmount: Decimal;
+     TerminationDate: Date;
+     LineNo: Integer;
+     PreviousMonthNo: Integer;
+     PreviousYearNo: Integer;
+     ContractStartDate: Date;
+     PreviousMonthEnd: Date)
+    var
+        FilteredContractRec: Record "Revenue Allocation SubGrid";
+        SuspensionRec: Record SuspendReasonTable;
+        CalculatedDays: Integer;
+        NewLineNo: Integer;
+        PerDayRentWithoutGracePeriod: Decimal;
+        PerDayRentWithGracePeriod: Decimal;
+        TotalContractDays: Integer;
+        TotalContractDaysWithGrace: Integer;
+        DifferencePerDayRent: Decimal;
+        GracePeriodAdjustmentValue: Decimal;
+        GridAnnualAmount: Decimal;
+        MissedDays: Integer;
+    begin
+        // Calculate missed days
+        MissedDays := PreviousMonthEnd - ContractStartDate + 1;
+
+        // Get new line number
+        NewLineNo := GetNextLineNo();
+
+        // Use the annual amount from the grid record instead of the main contract
+        GridAnnualAmount := TotalAnnualAmount;
+
+        // Calculate Total Contract Days
+        TotalContractDays := MultiYearEndDate - MultiYearStartDate + 1;
+
+        // Calculate Total Contract Days (with grace period)
+        TotalContractDaysWithGrace := TotalContractDays + ContractRec."Grace Period";
+
+        // Calculate Per Day Rent without Grace Period (using grid's annual amount)
+        PerDayRentWithoutGracePeriod := Round(GridAnnualAmount / TotalContractDays);
+
+        // Calculate Per Day Rent with Grace Period (using grid's annual amount)
+        PerDayRentWithGracePeriod := Round(GridAnnualAmount / TotalContractDaysWithGrace);
+
+        // Calculate the difference per day
+        DifferencePerDayRent := PerDayRentWithoutGracePeriod - PerDayRentWithGracePeriod;
+
+        // Calculate total adjustment value for the missed days
+        GracePeriodAdjustmentValue := DifferencePerDayRent * MissedDays;
+
+        // -----------------------------------------------
+        // Insert missed allocation line (without grace period adjustment)
+        // -----------------------------------------------
+        FilteredContractRec.Init();
+        FilteredContractRec."Line No." := NewLineNo;
+        FilteredContractRec."Header No." := Rec."No.";
+        FilteredContractRec."Property Name" := ContractRec."Property Name";
+        FilteredContractRec."Contract Id" := ContractRec."Contract ID";
+        FilteredContractRec."Contract Tenure" := ContractRec."Contract Tenor";
+        FilteredContractRec."Customer Name" := ContractRec."Customer Name";
+        FilteredContractRec."Contract Start Date" := ContractRec."Contract Start Date";
+        FilteredContractRec."Contract End Date" := ContractRec."Contract End Date";
+        FilteredContractRec."Grace Days" := ContractRec."Grace Period";
+
+        // Add Termination Date
+        if TerminationDate = 0D then
+            FilteredContractRec."Termination Date" := 0D
+        else
+            FilteredContractRec."Termination Date" := TerminationDate;
+
+        SuspensionRec.Reset();
+        SuspensionRec.SetRange("Contract ID", ContractRec."Contract ID");
+        if SuspensionRec.FindFirst() then begin
+            FilteredContractRec."Suspension Start Date" := SuspensionRec.DateEffective;
+            FilteredContractRec."Suspension End Date" := SuspensionRec.SuspensionEndDate;
+        end;
+
+        FilteredContractRec."Multi Year Start Date" := MultiYearStartDate;
+        FilteredContractRec."Multi Year End Date" := MultiYearEndDate;
+        FilteredContractRec."No Of Days" := MissedDays;
+        FilteredContractRec."Per Day Rent" := Round(PerDayRent);
+        FilteredContractRec."Contract Amount" := GridAnnualAmount;
+        FilteredContractRec."Annual Amount" := ContractRec."Rent Amount";
+        FilteredContractRec."Total Value" := MissedDays * FilteredContractRec."Per Day Rent";
+        FilteredContractRec."Owner Share" := MissedDays * FilteredContractRec."Per Day Rent";
+        FilteredContractRec."Final Annual Amount" := TotalAnnualAmount;
+        FilteredContractRec."Posting Month" := PreviousMonthNo;
+        FilteredContractRec."Posting Year" := PreviousYearNo;
+        FilteredContractRec."Posting Period" := GetMonthName(PreviousMonthNo) + ' ' +
+            Format(PreviousYearNo) + ' ' + '-' + ' ' + GetMonthName(PreviousMonthNo) + ' ' + Format(PreviousYearNo);
+        FilteredContractRec."Owner Name" := ContractRec."Owner's Name";
+        FilteredContractRec.Insert();
+
+        // -----------------------------------------------
+        // Insert grace period adjustment line (negative allocation) for missed days
+        // -----------------------------------------------
+        // Only insert the adjustment line if there is a grace period
+        if ContractRec."Grace Period" > 0 then begin
+            NewLineNo := GetNextLineNo();
+
+            FilteredContractRec.Init();
+            FilteredContractRec."Line No." := NewLineNo;
+            FilteredContractRec."Header No." := Rec."No.";
+            FilteredContractRec."Property Name" := ContractRec."Property Name";
+            FilteredContractRec."Contract Id" := ContractRec."Contract ID";
+            FilteredContractRec."Contract Tenure" := ContractRec."Contract Tenor";
+            FilteredContractRec."Customer Name" := ContractRec."Customer Name";
+            FilteredContractRec."Contract Start Date" := ContractRec."Contract Start Date";
+            FilteredContractRec."Contract End Date" := ContractRec."Contract End Date";
+            FilteredContractRec."Grace Days" := ContractRec."Grace Period";
+
+            // Add Termination Date
+            if TerminationDate = 0D then
+                FilteredContractRec."Termination Date" := 0D
+            else
+                FilteredContractRec."Termination Date" := TerminationDate;
+
+            if SuspensionRec.FindFirst() then begin
+                FilteredContractRec."Suspension Start Date" := SuspensionRec.DateEffective;
+                FilteredContractRec."Suspension End Date" := SuspensionRec.SuspensionEndDate;
+            end;
+
+            FilteredContractRec."Multi Year Start Date" := MultiYearStartDate;
+            FilteredContractRec."Multi Year End Date" := MultiYearEndDate;
+            FilteredContractRec."No Of Days" := MissedDays;
+            FilteredContractRec."Per Day Rent" := -DifferencePerDayRent; // Negative value
+            FilteredContractRec."Contract Amount" := GridAnnualAmount;
+            FilteredContractRec."Annual Amount" := ContractRec."Rent Amount";
+            FilteredContractRec."Total Value" := -GracePeriodAdjustmentValue; // Negative adjustment
+            FilteredContractRec."Owner Share" := -GracePeriodAdjustmentValue; // Negative adjustment
+            FilteredContractRec."Final Annual Amount" := TotalAnnualAmount;
+            FilteredContractRec."Posting Month" := PreviousMonthNo;
+            FilteredContractRec."Posting Year" := PreviousYearNo;
+            FilteredContractRec."Posting Period" := GetMonthName(PreviousMonthNo) + ' ' +
+                Format(PreviousYearNo) + ' ' + '-' + ' ' + GetMonthName(PreviousMonthNo) + ' ' + Format(PreviousYearNo);
+            FilteredContractRec."Owner Name" := ContractRec."Owner's Name";
+            FilteredContractRec.Insert();
+        end;
+    end;
+
+    // Helper function to get month name from month number
+    procedure GetMonthName(MonthNo: Integer): Text
+    begin
+        case MonthNo of
+            1:
+                exit('January');
+            2:
+                exit('February');
+            3:
+                exit('March');
+            4:
+                exit('April');
+            5:
+                exit('May');
+            6:
+                exit('June');
+            7:
+                exit('July');
+            8:
+                exit('August');
+            9:
+                exit('September');
+            10:
+                exit('October');
+            11:
+                exit('November');
+            12:
+                exit('December');
+            else
+                exit(Format(MonthNo)); // Fallback to number if invalid
+        end;
+    end;
+
+
     //---------------Fetch Contracts--------------//
 
     // Then modify the FetchContracts procedure to use this
@@ -550,6 +905,11 @@ page 50122 "Revenue Allocation Card"
             repeat
                 if ((ContractRec."Contract Start Date" <= SelectedMonthEnd) and
                     (ContractRec."Contract End Date" >= SelectedMonthStart)) then begin
+
+                    // HANDLE MISSED ALLOCATION: Check for missed allocation from previous month
+                    HandleMissedAllocation(ContractRec, MonthNo, FinancialYear);
+
+                    // Continue with normal allocation process for current month
 
                     // Retrieve Termination Date from Final Calculation
                     FinalCalculationRec.Reset();
