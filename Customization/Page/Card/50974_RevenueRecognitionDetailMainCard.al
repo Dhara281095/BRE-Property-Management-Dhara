@@ -162,70 +162,70 @@ page 50974 "Revenue Recognition Detail Sub"
                     Editable = false;
                 }
             }
-            group(" ")
-            {
-                field("Total Amount"; totalamounts)
-                {
-                    ApplicationArea = All;
-                    Caption = 'Total Amount';
-                    Editable = false;
-                }
-                field("Total Contract Amount"; totalcontractAmounts)
-                {
-                    ApplicationArea = All;
-                    Caption = 'Total Contract Amount';
-                    Editable = false;
-                }
-            }
+            // group(" ")
+            // {
+            //     field("Total Amount"; totalamounts)
+            //     {
+            //         ApplicationArea = All;
+            //         Caption = 'Total Amount';
+            //         Editable = false;
+            //     }
+            //     field("Total Contract Amount"; totalcontractAmounts)
+            //     {
+            //         ApplicationArea = All;
+            //         Caption = 'Total Contract Amount';
+            //         Editable = false;
+            //     }
+            // }
 
-            group("Final Amount")
-            {
-                field("Total Amounts"; totalcombineamounts)
-                {
-                    ApplicationArea = All;
-                    Caption = 'Total Amount';
-                    Editable = false;
-                }
-                field("Total Contract Amounts"; totalcombinecontractAmounts)
-                {
-                    ApplicationArea = All;
-                    Caption = 'Total Contract Amount';
-                    Editable = false;
-                }
-            }
+            // group("Final Amount")
+            // {
+            //     field("Total Amounts"; totalcombineamounts)
+            //     {
+            //         ApplicationArea = All;
+            //         Caption = 'Total Amount';
+            //         Editable = false;
+            //     }
+            //     field("Total Contract Amounts"; totalcombinecontractAmounts)
+            //     {
+            //         ApplicationArea = All;
+            //         Caption = 'Total Contract Amount';
+            //         Editable = false;
+            //     }
+            // }
         }
     }
 
 
-    procedure CalculateAndStoreTotalRevenue()
-    var
-        revenueItemLine: Record "Revenue Recognition Details";
-        revenueAllocLine: Record "Revenue Allocation Subgrid";
-    begin
-        Clear(totalcontractAmounts);
-        Clear(totalamounts);
+    // procedure CalculateAndStoreTotalRevenue()
+    // var
+    //     revenueItemLine: Record "Revenue Recognition Details";
+    //     revenueAllocLine: Record "Revenue Allocation Subgrid";
+    // begin
+    //     Clear(totalcontractAmounts);
+    //     Clear(totalamounts);
 
-        revenueItemLine.SetRange("RR_No.", RRID);
-        if revenueItemLine.FindSet() then
-            repeat
-                totalcontractAmounts += revenueItemLine."Contract Amount";
-                totalamounts += revenueItemLine."Total Value";
-            until revenueItemLine.Next() = 0;
-
-
-        revenueAllocLine.SetRange("Header No.", RRID);
-        if revenueAllocLine.FindSet() then
-            repeat
-                totalcontractAmount += revenueAllocLine."Contract Amount";
-                totalamount += revenueAllocLine."Total Value";
-                totalannualamount += revenueAllocLine."Annual Amount";
-                totalfinalannualamount += revenueAllocLine."Final Annual Amount";
-            until revenueAllocLine.Next() = 0;
+    //     revenueItemLine.SetRange("RR_No.", RRID);
+    //     if revenueItemLine.FindSet() then
+    //         repeat
+    //             totalcontractAmounts += revenueItemLine."Contract Amount";
+    //             totalamounts += revenueItemLine."Total Value";
+    //         until revenueItemLine.Next() = 0;
 
 
-        totalcombinecontractAmounts := totalcontractAmount + totalcontractAmounts;
-        totalcombineamounts := totalamount + totalamounts;
-    end;
+    //     revenueAllocLine.SetRange("Header No.", RRID);
+    //     if revenueAllocLine.FindSet() then
+    //         repeat
+    //             totalcontractAmount += revenueAllocLine."Contract Amount";
+    //             totalamount += revenueAllocLine."Total Value";
+    //             totalannualamount += revenueAllocLine."Annual Amount";
+    //             totalfinalannualamount += revenueAllocLine."Final Annual Amount";
+    //         until revenueAllocLine.Next() = 0;
+
+
+    //     totalcombinecontractAmounts := totalcontractAmount + totalcontractAmounts;
+    //     totalcombineamounts := totalamount + totalamounts;
+    // end;
 
     procedure SetRIID(pRRID: Integer)
     begin
@@ -238,25 +238,25 @@ page 50974 "Revenue Recognition Detail Sub"
     begin
 
         Rec."RR_No." := RRID;
-        CalculateAndStoreTotalRevenue();
+        // CalculateAndStoreTotalRevenue();
     end;
 
-    trigger OnAfterGetCurrRecord()
-    begin
-        CalculateAndStoreTotalRevenue();
-    end;
+    // trigger OnAfterGetCurrRecord()
+    // begin
+    //     CalculateAndStoreTotalRevenue();
+    // end;
 
     var
         RRID: Integer;
 
-        totalcontractAmount: Decimal;
-        totalamount: Decimal;
-        totalannualamount: Decimal;
-        totalfinalannualamount: Decimal;
+    //     totalcontractAmount: Decimal;
+    //     totalamount: Decimal;
+    //     totalannualamount: Decimal;
+    //     totalfinalannualamount: Decimal;
 
-        totalcontractAmounts: Decimal;
-        totalamounts: Decimal;
+    //     totalcontractAmounts: Decimal;
+    //     totalamounts: Decimal;
 
-        totalcombinecontractAmounts: Decimal;
-        totalcombineamounts: Decimal;
+    //     totalcombinecontractAmounts: Decimal;
+    //     totalcombineamounts: Decimal;
 }

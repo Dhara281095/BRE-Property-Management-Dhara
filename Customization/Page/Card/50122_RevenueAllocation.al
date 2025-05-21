@@ -92,6 +92,23 @@ page 50122 "Revenue Allocation Card"
             }
             group(" ")
             {
+                field("Total Amount"; totalamounts)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Amount';
+                    Editable = false;
+                }
+                field("Total Contract Amount"; totalcontractAmounts)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Contract Amount';
+                    Editable = false;
+                }
+            }
+            group("Final Amount")
+            {
+                Caption = 'Final Amount';
+
                 field(TotalAnnualAmounts; TotalAnnualAmount)
                 {
                     Caption = 'Total Annual Amount';
@@ -103,6 +120,18 @@ page 50122 "Revenue Allocation Card"
                     Caption = 'Total Final Annual Amount';
                     Editable = false;
                     ApplicationArea = All;
+                }
+                field("Total Amounts"; totalcombineamounts)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Amount';
+                    Editable = false;
+                }
+                field("Total Contract Amounts"; totalcombinecontractAmounts)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Total Contract Amount';
+                    Editable = false;
                 }
             }
         }
@@ -1045,6 +1074,55 @@ page 50122 "Revenue Allocation Card"
         CalculateTotals();
     end;
 
+    procedure CalculateAndStoreTotalRevenue()
+    var
+        revenueItemLine: Record "Revenue Recognition Details";
+        revenueAllocLine: Record "Revenue Allocation Subgrid";
+    begin
+        Clear(totalcontractAmounts);
+        Clear(totalamounts);
+
+        revenueItemLine.SetRange("RR_No.", Rec."No.");
+        if revenueItemLine.FindSet() then
+            repeat
+                totalcontractAmounts += revenueItemLine."Contract Amount";
+                totalamounts += revenueItemLine."Total Value";
+            until revenueItemLine.Next() = 0;
+
+
+        revenueAllocLine.SetRange("Header No.", Rec."No.");
+        if revenueAllocLine.FindSet() then
+            repeat
+                totalcontractAmountsss += revenueAllocLine."Contract Amount";
+                totalamountsss += revenueAllocLine."Total Value";
+                totalannualamountsss += revenueAllocLine."Annual Amount";
+                totalfinalannualamountsss += revenueAllocLine."Final Annual Amount";
+            until revenueAllocLine.Next() = 0;
+
+
+        totalcombinecontractAmounts := totalcontractAmountsss + totalcontractAmounts;
+        totalcombineamounts := totalamountsss + totalamounts;
+    end;
+
+    trigger OnAfterGetCurrRecord()
+    begin
+        CalculateAndStoreTotalRevenue();
+    end;
+
+
+    var
+
+        totalcontractAmountsss: Decimal;
+        totalamountsss: Decimal;
+        totalannualamountsss: Decimal;
+        totalfinalannualamountsss: Decimal;
+
+        totalcontractAmounts: Decimal;
+        totalamounts: Decimal;
+
+        totalcombinecontractAmounts: Decimal;
+        totalcombineamounts: Decimal;
+
     // trigger OnAfterGetRecord()
     // begin
     //     CurrPage."Revenue Recognition Item Details".Page.SetRIID(Rec."No.");
@@ -1062,5 +1140,6 @@ page 50122 "Revenue Allocation Card"
     begin
         CurrPage."Revenue Recognition Item Details".Page.SetRIID(Rec."No.");
         CurrPage."Revenue Recognition Details".Page.SetRIID(Rec."No.");
+        CalculateAndStoreTotalRevenue();
     end;
 }
