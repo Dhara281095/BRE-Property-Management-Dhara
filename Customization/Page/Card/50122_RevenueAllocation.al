@@ -162,20 +162,21 @@ page 50122 "Revenue Allocation Card"
                         // Modify existing approval record
                         Approvalrevenueallocation."ID" := Rec."No.";
                         Approvalrevenueallocation."Month" := revenueallocation."Month";
+                        Approvalrevenueallocation."Financial Year" := Rec."Financial Year";
                         Approvalrevenueallocation."Status" := revenueallocation."Status";
-                        Approvalrevenueallocation."Financial Year" := revenueallocation."Financial Year";
                         Approvalrevenueallocation.Modify();
                         Message('Approval Request Modified successfully!');
                     end else begin
                         // Insert new approval record
                         Approvalrevenueallocation.Init();
                         Approvalrevenueallocation."ID" := Rec."No.";
+                        Approvalrevenueallocation."Financial Year" := Rec."Financial Year";
                         Approvalrevenueallocation."Month" := revenueallocation."Month";
                         Approvalrevenueallocation."Status" := revenueallocation."Status";
-                        Approvalrevenueallocation."Financial Year" := revenueallocation."Financial Year";
+
                         Approvalrevenueallocation.Insert();
+                        Message('Approval Request Sent successfully!');
                     end;
-                    Message('Approval Request Sent successfully!');
                 end;
             }
         }

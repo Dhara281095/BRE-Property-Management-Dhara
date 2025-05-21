@@ -397,10 +397,11 @@ page 50973 "Revenue Recognition Item Sub"
     begin
         Rec."RR_No." := RRID;
         exit(true);
+        CalculateAndStoreTotalRevenue();
     end;
 
     trigger OnAfterGetRecord()
     begin
-        CalculateAndStoreTotalRevenue();
+        // CalculateAndStoreTotalRevenue();
     end;
 }
