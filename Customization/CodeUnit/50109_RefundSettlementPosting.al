@@ -89,13 +89,7 @@ codeunit 50109 "Refund Settlement Posting Mgt."
             TenantReceivableAccount := customer."No.";
         end;
 
-        BankAccount.SetRange("Search Name", FinalSettlementRefund."Deposit Bank");
-        if BankAccount.FindSet()
-        then begin
-            BankCashAccount := BankAccount."No.";
-            // BankCashAccount := BankAccount."Bank Account No.";
-        end else
-            BankCashAccount := '3001'; // Default to Cash G/L Account if not found
+
         // Generate Document No
         DocNo := 'RFND-' + Format(FinalSettlementRefund."Contract ID") + '-' + Format(FinalSettlementRefund."FC ID");
 
@@ -123,8 +117,18 @@ codeunit 50109 "Refund Settlement Posting Mgt."
             GenJnlLine."Account Type" := GenJnlLine."Account Type"::"G/L Account";
             GenJnlLine."Account No." := RefundOtherDepositGL;
             GenJnlLine.Validate(Amount, Round(appliedamount));
-            GenJnlLine."Bal. Account Type" := GenJnlLine."Bal. Account Type"::"Bank Account";
-            GenJnlLine."Bal. Account No." := BankCashAccount;
+            BankAccount.Reset();
+            BankAccount.SetRange("Search Name", FinalSettlementRefund."Deposit Bank");
+            if BankAccount.FindSet()
+            then begin
+                GenJnlLine."Bal. Account Type" := GenJnlLine."Account Type"::"Bank Account";
+                GenJnlLine."Bal. Account No." := BankAccount."No.";
+                // BankCashAccount := BankAccount."Bank Account No.";
+            end else begin
+                GenJnlLine."Bal. Account Type" := GenJnlLine."Account Type"::"G/L Account";
+                GenJnlLine."Bal. Account No." := '3001'; // Default to Cash G/L Account if not found
+            end;
+
             GenJnlLine.Insert(true);
             NetRefundToTenant -= AppliedAmount;
             adjustotherDeposit -= AppliedAmount;
@@ -146,8 +150,17 @@ codeunit 50109 "Refund Settlement Posting Mgt."
             GenJnlLine."Account Type" := GenJnlLine."Account Type"::"G/L Account";
             GenJnlLine."Account No." := RefundChillerDepositGL;
             GenJnlLine.Validate(Amount, Round(appliedamount));
-            GenJnlLine."Bal. Account Type" := GenJnlLine."Bal. Account Type"::"Bank Account";
-            GenJnlLine."Bal. Account No." := BankCashAccount;
+            BankAccount.Reset();
+            BankAccount.SetRange("Search Name", FinalSettlementRefund."Deposit Bank");
+            if BankAccount.FindSet()
+            then begin
+                GenJnlLine."Bal. Account Type" := GenJnlLine."Account Type"::"Bank Account";
+                GenJnlLine."Bal. Account No." := BankAccount."No.";
+                // BankCashAccount := BankAccount."Bank Account No.";
+            end else begin
+                GenJnlLine."Bal. Account Type" := GenJnlLine."Account Type"::"G/L Account";
+                GenJnlLine."Bal. Account No." := '3001'; // Default to Cash G/L Account if not found
+            end;
             GenJnlLine.Insert(true);
             NetRefundToTenant -= AppliedAmount;
             adjustChillerDeposit -= AppliedAmount;
@@ -170,8 +183,17 @@ codeunit 50109 "Refund Settlement Posting Mgt."
             GenJnlLine."Account Type" := GenJnlLine."Account Type"::"G/L Account";
             GenJnlLine."Account No." := RefundSecurityDepositGL;
             GenJnlLine.Validate(Amount, Round(appliedamount));
-            GenJnlLine."Bal. Account Type" := GenJnlLine."Bal. Account Type"::"Bank Account";
-            GenJnlLine."Bal. Account No." := BankCashAccount;
+            BankAccount.Reset();
+            BankAccount.SetRange("Search Name", FinalSettlementRefund."Deposit Bank");
+            if BankAccount.FindSet()
+            then begin
+                GenJnlLine."Bal. Account Type" := GenJnlLine."Account Type"::"Bank Account";
+                GenJnlLine."Bal. Account No." := BankAccount."No.";
+                // BankCashAccount := BankAccount."Bank Account No.";
+            end else begin
+                GenJnlLine."Bal. Account Type" := GenJnlLine."Account Type"::"G/L Account";
+                GenJnlLine."Bal. Account No." := '3001'; // Default to Cash G/L Account if not found
+            end;
             GenJnlLine.Insert(true);
             NetRefundToTenant -= AppliedAmount;
             adjustsecurityDeposit -= AppliedAmount;
@@ -193,8 +215,17 @@ codeunit 50109 "Refund Settlement Posting Mgt."
                 GenJnlLine."Account Type" := GenJnlLine."Account Type"::Customer;
                 GenJnlLine."Account No." := TenantReceivableAccount;
                 GenJnlLine.Validate(Amount, Round(appliedamount));
-                GenJnlLine."Bal. Account Type" := GenJnlLine."Bal. Account Type"::"Bank Account";
-                GenJnlLine."Bal. Account No." := BankCashAccount;
+                BankAccount.Reset();
+                BankAccount.SetRange("Search Name", FinalSettlementRefund."Deposit Bank");
+                if BankAccount.FindSet()
+                then begin
+                    GenJnlLine."Bal. Account Type" := GenJnlLine."Account Type"::"Bank Account";
+                    GenJnlLine."Bal. Account No." := BankAccount."No.";
+                    // BankCashAccount := BankAccount."Bank Account No.";
+                end else begin
+                    GenJnlLine."Bal. Account Type" := GenJnlLine."Account Type"::"G/L Account";
+                    GenJnlLine."Bal. Account No." := '3001'; // Default to Cash G/L Account if not found
+                end;
 
                 GenJnlLine.Insert(true);
                 NetRefundToTenant -= AppliedAmount;

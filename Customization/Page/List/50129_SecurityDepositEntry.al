@@ -114,9 +114,6 @@ page 50129 "Security Deposit Entries"
                         Error('This entry is already approved');
 
                     if Confirm('Do you want to approve this entry?', true) then begin
-                        // Update entry status
-                        Rec.Status := Rec.Status::Approved;
-                        Rec.Modify();
 
                         // Update main record status
                         if AdjustSecurityDeposit.Get(Rec."Security Deposit ID") then begin
@@ -232,6 +229,7 @@ page 50129 "Security Deposit Entries"
                                     SummeryNetAmount := FinaCalculation."Total Receive" + ABS(PendingReceivableGrid."Total Receivable");
                                     FinaCalculation."Summery Net Balance" := SummeryNetAmount;
                                     FinaCalculation."Net Receivable From The Tenant" := SummeryNetAmount;
+                                    FinaCalculation."Amount Refundable" := 0;
                                 end
 
                                 // Scenario 2: Both are Refund
@@ -239,6 +237,7 @@ page 50129 "Security Deposit Entries"
                                     SummeryNetAmount := FinaCalculation."Total Refund" + ABS(PendingReceivableGrid."Total Refundable");
                                     FinaCalculation."Summery Net Balance" := SummeryNetAmount;
                                     FinaCalculation."Amount Refundable" := FinaCalculation."Summery Net Balance";
+                                    FinaCalculation."Net Receivable From The Tenant" := 0;
                                 end
 
                                 // Scenario 3: Refund (500) - Receivable (300) => 200 Amount Refundable
@@ -324,6 +323,9 @@ page 50129 "Security Deposit Entries"
                         end;
                         AdditinalchargescashReceipt();
                         Message('Entry has been approved successfully!');
+                        // Update entry status
+                        Rec.Status := Rec.Status::Approved;
+                        Rec.Modify();
                     end else
                         exit;
 

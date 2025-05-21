@@ -45,6 +45,8 @@ page 50505 "Azure Configuration"
                 Caption = 'Save SAS URL';
                 ApplicationArea = All;
                 Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
                 trigger OnAction()
                 begin
                     Commit();
