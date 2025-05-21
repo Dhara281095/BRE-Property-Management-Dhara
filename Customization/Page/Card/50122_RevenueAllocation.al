@@ -90,6 +90,21 @@ page 50122 "Revenue Allocation Card"
                     SubPageLink = "RR_No." = field("No.");
                 }
             }
+            group(" ")
+            {
+                field(TotalAnnualAmounts; TotalAnnualAmount)
+                {
+                    Caption = 'Total Annual Amount';
+                    Editable = false;
+                    ApplicationArea = All;
+                }
+                field(TotalFinalAnnualAmounts; TotalFinalAnnualAmount)
+                {
+                    Caption = 'Total Final Annual Amount';
+                    Editable = false;
+                    ApplicationArea = All;
+                }
+            }
         }
     }
 
