@@ -715,7 +715,9 @@ page 50928 "Payment Mode Card2"
         if PermissionSet.FindSet() then begin
             if PermissionSet."Profile ID" = 'LEASE_MANAGER' then
                 IsLeaseManager := true;
-        end;
+            if PermissionSet."Profile ID" = 'FINANCE MANAGER' then
+                IsFinanceManager := true;
+        end
         // else if PermissionSet."Profile ID" = 'FINANCE MANAGER' then
         //         IsFinanceManager := true;
        

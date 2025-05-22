@@ -419,14 +419,14 @@ page 50129 "Security Deposit Entries"
         JournalTemplateName := 'CASH RECE';
         JournalBatchName := 'DEFAULT';
 
-        if not GenJnlTemplate.Get(JournalTemplateName) then
-            Error('The Journal Template %1 does not exist.', JournalTemplateName);
+        // if not GenJnlTemplate.Get(JournalTemplateName) then
+        //     Error('The Journal Template %1 does not exist.', JournalTemplateName);
 
-        GenJnlBatch.Reset();
-        GenJnlBatch.SetRange("Journal Template Name", JournalTemplateName);
-        GenJnlBatch.SetRange(Name, JournalBatchName);
-        if not GenJnlBatch.FindFirst() then
-            Error('The Journal Batch %1 does not exist for template %2.', JournalBatchName, JournalTemplateName);
+        // GenJnlBatch.Reset();
+        // GenJnlBatch.SetRange("Journal Template Name", JournalTemplateName);
+        // GenJnlBatch.SetRange(Name, JournalBatchName);
+        // if not GenJnlBatch.FindFirst() then
+        //     Error('The Journal Batch %1 does not exist for template %2.', JournalBatchName, JournalTemplateName);
 
         PostingDate := Today();
         DocumentNo := 'REFUND-' + Format(Rec."Contract ID");
