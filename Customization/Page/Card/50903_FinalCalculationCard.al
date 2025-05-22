@@ -965,7 +965,7 @@ page 50903 "Final Calculation Card"
         CurrPage."FinalSettelemtss".Page.SetContractID(Rec."Contract ID");
         // FetchSecurityDepositInfo();
         // UpdateTotalClaim(); // Add this line to calculate the total
-
+        FinalSettlementVisible();
         if Rec."Amount Refundable" <> 0 then
             IsRefundable := true
         else
@@ -989,7 +989,7 @@ page 50903 "Final Calculation Card"
         CurrPage."FinalSettelemtss".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."FinalSettelemtss".Page.SetContractID(Rec."Contract ID");
         // UpdateTotalClaim(); // Add this line to calculate the total
-
+        FinalSettlementVisible();
         if Rec."Amount Refundable" <> 0 then
             IsRefundable := true
         else
@@ -1011,7 +1011,7 @@ page 50903 "Final Calculation Card"
         CurrPage."FinalSettelemts".Page.SetContractID(Rec."Contract ID");
         CurrPage."FinalSettelemtss".Page.SetTenantID(Rec."Tenant ID");
         CurrPage."FinalSettelemtss".Page.SetContractID(Rec."Contract ID");
-
+        FinalSettlementVisible();
         if Rec."Amount Refundable" <> 0 then
             IsRefundable := true
         else
