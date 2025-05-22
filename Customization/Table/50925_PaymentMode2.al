@@ -199,6 +199,7 @@ table 50925 "Payment Mode2"
                 OutStream: OutStream;
                 documentattachment: Codeunit UploadAttachment;
                 paymentmode2Grid: Record "Payment Mode2";
+                paymentschedule2: Record "Payment Schedule2";
                 CashReceiptJournalCodeunit: Codeunit 50514;
             begin
                 if Rec."Payment Status" = Rec."Payment Status"::Received then begin
@@ -252,6 +253,17 @@ table 50925 "Payment Mode2"
                         Rec."View Invoice" := FileName;
                         Rec."View Reciept document URL" := UploadResult;
                         Rec.Modify();
+
+                        paymentschedule2.SetRange("payment Series", Rec."Payment Series");
+                        paymentschedule2.SetRange("Contract ID", Rec."Contract ID");
+                        if paymentschedule2.FindSet() then begin
+                            repeat
+                                paymentschedule2."Payment Status" := Format(Rec."Payment Status");
+                                paymentschedule2.Modify();
+                            until paymentschedule2.Next() = 0;
+
+                        end;
+
 
 
                     end;

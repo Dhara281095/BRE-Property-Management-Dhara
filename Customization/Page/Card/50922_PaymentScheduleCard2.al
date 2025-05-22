@@ -299,6 +299,12 @@ page 50922 "Payment Schedule Card2"
     var
         InvoicedField: Boolean;
 
+    trigger OnModifyRecord(): Boolean
+
+    begin
+        UpdateBalanceAmountOnPaymentReceived();
+
+    end;
 
 
     local procedure UpdateBalanceAmountOnPaymentReceived()
