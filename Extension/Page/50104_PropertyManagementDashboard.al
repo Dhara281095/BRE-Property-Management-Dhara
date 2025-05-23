@@ -69,6 +69,63 @@ pageextension 50104 "MyRoleCenterExtension" extends "Business Manager Role Cente
                     ApplicationArea = Basic, Suite;
                     RunObject = Page "Customer List";
                 }
+
+                action(UOM)
+                {
+                    Caption = 'Unit of Measure';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Units of Measure";
+                }
+                action(PrimaryItemList)
+                {
+                    Caption = 'Primary Items';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Primary Item List";
+                }
+
+                action(SecondaryItemList)
+                {
+                    Caption = 'Secondary Items';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Secondary Item List";
+                }
+
+                action(CategoryList)
+                {
+                    Caption = 'Categories';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Category List";
+                }
+
+                action(BankAccountList)
+                {
+                    Caption = 'Bank Accounts';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Bank Account List";
+                }
+
+                action(PaymentTypeList)
+                {
+                    Caption = 'Payment Types';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Payment Type List";
+                }
+
+                action(VendorCategoryList)
+                {
+                    Caption = 'Vendor Categories';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Vendor Category List";
+                }
+
+                action(CalculationTypeList)
+                {
+                    Caption = 'Calculation Types';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Calculation Type List";
+                }
+
+
                 action(PeopertyRegistration)
                 {
                     Caption = ' Property Registrations';
@@ -112,6 +169,14 @@ pageextension 50104 "MyRoleCenterExtension" extends "Business Manager Role Cente
                     ApplicationArea = Basic, Suite;
                     RunObject = Page "Rent Calculation List";
                 }
+
+                action(Paymentschedule)
+                {
+                    Caption = 'Payment Schedule';
+                    ApplicationArea = Basic, Suite;
+                    RunObject = Page "Payment Schedule List";
+                }
+
                 action(PaymentMode)
                 {
                     Caption = 'Payment Mode';

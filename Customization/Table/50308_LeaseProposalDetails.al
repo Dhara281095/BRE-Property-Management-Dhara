@@ -560,7 +560,7 @@ table 50308 "Lease Proposal Details"
                         "Base Unit of Measure" := MergedUnitRec."Base Unit of Measure";
                         "Usage Type" := MergedUnitRec."Property Type";
                         "Unit Size" := MergedUnitRec."Unit Size";
-                        "Rent Amount" := MergedUnitRec."Amount";
+                        // "Rent Amount" := MergedUnitRec."Amount";
                         "Market Rate per Sq. Ft." := MergedUnitRec."Market Rate per Square";
                         "Single Unit Name" := MergedUnitRec."Single Unit Name";
                         "Unit Number" := MergedUnitRec."Unit Number";

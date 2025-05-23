@@ -30,8 +30,8 @@ page 50302 "Secondary Classification Card"
                 field("Property Type"; Rec."Property Type")
                 {
                     ApplicationArea = All;
-                    Caption = 'Property Type';
-                    ToolTip = 'Enter the property type.';
+                    Caption = 'Unit Type';
+                    ToolTip = 'Enter the Unit Type.';
                 }
             }
         }
