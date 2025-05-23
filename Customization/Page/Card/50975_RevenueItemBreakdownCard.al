@@ -133,6 +133,7 @@ page 50975 "Revenue Item Breakdown Card"
 
                                 // Insert record
                                 BreakdownRec.Insert();
+                                Clear(BreakdownRec);
                             end;
                         until RevenueStruct.Next() = 0;
 
@@ -442,6 +443,11 @@ page 50975 "Revenue Item Breakdown Card"
     trigger OnAfterGetRecord()
     begin
         CurrPage."Revenue Item Breakdown Details".Page.SetRIID(Rec."RI_No.");
+        // CalculateAndStoreTotalRevenue();
+    end;
+
+    trigger OnAfterGetCurrRecord()
+    begin
         CalculateAndStoreTotalRevenue();
     end;
 
