@@ -49,6 +49,14 @@ page 50123 "Revenue Allocation SubGrid"
                 {
                     ApplicationArea = All;
                 }
+                field("Grace Start Date"; Rec."Grace Start Date")
+                {
+                    ApplicationArea = All;
+                }
+                field("Grace End Date"; Rec."Grace End Date")
+                {
+                    ApplicationArea = All;
+                }
                 field("Termination Date"; Rec."Termination Date")
                 {
                     ApplicationArea = All;

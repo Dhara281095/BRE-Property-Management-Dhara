@@ -157,6 +157,18 @@ table 50110 "Revenue Allocation SubGrid"
             Caption = 'Final Annual Amount';
             Editable = false;
         }
+        field(50125; "Grace Start Date"; Date)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Grace Start Date';
+            Editable = false;
+        }
+        field(50126; "Grace End Date"; Date)
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Grace End Date';
+            Editable = false;
+        }
 
     }
 
