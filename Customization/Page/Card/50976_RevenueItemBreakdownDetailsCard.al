@@ -15,6 +15,7 @@ page 50976 "Revenue Item Breakdown Sub"
                 {
                     ApplicationArea = All;
                     Caption = 'Entry No.';
+                    Visible = false;
                 }
                 field("RI_No."; Rec."RI_No.")
                 {
@@ -129,10 +130,10 @@ page 50976 "Revenue Item Breakdown Sub"
                 //     Caption = 'Posting Period';
                 //     Editable = false;
                 // }
-                field("No Of Days"; Rec."No Of Days")
+                field("No Of Days"; Rec."Total No Of Days")
                 {
                     ApplicationArea = All;
-                    Caption = 'No Of Days';
+                    Caption = 'Total No Of Days';
                     Editable = false;
                 }
                 field("Per Day Amount"; Rec."Per Day Amount")
@@ -160,15 +161,15 @@ page 50976 "Revenue Item Breakdown Sub"
                     Editable = false;
                 }
             }
-            group(" ")
-            {
-                field("Total Amount"; Rec."Total Amount")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Total Amount';
-                    Editable = false;
-                }
-            }
+            // group(" ")
+            // {
+            //     field("Total Amount"; Rec."Total Amount")
+            //     {
+            //         ApplicationArea = All;
+            //         Caption = 'Total Amount';
+            //         Editable = false;
+            //     }
+            // }
         }
     }
 
