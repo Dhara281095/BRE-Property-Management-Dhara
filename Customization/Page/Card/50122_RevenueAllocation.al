@@ -400,6 +400,9 @@ page 50122 "Revenue Allocation Card"
     //---------------Insert Allocation Line--------------//
 
     // Helper procedure to insert allocation line
+
+    // Modified InsertAllocationLine procedure with grace period date check
+    // Modified InsertAllocationLine procedure with grace period date check
     procedure InsertAllocationLine(
      ContractRec: Record "Tenancy Contract";
      MultiYearStartDate: Date;
@@ -424,10 +427,32 @@ page 50122 "Revenue Allocation Card"
         DifferencePerDayRent: Decimal;
         GracePeriodAdjustmentValue: Decimal;
         GridAnnualAmount: Decimal;
+        // New variables for grace period date check
+        GraceStartDate: Date;
+        GraceEndDate: Date;
+        SelectedMonthStart: Date;
+        SelectedMonthEnd: Date;
+        ShouldInsertGraceLine: Boolean;
     begin
         // Check if entry should be kept based on date range
         if not ShouldKeepEntry(MultiYearStartDate, MultiYearEndDate) then
             exit;
+
+        // Calculate selected month date range
+        SelectedMonthStart := DMY2Date(1, MonthNo, FinancialYear);
+        SelectedMonthEnd := CALCDATE('<+1M-1D>', SelectedMonthStart);
+
+        // Calculate grace period dates
+        GraceStartDate := ContractRec."Grace Start Date";
+        GraceEndDate := ContractRec."Grace End Date";
+
+        // Check if grace period falls within selected month
+        // Grace period should be inserted only if grace start date and grace end date 
+        // overlap with the selected month
+        ShouldInsertGraceLine := (ContractRec."Grace Period" > 0) and
+                                (GraceStartDate <> 0D) and (GraceEndDate <> 0D) and
+                                (GraceStartDate <= SelectedMonthEnd) and
+                                (GraceEndDate >= SelectedMonthStart);
 
         // Get new line number
         NewLineNo := GetNextLineNo();
@@ -476,6 +501,8 @@ page 50122 "Revenue Allocation Card"
         FilteredContractRec."Contract Start Date" := ContractRec."Contract Start Date";
         FilteredContractRec."Contract End Date" := ContractRec."Contract End Date";
         FilteredContractRec."Grace Days" := ContractRec."Grace Period";
+        FilteredContractRec."Grace Start Date" := ContractRec."Grace Start Date";
+        FilteredContractRec."Grace End Date" := ContractRec."Grace End Date";
 
         // Add Termination Date
         if TerminationDate = 0D then
@@ -494,8 +521,8 @@ page 50122 "Revenue Allocation Card"
         FilteredContractRec."Multi Year End Date" := MultiYearEndDate;
         FilteredContractRec."No Of Days" := CalculatedDays;
         FilteredContractRec."Per Day Rent" := Round(PerDayRent); // Use the per day rent passed from the grid
-        FilteredContractRec."Contract Amount" := GridAnnualAmount; // Use grid's annual amount
-        FilteredContractRec."Annual Amount" := ContractRec."Rent Amount";
+        FilteredContractRec."Contract Amount" := ContractRec."Annual Rent Amount"; // Use grid's annual amount
+        FilteredContractRec."Annual Amount" := GridAnnualAmount;
         FilteredContractRec."Total Value" := CalculatedDays * FilteredContractRec."Per Day Rent";
         FilteredContractRec."Owner Share" := CalculatedDays * FilteredContractRec."Per Day Rent";
         FilteredContractRec."Final Annual Amount" := TotalAnnualAmount;
@@ -509,9 +536,9 @@ page 50122 "Revenue Allocation Card"
 
         // -----------------------------------------------
         // Insert grace period adjustment line (negative allocation)
+        // Only if grace period dates fall within selected month
         // -----------------------------------------------
-        // Only insert the adjustment line if there is a grace period
-        if ContractRec."Grace Period" > 0 then begin
+        if ShouldInsertGraceLine then begin
             NewLineNo := GetNextLineNo();
 
             FilteredContractRec.Init();
@@ -524,6 +551,8 @@ page 50122 "Revenue Allocation Card"
             FilteredContractRec."Contract Start Date" := ContractRec."Contract Start Date";
             FilteredContractRec."Contract End Date" := ContractRec."Contract End Date";
             FilteredContractRec."Grace Days" := ContractRec."Grace Period";
+            FilteredContractRec."Grace Start Date" := ContractRec."Grace Start Date";
+            FilteredContractRec."Grace End Date" := ContractRec."Grace End Date";
 
             // Add Termination Date
             if TerminationDate = 0D then
@@ -540,8 +569,8 @@ page 50122 "Revenue Allocation Card"
             FilteredContractRec."Multi Year End Date" := MultiYearEndDate;
             FilteredContractRec."No Of Days" := CalculatedDays;
             FilteredContractRec."Per Day Rent" := -DifferencePerDayRent; // Negative value
-            FilteredContractRec."Contract Amount" := GridAnnualAmount; // Use grid's annual amount
-            FilteredContractRec."Annual Amount" := ContractRec."Rent Amount";
+            FilteredContractRec."Contract Amount" := ContractRec."Annual Rent Amount"; // Use grid's annual amount
+            FilteredContractRec."Annual Amount" := GridAnnualAmount;
             FilteredContractRec."Total Value" := -GracePeriodAdjustmentValue; // Negative adjustment
             FilteredContractRec."Owner Share" := -GracePeriodAdjustmentValue; // Negative adjustment
             FilteredContractRec."Final Annual Amount" := TotalAnnualAmount;
@@ -734,6 +763,7 @@ page 50122 "Revenue Allocation Card"
     end;
 
     // Helper procedure to insert missed allocation lines
+    // Helper procedure to insert missed allocation lines
     procedure InsertMissedAllocationLine(
      ContractRec: Record "Tenancy Contract";
      MultiYearStartDate: Date;
@@ -761,6 +791,10 @@ page 50122 "Revenue Allocation Card"
         GracePeriodAdjustmentValue: Decimal;
         GridAnnualAmount: Decimal;
         MissedDays: Integer;
+        // New variables for grace period date check
+        GraceStartDate: Date;
+        GraceEndDate: Date;
+        ShouldInsertGraceLine: Boolean;
     begin
         // Calculate missed days
         MissedDays := PreviousMonthEnd - ContractStartDate + 1;
@@ -789,6 +823,18 @@ page 50122 "Revenue Allocation Card"
         // Calculate total adjustment value for the missed days
         GracePeriodAdjustmentValue := DifferencePerDayRent * MissedDays;
 
+        // Calculate grace period dates
+        GraceStartDate := ContractRec."Grace Start Date";
+        GraceEndDate := ContractRec."Grace End Date";
+
+        // Check if grace period falls within missed allocation period
+        // Grace period should be inserted only if grace start date and grace end date 
+        // overlap with the missed allocation period (contract start date to previous month end)
+        ShouldInsertGraceLine := (ContractRec."Grace Period" > 0) and
+                                (GraceStartDate <> 0D) and (GraceEndDate <> 0D) and
+                                (GraceStartDate <= PreviousMonthEnd) and
+                                (GraceEndDate >= ContractStartDate);
+
         // -----------------------------------------------
         // Insert missed allocation line (without grace period adjustment)
         // -----------------------------------------------
@@ -802,6 +848,8 @@ page 50122 "Revenue Allocation Card"
         FilteredContractRec."Contract Start Date" := ContractRec."Contract Start Date";
         FilteredContractRec."Contract End Date" := ContractRec."Contract End Date";
         FilteredContractRec."Grace Days" := ContractRec."Grace Period";
+        FilteredContractRec."Grace Start Date" := ContractRec."Grace Start Date";
+        FilteredContractRec."Grace End Date" := ContractRec."Grace End Date";
 
         // Add Termination Date
         if TerminationDate = 0D then
@@ -820,8 +868,8 @@ page 50122 "Revenue Allocation Card"
         FilteredContractRec."Multi Year End Date" := MultiYearEndDate;
         FilteredContractRec."No Of Days" := MissedDays;
         FilteredContractRec."Per Day Rent" := Round(PerDayRent);
-        FilteredContractRec."Contract Amount" := GridAnnualAmount;
-        FilteredContractRec."Annual Amount" := ContractRec."Rent Amount";
+        FilteredContractRec."Contract Amount" := ContractRec."Annual Rent Amount"; // Use grid's annual amount
+        FilteredContractRec."Annual Amount" := GridAnnualAmount;
         FilteredContractRec."Total Value" := MissedDays * FilteredContractRec."Per Day Rent";
         FilteredContractRec."Owner Share" := MissedDays * FilteredContractRec."Per Day Rent";
         FilteredContractRec."Final Annual Amount" := TotalAnnualAmount;
@@ -834,9 +882,9 @@ page 50122 "Revenue Allocation Card"
 
         // -----------------------------------------------
         // Insert grace period adjustment line (negative allocation) for missed days
+        // Only if grace period dates overlap with the missed allocation period
         // -----------------------------------------------
-        // Only insert the adjustment line if there is a grace period
-        if ContractRec."Grace Period" > 0 then begin
+        if ShouldInsertGraceLine then begin
             NewLineNo := GetNextLineNo();
 
             FilteredContractRec.Init();
@@ -849,6 +897,8 @@ page 50122 "Revenue Allocation Card"
             FilteredContractRec."Contract Start Date" := ContractRec."Contract Start Date";
             FilteredContractRec."Contract End Date" := ContractRec."Contract End Date";
             FilteredContractRec."Grace Days" := ContractRec."Grace Period";
+            FilteredContractRec."Grace Start Date" := ContractRec."Grace Start Date";
+            FilteredContractRec."Grace End Date" := ContractRec."Grace End Date";
 
             // Add Termination Date
             if TerminationDate = 0D then
@@ -865,8 +915,8 @@ page 50122 "Revenue Allocation Card"
             FilteredContractRec."Multi Year End Date" := MultiYearEndDate;
             FilteredContractRec."No Of Days" := MissedDays;
             FilteredContractRec."Per Day Rent" := -DifferencePerDayRent; // Negative value
-            FilteredContractRec."Contract Amount" := GridAnnualAmount;
-            FilteredContractRec."Annual Amount" := ContractRec."Rent Amount";
+            FilteredContractRec."Contract Amount" := ContractRec."Annual Rent Amount";
+            FilteredContractRec."Annual Amount" := GridAnnualAmount;
             FilteredContractRec."Total Value" := -GracePeriodAdjustmentValue; // Negative adjustment
             FilteredContractRec."Owner Share" := -GracePeriodAdjustmentValue; // Negative adjustment
             FilteredContractRec."Final Annual Amount" := TotalAnnualAmount;
