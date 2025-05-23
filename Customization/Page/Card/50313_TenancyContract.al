@@ -2144,13 +2144,28 @@ page 50313 "Tenancy Contract Card"
         ShowLegalReasonFields4 := (Rec."Praposal Type Selected" = Rec."Praposal Type Selected"::"Merge Unit");
     end;
 
+    // local procedure UpdateSecurityAmountReceived()
+    // begin
+    //     if Rec."Security Deposit Amount" = Rec."Balance Amount" then
+    //         Rec."Security Amount Received" := 0
+
+    //     else
+    //         Rec."Security Amount Received" := Rec."Security Deposit Amount" - Rec."Balance Amount";
+    // end;
+
     local procedure UpdateSecurityAmountReceived()
     begin
+        // Update Security Amount Received
         if Rec."Security Deposit Amount" = Rec."Balance Amount" then
             Rec."Security Amount Received" := 0
         else
             Rec."Security Amount Received" := Rec."Security Deposit Amount" - Rec."Balance Amount";
+
+        // If Balance Amount has any value (non-zero), update Security Balanced Amount
+        if Rec."Balance Amount" <> 0 then
+            Rec."Security Balanced Amount" := Rec."Balance Amount";
     end;
+
 
 
     trigger OnOpenPage()

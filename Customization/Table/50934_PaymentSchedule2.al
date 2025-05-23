@@ -12,7 +12,16 @@ table 50934 "Payment Schedule2"
         field(50100; "Secondary Item Type"; Text[100])
         {
             DataClassification = ToBeClassified;
-            Caption = 'Secondary Item Type';
+
+            trigger OnValidate()
+
+
+            begin
+                // Check if the payment status is 'Received'
+                if "Secondary Item Type" = 'Security Deposit Amount' then
+                    // Call the procedure to update the balance amount
+                    UpdateBalanceAmountOnPaymentReceived();
+            end;
 
         }
 
@@ -38,6 +47,15 @@ table 50934 "Payment Schedule2"
         {
             DataClassification = ToBeClassified;
             Caption = 'Amount Including VAT';
+
+            trigger OnValidate()
+
+            begin
+                // Check if the payment status is 'Received'
+
+                // Call the procedure to update the balance amount
+                UpdateBalanceAmountOnPaymentReceived();
+            end;
 
 
 
@@ -116,8 +134,22 @@ table 50934 "Payment Schedule2"
         {
             Caption = 'Payment Status';
 
+            trigger OnValidate()
+
+            begin
+                // Check if the payment status is 'Received'
+                if "Payment Status" = 'Received' then
+                    // Call the procedure to update the balance amount
+                    UpdateBalanceAmountOnPaymentReceived();
+            end;
+            // Call the procedure to update the balance amount
 
         }
+
+
+
+
+
         field(50917; "Property Classification"; Text[100])
         {
             Caption = 'Property Classification';
@@ -202,6 +234,8 @@ table 50934 "Payment Schedule2"
 
 
 
+
+
     // local procedure UpdateBalanceAmountOnPaymentReceived()
     // var
     //     PaymentScheduleRec: Record "Payment Schedule2";
@@ -214,28 +248,52 @@ table 50934 "Payment Schedule2"
     //     if PaymentScheduleRec.FindSet() then begin
     //         repeat
     //             // Filter Tenancy Contract records based on Contract ID
-    //             TenancyContractRec.SetRange("Contract ID", PaymentScheduleRec."Contract ID");
+    //             TenancyContractRec.SetRange("Contract ID", Rec."Contract ID");
 
     //             if TenancyContractRec.FindSet() then begin
     //                 repeat
     //                     // If Balance Amount has a value, update it
     //                     if TenancyContractRec."Balance Amount" <> 0 then begin
-    //                         TenancyContractRec."Balance Amount" += PaymentScheduleRec."Amount Including VAT";
-    //                         TenancyContractRec."Security Balanced Amount" += PaymentScheduleRec."Amount Including VAT";
+    //                         TenancyContractRec."Balance Amount" := Rec."Amount Including VAT";
+    //                         // TenancyContractRec."Security Balanced Amount" += PaymentScheduleRec."Amount Including VAT";
     //                     end
     //                     else begin
     //                         // If Balance Amount is 0, set it to Amount Including VAT
-    //                         TenancyContractRec."Balance Amount" := PaymentScheduleRec."Amount Including VAT";
-    //                         TenancyContractRec."Security Balanced Amount" := PaymentScheduleRec."Amount Including VAT";
+    //                         TenancyContractRec."Balance Amount" := Rec."Amount Including VAT";
+    //                         // TenancyContractRec."Security Balanced Amount" := PaymentScheduleRec."Amount Including VAT";
     //                     end;
 
     //                     // Modify the record to save changes
     //                     TenancyContractRec.Modify();
     //                 until TenancyContractRec.Next() = 0;
     //             end;
-    //         until PaymentScheduleRec.Next() = 0;
+    //         until Rec.Next() = 0;
     //     end;
     // end;
+
+    local procedure UpdateBalanceAmountOnPaymentReceived()
+    var
+        PaymentScheduleRec: Record "Payment Schedule2";
+        TenancyContractRec: Record "Tenancy Contract";
+    begin
+        // Filter only for the current record and matching required values
+        // if (Rec."Secondary Item Type" = 'Security Deposit Amount') and
+        //    (Rec."Payment Status" = 'Received') then begin
+
+        // Find the related Tenancy Contract using the Contract ID from current PaymentSchedule record
+
+        TenancyContractRec.SetRange("Contract ID", Rec."Contract ID");
+        if TenancyContractRec.FindSet() then
+            if Rec."Secondary Item Type" = 'Security Deposit Amount' then begin
+                // Update the Balance Amount with Amount Including VAT from current Payment Schedule record
+                TenancyContractRec."Balance Amount" := Rec."Amount Including VAT";
+                TenancyContractRec.Modify();
+            end;
+
+    end;
+
+    // end;
+
 
 
 
