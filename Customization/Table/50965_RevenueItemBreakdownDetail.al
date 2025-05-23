@@ -124,10 +124,10 @@ table 50965 "Revenue Item Breakdown Details"
         //     Caption = 'Posting Period';
         // }
 
-        field(50118; "No Of Days"; Integer)
+        field(50118; "Total No Of Days"; Integer)
         {
             DataClassification = ToBeClassified;
-            Caption = 'No Of Days';
+            Caption = 'Total No Of Days';
         }
 
         field(50119; "Per Day Amount"; Decimal)
@@ -154,19 +154,19 @@ table 50965 "Revenue Item Breakdown Details"
             Caption = 'Owner Share';
         }
 
-        field(50125; "Total Amount"; Decimal)
-        {
-            Caption = 'Total Amount';
-            Editable = false;
-            // FieldClass = FlowField;
-            // CalcFormula = sum("Revenue Item Breakdown Details"."Total Value" where("RI_No." = field("RI_No."), "Contract Id" = field("Contract Id")));
-        }
+        // field(50125; "Total Amount"; Decimal)
+        // {
+        //     Caption = 'Total Amount';
+        //     Editable = false;
+        //     // FieldClass = FlowField;
+        //     // CalcFormula = sum("Revenue Item Breakdown Details"."Total Value" where("RI_No." = field("RI_No."), "Contract Id" = field("Contract Id")));
+        // }
 
     }
 
     keys
     {
-        key(PK; "Entry No.")
+        key(PK; "RI_No.", "Entry No.")
         {
             Clustered = true;
         }

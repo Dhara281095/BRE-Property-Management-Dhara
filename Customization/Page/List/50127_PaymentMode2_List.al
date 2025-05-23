@@ -4,7 +4,7 @@ page 50127 "Payment Mode2 List"
     SourceTable = "Payment Mode2";
     ApplicationArea = All;
     Caption = 'Payment Mode Grid List';
-    UsageCategory = Lists;
+    // UsageCategory = Lists;
     CardPageId = 50928;
 
 

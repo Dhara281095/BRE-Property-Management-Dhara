@@ -4,7 +4,7 @@ page 50925 "Payment Schedule2 List"
     SourceTable = "Payment Schedule2";
     ApplicationArea = All;
     Caption = 'Payment Schedule Grid List';
-    UsageCategory = Lists;
+    // UsageCategory = Lists;
     CardPageId = 50922;
 
 

@@ -283,7 +283,7 @@ page 50972 "Revenue Recognition Main"
                 TotalMergedAmount += RevenueItemRec."Total Value";
             until RevenueItemRec.Next() = 0;
         end;
-        FilteredContractRec."No Of Days" := RevenueItemRec."No Of Days";
+        // FilteredContractRec."No Of Days" := RevenueItemRec."No Of Days";
         FilteredContractRec."Per Day Amount" := PerDayMergedAmount;
         FilteredContractRec."Total Value" := TotalMergedAmount;
         FilteredContractRec."Owner Share" := TotalMergedAmount; // If same as Total Value
