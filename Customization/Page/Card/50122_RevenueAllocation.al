@@ -205,9 +205,9 @@ page 50122 "Revenue Allocation Card"
                     if Approvalrevenueallocation.FindSet() then begin
                         // Modify existing approval record
                         Approvalrevenueallocation."ID" := Rec."No.";
-                        Approvalrevenueallocation."Month" := revenueallocation."Month";
+                        Approvalrevenueallocation."Month" := Rec."Month";
                         Approvalrevenueallocation."Financial Year" := Rec."Financial Year";
-                        Approvalrevenueallocation."Status" := revenueallocation."Status";
+                        Approvalrevenueallocation."Status" := Rec."Status";
                         Approvalrevenueallocation.Modify();
                         Message('Approval Request Modified successfully!');
                     end else begin
@@ -215,9 +215,8 @@ page 50122 "Revenue Allocation Card"
                         Approvalrevenueallocation.Init();
                         Approvalrevenueallocation."ID" := Rec."No.";
                         Approvalrevenueallocation."Financial Year" := Rec."Financial Year";
-                        Approvalrevenueallocation."Month" := revenueallocation."Month";
-                        Approvalrevenueallocation."Status" := revenueallocation."Status";
-
+                        Approvalrevenueallocation."Month" := Rec."Month";
+                        Approvalrevenueallocation."Status" := Rec."Status";
                         Approvalrevenueallocation.Insert();
                         Message('Approval Request Sent successfully!');
                     end;
