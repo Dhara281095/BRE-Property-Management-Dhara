@@ -99,8 +99,8 @@ table 50110 "Revenue Allocation SubGrid"
         {
             DataClassification = ToBeClassified;
             Caption = 'Posting Month';
-            OptionCaption = 'January,February,March,April,May,June,July,August,September,October,November,December';
-            OptionMembers = January,February,March,April,May,June,July,August,September,October,November,December;
+            // OptionCaption = 'January,February,March,April,May,June,July,August,September,October,November,December';
+            OptionMembers = " ",January,February,March,April,May,June,July,August,September,October,November,December;
             Editable = false;
         }
         field(50116; "Posting Year"; Integer)

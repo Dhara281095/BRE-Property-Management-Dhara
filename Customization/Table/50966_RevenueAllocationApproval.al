@@ -24,7 +24,7 @@ table 50966 "Revenue Allocation Approval"
 
         field(50103; "Month"; Option)
         {
-            OptionMembers = January,February,March,April,May,June,July,August,September,October,November,December;
+            OptionMembers = " ",January,February,March,April,May,June,July,August,September,October,November,December;
             Caption = 'Month';
         }
         field(50104; "Status"; Option)

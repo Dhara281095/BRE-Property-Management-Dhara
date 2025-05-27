@@ -22,8 +22,8 @@ table 50109 "Revenue Allocation Details"
         {
             DataClassification = ToBeClassified;
             Caption = 'Month';
-            OptionCaption = 'January,February,March,April,May,June,July,August,September,October,November,December';
-            OptionMembers = January,February,March,April,May,June,July,August,September,October,November,December;
+            //  OptionCaption = 'January,February,March,April,May,June,July,August,September,October,November,December';
+            OptionMembers = " ",January,February,March,April,May,June,July,August,September,October,November,December;
         }
 
         field(50103; "Status"; Option)

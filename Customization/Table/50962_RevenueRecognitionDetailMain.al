@@ -108,8 +108,8 @@ table 50962 "Revenue Recognition Details"
         {
             DataClassification = ToBeClassified;
             Caption = 'Posting Month';
-            OptionCaption = 'January,February,March,April,May,June,July,August,September,October,November,December';
-            OptionMembers = January,February,March,April,May,June,July,August,September,October,November,December;
+            //  OptionCaption = 'January,February,March,April,May,June,July,August,September,October,November,December';
+            OptionMembers = " ",January,February,March,April,May,June,July,August,September,October,November,December;
         }
 
         field(50116; "Posting Year"; Integer)

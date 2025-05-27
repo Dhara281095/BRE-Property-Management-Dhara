@@ -358,16 +358,11 @@ page 50973 "Revenue Recognition Item Sub"
         // RevenueRecognitionDetails."Termination Date" := pRevenueItemBreakdown.;
         //  RevenueRecognitionDetails."No Of Days" := pRevenueItemBreakdown."No Of Days";
         RevenueRecognitionDetails."Per Day Amount" := pRevenueItemBreakdown."Per Day Amount";
-        RevenueRecognitionDetails."Total Value" := pRevenueItemBreakdown."Total Value";
-        RevenueRecognitionDetails."Owner Share" := pRevenueItemBreakdown."Total Value";
 
+        RevenueRecognitionDetails."No Of Days" := NoOfDays + 1;
 
-
-
-
-        RevenueRecognitionDetails."No Of Days" := NoOfDays;
-
-
+        RevenueRecognitionDetails."Total Value" := RevenueRecognitionDetails."No Of Days" * RevenueRecognitionDetails."Per Day Amount";
+        RevenueRecognitionDetails."Owner Share" := RevenueRecognitionDetails."Total Value";
         // Add allocation period details
         RevenueRecognitionDetails."Posting Month" := pRevenueAllocation.Month;
         RevenueRecognitionDetails."Posting Year" := pRevenueAllocation."Financial Year";
