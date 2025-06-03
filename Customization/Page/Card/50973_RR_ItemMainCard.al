@@ -270,6 +270,45 @@ page 50973 "Revenue Recognition Item Sub"
 
 
 
+    // local procedure CalculateNoOfDays(
+    //     pContractStartDate: Date;
+    //     pContractEndDate: Date;
+    //     pAllocationMonth: Integer;
+    //     pAllocationYear: Integer
+    // ): Integer
+    // var
+    //     SelectedMonthStart: Date;
+    //     SelectedMonthEnd: Date;
+    //     EffectiveStartDate: Date;
+    //     EffectiveEndDate: Date;
+    //     NoOfDays: Integer;
+    // begin
+    //     // Calculate the start and end of the selected month
+    //     SelectedMonthStart := DMY2Date(1, pAllocationMonth + 1, pAllocationYear);
+    //     SelectedMonthEnd := CALCDATE('<+1M-1D>', SelectedMonthStart);
+
+    //     // Determine the effective start date (later of contract start or month start)
+    //     if pContractStartDate > SelectedMonthStart then
+    //         EffectiveStartDate := pContractStartDate
+    //     else
+    //         EffectiveStartDate := SelectedMonthStart;
+
+    //     // Determine the effective end date (earlier of contract end or month end)
+    //     if pContractEndDate < SelectedMonthEnd then
+    //         EffectiveEndDate := pContractEndDate
+    //     else
+    //         EffectiveEndDate := SelectedMonthEnd;
+
+    //     // Calculate number of days
+    //     if EffectiveStartDate <= EffectiveEndDate then
+    //         NoOfDays := Date2DMY(EffectiveEndDate, 1) - Date2DMY(EffectiveStartDate, 1)
+    //     // NoOfDays := EffectiveEndDate - EffectiveStartDate + 1
+    //     else
+    //         NoOfDays := 0;
+
+    //     exit(NoOfDays);
+    // end;
+
     local procedure CalculateNoOfDays(
         pContractStartDate: Date;
         pContractEndDate: Date;
@@ -283,31 +322,32 @@ page 50973 "Revenue Recognition Item Sub"
         EffectiveEndDate: Date;
         NoOfDays: Integer;
     begin
-        // Calculate the start and end of the selected month
-        SelectedMonthStart := DMY2Date(1, pAllocationMonth + 1, pAllocationYear);
+        // Start and end of the selected month
+        SelectedMonthStart := DMY2Date(1, pAllocationMonth, pAllocationYear);
         SelectedMonthEnd := CALCDATE('<+1M-1D>', SelectedMonthStart);
 
-        // Determine the effective start date (later of contract start or month start)
+        // Return 0 if contract is outside of the selected month
+        if (pContractStartDate > SelectedMonthEnd) or (pContractEndDate < SelectedMonthStart) then
+            exit(0);
+
+        // Determine the effective start date
         if pContractStartDate > SelectedMonthStart then
             EffectiveStartDate := pContractStartDate
         else
             EffectiveStartDate := SelectedMonthStart;
 
-        // Determine the effective end date (earlier of contract end or month end)
+        // Determine the effective end date
         if pContractEndDate < SelectedMonthEnd then
             EffectiveEndDate := pContractEndDate
         else
             EffectiveEndDate := SelectedMonthEnd;
 
-        // Calculate number of days
-        if EffectiveStartDate <= EffectiveEndDate then
-            NoOfDays := Date2DMY(EffectiveEndDate, 1) - Date2DMY(EffectiveStartDate, 1)
-        // NoOfDays := EffectiveEndDate - EffectiveStartDate + 1
-        else
-            NoOfDays := 0;
+        // Calculate inclusive number of days
+        NoOfDays := EffectiveEndDate - EffectiveStartDate + 1;
 
         exit(NoOfDays);
     end;
+
 
     local procedure CreateRevenueRecognitionDetail(
         pTenancyContract: Record "Tenancy Contract";
@@ -359,7 +399,7 @@ page 50973 "Revenue Recognition Item Sub"
         //  RevenueRecognitionDetails."No Of Days" := pRevenueItemBreakdown."No Of Days";
         RevenueRecognitionDetails."Per Day Amount" := pRevenueItemBreakdown."Per Day Amount";
 
-        RevenueRecognitionDetails."No Of Days" := NoOfDays + 1;
+        RevenueRecognitionDetails."No Of Days" := NoOfDays;
 
         RevenueRecognitionDetails."Total Value" := RevenueRecognitionDetails."No Of Days" * RevenueRecognitionDetails."Per Day Amount";
         RevenueRecognitionDetails."Owner Share" := RevenueRecognitionDetails."Total Value";
