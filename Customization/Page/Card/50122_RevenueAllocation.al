@@ -260,8 +260,8 @@ page 50122 "Revenue Allocation Card"
         TotalValue := 0;
 
         // Get first and last day of selected month
-        SelectedMonthStart := DMY2Date(1, Rec.Month + 1, Rec."Financial Year");
-        SelectedMonthEnd := CALCDATE('<+1M-1D>', SelectedMonthStart);
+        SelectedMonthStart := DMY2Date(1, Rec.Month, Rec."Financial Year");
+        SelectedMonthEnd := CALCDATE('<CM>', SelectedMonthStart);
 
         // Filter records for the current header
         FilteredContractRec.Reset();
@@ -290,58 +290,106 @@ page 50122 "Revenue Allocation Card"
 
 
     //---------------Calculate Days In SelectedMonth--------------//
+    // procedure CalculateDaysInSelectedMonth(
+    //    ContractStartDate: Date;
+    //    ContractEndDate: Date;
+    //    MultiYearStartDate: Date;
+    //    MultiYearEndDate: Date;
+    //    SelectedMonth: Integer;
+    //    SelectedYear: Integer): Integer
+    // var
+    //     StartDate: Date;
+    //     EndDate: Date;
+    //     MonthStartDate: Date;
+    //     MonthEndDate: Date;
+    // begin
+    //     // Get first day of selected month
+    //     MonthStartDate := DMY2Date(1, SelectedMonth + 1, SelectedYear);
+    //     // Get last day of selected month
+    //     MonthEndDate := CALCDATE('<+1M-1D>', MonthStartDate);
+
+    //     // Check if selected month falls in multi-year start date month
+    //     if (Date2DMY(MultiYearStartDate, 2) = (SelectedMonth + 1)) and
+    //        (Date2DMY(MultiYearStartDate, 3) = SelectedYear) then begin
+    //         // Use contract start date if it falls in same month
+    //         if (Date2DMY(ContractStartDate, 2) = (SelectedMonth + 1)) and
+    //            (Date2DMY(ContractStartDate, 3) = SelectedYear) then
+    //             StartDate := ContractStartDate
+    //         else
+    //             StartDate := MultiYearStartDate;
+
+    //         EndDate := MonthEndDate;
+    //     end
+
+    //     // Check if selected month falls in multi-year end date month
+    //     else if (Date2DMY(MultiYearEndDate, 2) = (SelectedMonth + 1)) and
+    //             (Date2DMY(MultiYearEndDate, 3) = SelectedYear) then begin
+    //         StartDate := MonthStartDate;
+    //         // Use contract end date if it falls in same month
+    //         if (Date2DMY(ContractEndDate, 2) = (SelectedMonth + 1)) and
+    //            (Date2DMY(ContractEndDate, 3) = SelectedYear) then
+    //             EndDate := ContractEndDate
+    //         else
+    //             EndDate := MultiYearEndDate;
+    //     end
+    //     // For months between start and end dates
+    //     else begin
+    //         StartDate := MonthStartDate;
+    //         EndDate := MonthEndDate;
+    //     end;
+
+    //     // Calculate and return the number of days
+    //     exit(EndDate - StartDate + 1);
+    // end;
+
+
     procedure CalculateDaysInSelectedMonth(
-       ContractStartDate: Date;
-       ContractEndDate: Date;
-       MultiYearStartDate: Date;
-       MultiYearEndDate: Date;
-       SelectedMonth: Integer;
-       SelectedYear: Integer): Integer
+        ContractStartDate: Date;
+        ContractEndDate: Date;
+        MultiYearStartDate: Date;
+        MultiYearEndDate: Date;
+        SelectedMonth: Integer;
+        SelectedYear: Integer): Integer
     var
         StartDate: Date;
         EndDate: Date;
         MonthStartDate: Date;
         MonthEndDate: Date;
+        EffectiveStartDate: Date;
+        EffectiveEndDate: Date;
     begin
-        // Get first day of selected month
-        MonthStartDate := DMY2Date(1, SelectedMonth + 1, SelectedYear);
+        // Get first day of selected month (without +1, assuming SelectedMonth is correct)
+        MonthStartDate := DMY2Date(1, SelectedMonth, SelectedYear);
         // Get last day of selected month
         MonthEndDate := CALCDATE('<+1M-1D>', MonthStartDate);
 
-        // Check if selected month falls in multi-year start date month
-        if (Date2DMY(MultiYearStartDate, 2) = (SelectedMonth + 1)) and
-           (Date2DMY(MultiYearStartDate, 3) = SelectedYear) then begin
-            // Use contract start date if it falls in same month
-            if (Date2DMY(ContractStartDate, 2) = (SelectedMonth + 1)) and
-               (Date2DMY(ContractStartDate, 3) = SelectedYear) then
-                StartDate := ContractStartDate
-            else
-                StartDate := MultiYearStartDate;
+        // Return 0 if multi-year period is completely outside selected month
+        if (MultiYearStartDate > MonthEndDate) or (MultiYearEndDate < MonthStartDate) then
+            exit(0);
 
-            EndDate := MonthEndDate;
-        end
+        // Determine effective start date for the month
+        // Use the latest of: MonthStart, MultiYearStart, ContractStart
+        EffectiveStartDate := MonthStartDate;
+        if MultiYearStartDate > EffectiveStartDate then
+            EffectiveStartDate := MultiYearStartDate;
+        if ContractStartDate > EffectiveStartDate then
+            EffectiveStartDate := ContractStartDate;
 
-        // Check if selected month falls in multi-year end date month
-        else if (Date2DMY(MultiYearEndDate, 2) = (SelectedMonth + 1)) and
-                (Date2DMY(MultiYearEndDate, 3) = SelectedYear) then begin
-            StartDate := MonthStartDate;
-            // Use contract end date if it falls in same month
-            if (Date2DMY(ContractEndDate, 2) = (SelectedMonth + 1)) and
-               (Date2DMY(ContractEndDate, 3) = SelectedYear) then
-                EndDate := ContractEndDate
-            else
-                EndDate := MultiYearEndDate;
-        end
-        // For months between start and end dates
-        else begin
-            StartDate := MonthStartDate;
-            EndDate := MonthEndDate;
-        end;
+        // Determine effective end date for the month  
+        // Use the earliest of: MonthEnd, MultiYearEnd, ContractEnd
+        EffectiveEndDate := MonthEndDate;
+        if MultiYearEndDate < EffectiveEndDate then
+            EffectiveEndDate := MultiYearEndDate;
+        if ContractEndDate < EffectiveEndDate then
+            EffectiveEndDate := ContractEndDate;
 
-        // Calculate and return the number of days
-        exit(EndDate - StartDate + 1);
+        // Ensure we don't have invalid date range
+        if EffectiveStartDate > EffectiveEndDate then
+            exit(0);
+
+        // Calculate inclusive number of days
+        exit(EffectiveEndDate - EffectiveStartDate + 1);
     end;
-
 
     //---------------Clear Subgrid Data--------------//
     procedure ClearSubgridData()
@@ -382,7 +430,7 @@ page 50122 "Revenue Allocation Card"
         FirstDayOfMonth: Date;
     begin
         // Get first day of selected month
-        FirstDayOfMonth := DMY2Date(1, Rec.Month + 1, Rec."Financial Year");
+        FirstDayOfMonth := DMY2Date(1, Rec.Month, Rec."Financial Year");
 
         // Get last day of selected month
         LastDayOfMonth := CALCDATE('<+1M-1D>', FirstDayOfMonth);
@@ -462,7 +510,7 @@ page 50122 "Revenue Allocation Card"
             ContractRec."Contract End Date",
             MultiYearStartDate,
             MultiYearEndDate,
-            MonthNo - 1,
+            MonthNo,
             FinancialYear
         );
 
@@ -525,7 +573,7 @@ page 50122 "Revenue Allocation Card"
         FilteredContractRec."Total Value" := CalculatedDays * FilteredContractRec."Per Day Rent";
         FilteredContractRec."Owner Share" := CalculatedDays * FilteredContractRec."Per Day Rent";
         FilteredContractRec."Final Annual Amount" := TotalAnnualAmount;
-        FilteredContractRec."Posting Month" := MonthNo - 1;
+        FilteredContractRec."Posting Month" := MonthNo;
         FilteredContractRec."Posting Year" := FinancialYear;
         FilteredContractRec."Posting Period" := Format(FilteredContractRec."Posting Month") +
             ' ' + Format(FilteredContractRec."Posting Year") + ' ' + '-' + ' ' +
@@ -573,7 +621,7 @@ page 50122 "Revenue Allocation Card"
             FilteredContractRec."Total Value" := -GracePeriodAdjustmentValue; // Negative adjustment
             FilteredContractRec."Owner Share" := -GracePeriodAdjustmentValue; // Negative adjustment
             FilteredContractRec."Final Annual Amount" := TotalAnnualAmount;
-            FilteredContractRec."Posting Month" := MonthNo - 1;
+            FilteredContractRec."Posting Month" := MonthNo;
             FilteredContractRec."Posting Year" := FinancialYear;
             FilteredContractRec."Posting Period" := Format(FilteredContractRec."Posting Month") +
                 ' ' + Format(FilteredContractRec."Posting Year") + ' ' + '-' + ' ' +
@@ -620,9 +668,9 @@ page 50122 "Revenue Allocation Card"
 
         // Calculate date ranges
         PreviousMonthStart := DMY2Date(1, PreviousMonthNo, PreviousYearNo);
-        PreviousMonthEnd := CALCDATE('<+1M-1D>', PreviousMonthStart);
+        PreviousMonthEnd := CALCDATE('<CM>', PreviousMonthStart);
         CurrentMonthStart := DMY2Date(1, MonthNo, FinancialYear);
-        CurrentMonthEnd := CALCDATE('<+1M-1D>', CurrentMonthStart);
+        CurrentMonthEnd := CALCDATE('<CM>', CurrentMonthStart);
         ContractStartDate := ContractRec."Contract Start Date";
 
         // Check if contract started in previous month
@@ -986,7 +1034,7 @@ page 50122 "Revenue Allocation Card"
     begin
         ClearSubgridData();
 
-        MonthNo := Rec.Month + 1;
+        MonthNo := Rec.Month;
         FinancialYear := Rec."Financial Year";
 
         SelectedMonthStart := DMY2Date(01, MonthNo, FinancialYear);
