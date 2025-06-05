@@ -15,6 +15,7 @@ page 50958 "Vendor Document Sub"
                 {
                     ApplicationArea = All;
                     Editable = false;
+                    Visible = false;
                 }
 
                 field("Document Type"; Rec."Document Type")

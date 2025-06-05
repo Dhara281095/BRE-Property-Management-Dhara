@@ -16,6 +16,10 @@ page 50942 "Vendor Profile Card"
                 {
                     ApplicationArea = All;
                     Lookup = true;
+                    trigger OnValidate()
+                    begin
+                        brokeragesectionpopulated()
+                    end;
                 }
 
                 field("Vendor Name"; Rec."Vendor Name")
@@ -40,6 +44,7 @@ page 50942 "Vendor Profile Card"
                 field("Vendor Category"; Rec."Vendor Category")
                 {
                     ApplicationArea = All;
+                    Editable = false;
                     trigger OnValidate()
                     begin
                         if UpperCase(Rec."Vendor Category") = 'BROKERS AND COMMISSION AGENT' then begin
@@ -344,6 +349,18 @@ page 50942 "Vendor Profile Card"
             }
         }
     }
+
+
+    procedure brokeragesectionpopulated()
+    begin
+        if UpperCase(Rec."Vendor Category") = 'BROKERS AND COMMISSION AGENT' then begin
+            ShowBrokerageGroup := true;
+            //Message('Brokers and Commission Agent Section is Open');
+        end else begin
+            ShowBrokerageGroup := false;
+            // Message('Vendor is NOT a Brokers and Commission Agent - Section remains Closed');
+        end;
+    end;
 
     trigger OnAfterGetRecord()
     begin

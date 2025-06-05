@@ -15,6 +15,7 @@ page 50957 "Vendor Calculation Details Sub"
                 field("Vendor ID"; Rec."Vendor ID")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
 
                 field("Vendor Name"; Rec."Vendor Name")

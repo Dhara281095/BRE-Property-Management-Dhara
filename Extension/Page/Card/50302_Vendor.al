@@ -26,6 +26,15 @@ pageextension 50302 Vendor extends "Vendor Card"
             Visible = false;
         }
 
+        addafter("Blocked")
+        {
+            field("Vendor Category"; Rec."Vendor Category")
+            {
+                ApplicationArea = All;
+                Caption = 'Vendor Category';
+                TableRelation = "Vendor Category"."Vendor Category Type";
+            }
+        }
 
         addafter("Address 2")
         {
