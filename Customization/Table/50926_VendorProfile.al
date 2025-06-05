@@ -8,7 +8,8 @@ table 50926 "Vendor Profile"
         {
             DataClassification = ToBeClassified;
             Caption = 'Vendor ID';
-            TableRelation = Vendor."No.";
+            // TableRelation = Vendor."No.";
+            TableRelation = Vendor."No." WHERE("Vendor Category" = FILTER('Property Management System' | 'Brokers and Commission Agent'));
 
             trigger OnValidate()
             var
@@ -20,6 +21,7 @@ table 50926 "Vendor Profile"
                     "Vendor Name" := vendor."Name";
                     "Search Name" := vendor."Search Name";
                     "Vendor Contact No." := Vendor.Contact;
+                    "Vendor Category" := vendor."Vendor Category";
                     "Blocked" := Vendor."Blocked";
                     "Privacy Blocked" := Vendor."Privacy Blocked";
                     "IC Partner Code" := Vendor."IC Partner Code";

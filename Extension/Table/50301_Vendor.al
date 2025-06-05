@@ -37,6 +37,12 @@ tableextension 50301 VendorExtention extends Vendor
 
         }
 
+        field(50100; "Vendor Category"; Text[100])
+        {
+            DataClassification = ToBeClassified;
+            Caption = 'Vendor Category';
+            TableRelation = "Vendor Category"."Vendor Category Type";
+        }
     }
 
 
