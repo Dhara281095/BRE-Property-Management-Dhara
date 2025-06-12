@@ -6,7 +6,9 @@ page 50103 "Free Unit List"
     Caption = 'Free Unit List';
     UsageCategory = Lists;
     // CardPageId = 31;
-    SourceTableView = where("Unit Status" = const('Free'));
+    // SourceTableView = where("Unit Status" = const('Free'));
+    SourceTableView = where("Unit Status" = const(Free));
+
 
     InsertAllowed = false;
     ModifyAllowed = false;
@@ -60,10 +62,16 @@ page 50103 "Free Unit List"
         }
     }
 
+    // trigger OnOpenPage();
+    // begin
+    //     Rec.SetRange("Unit Status", 'Free'); // Filter for only vacant properties
+    // end;
+
     trigger OnOpenPage();
     begin
-        Rec.SetRange("Unit Status", 'Free'); // Filter for only vacant properties
+        Rec.SetRange("Unit Status", Rec."Unit Status"::Free); // ✅ Filter for vacant units
     end;
+
 
 }
 

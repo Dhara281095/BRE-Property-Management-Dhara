@@ -6,7 +6,7 @@ page 50105 "Occupied Unit List"
     Caption = 'Occupied Unit List';
     UsageCategory = Lists;
     // CardPageId = 30;
-    SourceTableView = where("Unit Status" = const('Occupied'));
+    SourceTableView = where("Unit Status" = const(Occupied));
 
     InsertAllowed = false;
     ModifyAllowed = false;
@@ -60,10 +60,16 @@ page 50105 "Occupied Unit List"
         }
     }
 
+    // trigger OnOpenPage();
+    // begin
+    //     Rec.SetRange("Unit Status", 'Occupied'); // Filter for only vacant properties
+    // end;
+
     trigger OnOpenPage();
     begin
-        Rec.SetRange("Unit Status", 'Occupied'); // Filter for only vacant properties
+        Rec.SetRange("Unit Status", Rec."Unit Status"::Occupied); // ✅ Filter for occupied units
     end;
+
 
 }
 

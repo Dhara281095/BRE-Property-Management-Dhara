@@ -73,13 +73,23 @@ tableextension 50102 ItemExtension extends Item
         //     Caption = 'Merge Units';
         //     DataClassification = ToBeClassified;
         // }
-        field(50108; "Unit Status"; Text[100])
+        // field(50108; "Unit Status"; Text[100])
+        // {
+        //     DataClassification = ToBeClassified;
+        //     Caption = 'Unit Status';
+        //     // TableRelation = "Availability Status".Status;
+        //     Editable = false; // Make the field non-editable
+        // }
+
+        field(50108; "Unit Status"; Option)
         {
             DataClassification = ToBeClassified;
             Caption = 'Unit Status';
-            // TableRelation = "Availability Status".Status;
-            Editable = false; // Make the field non-editable
+            OptionMembers = " ",Free,Selected,Occupied;
+            OptionCaption = ' ,Free,Selected,Occupied';
+            Editable = true; // Keep the field non-editable
         }
+
         field(50123; "Selected"; Boolean)
         {
             Caption = 'Selected';
@@ -375,8 +385,8 @@ tableextension 50102 ItemExtension extends Item
         end;
 
         // Set the default value for Unit Status to 'Free' on record creation
-        if "Unit Status" = '' then
-            "Unit Status" := 'Free';
+        // if "Unit Status" = '' then
+        //     "Unit Status" := 'Free';
     end;
 
 
