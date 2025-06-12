@@ -24,11 +24,13 @@ page 50306 "Property Registration List"
                 field("Description"; rec."Description")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
 
                 field("Type"; rec."Type")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
 
                 field("Base Unit of Measure"; rec."Base Unit of Measure")

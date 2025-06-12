@@ -4,8 +4,6 @@ pageextension 50101 Items extends "Item Card"
 
     layout
     {
-
-
         modify("No.")
         {
             Editable = false;
@@ -18,7 +16,6 @@ pageextension 50101 Items extends "Item Card"
         {
             Visible = false;
         }
-
         modify("Automatic Ext. Texts")
         {
             Visible = false;
@@ -88,27 +85,30 @@ pageextension 50101 Items extends "Item Card"
             ShowMandatory = false;
             Editable = hideshowfields;
             Visible = hideshowfields;
-
-
         }
         modify("Service Item Group")
         {
             Editable = editablefalsefieldNonInventoryType;
+            Visible = false;
         }
-
-
-
-
-        addafter("Last Date Modified")
+        modify(Item)
         {
-            field(GTIN_; rec.GTIN_)
-            {
-                ApplicationArea = All;
-                // Editable = true;
-                Editable = editablefalsefieldNonInventoryType;
-                Caption = 'GTIN';
-            }
+            caption = 'Unit';
         }
+
+
+
+
+        // addafter("Last Date Modified")
+        // {
+        //     field(GTIN_; rec.GTIN_)
+        //     {
+        //         ApplicationArea = All;
+        //         // Editable = true;
+        //         Editable = editablefalsefieldNonInventoryType;
+        //         Caption = 'GTIN';
+        //     }
+        // }
         addafter("Base Unit of Measure")
         {
             field("Market Rate per Sq. Ft."; rec."Market Rate per Sq. Ft.")
@@ -238,10 +238,10 @@ pageextension 50101 Items extends "Item Card"
                     Caption = 'Unit Number';
                     // Editable = true;
                     Editable = editablefalsefieldNonInventoryType;
-                    // trigger OnValidate()
-                    // begin
-                    //     AutoGenerateUnitName(); // Call to auto-generate the Unit Name when Unit Number changes
-                    // end;
+                    trigger OnValidate()
+                    begin
+                        AutoGenerateUnitName(); // Call to auto-generate the Unit Name when Merge Units changes
+                    end;
                 }
 
                 field("Unit ID"; Rec.UnitID) // Auto-generated Unit ID
@@ -360,10 +360,12 @@ pageextension 50101 Items extends "Item Card"
         CountryCode: Text;
         EmiratesCode: Text;
         CommunityCode: Text;
+        UnitnumberCode: Text;
 
         Country: Text;
         Emirates: Text;
         Community: Text;
+        Unitnumber: Text;
     begin
         // Fixed starting number for new records
         // FixedNumber := 101;
@@ -375,17 +377,20 @@ pageextension 50101 Items extends "Item Card"
         Country := Format(Rec.Country); // Assuming Rec has an "Option" field for Country
         Emirates := Format(Rec.Emirate); // Assuming Rec has an "Option" field for Emirates
         Community := Format(Rec."Community"); // Assuming Rec has an "Option" field for Community
+        Unitnumber := Format(Rec."Unit Number"); // Assuming "Unit Number" is a field in the record
+
 
         // Format Country, Emirates, and Community the same way as Property Name
         CountryCode := FormatName(Country);
         EmiratesCode := FormatName(Emirates);
         CommunityCode := FormatName(Community);
+        UnitnumberCode := Format(Unitnumber); // Assuming "Unit Number" is a field in the record
 
         // Step 1: Generate Unit Name: PropertyCode-UnitType-FixedNumber
         Rec."Unit Name" := PropertyCode + '-SU-' + Format(Rec.FixedNumber); // Assuming 'SU' is the Unit Type for Single Unit
 
         // Step 2: Generate Unit ID: CountryCode-EmiratesCode-CommunityCode-PropertyCode-FixedNumber
-        UnitID := CountryCode + '-' + EmiratesCode + '-' + CommunityCode + '-' + PropertyCode + '-' + Format(Rec.FixedNumber);
+        UnitID := CountryCode + '-' + EmiratesCode + '-' + CommunityCode + '-' + PropertyCode + '-' + UnitnumberCode;
 
         // Set the Unit ID in the record
         Rec.UnitID := UnitID;

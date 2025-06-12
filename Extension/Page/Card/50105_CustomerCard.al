@@ -142,7 +142,10 @@ pageextension 50105 Customers extends "Customer Card"
         modify(ShowMap)
         {
             Visible = false;
-
+        }
+        modify(AddressDetails)
+        {
+            Caption = 'Customer Address';
         }
         // addafter("No.")
         // {
@@ -151,7 +154,14 @@ pageextension 50105 Customers extends "Customer Card"
         //         ApplicationArea = All;
         //     }
         // }
-
+        addafter(AddressDetails)
+        {
+            group(CustContactDetails)
+            {
+                Caption = 'Contact Details';
+            }
+        }
+        movefirst(CustContactDetails; "Phone No.", "MobilePhoneNo", "E-Mail")
         addafter(Name)
         {
             field(Username; Rec.Username)
@@ -257,7 +267,7 @@ pageextension 50105 Customers extends "Customer Card"
             }
 
         }
-        addafter("E-Mail")
+        addafter("Address 2")
         {
             field("P.O.Box"; Rec."P.O.Box")
             {

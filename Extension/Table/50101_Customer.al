@@ -40,7 +40,7 @@ tableextension 50101 CustomerExtension extends Customer
             Caption = 'Nationality';
         }
 
-        field(50105; "Emirates ID"; Code[15])
+        field(50105; "Emirates ID"; Code[25])
         {
             DataClassification = ToBeClassified;
             Caption = 'Emirates ID Number';
