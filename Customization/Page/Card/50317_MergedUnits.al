@@ -66,7 +66,9 @@ page 50317 "Merged Units Card"
                         // Apply filters to show only units that are free and have the merging/splitting status as "Single"
                         UnitRec.Reset();
                         UnitRec.SetRange("Property ID", Rec."Property ID");
-                        UnitRec.SetRange("Unit Status", 'Free'); // Filter for free units
+                        // UnitRec.SetRange("Unit Status", 'Free'); // Filter for free units
+                        UnitRec.SetRange("Unit Status", UnitRec."Unit Status"::Free);
+
                         UnitRec.SetRange("MergeSplitOption", UnitRec."MergeSplitOption"::Single); // Filter for merging/splitting status
 
                         if UnitRec.IsEmpty then begin
@@ -108,7 +110,9 @@ page 50317 "Merged Units Card"
                         // Apply filters to show only units that are free and have the merging/splitting status as "Single"
                         UnitRec.Reset();
                         UnitRec.SetRange("Property ID", Rec."Property ID");
-                        UnitRec.SetRange("Unit Status", 'Free'); // Filter for free units
+                        // UnitRec.SetRange("Unit Status", 'Free'); // Filter for free units
+                        UnitRec.SetRange("Unit Status", UnitRec."Unit Status"::Free);
+
                         UnitRec.SetRange("MergeSplitOption", UnitRec."MergeSplitOption"::Single); // Filter for merging/splitting status
 
                         if UnitRec.IsEmpty then begin
@@ -295,7 +299,9 @@ page 50317 "Merged Units Card"
                             ItemRec.SetFilter("No.", SelectedUnits); // Apply filter to the selected units
                             if ItemRec.FindSet() then begin
                                 repeat
-                                    ItemRec."Unit Status" := 'Free'; // Set Unit Status to Free
+                                    // ItemRec."Unit Status" := 'Free'; // Set Unit Status to Free
+                                    ItemRec."Unit Status" := ItemRec."Unit Status"::Free;
+
                                     ItemRec."MergeSplitOption" := ItemRec."MergeSplitOption"::Single;
                                     ItemRec."Merged Unit ID" := 0; // Set Merging/Splitting to Single
                                     ItemRec.Modify(); // Save changes to the Item record

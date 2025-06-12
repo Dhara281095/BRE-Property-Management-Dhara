@@ -374,7 +374,9 @@ pageextension 50102 UnitManagement extends "O365 Activities"
     var
         PropertyRec: Record Item; // Replace with your actual Property Table
     begin
-        PropertyRec.SetRange("Unit Status", 'Free'); // Filter by Vacant status
+        // PropertyRec.SetRange("Unit Status", 'Free'); // Filter by Vacant status
+        PropertyRec.SetRange("Unit Status", PropertyRec."Unit Status"::Free);
+
         exit(PropertyRec.Count()); // Return the count of vacant properties
     end;
 
@@ -382,7 +384,9 @@ pageextension 50102 UnitManagement extends "O365 Activities"
     var
         PropertyRec: Record Item; // Replace with your actual Property Table
     begin
-        PropertyRec.SetRange("Unit Status", 'Selected'); // Filter by Vacant status
+        // PropertyRec.SetRange("Unit Status", 'Selected'); // Filter by Vacant status
+        PropertyRec.SetRange("Unit Status", PropertyRec."Unit Status"::Selected);
+
         exit(PropertyRec.Count()); // Return the count of vacant properties
     end;
 
@@ -390,7 +394,9 @@ pageextension 50102 UnitManagement extends "O365 Activities"
     var
         PropertyRec: Record Item; // Replace with your actual Property Table
     begin
-        PropertyRec.SetRange("Unit Status", 'Occupied'); // Filter by Vacant status
+        // PropertyRec.SetRange("Unit Status", 'Occupied'); // Filter by Vacant status
+        PropertyRec.SetRange("Unit Status", PropertyRec."Unit Status"::Occupied);
+
         exit(PropertyRec.Count()); // Return the count of vacant properties
     end;
 

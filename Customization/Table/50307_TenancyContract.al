@@ -11,20 +11,23 @@ table 50307 "Tenancy Contract"
         {
             DataClassification = ToBeClassified;
             Caption = 'Owner Name';
-            TableRelation = "Owner Profile"."Full Name";
+            TableRelation = "Owner Profile";
             trigger OnValidate()
             var
                 OwnerRec: Record "Owner Profile";
+                ownerID: Integer;
             begin
+                Evaluate(ownerID, "Owner's Name");
                 if "Owner's Name" <> '' then begin
                     OwnerRec.Reset();
-                    OwnerRec.SetRange("Full Name", "Owner's Name");
-                    if OwnerRec.FindFirst() then
+                    OwnerRec.SetRange("Owner ID", ownerID);
+                    if OwnerRec.FindFirst() then begin
+                        "Owner's Name" := OwnerRec."Full Name"; // Assuming Full Name is the field in Owner Profile
                         "Owner ID" := OwnerRec."Owner ID"; // Assuming Owner ID is the primary key
+                    end;
                 end;
             end;
         }
-
         field(50101; "Lessor's Name"; Text[100])
         {
             DataClassification = ToBeClassified;
@@ -761,17 +764,28 @@ table 50307 "Tenancy Contract"
                 // Handle logic for Unit ID
                 if "Unit ID" <> '' then begin
                     // Retrieve the item record based on the Unit ID
+                    // if ItemRec.Get("Unit ID") then begin
+                    //     case "Tenant Contract Status" of
+                    //         "Tenant Contract Status"::Active:
+                    //             ItemRec."Unit Status" := 'Occupied';
+                    //         "Tenant Contract Status"::Terminated:
+                    //             ItemRec."Unit Status" := 'Free';
+                    //         "Tenant Contract Status"::Suspended:
+                    //             ItemRec."Unit Status" := 'Occupied';
+                    //         "Tenant Contract Status"::"Under Suspension-Unit Released":
+                    //             ItemRec."Unit Status" := 'Free';
+
+                    //     end;
+
                     if ItemRec.Get("Unit ID") then begin
                         case "Tenant Contract Status" of
-                            "Tenant Contract Status"::Active:
-                                ItemRec."Unit Status" := 'Occupied';
-                            "Tenant Contract Status"::Terminated:
-                                ItemRec."Unit Status" := 'Free';
+                            "Tenant Contract Status"::Active,
                             "Tenant Contract Status"::Suspended:
-                                ItemRec."Unit Status" := 'Occupied';
-                            "Tenant Contract Status"::"Under Suspension-Unit Released":
-                                ItemRec."Unit Status" := 'Free';
+                                ItemRec."Unit Status" := ItemRec."Unit Status"::Occupied;
 
+                            "Tenant Contract Status"::Terminated,
+                            "Tenant Contract Status"::"Under Suspension-Unit Released":
+                                ItemRec."Unit Status" := ItemRec."Unit Status"::Free;
                         end;
                         ItemRec.Modify();
                     end;
@@ -812,16 +826,27 @@ table 50307 "Tenancy Contract"
                             ItemRec.SetRange("Merged Unit ID", MergeUnitRec."Merged Unit ID");
                             if ItemRec.FindSet() then begin
                                 repeat
+                                    // case "Tenant Contract Status" of
+                                    //     "Tenant Contract Status"::Active:
+                                    //         ItemRec."Unit Status" := 'Occupied';
+                                    //     "Tenant Contract Status"::Terminated:
+                                    //         ItemRec."Unit Status" := 'Free';
+                                    //     "Tenant Contract Status"::Suspended:
+                                    //         ItemRec."Unit Status" := 'Occupied';
+                                    //     "Tenant Contract Status"::"Under Suspension-Unit Released":
+                                    //         ItemRec."Unit Status" := 'Free';
+                                    // end;
+
                                     case "Tenant Contract Status" of
-                                        "Tenant Contract Status"::Active:
-                                            ItemRec."Unit Status" := 'Occupied';
-                                        "Tenant Contract Status"::Terminated:
-                                            ItemRec."Unit Status" := 'Free';
-                                        "Tenant Contract Status"::Suspended:
-                                            ItemRec."Unit Status" := 'Occupied';
-                                        "Tenant Contract Status"::"Under Suspension-Unit Released":
-                                            ItemRec."Unit Status" := 'Free';
+                                        "Tenant Contract Status"::Active,
+                                          "Tenant Contract Status"::Suspended:
+                                            ItemRec."Unit Status" := ItemRec."Unit Status"::Occupied;
+
+                                        "Tenant Contract Status"::Terminated,
+                                            "Tenant Contract Status"::"Under Suspension-Unit Released":
+                                            ItemRec."Unit Status" := ItemRec."Unit Status"::Free;
                                     end;
+
                                     ItemRec.Modify();
                                 until ItemRec.Next() = 0;
                             end;
@@ -1598,14 +1623,14 @@ table 50307 "Tenancy Contract"
         {
             DataClassification = ToBeClassified;
             Caption = 'Renewal Notification to Tenant';
-            Editable = false;
+            Editable = true;
 
         }
         field(50194; "Tenant Loyalty Check Reminder"; Integer)
         {
             DataClassification = ToBeClassified;
             Caption = 'Tenant Loyalty Check Reminder';
-            Editable = false;
+            Editable = true;
 
         }
         field(50195; "Payment Reminder"; Integer)

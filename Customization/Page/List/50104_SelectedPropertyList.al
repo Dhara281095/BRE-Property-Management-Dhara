@@ -7,7 +7,7 @@ page 50104 "Selected Unit List"
     UsageCategory = Lists;
     // CardPageId = 30;
 
-    SourceTableView = where("Unit Status" = const('Selected'));
+    SourceTableView = where("Unit Status" = const(Selected));
 
     InsertAllowed = false;
     ModifyAllowed = false;
@@ -61,11 +61,16 @@ page 50104 "Selected Unit List"
         }
     }
 
+    // trigger OnOpenPage();
+    // begin
+    //     Rec.SetRange("Unit Status", 'Selected'); // Filter for only vacant properties
+    // end;
+
+
     trigger OnOpenPage();
     begin
-        Rec.SetRange("Unit Status", 'Selected'); // Filter for only vacant properties
+        Rec.SetRange("Unit Status", Rec."Unit Status"::Selected); // ✅ Filters for "Selected" units
     end;
-
 
 
 }
