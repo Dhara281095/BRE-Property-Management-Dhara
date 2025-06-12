@@ -33,10 +33,10 @@ page 50305 "Property Registration Card"
                     end;
                 }
 
-                field("Description"; rec."Description")
-                {
-                    ApplicationArea = All;
-                }
+                // field("Description"; rec."Description")
+                // {
+                //     ApplicationArea = All;
+                // }
 
                 field("Property Name"; rec."Property Name")
                 {
@@ -179,6 +179,7 @@ page 50305 "Property Registration Card"
 
             group("WorkflowFrequencys")
             {
+                Caption = 'List of Workflow Frequency';
                 part("Workflow Frequency"; "Workflow Frequency PR Card")
                 {
                     SubPageLink = "Company ID" = FIELD("Company ID"),

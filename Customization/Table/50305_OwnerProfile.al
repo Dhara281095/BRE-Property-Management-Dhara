@@ -23,7 +23,7 @@ table 50100 "Owner Profile"
             DataClassification = ToBeClassified;
             Caption = 'Nationality';
         }
-        field(50103; "Emirates ID"; Code[15])
+        field(50103; "Emirates ID"; Code[25])
         {
             DataClassification = ToBeClassified;
             Caption = 'Emirates ID';
@@ -122,7 +122,7 @@ table 50100 "Owner Profile"
 
     keys
     {
-        key(PK; "Owner ID", "Full Name")
+        key(PK; "Owner ID")
         {
             Clustered = true;
         }
