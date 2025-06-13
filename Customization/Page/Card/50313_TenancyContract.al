@@ -1591,7 +1591,7 @@ page 50313 "Tenancy Contract Card"
                 field("Tenant Contract Status"; rec."Tenant Contract Status")
                 {
                     ApplicationArea = All;
-                    Editable = true;
+                    Editable = false;
 
                     trigger OnValidate()
                     var
