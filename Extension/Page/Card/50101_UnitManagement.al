@@ -99,6 +99,8 @@ pageextension 50101 Items extends "Item Card"
 
 
 
+
+
         // addafter("Last Date Modified")
         // {
         //     field(GTIN_; rec.GTIN_)
@@ -181,7 +183,7 @@ pageextension 50101 Items extends "Item Card"
                     Editable = editablefalsefieldNonInventoryType;
                     trigger OnValidate()
                     begin
-                        AutoGenerateUnitName(); // Call to auto-generate the Unit Name when Merge Units changes
+                        AutoGenerateUnitName(Rec); // Call to auto-generate the Unit Name when Merge Units changes
                     end;
 
                 }
@@ -193,7 +195,7 @@ pageextension 50101 Items extends "Item Card"
                     Editable = editablefalsefieldNonInventoryType;
                     trigger OnValidate()
                     begin
-                        AutoGenerateUnitName(); // Call to auto-generate the Unit Name when Merge Units changes
+                        AutoGenerateUnitName(Rec); // Call to auto-generate the Unit Name when Merge Units changes
                     end;
                 }
                 field("Community"; Rec.Community)
@@ -204,7 +206,7 @@ pageextension 50101 Items extends "Item Card"
                     Editable = editablefalsefieldNonInventoryType;
                     trigger OnValidate()
                     begin
-                        AutoGenerateUnitName(); // Call to auto-generate the Unit Name when Merge Units changes
+                        AutoGenerateUnitName(Rec); // Call to auto-generate the Unit Name when Merge Units changes
                     end;
                 }
                 field("Property ID"; Rec."Property ID") // OOB Field (or create custom if not OOB)
@@ -215,7 +217,7 @@ pageextension 50101 Items extends "Item Card"
                     Editable = editablefalsefieldNonInventoryType;
                     trigger OnValidate()
                     begin
-                        AutoGenerateUnitName();
+                        AutoGenerateUnitName(Rec);
                     end;
                 }
 
@@ -240,7 +242,7 @@ pageextension 50101 Items extends "Item Card"
                     Editable = editablefalsefieldNonInventoryType;
                     trigger OnValidate()
                     begin
-                        AutoGenerateUnitName(); // Call to auto-generate the Unit Name when Merge Units changes
+                        AutoGenerateUnitName(Rec); // Call to auto-generate the Unit Name when Merge Units changes
                     end;
                 }
 
@@ -323,6 +325,16 @@ pageextension 50101 Items extends "Item Card"
 
     actions
     {
+
+        modify(CopyItem)
+        {
+            trigger OnAfterAction()
+            var
+                myInt: Integer;
+            begin
+                AutoGenerateUnitName(Rec);
+            end;
+        }
         addafter("Item Journal")
         {
             action("Add New Line")
@@ -350,10 +362,7 @@ pageextension 50101 Items extends "Item Card"
         }
     }
 
-
-
-
-    procedure AutoGenerateUnitName()
+    procedure AutoGenerateUnitName(var TargetItem: Record Item)
     var
         PropertyCode: Text;
         UnitID: Text;
@@ -371,13 +380,13 @@ pageextension 50101 Items extends "Item Card"
         // FixedNumber := 101;
 
         // Get Property Name and Format it
-        PropertyCode := FormatName(Rec."Property Name");
+        PropertyCode := FormatName(TargetItem."Property Name");
 
         // Convert Option fields to Text using Format
-        Country := Format(Rec.Country); // Assuming Rec has an "Option" field for Country
-        Emirates := Format(Rec.Emirate); // Assuming Rec has an "Option" field for Emirates
-        Community := Format(Rec."Community"); // Assuming Rec has an "Option" field for Community
-        Unitnumber := Format(Rec."Unit Number"); // Assuming "Unit Number" is a field in the record
+        Country := Format(TargetItem.Country); // Assuming Rec has an "Option" field for Country
+        Emirates := Format(TargetItem.Emirate); // Assuming Rec has an "Option" field for Emirates
+        Community := Format(TargetItem."Community"); // Assuming Rec has an "Option" field for Community
+        Unitnumber := Format(TargetItem."Unit Number"); // Assuming "Unit Number" is a field in the record
 
 
         // Format Country, Emirates, and Community the same way as Property Name
@@ -387,13 +396,14 @@ pageextension 50101 Items extends "Item Card"
         UnitnumberCode := Format(Unitnumber); // Assuming "Unit Number" is a field in the record
 
         // Step 1: Generate Unit Name: PropertyCode-UnitType-FixedNumber
-        Rec."Unit Name" := PropertyCode + '-SU-' + Format(Rec.FixedNumber); // Assuming 'SU' is the Unit Type for Single Unit
+        TargetItem."Unit Name" := PropertyCode + '-SU-' + Format(TargetItem.FixedNumber); // Assuming 'SU' is the Unit Type for Single Unit
 
         // Step 2: Generate Unit ID: CountryCode-EmiratesCode-CommunityCode-PropertyCode-FixedNumber
         UnitID := CountryCode + '-' + EmiratesCode + '-' + CommunityCode + '-' + PropertyCode + '-' + UnitnumberCode;
 
         // Set the Unit ID in the record
-        Rec.UnitID := UnitID;
+        TargetItem.UnitID := UnitID;
+        TargetItem.Modify();
     end;
 
 
@@ -458,6 +468,12 @@ pageextension 50101 Items extends "Item Card"
     begin
         CurrPage."Document Attachments".Page.SetUnitId(Rec."No.");
         isVisible := true;
+        if Rec."Property Name" = '' then begin
+            exit; // Default value for new records
+        end
+        else if Rec."Property Name" <> '' then begin
+            AutoGenerateUnitName(Rec); // Call to auto-generate the Unit Name when a new record is inserted
+        end;
     end;
 
     trigger OnAfterGetRecord()
@@ -484,6 +500,8 @@ pageextension 50101 Items extends "Item Card"
         editablefalsefieldNonInventoryType := editablefalseNonInventory();
 
     end;
+
+
 
 
     procedure SetPrimaryType(): Boolean

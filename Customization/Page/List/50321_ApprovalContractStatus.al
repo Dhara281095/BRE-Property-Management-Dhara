@@ -105,7 +105,7 @@ page 50321 "Approval Contract Status List"
                 begin
                     if Rec.Status = 'Pending' then begin
                         SelectedRec := Rec;
-                        SelectedRec.Status := 'Approve';
+                        SelectedRec.Status := 'Approved';
                         SelectedRec.Modify();
                         StatusUpdateCU.SyncToTenancyContract(SelectedRec); // ✅
 
