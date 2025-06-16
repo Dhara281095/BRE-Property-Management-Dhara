@@ -102,12 +102,14 @@ page 50321 "Approval Contract Status List"
                 var
                     SelectedRec: Record "Approval Contract Status";
                     StatusUpdateCU: Codeunit "Contract Status Synchronizer";
+                    ContractRenewal: Codeunit "Contract Renewal Response";
                 begin
                     if Rec.Status = 'Pending' then begin
                         SelectedRec := Rec;
                         SelectedRec.Status := 'Approved';
                         SelectedRec.Modify();
                         StatusUpdateCU.SyncToTenancyContract(SelectedRec); // ✅
+                        ContractRenewal.SyncToTenancyContractRenewal(SelectedRec);
 
 
                         Message('Request Approved Successfully');
@@ -130,6 +132,7 @@ page 50321 "Approval Contract Status List"
                 var
                     SelectedRec: Record "Approval Contract Status";
                     StatusUpdateCU: Codeunit "Contract Status Synchronizer";
+                    ContractRenewal: Codeunit "Contract Renewal Response";
                 begin
                     if Rec.Status = 'Pending' then begin
                         SelectedRec := Rec;
@@ -139,6 +142,7 @@ page 50321 "Approval Contract Status List"
                         Commit();
                         CurrPage.Update();
                         StatusUpdateCU.SyncToTenancyContract(SelectedRec); // ✅
+                        ContractRenewal.SyncToTenancyContractRenewal(SelectedRec);
 
                     end else
                         Message('Selected record is not in "Pending" status.');
