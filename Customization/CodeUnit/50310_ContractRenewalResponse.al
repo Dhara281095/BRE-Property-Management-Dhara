@@ -14,7 +14,7 @@ codeunit 50310 "Contract Renewal Response"
         end;
 
         // Handle Approved
-        if ContractStatusRec.Status = 'Approve' then begin
+        if ContractStatusRec.Status = 'Approved' then begin
             case ContractStatusRec."Tenancy Contract Status" of
                 'Contract Renewal':
                     TenancyContract."Renewal Contract Status" := TenancyContract."Renewal Contract Status"::"Renewal of Original Contract ID";

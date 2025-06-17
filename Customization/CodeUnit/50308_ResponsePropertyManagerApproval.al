@@ -14,7 +14,7 @@ codeunit 50308 "Contract Status Synchronizer"
         end;
 
         // Handle Approved
-        if ContractStatusRec.Status = 'Approve' then begin
+        if ContractStatusRec.Status = 'Approved' then begin
             case ContractStatusRec."Tenancy Contract Status" of
                 'Activation':
                     TenancyContract."Tenant Contract Status" := TenancyContract."Tenant Contract Status"::Active;
