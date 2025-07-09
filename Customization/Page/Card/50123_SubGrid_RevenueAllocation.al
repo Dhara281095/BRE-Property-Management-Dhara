@@ -109,6 +109,10 @@ page 50123 "Revenue Allocation SubGrid"
                 {
                     ApplicationArea = All;
                 }
+                field("Per Month Rent"; Rec."Per Month Rent")
+                {
+                    ApplicationArea = All;
+                }
                 field("Total Value"; Rec."Total Value")
                 {
                     ApplicationArea = All;

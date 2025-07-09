@@ -52,6 +52,11 @@ table 50701 "testData"
             Caption = 'Access Validity (Days)';
             Editable = true;
         }
+        field(50112; "Revenue Methods"; Option)
+        {
+            OptionMembers = " ","Fixed Monthly Rent","Per Day Rent";
+            Caption = 'Revenue Methods';
+        }
     }
 
     keys
