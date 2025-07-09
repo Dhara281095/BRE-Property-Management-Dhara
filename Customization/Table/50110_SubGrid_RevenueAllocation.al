@@ -175,10 +175,10 @@ table 50110 "Revenue Allocation SubGrid"
             Caption = 'Per Month Rent';
             Editable = false;
         }
-        field(50128; "Single Unit Names"; Code[20])
+        field(50128; "Single Unit Names"; Text[500])
         {
             DataClassification = ToBeClassified;
-            Caption = 'Single Unit Names';
+            Caption = 'Single Unit Name';
             Editable = false;
         }
         field(50129; "Description"; Text[100])

@@ -528,6 +528,14 @@ page 50122 "Revenue Allocation Card"
         FilteredContractRec."Grace Days" := ContractRec."Grace Period";
         FilteredContractRec."Grace Start Date" := ContractRec."Grace Start Date";
         FilteredContractRec."Grace End Date" := ContractRec."Grace End Date";
+        FilteredContractRec.Description := 'Regular';
+
+        if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Single Unit" then
+            FilteredContractRec."Single Unit Names" := ContractRec."Unit Name"
+        else if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Merge Unit" then
+            FilteredContractRec."Single Unit Names" := ContractRec."Single Unit Name"
+        else
+            FilteredContractRec."Single Unit Names" := '';
 
         // Add Termination Date
         if TerminationDate = 0D then
@@ -578,6 +586,14 @@ page 50122 "Revenue Allocation Card"
             FilteredContractRec."Grace Days" := ContractRec."Grace Period";
             FilteredContractRec."Grace Start Date" := ContractRec."Grace Start Date";
             FilteredContractRec."Grace End Date" := ContractRec."Grace End Date";
+            FilteredContractRec.Description := 'Grace Period';
+
+            if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Single Unit" then
+                FilteredContractRec."Single Unit Names" := ContractRec."Unit Name"
+            else if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Merge Unit" then
+                FilteredContractRec."Single Unit Names" := ContractRec."Single Unit Name"
+            else
+                FilteredContractRec."Single Unit Names" := '';
 
             // Add Termination Date
             if TerminationDate = 0D then
@@ -875,6 +891,14 @@ page 50122 "Revenue Allocation Card"
         FilteredContractRec."Grace Days" := ContractRec."Grace Period";
         FilteredContractRec."Grace Start Date" := ContractRec."Grace Start Date";
         FilteredContractRec."Grace End Date" := ContractRec."Grace End Date";
+        FilteredContractRec.Description := 'Regular';
+
+        if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Single Unit" then
+            FilteredContractRec."Single Unit Names" := ContractRec."Unit Name"
+        else if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Merge Unit" then
+            FilteredContractRec."Single Unit Names" := ContractRec."Single Unit Name"
+        else
+            FilteredContractRec."Single Unit Names" := '';
 
         // Add Termination Date
         if TerminationDate = 0D then
@@ -924,7 +948,14 @@ page 50122 "Revenue Allocation Card"
             FilteredContractRec."Grace Days" := ContractRec."Grace Period";
             FilteredContractRec."Grace Start Date" := ContractRec."Grace Start Date";
             FilteredContractRec."Grace End Date" := ContractRec."Grace End Date";
+            FilteredContractRec.Description := 'Missed Revenue';
 
+            if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Single Unit" then
+                FilteredContractRec."Single Unit Names" := ContractRec."Unit Name"
+            else if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Merge Unit" then
+                FilteredContractRec."Single Unit Names" := ContractRec."Single Unit Name"
+            else
+                FilteredContractRec."Single Unit Names" := '';
             // Add Termination Date
             if TerminationDate = 0D then
                 FilteredContractRec."Termination Date" := 0D
@@ -1014,6 +1045,7 @@ page 50122 "Revenue Allocation Card"
         FinancialYear: Integer;                                     // Selected financial year
         LineNo: Integer;                                            // Line number for allocations
         TerminationDate: Date;                                      // Contract termination date
+        SuspensionDate: Date;
         ShouldProcessContract: Boolean;                             // Flag to determine if contract should be processed
     begin
         // Clear any existing allocation data before processing
@@ -1028,13 +1060,16 @@ page 50122 "Revenue Allocation Card"
         SelectedMonthEnd := CALCDATE('<+1M-1D>', SelectedMonthStart);
 
         // Filter contracts to include both Active and Terminated contracts
-        ContractRec.SetFilter(ContractRec."Tenant Contract Status", '%1|%2',
+        ContractRec.SetFilter(ContractRec."Tenant Contract Status", '%1|%2|%3',
             ContractRec."Tenant Contract Status"::Active,
-            ContractRec."Tenant Contract Status"::Terminated);
+            ContractRec."Tenant Contract Status"::Terminated,
+            ContractRec."Tenant Contract Status"::Suspended);
 
         if ContractRec.FindSet() then begin
             repeat
                 // Flag to determine if contract should be processed
+                TerminationDate := 0D;
+                SuspensionDate := 0D;
                 ShouldProcessContract := false;
 
                 // Get termination date from Final Calculation table first
@@ -1045,20 +1080,27 @@ page 50122 "Revenue Allocation Card"
                 else
                     TerminationDate := 0D;
 
+                // Get Suspension Start Date
+                SuspensionRec.Reset();
+                SuspensionRec.SetRange("Contract ID", ContractRec."Contract ID");
+                if SuspensionRec.FindFirst() then
+                    SuspensionDate := SuspensionRec.DateEffective;
+
                 // Check contract status and decide if it should be processed
                 case ContractRec."Tenant Contract Status" of
                     ContractRec."Tenant Contract Status"::Active:
                         ShouldProcessContract := true;
 
                     ContractRec."Tenant Contract Status"::Terminated:
-                        begin
-                            // Process terminated contract only if termination date falls in selected month
-                            if (TerminationDate <> 0D) and
-                               (TerminationDate >= SelectedMonthStart) and
-                               (TerminationDate <= SelectedMonthEnd) then
-                                ShouldProcessContract := true;
-                        end;
+                        if (TerminationDate >= SelectedMonthStart) and (TerminationDate <= SelectedMonthEnd) then
+                            ShouldProcessContract := true;
+
+                    ContractRec."Tenant Contract Status"::Suspended:
+                        if (SuspensionDate >= SelectedMonthStart) and
+                        (SuspensionDate <= SelectedMonthEnd) then
+                            ShouldProcessContract := true;
                 end;
+
 
                 // Process contract only if it meets the criteria
                 if ShouldProcessContract then begin
@@ -1435,6 +1477,13 @@ page 50122 "Revenue Allocation Card"
             FilteredContractRec."Grace Start Date" := ContractRec."Grace Start Date";
             FilteredContractRec."Grace End Date" := ContractRec."Grace End Date";
 
+            if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Single Unit" then
+                FilteredContractRec."Single Unit Names" := ContractRec."Unit Name"
+            else if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Merge Unit" then
+                FilteredContractRec."Single Unit Names" := ContractRec."Single Unit Name"
+            else
+                FilteredContractRec."Single Unit Names" := '';
+
             // Add Termination Date
             if TerminationDate = 0D then
                 FilteredContractRec."Termination Date" := 0D
@@ -1743,10 +1792,20 @@ page 50122 "Revenue Allocation Card"
         FilteredContractRec."Customer Name" := ContractRec."Customer Name";
         FilteredContractRec."Contract Start Date" := ContractRec."Contract Start Date";
         FilteredContractRec."Contract End Date" := ContractRec."Contract End Date";
-        FilteredContractRec."Single Unit Names" := ContractRec."Single Unit Name";
+
+        if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Single Unit" then
+            FilteredContractRec."Single Unit Names" := ContractRec."Unit Name"
+        else if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Merge Unit" then
+            FilteredContractRec."Single Unit Names" := ContractRec."Single Unit Name"
+        else
+            FilteredContractRec."Single Unit Names" := '';
+
+
+        //FilteredContractRec."Single Unit Names" := ContractRec."Single Unit Name";
         FilteredContractRec."Grace Days" := ContractRec."Grace Period";
         FilteredContractRec."Grace Start Date" := ContractRec."Grace Start Date";
         FilteredContractRec."Grace End Date" := ContractRec."Grace End Date";
+        FilteredContractRec.Description := 'Regular';
 
         // Add Termination Date
         if TerminationDate = 0D then
@@ -1797,10 +1856,18 @@ page 50122 "Revenue Allocation Card"
             FilteredContractRec."Customer Name" := ContractRec."Customer Name";
             FilteredContractRec."Contract Start Date" := ContractRec."Contract Start Date";
             FilteredContractRec."Contract End Date" := ContractRec."Contract End Date";
-            FilteredContractRec."Single Unit Names" := ContractRec."Single Unit Name";
             FilteredContractRec."Grace Days" := ContractRec."Grace Period";
             FilteredContractRec."Grace Start Date" := ContractRec."Grace Start Date";
             FilteredContractRec."Grace End Date" := ContractRec."Grace End Date";
+            FilteredContractRec.Description := 'Grace Period';
+
+            if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Single Unit" then
+                FilteredContractRec."Single Unit Names" := ContractRec."Unit Name"
+            else if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Merge Unit" then
+                FilteredContractRec."Single Unit Names" := ContractRec."Single Unit Name"
+            else
+                FilteredContractRec."Single Unit Names" := '';
+
 
             // Add Termination Date
             if TerminationDate = 0D then
@@ -2138,12 +2205,20 @@ page 50122 "Revenue Allocation Card"
         FilteredContractRec."Contract Id" := ContractRec."Contract ID";
         FilteredContractRec."Contract Tenure" := ContractRec."Contract Tenor";
         FilteredContractRec."Customer Name" := ContractRec."Customer Name";
-        FilteredContractRec."Single Unit Names" := ContractRec."Single Unit Name";
         FilteredContractRec."Contract Start Date" := ContractRec."Contract Start Date";
         FilteredContractRec."Contract End Date" := ContractRec."Contract End Date";
         FilteredContractRec."Grace Days" := ContractRec."Grace Period";
         FilteredContractRec."Grace Start Date" := ContractRec."Grace Start Date";
         FilteredContractRec."Grace End Date" := ContractRec."Grace End Date";
+        FilteredContractRec.Description := 'Regular';
+
+        if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Single Unit" then
+            FilteredContractRec."Single Unit Names" := ContractRec."Unit Name"
+        else if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Merge Unit" then
+            FilteredContractRec."Single Unit Names" := ContractRec."Single Unit Name"
+        else
+            FilteredContractRec."Single Unit Names" := '';
+
 
         // Add Termination Date
         if TerminationDate = 0D then
@@ -2191,11 +2266,18 @@ page 50122 "Revenue Allocation Card"
             FilteredContractRec."Contract Tenure" := ContractRec."Contract Tenor";
             FilteredContractRec."Customer Name" := ContractRec."Customer Name";
             FilteredContractRec."Contract Start Date" := ContractRec."Contract Start Date";
-            FilteredContractRec."Single Unit Names" := ContractRec."Single Unit Name";
             FilteredContractRec."Contract End Date" := ContractRec."Contract End Date";
             FilteredContractRec."Grace Days" := ContractRec."Grace Period";
             FilteredContractRec."Grace Start Date" := ContractRec."Grace Start Date";
             FilteredContractRec."Grace End Date" := ContractRec."Grace End Date";
+            FilteredContractRec.Description := 'Missed Revenue';
+
+            if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Single Unit" then
+                FilteredContractRec."Single Unit Names" := ContractRec."Unit Name"
+            else if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Merge Unit" then
+                FilteredContractRec."Single Unit Names" := ContractRec."Single Unit Name"
+            else
+                FilteredContractRec."Single Unit Names" := '';
 
             // Add Termination Date
             if TerminationDate = 0D then
@@ -2249,6 +2331,7 @@ page 50122 "Revenue Allocation Card"
         FinancialYear: Integer;                                     // Selected financial year
         LineNo: Integer;                                            // Line number for allocations
         TerminationDate: Date;                                      // Contract termination date
+        SuspensionDate: Date;
         ShouldProcessContract: Boolean;                             // Flag to determine if contract should be processed
     begin
         // Clear any existing allocation data before processing
@@ -2263,13 +2346,16 @@ page 50122 "Revenue Allocation Card"
         SelectedMonthEnd := CALCDATE('<+1M-1D>', SelectedMonthStart);
 
         // Filter contracts to include both Active and Terminated contracts
-        ContractRec.SetFilter(ContractRec."Tenant Contract Status", '%1|%2',
+        ContractRec.SetFilter(ContractRec."Tenant Contract Status", '%1|%2|%3',
             ContractRec."Tenant Contract Status"::Active,
-            ContractRec."Tenant Contract Status"::Terminated);
+            ContractRec."Tenant Contract Status"::Terminated,
+            ContractRec."Tenant Contract Status"::Suspended);
 
         if ContractRec.FindSet() then begin
             repeat
                 // Flag to determine if contract should be processed
+                TerminationDate := 0D;
+                SuspensionDate := 0D;
                 ShouldProcessContract := false;
 
                 // Get termination date from Final Calculation table first
@@ -2280,20 +2366,27 @@ page 50122 "Revenue Allocation Card"
                 else
                     TerminationDate := 0D;
 
+                // Get Suspension Start Date
+                SuspensionRec.Reset();
+                SuspensionRec.SetRange("Contract ID", ContractRec."Contract ID");
+                if SuspensionRec.FindFirst() then
+                    SuspensionDate := SuspensionRec.DateEffective;
+
                 // Check contract status and decide if it should be processed
                 case ContractRec."Tenant Contract Status" of
                     ContractRec."Tenant Contract Status"::Active:
                         ShouldProcessContract := true;
 
                     ContractRec."Tenant Contract Status"::Terminated:
-                        begin
-                            // Process terminated contract only if termination date falls in selected month
-                            if (TerminationDate <> 0D) and
-                               (TerminationDate >= SelectedMonthStart) and
-                               (TerminationDate <= SelectedMonthEnd) then
-                                ShouldProcessContract := true;
-                        end;
+                        if (TerminationDate >= SelectedMonthStart) and (TerminationDate <= SelectedMonthEnd) then
+                            ShouldProcessContract := true;
+
+                    ContractRec."Tenant Contract Status"::Suspended:
+                        if (SuspensionDate >= SelectedMonthStart) and
+                        (SuspensionDate <= SelectedMonthEnd) then
+                            ShouldProcessContract := true;
                 end;
+
 
                 // Process contract only if it meets the criteria
                 if ShouldProcessContract then begin
@@ -2303,10 +2396,10 @@ page 50122 "Revenue Allocation Card"
                         (ContractRec."Contract End Date" >= SelectedMonthStart)) then begin
 
                         // Handle missed allocation from previous month (if contract started mid-month)
-                        HandleMissedAllocation(ContractRec, MonthNo, FinancialYear);
+                        HandleMissedAllocations(ContractRec, MonthNo, FinancialYear);
 
                         // Handle suspension recovery allocation (new functionality)
-                        HandleSuspensionRecoveryAllocation(ContractRec, MonthNo, FinancialYear);
+                        HandleSuspensionRecoveryAllocations(ContractRec, MonthNo, FinancialYear);
 
                         // Process Single Unit Rent records
                         SingleUnitRent.Reset();
@@ -2314,7 +2407,7 @@ page 50122 "Revenue Allocation Card"
                         if SingleUnitRent.FindSet() then begin
                             repeat
                                 // Create allocation line for this Single Unit Rent record
-                                InsertAllocationLine(
+                                InsertAllocationLines(
                                     ContractRec,
                                     SingleUnitRent."Start Date",
                                     SingleUnitRent."End Date",
@@ -2336,7 +2429,7 @@ page 50122 "Revenue Allocation Card"
                         if MultiUnitRent.FindSet() then begin
                             repeat
                                 // Create allocation line for this Multi Unit Rent record
-                                InsertAllocationLine(
+                                InsertAllocationLines(
                                     ContractRec,
                                     MultiUnitRent."SL_Start Date",
                                     MultiUnitRent."SL_End Date",
@@ -2358,7 +2451,7 @@ page 50122 "Revenue Allocation Card"
                         if MergedSingleRent.FindSet() then begin
                             repeat
                                 // Create allocation line for this Merged Single Rent record
-                                InsertAllocationLine(
+                                InsertAllocationLines(
                                     ContractRec,
                                     MergedSingleRent."MS_Start Date",
                                     MergedSingleRent."MS_End Date",
@@ -2380,7 +2473,7 @@ page 50122 "Revenue Allocation Card"
                         if MergedMultiRent.FindSet() then begin
                             repeat
                                 // Create allocation line for this Merged Multi Rent record
-                                InsertAllocationLine(
+                                InsertAllocationLines(
                                     ContractRec,
                                     MergedMultiRent."MD_Start Date",
                                     MergedMultiRent."MD_End Date",
@@ -2402,7 +2495,7 @@ page 50122 "Revenue Allocation Card"
                         if SpecialRent.FindSet() then begin
                             repeat
                                 // Create allocation line for this Special Rent record
-                                InsertAllocationLine(
+                                InsertAllocationLines(
                                     ContractRec,
                                     SpecialRent."ML_Start Date",
                                     SpecialRent."ML_End Date",
@@ -2665,12 +2758,18 @@ page 50122 "Revenue Allocation Card"
             FilteredContractRec."Contract Id" := ContractRec."Contract ID";
             FilteredContractRec."Contract Tenure" := ContractRec."Contract Tenor";
             FilteredContractRec."Customer Name" := ContractRec."Customer Name";
-            FilteredContractRec."Single Unit Names" := ContractRec."Single Unit Name";
             FilteredContractRec."Contract Start Date" := ContractRec."Contract Start Date";
             FilteredContractRec."Contract End Date" := ContractRec."Contract End Date";
             FilteredContractRec."Grace Days" := ContractRec."Grace Period";
             FilteredContractRec."Grace Start Date" := ContractRec."Grace Start Date";
             FilteredContractRec."Grace End Date" := ContractRec."Grace End Date";
+
+            if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Single Unit" then
+                FilteredContractRec."Single Unit Names" := ContractRec."Unit Name"
+            else if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Merge Unit" then
+                FilteredContractRec."Single Unit Names" := ContractRec."Single Unit Name"
+            else
+                FilteredContractRec."Single Unit Names" := '';
 
             // Add Termination Date
             if TerminationDate = 0D then
