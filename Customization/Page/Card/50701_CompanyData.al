@@ -120,6 +120,11 @@ page 50701 "Company Data"
                     ApplicationArea = All;
                     Caption = 'Environment Name';
                 }
+                field("Revenue Methods"; Rec."Revenue Methods")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Revenue Methods';
+                }
             }
 
             group("WorkflowFrequency")

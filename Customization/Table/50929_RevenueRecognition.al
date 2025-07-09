@@ -430,7 +430,7 @@ table 50929 "Revenue Recognition"
     //-----------------Calculate Total Days in Months's-----------------//
 
 
-    local procedure GetDaysInMonthss(CurrentDate: Date): Integer
+    procedure GetDaysInMonthss(CurrentDate: Date): Integer
     var
         Year: Integer;
         Month: Integer;
