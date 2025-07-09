@@ -21,7 +21,15 @@ page 50123 "Revenue Allocation SubGrid"
                 {
                     ApplicationArea = All;
                 }
+                field("Description"; Rec."Description")
+                {
+                    ApplicationArea = All;
+                }
                 field("Property Name"; Rec."Property Name")
+                {
+                    ApplicationArea = All;
+                }
+                field("Single Unit Names"; Rec."Single Unit Names")
                 {
                     ApplicationArea = All;
                 }
