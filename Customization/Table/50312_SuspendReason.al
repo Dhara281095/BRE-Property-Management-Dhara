@@ -165,51 +165,83 @@ table 50312 SuspendReasonTable
             trigger OnValidate()
             var
                 TenancyContract: Record "Tenancy Contract";
+                PropertyManagerApproval: Codeunit "Property Manager Approval";
             begin
-                if "Tenant Contract Status" = "Tenant Contract Status"::Suspended then begin
-                    // Validate that Proposal ID and Contract ID are set
-                    if ("Proposal ID" = 0) or ("Contract ID" = 0) then
-                        Error('Proposal ID and Contract ID must be specified.');
+                if ("Proposal ID" = 0) or ("Contract ID" = 0) then
+                    Error('Proposal ID and Contract ID must be specified.');
 
-                    // Attempt to retrieve the record with both keys
-                    if TenancyContract.Get("Proposal ID", "Contract ID") then begin
-                        // Update the field if the record exists
-                        TenancyContract."Update Contract Status" := TenancyContract."Update Contract Status"::"Initiate Suspension Process";
-                        TenancyContract.Modify();
-                    end else
-                        Error('Tenancy Contract with Proposal ID %1 and Contract ID %2 not found.', "Proposal ID", "Contract ID");
-                end else if "Tenant Contract Status" = "Tenant Contract Status"::Active then begin
-                    // Validate that Proposal ID and Contract ID are set
-                    if ("Proposal ID" = 0) or ("Contract ID" = 0) then
-                        Error('Proposal ID and Contract ID must be specified.');
+                if TenancyContract.Get("Proposal ID", "Contract ID") then begin
+                    case "Tenant Contract Status" of
+                        "Tenant Contract Status"::Suspended:
+                            TenancyContract."Update Contract Status" := TenancyContract."Update Contract Status"::"Initiate Suspension Process";
 
+                        "Tenant Contract Status"::Active:
+                            begin
+                                TenancyContract."Update Contract Status" := TenancyContract."Update Contract Status"::"Initiate Activation Process";
+                                "SuspensionEndDate" := Today;
+                            end;
 
-                    // Set SuspensionEndDate to today's date when status is set to Active
-                    "SuspensionEndDate" := TODAY;
+                        "Tenant Contract Status"::Terminate:
+                            TenancyContract."Update Contract Status" := TenancyContract."Update Contract Status"::"Initiate Termination Process";
+                    end;
 
-                    // Attempt to retrieve the record with both keys
-                    if TenancyContract.Get("Proposal ID", "Contract ID") then begin
-                        // Update the field if the record exists
+                    // Save the change and call the approval handler
+                    TenancyContract.Modify(true); // Use TRUE to ensure triggers fire
 
-
-                        TenancyContract."Update Contract Status" := TenancyContract."Update Contract Status"::"Initiate Activation Process";
-                        TenancyContract.Modify();
-                    end else
-                        Error('Tenancy Contract with Proposal ID %1 and Contract ID %2 not found.', "Proposal ID", "Contract ID");
-                end else if "Tenant Contract Status" = "Tenant Contract Status"::Terminate then begin
-                    // Validate that Proposal ID and Contract ID are set
-                    if ("Proposal ID" = 0) or ("Contract ID" = 0) then
-                        Error('Proposal ID and Contract ID must be specified.');
-
-                    // Attempt to retrieve the record with both keys
-                    if TenancyContract.Get("Proposal ID", "Contract ID") then begin
-                        // Update the field if the record exists
-                        TenancyContract."Update Contract Status" := TenancyContract."Update Contract Status"::"Initiate Termination Process";
-                        TenancyContract.Modify();
-                    end else
-                        Error('Tenancy Contract with Proposal ID %1 and Contract ID %2 not found.', "Proposal ID", "Contract ID");
-                end;
+                    // Explicitly call the approval logic in case trigger is missed
+                    PropertyManagerApproval.HandleContractStatusUpdate(TenancyContract);
+                end else
+                    Error('Tenancy Contract with Proposal ID %1 and Contract ID %2 not found.', "Proposal ID", "Contract ID");
             end;
+
+            // trigger OnValidate()
+            // var
+            //     TenancyContract: Record "Tenancy Contract";
+            // begin
+            //     if "Tenant Contract Status" = "Tenant Contract Status"::Suspended then begin
+            //         // Validate that Proposal ID and Contract ID are set
+            //         if ("Proposal ID" = 0) or ("Contract ID" = 0) then
+            //             Error('Proposal ID and Contract ID must be specified.');
+
+            //         // Attempt to retrieve the record with both keys
+            //         if TenancyContract.Get("Proposal ID", "Contract ID") then begin
+            //             // Update the field if the record exists
+            //             TenancyContract."Update Contract Status" := TenancyContract."Update Contract Status"::"Initiate Suspension Process";
+            //             TenancyContract.Modify();
+            //         end else
+            //             Error('Tenancy Contract with Proposal ID %1 and Contract ID %2 not found.', "Proposal ID", "Contract ID");
+            //     end else if "Tenant Contract Status" = "Tenant Contract Status"::Active then begin
+            //         // Validate that Proposal ID and Contract ID are set
+            //         if ("Proposal ID" = 0) or ("Contract ID" = 0) then
+            //             Error('Proposal ID and Contract ID must be specified.');
+
+
+            //         // Set SuspensionEndDate to today's date when status is set to Active
+            //         "SuspensionEndDate" := TODAY;
+
+            //         // Attempt to retrieve the record with both keys
+            //         if TenancyContract.Get("Proposal ID", "Contract ID") then begin
+            //             // Update the field if the record exists
+
+
+            //             TenancyContract."Update Contract Status" := TenancyContract."Update Contract Status"::"Initiate Activation Process";
+            //             TenancyContract.Modify();
+            //         end else
+            //             Error('Tenancy Contract with Proposal ID %1 and Contract ID %2 not found.', "Proposal ID", "Contract ID");
+            //     end else if "Tenant Contract Status" = "Tenant Contract Status"::Terminate then begin
+            //         // Validate that Proposal ID and Contract ID are set
+            //         if ("Proposal ID" = 0) or ("Contract ID" = 0) then
+            //             Error('Proposal ID and Contract ID must be specified.');
+
+            //         // Attempt to retrieve the record with both keys
+            //         if TenancyContract.Get("Proposal ID", "Contract ID") then begin
+            //             // Update the field if the record exists
+            //             TenancyContract."Update Contract Status" := TenancyContract."Update Contract Status"::"Initiate Termination Process";
+            //             TenancyContract.Modify();
+            //         end else
+            //             Error('Tenancy Contract with Proposal ID %1 and Contract ID %2 not found.', "Proposal ID", "Contract ID");
+            //     end;
+            // end;
         }
 
 
