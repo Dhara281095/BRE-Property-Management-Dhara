@@ -440,6 +440,7 @@ page 50122 "Revenue Allocation Card"
         ShouldInsertGraceLine: Boolean;
         AdjustedStartDate: Date; // 🔹 new
         AdjustedEndDate: Date;   // 🔹 new
+        SuspensionStartDateInMonth: Date; // 🔹 ADDED   
     begin
         // Check if entry should be kept based on date range
         if not ShouldKeepEntry(MultiYearStartDate, MultiYearEndDate) then
@@ -475,6 +476,18 @@ page 50122 "Revenue Allocation Card"
 
         if (TerminationDate <> 0D) and (AdjustedEndDate > TerminationDate) then
             AdjustedEndDate := TerminationDate;
+
+        // 🔹 Adjust for Suspension Start
+        SuspensionRec.Reset();
+        SuspensionRec.SetRange("Contract ID", ContractRec."Contract ID");
+        if SuspensionRec.FindFirst() then begin
+            if (SuspensionRec.DateEffective <> 0D) and
+               (SuspensionRec.DateEffective >= SelectedMonthStart) and
+               (SuspensionRec.DateEffective <= SelectedMonthEnd) then begin
+                SuspensionStartDateInMonth := SuspensionRec.DateEffective;
+                AdjustedEndDate := SuspensionRec.DateEffective - 1; // 🔹 ADDED
+            end;
+        end;
 
         if (AdjustedStartDate <= AdjustedEndDate) then
             CalculatedDays := AdjustedEndDate - AdjustedStartDate + 1
@@ -891,7 +904,7 @@ page 50122 "Revenue Allocation Card"
         FilteredContractRec."Grace Days" := ContractRec."Grace Period";
         FilteredContractRec."Grace Start Date" := ContractRec."Grace Start Date";
         FilteredContractRec."Grace End Date" := ContractRec."Grace End Date";
-        FilteredContractRec.Description := 'Regular';
+        FilteredContractRec.Description := 'Missed Revenue';
 
         if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Single Unit" then
             FilteredContractRec."Single Unit Names" := ContractRec."Unit Name"
@@ -948,7 +961,7 @@ page 50122 "Revenue Allocation Card"
             FilteredContractRec."Grace Days" := ContractRec."Grace Period";
             FilteredContractRec."Grace Start Date" := ContractRec."Grace Start Date";
             FilteredContractRec."Grace End Date" := ContractRec."Grace End Date";
-            FilteredContractRec.Description := 'Missed Revenue';
+            FilteredContractRec.Description := 'Grace Period';
 
             if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Single Unit" then
                 FilteredContractRec."Single Unit Names" := ContractRec."Unit Name"
@@ -1080,11 +1093,13 @@ page 50122 "Revenue Allocation Card"
                 else
                     TerminationDate := 0D;
 
-                // Get Suspension Start Date
+                // Get Suspension Start Date - FIXED: Better error handling
                 SuspensionRec.Reset();
                 SuspensionRec.SetRange("Contract ID", ContractRec."Contract ID");
                 if SuspensionRec.FindFirst() then
-                    SuspensionDate := SuspensionRec.DateEffective;
+                    SuspensionDate := SuspensionRec.DateEffective
+                else
+                    SuspensionDate := 0D;  // Explicitly set to 0D if not found
 
                 // Check contract status and decide if it should be processed
                 case ContractRec."Tenant Contract Status" of
@@ -1096,11 +1111,12 @@ page 50122 "Revenue Allocation Card"
                             ShouldProcessContract := true;
 
                     ContractRec."Tenant Contract Status"::Suspended:
-                        if (SuspensionDate >= SelectedMonthStart) and
-                        (SuspensionDate <= SelectedMonthEnd) then
+                        // FIXED: Added null date check and improved logic
+                        if (SuspensionDate <> 0D) and
+                           (SuspensionDate >= SelectedMonthStart) and
+                           (SuspensionDate <= SelectedMonthEnd) then
                             ShouldProcessContract := true;
                 end;
-
 
                 // Process contract only if it meets the criteria
                 if ShouldProcessContract then begin
@@ -1509,6 +1525,7 @@ page 50122 "Revenue Allocation Card"
             FilteredContractRec."Final Annual Amount" := TotalAnnualAmount;
             FilteredContractRec."Posting Month" := MonthNo;
             FilteredContractRec."Posting Year" := FinancialYear;
+            FilteredContractRec.Description := 'Suspention';
             FilteredContractRec."Posting Period" := 'Suspension Recovery - ' + Format(MonthNo) + ' ' + Format(FinancialYear);
             FilteredContractRec."Owner Name" := ContractRec."Owner's Name";
 
@@ -1708,6 +1725,7 @@ page 50122 "Revenue Allocation Card"
         permonthrent: Decimal;
         AdjustedStartDate: Date; // 🔹 new
         AdjustedEndDate: Date;   // 🔹 new
+        SuspensionStartDateInMonth: Date; // 🔹 ADDED   
     begin
         // Check if entry should be kept based on date range
         if not ShouldKeepEntry(MultiYearStartDate, MultiYearEndDate) then
@@ -2210,7 +2228,7 @@ page 50122 "Revenue Allocation Card"
         FilteredContractRec."Grace Days" := ContractRec."Grace Period";
         FilteredContractRec."Grace Start Date" := ContractRec."Grace Start Date";
         FilteredContractRec."Grace End Date" := ContractRec."Grace End Date";
-        FilteredContractRec.Description := 'Regular';
+        FilteredContractRec.Description := 'Missed Revenue';
 
         if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Single Unit" then
             FilteredContractRec."Single Unit Names" := ContractRec."Unit Name"
@@ -2270,7 +2288,7 @@ page 50122 "Revenue Allocation Card"
             FilteredContractRec."Grace Days" := ContractRec."Grace Period";
             FilteredContractRec."Grace Start Date" := ContractRec."Grace Start Date";
             FilteredContractRec."Grace End Date" := ContractRec."Grace End Date";
-            FilteredContractRec.Description := 'Missed Revenue';
+            FilteredContractRec.Description := 'Grace Period';
 
             if ContractRec."Praposal Type Selected" = ContractRec."Praposal Type Selected"::"Single Unit" then
                 FilteredContractRec."Single Unit Names" := ContractRec."Unit Name"
@@ -2370,7 +2388,9 @@ page 50122 "Revenue Allocation Card"
                 SuspensionRec.Reset();
                 SuspensionRec.SetRange("Contract ID", ContractRec."Contract ID");
                 if SuspensionRec.FindFirst() then
-                    SuspensionDate := SuspensionRec.DateEffective;
+                    SuspensionDate := SuspensionRec.DateEffective
+                else
+                    SuspensionDate := 0D;  // Explicitly set to 0D if not found
 
                 // Check contract status and decide if it should be processed
                 case ContractRec."Tenant Contract Status" of
@@ -2382,8 +2402,10 @@ page 50122 "Revenue Allocation Card"
                             ShouldProcessContract := true;
 
                     ContractRec."Tenant Contract Status"::Suspended:
-                        if (SuspensionDate >= SelectedMonthStart) and
-                        (SuspensionDate <= SelectedMonthEnd) then
+                        // FIXED: Added null date check and improved logic
+                        if (SuspensionDate <> 0D) and
+                           (SuspensionDate >= SelectedMonthStart) and
+                           (SuspensionDate <= SelectedMonthEnd) then
                             ShouldProcessContract := true;
                 end;
 
@@ -2797,6 +2819,7 @@ page 50122 "Revenue Allocation Card"
             FilteredContractRec."Posting Year" := FinancialYear;
             FilteredContractRec."Total Value" := FilteredContractRec."Per Month Rent";
             FilteredContractRec."Owner Share" := FilteredContractRec."Per Month Rent";
+            FilteredContractRec.Description := 'Suspention';
             FilteredContractRec."Posting Period" := 'Suspension Recovery - ' + Format(MonthNo) + ' ' + Format(FinancialYear);
             FilteredContractRec."Owner Name" := ContractRec."Owner's Name";
 
