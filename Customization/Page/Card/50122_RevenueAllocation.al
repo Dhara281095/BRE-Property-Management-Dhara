@@ -148,52 +148,15 @@ page 50122 "Revenue Allocation Card"
                 var
                     companydata: Record "testData";
                 begin
-                    // FetchContracts();
-                    // CalculateTotals();
                     if companydata.FindSet() then begin
                         if companydata."Revenue Methods" = companydata."Revenue Methods"::"Per Day Rent" then begin
                             FetchContracts();
                             CalculateTotals();
                         end else begin
-                            // Replace with alternate procedures for non-day-based
-                            // FetchMonthlyContracts();
                             FetchContractss();
                             CalculateTotals();
                         end;
                     end;
-                end;
-            }
-
-            action("Process Selected Items")
-            {
-                Caption = 'Process Other Charges';
-                ApplicationArea = All;
-
-                trigger OnAction()
-                var
-                    SourceRec: Record "Revenue Item Breakdown";
-                    TargetRec: Record "Revenue Recognition Item";
-                begin
-                    // ✅ Set the RR_No. filter BEFORE calling FindSet
-                    TargetRec.Reset();
-                    TargetRec.SetRange("RR_No.", Rec."No.");
-
-                    if TargetRec.FindSet() then begin
-                        repeat
-                            // Find matching Revenue Item Breakdown by Item Type
-                            SourceRec.Reset();
-                            SourceRec.SetRange("Item Type", TargetRec."Item Type");
-
-                            if SourceRec.FindFirst() then begin
-                                TargetRec.Link := SourceRec."RI_No.";
-                                TargetRec."RR_No." := Rec."No."; // Set header ID
-                                TargetRec.Modify(true); // Save changes and keep record visible
-                            end;
-                        until TargetRec.Next() = 0;
-
-                        Message('Selected records processed successfully.');
-                    end else
-                        Message('No selected records found.');
                 end;
             }
 
