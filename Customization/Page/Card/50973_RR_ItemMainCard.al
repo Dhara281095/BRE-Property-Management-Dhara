@@ -346,6 +346,8 @@ page 50973 "Revenue Recognition Item Sub"
         SuspensionStartDate: Date;
         SuspensionEndDate: Date;
         SuspendedPeriodDays: Integer;
+        FinalCalculation: Record "Final Calculation";
+        TerminationDate: Date;
     begin
         // Calculate month start and end dates
         RevenueAllocationStartDate := DMY2Date(1, pRevenueAllocation.Month, pRevenueAllocation."Financial Year");
@@ -354,31 +356,44 @@ page 50973 "Revenue Recognition Item Sub"
         // Convert Posting Month + Year to Date (assume 1st of that month)
         PostingDate := DMY2Date(1, pRevenueAllocation.Month, pRevenueAllocation."Financial Year");
 
-        // Calculate number of days for the selected month / year
-        //     NoOfDays := CalculateNoOfDays(
-        //        pTenancyContract."Contract Start Date",
-        //        pTenancyContract."Contract End Date",
-        //        pRevenueAllocation.Month,
-        //        pRevenueAllocation."Financial Year"
-        //    );
+        // Get termination date for this contract
+        FinalCalculation.Reset();
+        FinalCalculation.SetRange("Contract ID", pTenancyContract."Contract ID");
+        if FinalCalculation.FindFirst() then
+            TerminationDate := FinalCalculation."Termination Date"
+        else
+            TerminationDate := 0D;
 
-        // // Calculate per day amount from Revenue Structure
-        // if pRevenueStructure.Amount > 0 then
-        //     PerDayAmount := pRevenueStructure."Amount Including VAT" / p
-        // else
-        //     PerDayAmount := 0;
-
-        // Create regular monthly allocation record
-        CreateRevenueRecord(
-            pTenancyContract,
-            pRevenueStructure,
-            pRevenueAllocation,
-            revenuestructuredetails,
-            PostingDate,
-            NoOfDays,
-            PerDayAmount,
-            false // Not suspended period allocation
+        // Calculate number of days for the selected month / year (regular allocation)
+        NoOfDays := CalculateNoOfDays(
+            pTenancyContract."Contract Start Date",
+            pTenancyContract."Contract End Date",
+            pRevenueAllocation.Month,
+            pRevenueAllocation."Financial Year",
+            TerminationDate
         );
+
+        // Calculate per day amount from Revenue Structure
+        if pRevenueStructure."Amount Including VAT" > 0 then begin
+            // You need to get the total days in the period to calculate per day amount
+            // This depends on your business logic - assuming monthly calculation
+            PerDayAmount := pRevenueStructure."Amount Including VAT" / Date2DMY(RevenueAllocationEndDate, 1);
+        end else
+            PerDayAmount := 0;
+
+        // Create regular monthly allocation record (only if there are days to allocate)
+        if NoOfDays > 0 then begin
+            CreateRevenueRecord(
+                pTenancyContract,
+                pRevenueStructure,
+                pRevenueAllocation,
+                revenuestructuredetails,
+                PostingDate,
+                NoOfDays,
+                PerDayAmount,
+                false // Not suspended period allocation
+            );
+        end;
 
         // NEW: Check for suspension to active scenario
         if HasSuspensionToActiveScenario(
@@ -426,6 +441,10 @@ page 50973 "Revenue Recognition Item Sub"
         RevenueRecognitionDetails: Record "Revenue Recognition Details";
         NextEntryNo: Integer;
         RecordDescription: Text;
+        FinalCalculation: Record "Final Calculation";
+        TerminationDate: Date;
+        ActualNoOfDays: Integer;
+        Yearlydays: Integer;
     begin
         // Get next entry number
         RevenueRecognitionDetails.Reset();
@@ -451,7 +470,6 @@ page 50973 "Revenue Recognition Item Sub"
         RevenueRecognitionDetails."Grace Days" := pTenancyContract."Grace Period";
         RevenueRecognitionDetails."Grace Start Date" := pTenancyContract."Grace Start Date";
         RevenueRecognitionDetails."Grace End Date" := pTenancyContract."Grace End Date";
-        RevenueRecognitionDetails."Per Day Rent" := PerDayAmount;
         if pTenancyContract."Praposal Type Selected" = pTenancyContract."Praposal Type Selected"::"Single Unit" then
             RevenueRecognitionDetails."Single Unit Names" := pTenancyContract."Unit Name"
         else if pTenancyContract."Praposal Type Selected" = pTenancyContract."Praposal Type Selected"::"Merge Unit" then
@@ -477,16 +495,22 @@ page 50973 "Revenue Recognition Item Sub"
         // Get termination date from Final Calculation by Contract ID match
         GetTerminationDate(pTenancyContract."Contract ID", RevenueRecognitionDetails);
 
-        RevenueRecognitionDetails."No Of Days" := CalculateNoOfDays(
-           pTenancyContract."Contract Start Date",
-           pTenancyContract."Contract End Date",
-           pRevenueAllocation.Month,
-           pRevenueAllocation."Financial Year",
-             RevenueRecognitionDetails."Termination Date"  // Pass here
-       );
-        RevenueRecognitionDetails."Per Day Rent" := PerDayAmount;
-        RevenueRecognitionDetails."Total Value" := NoOfDays * PerDayAmount;
-        RevenueRecognitionDetails."Owner Share" := RevenueRecognitionDetails."Total Value";
+        // IMPORTANT: For suspension scenarios, use the passed NoOfDays directly
+        // For regular scenarios, recalculate using the standard function
+        if IsSuspendedPeriodAllocation then begin
+            // Use the suspension-specific calculation result
+            ActualNoOfDays := NoOfDays;
+        end else begin
+            // Use the standard calculation for regular allocation
+            ActualNoOfDays := CalculateNoOfDays(
+                pTenancyContract."Contract Start Date",
+                pTenancyContract."Contract End Date",
+                pRevenueAllocation.Month,
+                pRevenueAllocation."Financial Year",
+                RevenueRecognitionDetails."Termination Date"
+            );
+        end;
+        RevenueRecognitionDetails."No Of Days" := ActualNoOfDays;
 
         // Get suspension details from Suspended Reason List by Contract ID match
         GetSuspensionDetails(pTenancyContract."Contract ID", RevenueRecognitionDetails);
@@ -506,6 +530,11 @@ page 50973 "Revenue Recognition Item Sub"
                 end;
             until revenuestructuredetails.Next() = 0;
         end;
+
+        Yearlydays := RevenueRecognitionDetails."Multi Year End Date" - RevenueRecognitionDetails."Multi Year Start Date" + 1;
+        RevenueRecognitionDetails."Per Day Rent" := RevenueRecognitionDetails."Annual Amount" / Yearlydays;
+        RevenueRecognitionDetails."Total Value" := RevenueRecognitionDetails."No Of Days" * RevenueRecognitionDetails."Per Day Rent";
+        RevenueRecognitionDetails."Owner Share" := RevenueRecognitionDetails."Total Value";
 
         // Insert the record
         RevenueRecognitionDetails.Insert(true);
