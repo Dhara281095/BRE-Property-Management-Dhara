@@ -20,36 +20,13 @@ page 50973 "Revenue Recognition Item Sub"
                 {
                     ApplicationArea = All;
                     Caption = 'Item Type';
-
-                    trigger OnValidate()
-                    begin
-                        // Optional: Add any validation logic for Item Type selection
-                    end;
-                }
-                field("Link"; Rec."Link")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Link';
-                    Editable = false;
-                    DrillDown = true;
-
-                    trigger OnDrillDown()
-                    var
-                        RevenueItemBreakdown: Record "Revenue Item Breakdown";
-                    begin
-                        // Filter and open Revenue Item Breakdown Card
-                        RevenueItemBreakdown.SetRange("RI_No.", Rec.Link);
-                        if RevenueItemBreakdown.FindSet() then
-                            PAGE.Run(PAGE::"Revenue Item Breakdown Card", RevenueItemBreakdown)
-                        else
-                            Message('No Revenue Item Breakdown found.');
-                    end;
                 }
                 field("Entry No."; Rec."Entry No.")
                 {
                     ApplicationArea = All;
                     Caption = 'Entry No.';
                     Editable = false;
+                    Visible = false;
                 }
             }
         }
@@ -64,10 +41,6 @@ page 50973 "Revenue Recognition Item Sub"
                 Caption = 'Revenue Allocation-Other Charges';
                 ApplicationArea = All;
                 Image = List;
-                // Promoted = true;
-                // PromotedCategory = Process;
-                // PromotedIsBig = true;
-
                 trigger OnAction()
                 var
                     ConfirmFetch: Boolean;
@@ -87,27 +60,6 @@ page 50973 "Revenue Recognition Item Sub"
                     end;
                 end;
             }
-
-            // action(ViewRevenueDetails)
-            // {
-            //     Caption = 'View Revenue Details';
-            //     ApplicationArea = All;
-            //     Image = View;
-            //     Promoted = true;
-            //     PromotedCategory = Process;
-
-            //     trigger OnAction()
-            //     var
-            //         RevenueRecognitionDetails: Record "Revenue Recognition Details";
-            //     begin
-            //         // Filter and show Revenue Recognition Details for this RR_No.
-            //         RevenueRecognitionDetails.SetRange("RR_No.", Rec."RR_No.");
-            //         // if RevenueRecognitionDetails.FindSet() then
-            //         // PAGE.Run(PAGE::"Revenue Recognition Detail Sub", RevenueRecognitionDetails)
-            //         // else
-            //         // Message('No Revenue Recognition Details found.');
-            //     end;
-            // }
         }
     }
 
@@ -139,12 +91,6 @@ page 50973 "Revenue Recognition Item Sub"
     begin
         // Clear existing data
         ClearSubgridData();
-
-        // Get current month and financial year from Revenue Allocation
-        // if not RevenueAllocation.FindFirst() then begin
-        //     Message('No Revenue Allocation found. Please set up Revenue Allocation first.');
-        //     exit;
-        // end;
 
         // Get selected Item Types for this Revenue Recognition Item
         GetSelectedItemTypes(SelectedItemTypes);
@@ -214,9 +160,6 @@ page 50973 "Revenue Recognition Item Sub"
     var
         RevenueRecognitionItem: Record "Revenue Recognition Item";
     begin
-        // Clear the list first
-        // pItemTypes.Clear();
-
         // Set filter to get all selected Item Types
         RevenueRecognitionItem.SetRange("RR_No.", Rec."RR_No.");
 
@@ -267,47 +210,6 @@ page 50973 "Revenue Recognition Item Sub"
             (pTenancyContract."Contract End Date" >= SelectedMonthStart)
         );
     end;
-
-
-
-    // local procedure CalculateNoOfDays(
-    //     pContractStartDate: Date;
-    //     pContractEndDate: Date;
-    //     pAllocationMonth: Integer;
-    //     pAllocationYear: Integer
-    // ): Integer
-    // var
-    //     SelectedMonthStart: Date;
-    //     SelectedMonthEnd: Date;
-    //     EffectiveStartDate: Date;
-    //     EffectiveEndDate: Date;
-    //     NoOfDays: Integer;
-    // begin
-    //     // Calculate the start and end of the selected month
-    //     SelectedMonthStart := DMY2Date(1, pAllocationMonth + 1, pAllocationYear);
-    //     SelectedMonthEnd := CALCDATE('<+1M-1D>', SelectedMonthStart);
-
-    //     // Determine the effective start date (later of contract start or month start)
-    //     if pContractStartDate > SelectedMonthStart then
-    //         EffectiveStartDate := pContractStartDate
-    //     else
-    //         EffectiveStartDate := SelectedMonthStart;
-
-    //     // Determine the effective end date (earlier of contract end or month end)
-    //     if pContractEndDate < SelectedMonthEnd then
-    //         EffectiveEndDate := pContractEndDate
-    //     else
-    //         EffectiveEndDate := SelectedMonthEnd;
-
-    //     // Calculate number of days
-    //     if EffectiveStartDate <= EffectiveEndDate then
-    //         NoOfDays := Date2DMY(EffectiveEndDate, 1) - Date2DMY(EffectiveStartDate, 1)
-    //     // NoOfDays := EffectiveEndDate - EffectiveStartDate + 1
-    //     else
-    //         NoOfDays := 0;
-
-    //     exit(NoOfDays);
-    // end;
 
     local procedure CalculateNoOfDays(
         pContractStartDate: Date;
@@ -386,22 +288,14 @@ page 50973 "Revenue Recognition Item Sub"
         RevenueRecognitionDetails."Contract Start Date" := pTenancyContract."Contract Start Date";
         RevenueRecognitionDetails."Contract End Date" := pTenancyContract."Contract End Date";
         RevenueRecognitionDetails."Contract Amount" := pRevenueItemBreakdown."Contract Amount";
-        // RevenueRecognitionDetails."Annual Amount" := pRevenueItemBreakdown."Annual Amount";
         RevenueRecognitionDetails."Owner Name" := pTenancyContract."Owner's Name";
         RevenueRecognitionDetails."Termination Date" := pTenancyContract."Termination Date";
-        // RevenueRecognitionDetails."Final Annual Amount" := RevenueRecognitionDetails."Annual Amount";
-
-        // Copy revenue item breakdown details
         RevenueRecognitionDetails."Item Type" := pRevenueItemBreakdown."Item Type";
         RevenueRecognitionDetails."Contract Tenure" := pRevenueItemBreakdown."Contract Tenure";
         RevenueRecognitionDetails."Grace Days" := pRevenueItemBreakdown."Grace Days";
-        // RevenueRecognitionDetails."Termination Date" := pRevenueItemBreakdown.;
-        //  RevenueRecognitionDetails."No Of Days" := pRevenueItemBreakdown."No Of Days";
-        RevenueRecognitionDetails."Per Day Amount" := pRevenueItemBreakdown."Per Day Amount";
-
+        RevenueRecognitionDetails."Per Day Rent" := pRevenueItemBreakdown."Per Day Amount";
         RevenueRecognitionDetails."No Of Days" := NoOfDays;
-
-        RevenueRecognitionDetails."Total Value" := RevenueRecognitionDetails."No Of Days" * RevenueRecognitionDetails."Per Day Amount";
+        RevenueRecognitionDetails."Total Value" := RevenueRecognitionDetails."No Of Days" * RevenueRecognitionDetails."Per Day Rent";
         RevenueRecognitionDetails."Owner Share" := RevenueRecognitionDetails."Total Value";
         // Add allocation period details
         RevenueRecognitionDetails."Posting Month" := pRevenueAllocation.Month;

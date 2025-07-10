@@ -284,7 +284,7 @@ page 50972 "Revenue Recognition Main"
             until RevenueItemRec.Next() = 0;
         end;
         // FilteredContractRec."No Of Days" := RevenueItemRec."No Of Days";
-        FilteredContractRec."Per Day Amount" := PerDayMergedAmount;
+        FilteredContractRec."Per Day Rent" := PerDayMergedAmount;
         FilteredContractRec."Total Value" := TotalMergedAmount;
         FilteredContractRec."Owner Share" := TotalMergedAmount; // If same as Total Value
         // TotalDays := FilteredContractRec."Contract End Date" - FilteredContractRec."Contract Start Date" + 1;
