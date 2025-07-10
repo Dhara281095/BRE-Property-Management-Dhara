@@ -211,24 +211,24 @@ page 50973 "Revenue Recognition Item Sub"
         exit(FilterText);
     end;
 
-    local procedure IsContractActiveForPeriod(
-        pTenancyContract: Record "Tenancy Contract";
-        pRevenueAllocation: Record "Revenue Allocation Details"
-    ): Boolean
-    var
-        SelectedMonthStart: Date;
-        SelectedMonthEnd: Date;
-    begin
-        // Calculate the start and end of the selected month
-        SelectedMonthStart := DMY2Date(1, pRevenueAllocation.Month + 1, pRevenueAllocation."Financial Year");
-        SelectedMonthEnd := CALCDATE('<+1M-1D>', SelectedMonthStart);
+    // local procedure IsContractActiveForPeriod(
+    //     pTenancyContract: Record "Tenancy Contract";
+    //     pRevenueAllocation: Record "Revenue Allocation Details"
+    // ): Boolean
+    // var
+    //     SelectedMonthStart: Date;
+    //     SelectedMonthEnd: Date;
+    // begin
+    //     // Calculate the start and end of the selected month
+    //     SelectedMonthStart := DMY2Date(1, pRevenueAllocation.Month + 1, pRevenueAllocation."Financial Year");
+    //     SelectedMonthEnd := CALCDATE('<+1M-1D>', SelectedMonthStart);
 
-        // Check if contract overlaps with the selected period
-        exit(
-            (pTenancyContract."Contract Start Date" <= SelectedMonthEnd) and
-            (pTenancyContract."Contract End Date" >= SelectedMonthStart)
-        );
-    end;
+    //     // Check if contract overlaps with the selected period
+    //     exit(
+    //         (pTenancyContract."Contract Start Date" <= SelectedMonthEnd) and
+    //         (pTenancyContract."Contract End Date" >= SelectedMonthStart)
+    //     );
+    // end;
 
     local procedure CalculateNoOfDays(
          pContractStartDate: Date;
@@ -279,6 +279,8 @@ page 50973 "Revenue Recognition Item Sub"
     var
         RevenueRecognitionDetails: Record "Revenue Recognition Details";
         SuspendedReasonList: Record SuspendReasonTable;
+        revenuestructuredetails: Record "Revenue Structure Subpage";
+        PostingDate: Date;
         NextEntryNo: Integer;
         NoOfDays: Integer;
         PerDayAmount: Decimal;
@@ -289,6 +291,9 @@ page 50973 "Revenue Recognition Item Sub"
             NextEntryNo := RevenueRecognitionDetails."Entry No." + 1
         else
             NextEntryNo := 1;
+
+        // Convert Posting Month + Year to Date (assume 1st of that month)
+        PostingDate := DMY2Date(1, pRevenueAllocation.Month, pRevenueAllocation."Financial Year");
 
         // Calculate number of days for the selected month/year
         NoOfDays := CalculateNoOfDays(
@@ -318,10 +323,10 @@ page 50973 "Revenue Recognition Item Sub"
         RevenueRecognitionDetails."Contract End Date" := pTenancyContract."Contract End Date";
         RevenueRecognitionDetails."Contract Amount" := pRevenueStructure."Amount Including VAT";  // From Revenue Structure
         RevenueRecognitionDetails."Owner Name" := pTenancyContract."Owner's Name";
-        RevenueRecognitionDetails."Termination Date" := pTenancyContract."Termination Date";
-        // RevenueRecognitionDetails."Item Type" := pReve/nueStructure.;  // From Revenue Structure
-        // RevenueRecognitionDetails."Contract Tenure" := pRevenueStructure."Contract Tenure";  // From Revenue Structure
-        // RevenueRecognitionDetails."Grace Days" := pRevenueStructure."Grace Days";  // From Revenue Structure
+        RevenueRecognitionDetails."Contract Tenure" := pTenancyContract."Contract Tenor";
+        RevenueRecognitionDetails."Grace Days" := pTenancyContract."Grace Period";
+        RevenueRecognitionDetails."Grace Start Date" := pTenancyContract."Grace Start Date";
+        RevenueRecognitionDetails."Grace End Date" := pTenancyContract."Grace End Date";
         RevenueRecognitionDetails."Per Day Rent" := PerDayAmount;
         RevenueRecognitionDetails."No Of Days" := NoOfDays;
         RevenueRecognitionDetails."Total Value" := NoOfDays * PerDayAmount;
@@ -334,51 +339,52 @@ page 50973 "Revenue Recognition Item Sub"
             FORMAT(pRevenueAllocation.Month) + ' ' +
             FORMAT(pRevenueAllocation."Financial Year");
 
-        // Get suspension details from Suspended Reason List
-        SuspendedReasonList.Reset();
-        SuspendedReasonList.SetRange("Contract ID", pTenancyContract."Contract ID");
-        if SuspendedReasonList.FindSet() then begin
-            if (SuspendedReasonList.SuspensionEffectiveDate > pTenancyContract."Contract Start Date") or
-               (SuspendedReasonList.SuspensionEndDate > pTenancyContract."Contract Start Date") then begin
-                RevenueRecognitionDetails."Suspension Start Date" := SuspendedReasonList.SuspensionEffectiveDate;
-                RevenueRecognitionDetails."Suspension End Date" := SuspendedReasonList.SuspensionEndDate;
-            end;
+        // Get termination date from Final Calculation by Contract ID match
+        GetTerminationDate(pTenancyContract."Contract ID", RevenueRecognitionDetails);
+
+        // Get suspension details from Suspended Reason List by Contract ID match
+        GetSuspensionDetails(pTenancyContract."Contract ID", RevenueRecognitionDetails);
+
+        revenuestructuredetails.Reset();
+        revenuestructuredetails.SetRange("Contract ID", RevenueRecognitionDetails."Contract ID");
+        if revenuestructuredetails.FindSet() then begin
+            repeat
+                if (revenuestructuredetails."Period Start Date" <= PostingDate) and
+                   (revenuestructuredetails."Period End Date" >= PostingDate) then begin
+                    RevenueRecognitionDetails."Multi Year Start Date" := revenuestructuredetails."Period Start Date";
+                    RevenueRecognitionDetails."Multi Year End Date" := revenuestructuredetails."Period End Date";
+                    RevenueRecognitionDetails."Annual Amount" := revenuestructuredetails."Amount Including VAT";
+                    RevenueRecognitionDetails."Final Annual Amount" := revenuestructuredetails."Amount Including VAT";
+                    RevenueRecognitionDetails."Item Type" := revenuestructuredetails."Secondary Item Type";
+                end;
+            until revenuestructuredetails.Next() = 0;
         end;
 
         // Insert the record
         RevenueRecognitionDetails.Insert(true);
     end;
 
-
-    procedure GetMonthNo(Month: Text): Integer
+    // Get termination date from Final Calculation table
+    local procedure GetTerminationDate(ContractID: Integer; var RevenueRecognitionDetails: Record "Revenue Recognition Details")
+    var
+        FinalCalculation: Record "Final Calculation";  // Replace with actual table name
     begin
-        case Month of
-            'January':
-                exit(1);
-            'February':
-                exit(2);
-            'March':
-                exit(3);
-            'April':
-                exit(4);
-            'May':
-                exit(5);
-            'June':
-                exit(6);
-            'July':
-                exit(7);
-            'August':
-                exit(8);
-            'September':
-                exit(9);
-            'October':
-                exit(10);
-            'November':
-                exit(11);
-            'December':
-                exit(12);
-            else
-                exit(0); // Fallback to number if invalid
+        FinalCalculation.Reset();
+        FinalCalculation.SetRange("Contract ID", ContractID);
+        if FinalCalculation.FindFirst() then
+            RevenueRecognitionDetails."Termination Date" := FinalCalculation."Termination Date";
+    end;
+
+    // Get suspension details from Suspended Reason table
+    local procedure GetSuspensionDetails(ContractID: Integer; var RevenueRecognitionDetails: Record "Revenue Recognition Details")
+    var
+        SuspendedReasonList: Record SuspendReasonTable;
+    begin
+        SuspendedReasonList.Reset();
+        SuspendedReasonList.SetRange("Contract ID", ContractID);
+        if SuspendedReasonList.FindFirst() then begin
+            RevenueRecognitionDetails."Suspension Start Date" := SuspendedReasonList.DateEffective;
+            RevenueRecognitionDetails."Suspension End Date" := SuspendedReasonList.SuspensionEndDate;
         end;
     end;
 
