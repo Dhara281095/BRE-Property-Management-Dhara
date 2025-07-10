@@ -1725,6 +1725,18 @@ page 50122 "Revenue Allocation Card"
         if (TerminationDate <> 0D) and (AdjustedEndDate > TerminationDate) then
             AdjustedEndDate := TerminationDate;
 
+        // 🔹 Adjust for Suspension Start
+        SuspensionRec.Reset();
+        SuspensionRec.SetRange("Contract ID", ContractRec."Contract ID");
+        if SuspensionRec.FindFirst() then begin
+            if (SuspensionRec.DateEffective <> 0D) and
+               (SuspensionRec.DateEffective >= SelectedMonthStart) and
+               (SuspensionRec.DateEffective <= SelectedMonthEnd) then begin
+                SuspensionStartDateInMonth := SuspensionRec.DateEffective;
+                AdjustedEndDate := SuspensionRec.DateEffective - 1; // 🔹 ADDED
+            end;
+        end;
+
         if (AdjustedStartDate <= AdjustedEndDate) then
             CalculatedDays := AdjustedEndDate - AdjustedStartDate + 1
         else

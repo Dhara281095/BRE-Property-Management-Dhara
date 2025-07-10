@@ -46,14 +46,19 @@ page 50973 "Revenue Recognition Item Sub"
                     ConfirmFetch: Boolean;
                     revenueAllocation: Record "Revenue Allocation Details";
                 begin
+                    // Get the current Revenue Allocation record details
+                    if not GetCurrentRevenueAllocation(RevenueAllocation) then begin
+                        Message('Unable to get Revenue Allocation details. Please ensure you are on a valid record.');
+                        exit;
+                    end;
+
                     // Confirm before fetching details
-                    ConfirmFetch := Confirm('Do you want to fetch revenue details for the selected Item Type(s)?', false);
+                    ConfirmFetch := Confirm('Do you want to fetch revenue details for the selected Item Type(s) for %1 %2?',
+                        false, Format(RevenueAllocation.Month), RevenueAllocation."Financial Year");
 
                     if ConfirmFetch then begin
-                        if revenueAllocation.Get(Rec."RR_No.") then begin
-                            // Call the fetch procedure
-                            FetchContractDetails(revenueAllocation);
-                        end;
+                        // Call the fetch procedure with current allocation details
+                        FetchContractDetails(RevenueAllocation);
 
                         // Show message about fetched details
                         Message('Revenue details have been fetched successfully.');
@@ -68,6 +73,22 @@ page 50973 "Revenue Recognition Item Sub"
         ClearSubgridData();
     end;
 
+    // Get current Revenue Allocation record
+    local procedure GetCurrentRevenueAllocation(var RevenueAllocation: Record "Revenue Allocation Details"): Boolean
+    begin
+        // Get the current RR_No from the record
+        if Rec."RR_No." = 0 then
+            exit(false);
+
+        // Find the Revenue Allocation record using RR_No
+        RevenueAllocation.Reset();
+        RevenueAllocation.SetRange("No.", Rec."RR_No.");
+        if RevenueAllocation.FindFirst() then
+            exit(true);
+
+        exit(false);
+    end;
+
     procedure ClearSubgridData()
     var
         RevenueItemDetail: Record "Revenue Recognition Details";
@@ -80,9 +101,8 @@ page 50973 "Revenue Recognition Item Sub"
     procedure FetchContractDetails(RevenueAllocation: Record "Revenue Allocation Details")
     var
         TenancyContract: Record "Tenancy Contract";
+        RevenueStructure: Record "Revenue Structure";  // Direct reference to Revenue Structure
         RevenueRecognitionDetails: Record "Revenue Recognition Details";
-        RevenueItemBreakdown: Record "Revenue Item Breakdown Details";
-        SuspendedReasonList: Record SuspendReasonTable;  // Added suspended reason list record
         SelectedItemTypes: List of [Text];
         ProcessedContractCount: Integer;
         ContractProcessed: Boolean;
@@ -104,41 +124,40 @@ page 50973 "Revenue Recognition Item Sub"
         // Reset processed contract counter
         ProcessedContractCount := 0;
 
-        RevenueAllocationStartDate := DMY2Date(1, GetMonthNo(Format(RevenueAllocation.Month)), RevenueAllocation."Financial Year");
+        // Calculate month start and end dates
+        RevenueAllocationStartDate := DMY2Date(1, RevenueAllocation.Month, RevenueAllocation."Financial Year");
         RevenueAllocationEndDate := CalcDate('CM', RevenueAllocationStartDate);
 
-        // Process active contracts
-        // TenancyContract.SetFilter("Contract Start Date", '>=%1', DMY2Date(1, GetMonthNo(Format(RevenueAllocation.Month)), RevenueAllocation."Financial Year"));
+        // Process active contracts directly from Revenue Structure
         if TenancyContract.FindSet() then begin
             repeat
-                if (TenancyContract."Contract Start Date" <= RevenueAllocationEndDate) and (TenancyContract."Contract End Date" >= RevenueAllocationStartDate) then begin
+                // Check if contract is active during the selected period
+                if (TenancyContract."Contract Start Date" <= RevenueAllocationEndDate) and
+                   (TenancyContract."Contract End Date" >= RevenueAllocationStartDate) then begin
 
-                    // Check if contract is active during the selected period
-                    if IsContractActiveForPeriod(TenancyContract, RevenueAllocation) then begin
-                        // Reset flag for each contract
-                        ContractProcessed := false;
+                    // Reset flag for each contract
+                    ContractProcessed := false;
 
-                        // Retrieve associated revenue item breakdown for all selected item types
-                        RevenueItemBreakdown.Reset();
-                        RevenueItemBreakdown.SetRange("Contract ID", TenancyContract."Contract ID");
+                    // Get revenue structure details directly for this contract
+                    RevenueStructure.Reset();
+                    RevenueStructure.SetRange("Contract ID", TenancyContract."Contract ID");
 
-                        // Filter by selected Item Types
-                        RevenueItemBreakdown.SetFilter("Item Type", GetItemTypeFilter(SelectedItemTypes));
+                    // Filter by selected Item Types
+                    RevenueStructure.SetFilter("Secondary Item Type", GetItemTypeFilter(SelectedItemTypes));
 
-                        if RevenueItemBreakdown.FindSet() then begin
-                            repeat
-                                // Create Revenue Recognition Detail
-                                CreateRevenueRecognitionDetail(TenancyContract, RevenueItemBreakdown, RevenueAllocation);
+                    if RevenueStructure.FindSet() then begin
+                        repeat
+                            // Create Revenue Recognition Detail directly from Revenue Structure
+                            CreateRevenueRecognitionDetailDirect(TenancyContract, RevenueStructure, RevenueAllocation);
 
-                                // Mark contract as processed
-                                ContractProcessed := true;
-                            until RevenueItemBreakdown.Next() = 0;
-                        end;
-
-                        // Increment processed contract counter if at least one breakdown was found
-                        if ContractProcessed then
-                            ProcessedContractCount += 1;
+                            // Mark contract as processed
+                            ContractProcessed := true;
+                        until RevenueStructure.Next() = 0;
                     end;
+
+                    // Increment processed contract counter if at least one structure was found
+                    if ContractProcessed then
+                        ProcessedContractCount += 1;
                 end;
             until TenancyContract.Next() = 0;
         end;
@@ -212,11 +231,11 @@ page 50973 "Revenue Recognition Item Sub"
     end;
 
     local procedure CalculateNoOfDays(
-        pContractStartDate: Date;
-        pContractEndDate: Date;
-        pAllocationMonth: Integer;
-        pAllocationYear: Integer
-    ): Integer
+         pContractStartDate: Date;
+         pContractEndDate: Date;
+         pAllocationMonth: Integer;
+         pAllocationYear: Integer
+     ): Integer
     var
         SelectedMonthStart: Date;
         SelectedMonthEnd: Date;
@@ -251,16 +270,18 @@ page 50973 "Revenue Recognition Item Sub"
     end;
 
 
-    local procedure CreateRevenueRecognitionDetail(
+    // Create Revenue Recognition Detail directly from Revenue Structure
+    local procedure CreateRevenueRecognitionDetailDirect(
         pTenancyContract: Record "Tenancy Contract";
-        pRevenueItemBreakdown: Record "Revenue Item Breakdown Details";
+        pRevenueStructure: Record "Revenue Structure";  // Changed from Revenue Item Breakdown Details
         pRevenueAllocation: Record "Revenue Allocation Details"
     )
     var
         RevenueRecognitionDetails: Record "Revenue Recognition Details";
-        SuspendedReasonList: Record SuspendReasonTable;  // Added suspended reason list record
+        SuspendedReasonList: Record SuspendReasonTable;
         NextEntryNo: Integer;
         NoOfDays: Integer;
+        PerDayAmount: Decimal;
     begin
         // Get next entry number
         RevenueRecognitionDetails.Reset();
@@ -269,12 +290,20 @@ page 50973 "Revenue Recognition Item Sub"
         else
             NextEntryNo := 1;
 
+        // Calculate number of days for the selected month/year
         NoOfDays := CalculateNoOfDays(
            pTenancyContract."Contract Start Date",
            pTenancyContract."Contract End Date",
            pRevenueAllocation.Month,
            pRevenueAllocation."Financial Year"
        );
+
+        // Calculate per day amount from Revenue Structure
+        // Assuming Revenue Structure has Amount field and Contract Tenure
+        if pRevenueStructure.Amount > 0 then
+            PerDayAmount := pRevenueStructure.Amount / pRevenueStructure.Amount
+        else
+            PerDayAmount := 0;
 
         // Create new Revenue Recognition Detail record
         RevenueRecognitionDetails.Init();
@@ -287,16 +316,17 @@ page 50973 "Revenue Recognition Item Sub"
         RevenueRecognitionDetails."Customer Name" := pTenancyContract."Customer Name";
         RevenueRecognitionDetails."Contract Start Date" := pTenancyContract."Contract Start Date";
         RevenueRecognitionDetails."Contract End Date" := pTenancyContract."Contract End Date";
-        RevenueRecognitionDetails."Contract Amount" := pRevenueItemBreakdown."Contract Amount";
+        RevenueRecognitionDetails."Contract Amount" := pRevenueStructure."Amount Including VAT";  // From Revenue Structure
         RevenueRecognitionDetails."Owner Name" := pTenancyContract."Owner's Name";
         RevenueRecognitionDetails."Termination Date" := pTenancyContract."Termination Date";
-        RevenueRecognitionDetails."Item Type" := pRevenueItemBreakdown."Item Type";
-        RevenueRecognitionDetails."Contract Tenure" := pRevenueItemBreakdown."Contract Tenure";
-        RevenueRecognitionDetails."Grace Days" := pRevenueItemBreakdown."Grace Days";
-        RevenueRecognitionDetails."Per Day Rent" := pRevenueItemBreakdown."Per Day Amount";
+        // RevenueRecognitionDetails."Item Type" := pReve/nueStructure.;  // From Revenue Structure
+        // RevenueRecognitionDetails."Contract Tenure" := pRevenueStructure."Contract Tenure";  // From Revenue Structure
+        // RevenueRecognitionDetails."Grace Days" := pRevenueStructure."Grace Days";  // From Revenue Structure
+        RevenueRecognitionDetails."Per Day Rent" := PerDayAmount;
         RevenueRecognitionDetails."No Of Days" := NoOfDays;
-        RevenueRecognitionDetails."Total Value" := RevenueRecognitionDetails."No Of Days" * RevenueRecognitionDetails."Per Day Rent";
+        RevenueRecognitionDetails."Total Value" := NoOfDays * PerDayAmount;
         RevenueRecognitionDetails."Owner Share" := RevenueRecognitionDetails."Total Value";
+
         // Add allocation period details
         RevenueRecognitionDetails."Posting Month" := pRevenueAllocation.Month;
         RevenueRecognitionDetails."Posting Year" := pRevenueAllocation."Financial Year";
@@ -309,12 +339,12 @@ page 50973 "Revenue Recognition Item Sub"
         SuspendedReasonList.SetRange("Contract ID", pTenancyContract."Contract ID");
         if SuspendedReasonList.FindSet() then begin
             if (SuspendedReasonList.SuspensionEffectiveDate > pTenancyContract."Contract Start Date") or
-   (SuspendedReasonList.SuspensionEndDate > pTenancyContract."Contract Start Date") then begin
+               (SuspendedReasonList.SuspensionEndDate > pTenancyContract."Contract Start Date") then begin
                 RevenueRecognitionDetails."Suspension Start Date" := SuspendedReasonList.SuspensionEffectiveDate;
                 RevenueRecognitionDetails."Suspension End Date" := SuspendedReasonList.SuspensionEndDate;
             end;
-
         end;
+
         // Insert the record
         RevenueRecognitionDetails.Insert(true);
     end;
